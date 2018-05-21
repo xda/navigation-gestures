@@ -201,12 +201,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Add the pill to the screen
      */
     fun addBar() {
-        val homeY = if (Utils.shouldUseOverscanMethod(this)) getHomeY(this) else 0
-
         params.width = Utils.getCustomWidth(this)
         params.height = Utils.getCustomHeight(this)
         params.gravity = Gravity.CENTER or Gravity.BOTTOM
-        params.y = homeY
+        params.y = getHomeY(this)
         params.type =
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
