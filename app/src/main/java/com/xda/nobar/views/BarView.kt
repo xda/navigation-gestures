@@ -91,7 +91,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         val rot = wm.defaultDisplay.rotation
 
-        if (rot == Surface.ROTATION_90 || rot == Surface.ROTATION_270) enterTransparencyMode()
+        if ((rot == Surface.ROTATION_90 || rot == Surface.ROTATION_270) && prefs.getBoolean("hide_in_landscape", false)) enterTransparencyMode()
 
         view = View.inflate(context, R.layout.pill, this)
         pill = view.findViewById(R.id.pill)
@@ -927,7 +927,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
              * Handle the single tap
              */
             override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                return if (!isOverrideTap) {
+                return if (!isOverrideTap && !isHidden) {
                     isActing = false
 
                     if (!isHidden) {
