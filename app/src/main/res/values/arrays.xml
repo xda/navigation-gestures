@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="action_names">
+        <item>@string/nothing</item>
+        <item>@string/home</item>
+        <item>@string/back</item>
+        <item>@string/recents</item>
+        <item>@string/hide</item>
+        <item>@string/assist</item>
+    </string-array>
+
+    <string-array name="nougat_action_names">
+        <item>@string/switch_apps</item>
+    </string-array>
+
+    <string-array name="premium_action_names">
+        <item>@string/prem_split</item>
+        <item>@string/prem_notif</item>
+        <item>@string/prem_qs</item>
+        <item>@string/prem_power</item>
+        <item>@string/prem_prev</item>
+        <item>@string/prem_next</item>
+        <item>@string/prem_play_pause</item>
+    </string-array>
+
+    <string-array name="ohm_action_names">
+        <item>@string/ohm</item>
+    </string-array>
+
+    <string-array name="action_values">
+        <item>@string/type_no_action</item>
+        <item>@string/type_home</item>
+        <item>@string/type_back</item>
+        <item>@string/type_recents</item>
+        <item>@string/type_hide</item>
+        <item>@string/type_assist</item>
+    </string-array>
+
+    <string-array name="premium_action_values">
+        <item>@string/prem_type_split</item>
+        <item>@string/prem_type_notif</item>
+        <item>@string/prem_type_qs</item>
+        <item>@string/prem_type_power</item>
+        <item>@string/prem_type_prev</item>
+        <item>@string/prem_type_next</item>
+        <item>@string/prem_type_play_pause</item>
+    </string-array>
+
+    <string-array name="nougat_action_values">
+        <item>@string/type_switch</item>
+    </string-array>
+
+    <string-array name="ohm_action_values">
+        <item>@string/type_ohm</item>
+    </string-array>
+</resources>

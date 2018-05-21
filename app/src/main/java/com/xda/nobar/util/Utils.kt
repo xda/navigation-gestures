@@ -1,0 +1,270 @@
+package com.xda.nobar.util
+
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.res.Resources
+import android.graphics.Color
+import android.graphics.Point
+import android.graphics.Rect
+import android.os.Build
+import android.preference.PreferenceManager
+import android.provider.Settings
+import android.util.TypedValue
+import android.view.WindowManager
+import com.xda.nobar.App
+import com.xda.nobar.R
+
+
+
+
+/**
+ * General utility functions for OHM
+ */
+object Utils {
+    const val NAV_BAR_BOTTOM = 0
+    const val NAV_BAR_RIGHT = 1
+    const val NAV_BAR_LEFT = 2
+
+    var navImmersiveAlreadyEnabled = false
+
+    fun enableNavImmersive(context: Context) {
+        if (isInImmersive(context)) {
+            navImmersiveAlreadyEnabled = true
+        } else {
+            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation")
+        }
+    }
+
+    fun disableNavImmersive(context: Context) {
+        if (!navImmersiveAlreadyEnabled) {
+            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "")
+        }
+    }
+
+    fun isInImmersive(context: Context): Boolean {
+        val policy = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL) ?: ""
+        return policy.contains("immersive.navigation") || policy.contains("immersive.full")
+    }
+
+    /**
+     * Get the device's screen size
+     * @param context context object
+     * @return device's resolution (in px) as a Point
+     */
+    fun getRealScreenSize(context: Context): Point {
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display = windowManager.defaultDisplay
+        val size = Point()
+
+        display.getRealSize(size)
+
+        return size
+    }
+
+    /**
+     * Convert a certain DP value to its equivalent in px
+     * @param context context object
+     * @param dpVal the chosen DP value
+     * @return the DP value in terms of px
+     */
+    fun dpAsPx(context: Context, dpVal: Int): Int {
+        val r = context.resources
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal.toFloat(), r.displayMetrics))
+    }
+
+    /**
+     * Retrieve the OHM handler
+     * @param context context object
+     * @return the OHM handler instance
+     * @throws IllegalStateException if the application context is not correct
+     */
+    fun getHandler(context: Context): App {
+        val app = context.applicationContext
+        if (app is App) {
+            return app
+        }
+        throw IllegalStateException("Bad app context: ${app.javaClass.simpleName}")
+    }
+
+    /**
+     * Get the height of the navigation bar
+     * @param resources resources object
+     * @return the height of the navigation bar
+     */
+    fun getNavBarHeight(resources: Resources): Int {
+        return resources.getDimensionPixelSize(resources.getIdentifier("navigation_bar_height", "dimen", "android"))
+    }
+
+    /**
+     * A special "off" state for NoBar. When active, NoBar will automatically re-enable when the device is unlocked or finishes rebooting
+     * @param context context object
+     * @param off if true, this mode is active
+     */
+    fun setOffForRebootOrScreenLock(context: Context, off: Boolean) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("special_off", off).apply()
+    }
+
+    /**
+     * Check if the special "off" state is currently active
+     * @param context context object
+     * @return true if this mode is active
+     */
+    fun isOffForRebootOrScreenLock(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("special_off", false)
+    }
+
+    /**
+     * Check to see if user has "compatibility mode" enabled; ie, use Immersive Mode instead of overscans
+     * @param context context object
+     * @return true if Immersive Mode should be used
+     */
+    fun shouldUseImmersiveInsteadOfOverscan(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_immersive", false)
+    }
+
+    /**
+     * For use during the set-up process; save the chosen action pack
+     * @param context context object
+     * @param map the chosen action pack: Strings are keys, Ints are actions
+     * See {@link com.xda.nobar.views.BarView#TYPE_*} for action values
+     */
+    fun saveActionSet(context: Context, map: HashMap<String, Int>) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        prefs.edit().let {
+            map.forEach { t, u ->  it.putString(t, u.toString())}
+            it.apply()
+        }
+    }
+    
+    fun getActionList(context: Context, map: HashMap<String, Int>) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val app = getHandler(context)
+        
+        val left = prefs.getString(app.actionLeft, app.typeBack.toString()).toInt()
+        val right = prefs.getString(app.actionRight, app.typeNoAction.toString()).toInt()
+        val tap = prefs.getString(app.actionTap, app.typeHome.toString()).toInt()
+        val hold = prefs.getString(app.actionHold, app.typeAssist.toString()).toInt()
+        val up = prefs.getString(app.actionUp, app.typeRecents.toString()).toInt()
+        val down = prefs.getString(app.actionDown, app.typeHide.toString()).toInt()
+        val double = prefs.getString(app.actionDouble, app.typeSwitch.toString()).toInt()
+        val holdUp = prefs.getString(app.actionUpHold, app.typeNoAction.toString()).toInt()
+        val holdLeft = prefs.getString(app.actionLeftHold, app.typeNoAction.toString()).toInt()
+        val holdRight = prefs.getString(app.actionRightHold, app.typeNoAction.toString()).toInt()
+
+        map[app.actionLeft] = left
+        map[app.actionRight] = right
+        map[app.actionTap] = tap
+        map[app.actionHold] = hold
+        map[app.actionUp] = up
+        map[app.actionDown] = down
+        map[app.actionDouble] = double
+        map[app.actionUpHold] = holdUp
+        map[app.actionLeftHold] = holdLeft
+        map[app.actionRightHold] = holdRight
+    }
+
+    fun shouldUseOverscanMethod(context: Context): Boolean {
+        return hasNavBar(context) && Build.VERSION.SDK_INT < 28 //TODO: Replace with constant on P release
+    }
+
+    fun hasNavBar(context: Context): Boolean {
+        val id = context.resources.getIdentifier("config_showNavigationBar", "bool", "android")
+        return id > 0 && context.resources.getBoolean(id) || Build.MODEL.contains("Android SDK built for x86")
+    }
+
+    fun touchWizNavEnabled(context: Context): Boolean {
+        return Settings.Global.getInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0) == 0
+    }
+
+    fun forceTouchWizNavEnabled(context: Context) {
+        if (hasNavBar(context)) Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0)
+    }
+
+    fun getHomeY(context: Context): Int {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_y", getDefaultY(context))
+    }
+
+    fun getDefaultY(context: Context): Int {
+        return (Utils.getNavBarHeight(context.resources) / 2 - context.resources.getDimensionPixelSize(R.dimen.pill_height) / 2)
+    }
+
+    fun getCustomWidth(context: Context): Int {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_width", context.resources.getDimensionPixelSize(R.dimen.pill_width))
+    }
+
+    fun getCustomHeight(context: Context): Int {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height", context.resources.getDimensionPixelSize(R.dimen.pill_height))
+    }
+
+    fun getPillBGColor(context: Context): Int {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_bg", Color.argb(0xee, 0xcc, 0xcc, 0xcc))
+    }
+
+    fun getPillFGColor(context: Context): Int {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_fg", Color.argb(0x32, 0x22, 0x22, 0x22))
+    }
+
+    fun shouldShowShadow(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_shadow", true)
+    }
+
+    fun dontMoveForKeyboard(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("static_pill", false)
+    }
+
+    fun useRot270Fix(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("rot270_fix", false)
+    }
+
+    fun useTabletMode(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("tablet_mode", false)
+    }
+
+    fun feedbackSound(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("audio_feedback", true)
+    }
+
+    fun isAccessibilityEnabled(context: Context): Boolean {
+        val services = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
+
+        return services != null && services.contains(context.packageName)
+    }
+
+    fun isFirstRun(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("first_run", true)
+    }
+
+    fun setFirstRun(context: Context, isFirst: Boolean) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("first_run", isFirst).apply()
+    }
+
+    fun saveBackupImmersive(context: Context) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putString("def_imm",
+                Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)).apply()
+    }
+
+    fun getBackupImmersive(context: Context): String {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString("def_imm", "immersive.none")
+    }
+
+    fun canRunHiddenCommands(context: Context): Boolean {
+        return try {
+            (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(Rect())
+            true
+        } catch (e: Throwable) {
+            false
+        } && IWindowManager.canRunCommands()
+    }
+
+    fun getLauncherPackage(context: Context): String {
+        val intent = Intent(Intent.ACTION_MAIN)
+        intent.addCategory(Intent.CATEGORY_HOME)
+
+        return context.packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY).activityInfo.packageName
+    }
+
+    fun hideOnLauncher(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_on_launcher", false)
+    }
+}

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:title="@string/version"
+        android:key="version" />
+
+    <Preference
+        android:title="@string/tutorial_video"
+        android:summary="@string/tutorial_video_desc"
+        android:key="tutorial_video" />
+
+    <Preference
+        android:title="@string/email_us"
+        android:summary="@string/email_us_desc"
+        android:key="email_us" />
+
+    <Preference
+        android:title="@string/xda_thread"
+        android:summary="@string/xda_thread_desc"
+        android:key="xda_thread" />
+
+    <Preference
+        android:title="@string/other_apps"
+        android:summary="@string/other_apps_desc"
+        android:key="other_apps" />
+
+    <Preference
+        android:title="@string/buy_premium"
+        android:summary="@string/buy_premium_desc"
+        android:key="buy_premium" />
+
+    <Preference
+        android:title="@string/libraries"
+        android:key="libraries" />
+
+</PreferenceScreen>

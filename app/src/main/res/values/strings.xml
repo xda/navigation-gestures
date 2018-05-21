@@ -1,0 +1,176 @@
+<resources>
+    <string name="app_name">Navigation Gestures</string>
+
+    <!--Titles-->
+    <string name="hidden">Gestures On</string>
+    <string name="shown">Gestures Off</string>
+    <string name="settings">Settings</string>
+    <string name="gestures">Gestures</string>
+    <string name="appearance">Appearance</string>
+    <string name="behavior">Behavior</string>
+    <string name="activated">Gestures Enabled</string>
+    <string name="toggle">Toggle</string>
+    <string name="width">Pill Width</string>
+    <string name="height">Pill Height</string>
+    <string name="position_y">Vertical Position</string>
+    <string name="reset_all">Reset All</string>
+    <string name="reset_width">Reset Width</string>
+    <string name="reset_height">Reset Height</string>
+    <string name="reset_pos_y">Reset Vertical Position</string>
+    <string name="taps">Taps</string>
+    <string name="swipes">Swipes</string>
+    <string name="version">Version</string>
+    <string name="tutorial_video">Tutorial Video</string>
+    <string name="email_us">Email Us</string>
+    <string name="xda_thread">XDA Thread</string>
+    <string name="other_apps">XDA Apps</string>
+    <string name="welcome">Welcome!</string>
+    <string name="draw_over_apps">Draw Over Apps</string>
+    <string name="grant">Grant</string>
+    <string name="accessibility">Accessibility Service</string>
+    <string name="write_secure_settings">Write Secure Settings</string>
+    <string name="ready">All Set</string>
+    <string name="root_found">You have root!</string>
+    <string name="use_root">Use Root</string>
+    <string name="missing_perms">Missing Permissions!</string>
+    <string name="premium_required">Premium Action!</string>
+    <string name="nougat_required">Requires Nougat</string>
+    <string name="hold_time">Swipe Up and Hold Time</string>
+    <string name="vibration_duration">Vibration Duration</string>
+    <string name="reset_hold_time">Reset Hold Time</string>
+    <string name="reset_vibration_duration">Reset Vibration Duration</string>
+    <string name="buy_premium">Buy Premium</string>
+    <string name="libraries">Libraries</string>
+    <string name="qs_tile">Quick Settings Tile</string>
+    <string name="run_command">Run This Command from Your PC</string>
+    <string name="got_it">Got It</string>
+    <string name="need_help">I Need Help</string>
+    <string name="non_root">Non-Root</string>
+    <string name="sorry">Sorry :(</string>
+    <string name="anim_duration">Animation Duration</string>
+    <string name="warning">Warning!</string>
+    <string name="reset_anim_duration">Reset Animation Duration</string>
+    <string name="hide_in_landscape">Hide in Landscape</string>
+    <string name="hide_on_launcher">Hide on Launcher</string>
+    <string name="pill_color">Pill Color</string>
+    <string name="pill_border_color">Pill Border Color</string>
+    <string name="reset_pill_color">Reset Pill Color</string>
+    <string name="reset_pill_border_color">Reset Pill Border Color</string>
+    <string name="show_pill_shadow">Show Pill Shadow</string>
+    <string name="static_pill">Don\'t Move Pill</string>
+    <string name="other">Other</string>
+    <string name="hide_navbar_in_landscape">Hide Original NavBar in Landscape</string>
+    <string name="white_bar">White Bar</string>
+    <string name="tablet_mode">Tablet Mode</string>
+    <string name="compatibility">Compatibility</string>
+    <string name="foreground">Foreground Service</string>
+
+    <!--Descriptions-->
+    <string name="gestures_desc">Customize gesture actions</string>
+    <string name="appearance_desc">Customize appearance of the navigation pill</string>
+    <string name="behavior_desc">Customize how the pill behaves</string>
+    <string name="tutorial_video_desc">Wondering how to use the app? We\'re here to help.</string>
+    <string name="email_us_desc">If you have some feedback, we\'d love to hear it!</string>
+    <string name="xda_thread_desc">Have a question about the app? Visit the XDA thread and ask away.</string>
+    <string name="other_apps_desc">XDA has other apps too. Check them out!</string>
+    <string name="buy_premium_desc">Unlock more functionality with the premium add-on.</string>
+    <string name="run_command_desc">adb shell pm grant com.xda.nobar android.permission.WRITE_SECURE_SETTINGS</string>
+    <string name="foreground_desc">Hi. I\'m just here to make sure the app isn\'t killed by the system. Feel free to hide me.</string>
+    <string name="hide_in_landscape_desc">When activated, the pill will become invisible in landscape. Tap once where it is normally located to have it show, then perform your gesture.</string>
+    <string name="hide_on_launcher_desc">When activated, the pill will disappear on the home screen.</string>
+    <string name="static_pill_desc">Prevent the pill from moving above the keyboard.</string>
+    <string name="hide_navbar_in_landscape_desc">Certain devices show the original navigation bar on the side in landscape. Activate this to prevent that behavior.</string>
+    <string name="other_desc">Miscellaneous settings</string>
+    <string name="tablet_mode_desc">Many tablets force the navigation bar to always be on the bottom of the screen. Turn this on to account for that behavior.</string>
+
+    <!--Paragraphs-->
+    <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
+    <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
+    <string name="accessibility_desc">This app uses an Accessibility Service to simulate the original navigation buttons. Click \“Grant\” below to enable access.</string>
+    <string name="write_secure_settings_desc">We can completely hide your stock navigation bar, but we need access to a special permission to do so. Click the button below to learn how you can grant it. If you are rooted, accept the root prompt.</string>
+    <string name="ready_first_run_desc">You\’re ready to use navigation gestures on your device. You can toggle the pill-nav on the following page or from a Quick Settings tile that we have provided. For your convenience, we have enabled some gestures that we think you might like. You can customize these in the Settings.</string>
+    <string name="ready_desc">You\’re ready to use navigation gestures on your device.</string>
+    <string name="root_found_desc">Don\'t worry. You can still use this app. Root actually makes the setup easier. If you like, we can use root access to grant this permission automatically. Otherwise, you can choose to use the tutorial/manual method.</string>
+    <string name="missing_perms_desc">Looks like one or more permissions got revoked somehow. No worries, though. We\'ll help get you back up and running.</string>
+    <string name="premium_required_desc">This action requires the premium add-on. Would you like to purchase it?</string>
+    <string name="nougat_required_desc">This action requires a device running Android Nougat or later. Sorry about that.</string>
+    <string name="nougat_qs_reminder">Android Nougat allows for custom quick settings tiles, and we\'ve included one to toggle Navigation Gestures. You can add it by swiping down twice from the status bar, tapping the pencil icon or \"EDIT\" and dragging Navigation Gestures\' tile into the active area.</string>
+    <string name="accessibility_screen_text">This app uses an Accessibility Service to simulate navigation button presses like the back, home, and multitasking buttons. We do not use it to collect any personal information, and no action will be performed except by the user.</string>
+    <string name="sorry_desc">Because your device is running Android P, this app will not currently work.</string>
+    <string name="warning_desc">If you decide to uninstall Navigation Gestures, disable it before doing so! We are unable to detect an app uninstall, so we cannot revert changes automatically.</string>
+    <string name="white_bar_desc">Using this app you may notice a small white bar at the very bottom of the display. This is not a bug! It is required to prevent much more serious issues.</string>
+    <string name="compatibility_desc">While using this app, if you notice that the original navigation bar is present when it shouldn\'t be, head over to Settings>>Other and try the compatibility options there.</string>
+
+    <!--Gestures-->
+    <string name="tap">Tap</string>
+    <string name="left">Swipe Left</string>
+    <string name="right">Swipe Right</string>
+    <string name="up">Swipe Up</string>
+    <string name="down">Swipe Down</string>
+    <string name="hold">Long Press</string>
+    <string name="double_tap">Double Tap</string>
+    <string name="swipe_up_hold">Swipe Up and Hold</string>
+    <string name="left_hold">Swipe Left and Hold</string>
+    <string name="right_hold">Swipe Right and Hold</string>
+
+    <!--Actions-->
+    <string name="home">Home</string>
+    <string name="back">Back</string>
+    <string name="ohm">Toggle OHM</string>
+    <string name="recents">Recent Apps</string>
+    <string name="hide">Hide Pill</string>
+    <string name="assist">Assistant</string>
+    <string name="switch_apps">Previous App (Nougat+)</string>
+    <string name="nothing">No Action</string>
+    <string name="prem_notif">Notifications (Premium)</string>
+    <string name="prem_qs">Quick Settings (Premium)</string>
+    <string name="prem_power">Power Menu (Premium)</string>
+    <string name="prem_split">Split Screen (Premium, Nougat+)</string>
+    <string name="prem_prev">Previous Track (Premium)</string>
+    <string name="prem_next">Next Track (Premium)</string>
+    <string name="prem_play_pause">Play/Pause (Premium)</string>
+
+    <!--Messages-->
+    <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
+    <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
+    <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
+    <string name="deactivate_before_uninstall">Deactivate before uninstalling!</string>
+    <string name="copied_to_clipboard">Email copied to clipboard</string>
+    
+    <!--Libraries-->
+    <string name="material_intro">Material Intro</string>
+    <string name="slider_pref_embedded">SliderPreferenceEmbedded</string>
+
+    <!--Action Values-->
+    <string name="type_no_action">-1</string>
+    <string name="type_back">0</string>
+    <string name="type_ohm">1</string>
+    <string name="type_recents">2</string>
+    <string name="type_hide">3</string>
+    <string name="type_switch">4</string>
+    <string name="type_assist">5</string>
+    <string name="type_home">6</string>
+    <string name="prem_type_notif">7</string>
+    <string name="prem_type_qs">8</string>
+    <string name="prem_type_power">9</string>
+    <string name="prem_type_split">10</string>
+    <string name="prem_type_vibe">11</string>
+    <string name="prem_type_silent">12</string>
+    <string name="prem_type_mute">13</string>
+    <string name="prem_type_play_pause">14</string>
+    <string name="prem_type_prev">15</string>
+    <string name="prem_type_next">16</string>
+
+    <!--Action Keys-->
+    <string name="action_left">left</string>
+    <string name="action_right">right</string>
+    <string name="action_up">up</string>
+    <string name="action_down">down</string>
+    <string name="action_double">double_tap</string>
+    <string name="action_hold">hold</string>
+    <string name="action_tap">tap</string>
+    <string name="action_up_hold">up_hold</string>
+    <string name="action_left_hold">left_hold</string>
+    <string name="action_right_hold">right_hold</string>
+
+</resources>

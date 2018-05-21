@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.xda.nobar">
+
+    <permission
+        android:name="com.xda.nobar.permission.VERIFY_LICENSE"
+        android:label="VERIFY_LICENSE"
+        android:protectionLevel="signature" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="com.xda.nobar.permission.VERIFY_LICENSE" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:configChanges="screenSize|orientation|screenLayout" />
+        <activity
+            android:name=".activities.ToggleActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme.Null" />
+        <activity android:name=".activities.HelpAboutActivity" />
+        <activity
+            android:name=".activities.IntroActivity"
+            android:theme="@style/AppTheme.Intro" />
+        <activity
+            android:name=".activities.DialogActivity"
+            android:theme="@style/AppTheme.Null" />
+        <activity android:name=".activities.LibraryActivity" />
+
+        <service
+            android:name=".tiles.Toggle"
+            android:icon="@drawable/ic_border_bottom_black_24dp"
+            android:label="@string/shown"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".services.Actions"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/actions" />
+        </service>
+        <service
+            android:name=".services.ForegroundService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".services.FCMService"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".receivers.PowerReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.REBOOT" />
+                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_border_bottom_black_24dp" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="nobar_notification" />
+    </application>
+
+</manifest>

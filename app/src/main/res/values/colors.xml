@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#323232</color>
+    <color name="colorPrimaryDark">#181818</color>
+    <color name="colorAccent">#ff9338</color>
+    <color name="colorBackground">@color/colorPrimaryDark</color>
+
+    <color name="slide_1">#c62828</color>
+    <color name="slide_2">#d84315</color>
+    <color name="slide_3">#ef6c00</color>
+    <color name="slide_4">#f9a825</color>
+    <color name="slide_5">#2e7d32</color>
+    <color name="slide_6">#283593</color>
+    <color name="slide_7">#4527a0</color>
+
+    <color name="slide_1_dark">#b71c1c</color>
+    <color name="slide_2_dark">#bf360c</color>
+    <color name="slide_3_dark">#e65100</color>
+    <color name="slide_4_dark">#f57f17</color>
+    <color name="slide_5_dark">#1b5e20</color>
+    <color name="slide_6_dark">#1a237e</color>
+    <color name="slide_7_dark">#311b92</color>
+</resources>

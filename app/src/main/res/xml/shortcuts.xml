@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="toggle"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/toggle">
+        <intent
+            android:action="com.xda.nobar.action.TOGGLE"
+            android:targetPackage="com.xda.nobar"
+            android:targetClass="com.xda.nobar.activities.ToggleActivity" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="settings"
+        android:enabled="true"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:shortcutShortLabel="@string/settings">
+        <intent
+            android:action="com.xda.nobar.action.TOGGLE"
+            android:targetPackage="com.xda.nobar"
+            android:targetClass="com.xda.nobar.activities.SettingsActivity" />
+    </shortcut>
+</shortcuts>

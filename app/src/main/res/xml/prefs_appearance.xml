@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:title="@string/show_pill_shadow"
+        android:key="show_shadow"
+        android:defaultValue="true" />
+
+    <com.jaredrummler.android.colorpicker.ColorPreference
+        android:title="@string/pill_color"
+        android:key="pill_bg"
+        app:cpv_showAlphaSlider="true"
+        app:cpv_allowCustom="true" />
+
+    <Preference
+        android:title="@string/reset_pill_color"
+        android:key="reset_pill_bg" />
+
+    <com.jaredrummler.android.colorpicker.ColorPreference
+        android:title="@string/pill_border_color"
+        android:key="pill_fg"
+        app:cpv_showAlphaSlider="true"
+        app:cpv_allowCustom="true" />
+
+    <Preference
+        android:title="@string/reset_pill_border_color"
+        android:key="reset_pill_fg" />
+
+    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+        app:show_text="true"
+        app:show_popup="false"
+        android:title="@string/width"
+        android:key="custom_width" />
+
+    <Preference
+        android:title="@string/reset_width"
+        android:key="reset_width" />
+
+    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+        app:show_text="true"
+        app:show_popup="false"
+        android:title="@string/height"
+        android:key="custom_height" />
+
+    <Preference
+        android:title="@string/reset_height"
+        android:key="reset_height" />
+
+    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+        app:show_text="true"
+        app:show_popup="false"
+        android:title="@string/position_y"
+        android:key="custom_y" />
+
+    <Preference
+        android:title="@string/reset_pos_y"
+        android:key="reset_pos_y" />
+
+    <Preference
+        android:title="@string/reset_all"
+        android:key="defaults" />
+
+</PreferenceScreen>

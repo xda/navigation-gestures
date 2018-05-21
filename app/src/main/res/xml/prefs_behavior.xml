@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:title="@string/hide_in_landscape"
+        android:summary="@string/hide_in_landscape_desc"
+        android:key="hide_in_landscape" />
+
+    <SwitchPreference
+        android:title="@string/hide_on_launcher"
+        android:summary="@string/hide_on_launcher_desc"
+        android:key="hide_on_launcher" />
+
+    <SwitchPreference
+        android:title="@string/static_pill"
+        android:summary="@string/static_pill_desc"
+        android:key="static_pill" />
+
+    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+        android:title="@string/hold_time"
+        android:key="hold_time"
+        app:seek_min="200"
+        app:seek_max="2000"
+        app:default_progress="1000"
+        app:show_text="true"
+        app:show_popup="false"
+        app:format="%sms" />
+
+    <Preference
+        android:title="@string/reset_hold_time"
+        android:key="reset_hold_time" />
+
+    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+        android:title="@string/vibration_duration"
+        android:key="vibration_duration"
+        app:seek_min="0"
+        app:seek_max="500"
+        app:default_progress="50"
+        app:show_text="true"
+        app:show_popup="false"
+        app:format="%sms" />
+
+    <Preference
+        android:title="@string/reset_vibration_duration"
+        android:key="reset_vibration_duration" />
+
+    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+        android:title="@string/anim_duration"
+        android:key="anim_duration"
+        app:seek_min="0"
+        app:seek_max="500"
+        app:default_progress="500"
+        app:show_text="true"
+        app:show_popup="false" />
+
+    <Preference
+        android:title="@string/reset_anim_duration"
+        android:key="reset_anim_duration" />
+
+    <Preference
+        android:title="@string/reset_all"
+        android:key="reset_all" />
+
+</PreferenceScreen>

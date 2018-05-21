@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:title="@string/gestures"
+        android:summary="@string/gestures_desc"
+        android:key="gestures" />
+
+    <Preference
+        android:title="@string/appearance"
+        android:summary="@string/appearance_desc"
+        android:key="appearance" />
+
+    <Preference
+        android:title="@string/behavior"
+        android:summary="@string/behavior_desc"
+        android:key="behavior" />
+
+    <Preference
+        android:title="@string/other"
+        android:summary="@string/other_desc"
+        android:key="other" />
+
+</PreferenceScreen>

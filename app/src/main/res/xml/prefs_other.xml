@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:title="@string/hide_navbar_in_landscape"
+        android:summary="@string/hide_navbar_in_landscape_desc"
+        android:key="rot270_fix" />
+
+    <SwitchPreference
+        android:title="@string/tablet_mode"
+        android:summary="@string/tablet_mode_desc"
+        android:key="tablet_mode" />
+
+</PreferenceScreen>

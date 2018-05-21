@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/background">
+        <shape android:shape="rectangle">
+            <corners android:radius="8dp" />
+            <solid android:color="#eecccccc" />
+        </shape>
+    </item>
+    <item android:id="@+id/foreground">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/pill_radius" />
+            <stroke
+                android:width="1dp"
+                android:color="#32222222" />
+        </shape>
+    </item>
+</layer-list>
