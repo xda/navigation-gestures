@@ -103,7 +103,7 @@ class Actions : AccessibilityService() {
                     app.premTypeNotif -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) }
                     app.premTypeQs -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) }
                     app.premTypePower -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }
-                    app.premTypeSplit -> runPremiumAction {
+                    app.premTypeSplit -> {
                         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                             performGlobalAction(GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN)
                         } else {

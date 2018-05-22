@@ -11,10 +11,10 @@
 
     <string-array name="nougat_action_names">
         <item>@string/switch_apps</item>
+        <item>@string/split</item>
     </string-array>
 
     <string-array name="premium_action_names">
-        <item>@string/prem_split</item>
         <item>@string/prem_notif</item>
         <item>@string/prem_qs</item>
         <item>@string/prem_power</item>
@@ -37,7 +37,6 @@
     </string-array>
 
     <string-array name="premium_action_values">
-        <item>@string/prem_type_split</item>
         <item>@string/prem_type_notif</item>
         <item>@string/prem_type_qs</item>
         <item>@string/prem_type_power</item>
@@ -48,6 +47,7 @@
 
     <string-array name="nougat_action_values">
         <item>@string/type_switch</item>
+        <item>@string/type_split</item>
     </string-array>
 
     <string-array name="ohm_action_values">

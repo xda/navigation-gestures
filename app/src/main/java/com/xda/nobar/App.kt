@@ -107,7 +107,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     val premTypePower: Int
         get() = resources.getString(R.string.prem_type_power).toInt()
     val premTypeSplit: Int
-        get() = resources.getString(R.string.prem_type_split).toInt()
+        get() = resources.getString(R.string.type_split).toInt()
     val premTypeVibe: Int
         get() = resources.getString(R.string.prem_type_vibe).toInt()
     val premTypeSilent: Int

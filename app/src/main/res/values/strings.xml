@@ -125,7 +125,7 @@
     <string name="prem_notif">Notifications (Premium)</string>
     <string name="prem_qs">Quick Settings (Premium)</string>
     <string name="prem_power">Power Menu (Premium)</string>
-    <string name="prem_split">Split Screen (Premium, Nougat+)</string>
+    <string name="split">Split Screen</string>
     <string name="prem_prev">Previous Track (Premium)</string>
     <string name="prem_next">Next Track (Premium)</string>
     <string name="prem_play_pause">Play/Pause (Premium)</string>
@@ -153,7 +153,7 @@
     <string name="prem_type_notif">7</string>
     <string name="prem_type_qs">8</string>
     <string name="prem_type_power">9</string>
-    <string name="prem_type_split">10</string>
+    <string name="type_split">10</string>
     <string name="prem_type_vibe">11</string>
     <string name="prem_type_silent">12</string>
     <string name="prem_type_mute">13</string>
