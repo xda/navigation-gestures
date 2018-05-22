@@ -11,6 +11,9 @@
     <uses-permission
         android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.STATUS_BAR"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="com.xda.nobar.permission.VERIFY_LICENSE" />
@@ -78,11 +81,15 @@
         <service
             android:name=".services.FCMService"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <service
+            android:name=".services.RootService"
+            android:enabled="true"
+            android:exported="true" />
 
         <receiver
             android:name=".receivers.PowerReceiver"
@@ -104,6 +111,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="nobar_notification" />
+
+        <meta-data android:name="android.max_aspect"
+            android:value="2.5" />
     </application>
 
 </manifest>
