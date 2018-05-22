@@ -15,7 +15,17 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/pill_drawable"
         android:elevation="2dp"
-        android:orientation="horizontal" />
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/pill_tap_flash"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/pill_tap_flash"
+            android:alpha="0"
+            android:orientation="horizontal" />
+
+    </LinearLayout>
 
 </FrameLayout>
 <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->

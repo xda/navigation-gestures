@@ -5,9 +5,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
-import android.media.AudioManager
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -42,7 +42,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         const val ALPHA_ACTIVE = 1.0f
         const val ALPHA_GONE = 0.0f
 
-        const val ANIM_DURATION = 500L
+        const val BRIGHTEN_INACTIVE = 0.0f
+        const val BRIGHTEN_ACTIVE = 0.5f
+
+        const val DEFAULT_ANIM_DURATION = 500L
 
         const val SCALE_NORMAL = 1.0f
         const val SCALE_MID = 0.7f
@@ -56,7 +59,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private val gestureDetector = GestureManager()
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val actionMap = HashMap<String, Int>()
@@ -97,8 +99,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         pill = view.findViewById(R.id.pill)
 
         val layers = pill.background as LayerDrawable
-        layers.findDrawableByLayerId(R.id.background).setTint(Utils.getPillBGColor(context))
-        (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).setStroke(Utils.dpAsPx(context, 1), Utils.getPillFGColor(context))
+        layers.findDrawableByLayerId(R.id.background).apply {
+            setTint(Utils.getPillBGColor(context))
+            alpha = Color.alpha(Utils.getPillBGColor(context))
+        }
+        (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
+            setStroke(Utils.dpAsPx(context, 1), Utils.getPillFGColor(context))
+            alpha = Color.alpha(Utils.getPillFGColor(context))
+        }
 
         pill.elevation = Utils.dpAsPx(context, if (Utils.shouldShowShadow(context)) 2 else 0).toFloat()
 
@@ -133,15 +141,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             params.y = getHomeY(context)
             wm.updateViewLayout(this, params)
         }
-        if (key == "pill_bg") {
+        if (key == "pill_bg" || key == "pill_fg") {
             val layers = pill.background as LayerDrawable
-
-            layers.findDrawableByLayerId(R.id.background).setTint(Utils.getPillBGColor(context))
-        }
-        if (key == "pill_fg") {
-            val layers = pill.background as LayerDrawable
-
-            (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).setStroke(Utils.dpAsPx(context, 1), Utils.getPillFGColor(context))
+            layers.findDrawableByLayerId(R.id.background).apply {
+                setTint(Utils.getPillBGColor(context))
+                alpha = Color.alpha(Utils.getPillBGColor(context))
+            }
+            (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
+                setStroke(Utils.dpAsPx(context, 1), Utils.getPillFGColor(context))
+                alpha = Color.alpha(Utils.getPillFGColor(context))
+            }
         }
         if (key == "show_shadow") {
             pill.elevation = Utils.dpAsPx(context, if (Utils.shouldShowShadow(context)) 2 else 0).toFloat()
@@ -187,13 +196,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param listener optional animation listener
      */
     fun show(listener: Animator.AnimatorListener?) {
-        animate(listener, ALPHA_INACTIVE)
+        animate(listener, ALPHA_ACTIVE)
     }
 
     /**
      * Animate to a chosen alpha
      * @param listener optional animation listener
-     * @param alpha desired alpha level
+     * @param alpha desired alpha level (0-1)
      */
     fun animate(listener: Animator.AnimatorListener?, alpha: Float) {
         animate().alpha(alpha).setDuration(getAnimationDurationMs()).setListener(object : Animator.AnimatorListener {
@@ -217,6 +226,17 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             this@BarView.alpha = alpha
         }
         .start()
+    }
+
+    fun animateActiveLayer(alpha: Float) {
+        handler.post {
+            findViewById<LinearLayout>(R.id.pill_tap_flash).apply {
+                animate()
+                        .setDuration(getAnimationDurationMs())
+                        .alpha(alpha)
+                        .start()
+            }
+        }
     }
 
     /**
@@ -283,7 +303,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             isTransparent = true
 
             animate()
-                    .alpha(0f)
+                    .alpha(ALPHA_GONE)
                     .setDuration(getAnimationDurationMs())
                     .start()
         }
@@ -294,7 +314,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             isTransparent = false
 
             animate()
-                    .alpha(1f)
+                    .alpha(ALPHA_ACTIVE)
                     .setDuration(getAnimationDurationMs())
                     .start()
         }
@@ -371,18 +391,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private fun jiggleTap() {
         animate()
                 .scaleX(SCALE_MID)
-                .alpha(ALPHA_ACTIVE)
+//                .alpha(ALPHA_ACTIVE)
                 .setInterpolator(ENTER_INTERPOLATOR)
                 .setDuration(getAnimationDurationMs())
                 .withEndAction {
                     animate()
                         .scaleX(SCALE_NORMAL)
-                        .alpha(ALPHA_INACTIVE)
+//                        .alpha(ALPHA_INACTIVE)
                         .setInterpolator(EXIT_INTERPOLATOR)
                         .setDuration(getAnimationDurationMs())
                         .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
                 }
                 .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     /**
@@ -391,7 +413,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private fun jiggleLeft() {
         animate()
                 .scaleX(SCALE_MID)
-                .alpha(ALPHA_ACTIVE)
+//                .alpha(ALPHA_ACTIVE)
                 .x(-width * (1 - SCALE_MID) / 2)
                 .setInterpolator(ENTER_INTERPOLATOR)
                 .setDuration(getAnimationDurationMs())
@@ -399,18 +421,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     animate()
                             .scaleX(SCALE_NORMAL)
                             .x(0f)
-                            .alpha(ALPHA_INACTIVE)
+//                            .alpha(ALPHA_INACTIVE)
                             .setInterpolator(EXIT_INTERPOLATOR)
                             .setDuration(getAnimationDurationMs())
                             .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
                 }
                 .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     private fun jiggleLeftHold() {
         animate()
                 .scaleX(SCALE_SMALL)
-                .alpha(ALPHA_ACTIVE)
+//                .alpha(ALPHA_ACTIVE)
                 .x(-width * (1 - SCALE_SMALL) / 2)
                 .setInterpolator(ENTER_INTERPOLATOR)
                 .setDuration(getAnimationDurationMs())
@@ -418,11 +442,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     animate()
                             .scaleX(SCALE_NORMAL)
                             .x(0f)
-                            .alpha(ALPHA_INACTIVE)
+//                            .alpha(ALPHA_INACTIVE)
                             .setInterpolator(EXIT_INTERPOLATOR)
                             .setDuration(getAnimationDurationMs())
                             .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
                 }
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     /**
@@ -431,7 +457,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private fun jiggleRight() {
         animate()
                 .scaleX(SCALE_MID)
-                .alpha(ALPHA_ACTIVE)
+//                .alpha(ALPHA_ACTIVE)
                 .x(width * (1 - SCALE_MID) / 2)
                 .setInterpolator(ENTER_INTERPOLATOR)
                 .setDuration(getAnimationDurationMs())
@@ -439,18 +465,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     animate()
                             .scaleX(SCALE_NORMAL)
                             .x(0f)
-                            .alpha(ALPHA_INACTIVE)
+//                            .alpha(ALPHA_INACTIVE)
                             .setInterpolator(EXIT_INTERPOLATOR)
                             .setDuration(getAnimationDurationMs())
                             .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
                 }
                 .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     private fun jiggleRightHold() {
         animate()
                 .scaleX(SCALE_SMALL)
-                .alpha(ALPHA_ACTIVE)
+//                .alpha(ALPHA_ACTIVE)
                 .x(width * (1 - SCALE_SMALL) / 2)
                 .setInterpolator(ENTER_INTERPOLATOR)
                 .setDuration(getAnimationDurationMs())
@@ -458,11 +486,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     animate()
                             .scaleX(SCALE_NORMAL)
                             .x(0f)
-                            .alpha(ALPHA_INACTIVE)
+//                            .alpha(ALPHA_INACTIVE)
                             .setInterpolator(EXIT_INTERPOLATOR)
                             .setDuration(getAnimationDurationMs())
                             .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
                 }
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     /**
@@ -471,18 +501,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private fun jiggleHold() {
         animate()
                 .scaleX(SCALE_SMALL)
-                .alpha(ALPHA_ACTIVE)
+//                .alpha(ALPHA_ACTIVE)
                 .setInterpolator(ENTER_INTERPOLATOR)
                 .setDuration(getAnimationDurationMs())
                 .withEndAction {
                     animate()
                             .scaleX(SCALE_NORMAL)
-                            .alpha(ALPHA_INACTIVE)
+//                            .alpha(ALPHA_INACTIVE)
                             .setInterpolator(EXIT_INTERPOLATOR)
                             .setDuration(getAnimationDurationMs())
                             .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
                 }
                 .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     /**
@@ -492,19 +524,21 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         animate()
                 .scaleY(SCALE_MID)
                 .y(-height * (1 - SCALE_MID) / 2)
-                .alpha(ALPHA_ACTIVE)
+//                .alpha(ALPHA_ACTIVE)
                 .setInterpolator(ENTER_INTERPOLATOR)
                 .setDuration(getAnimationDurationMs())
                 .withEndAction {
                     animate()
                             .scaleY(SCALE_NORMAL)
                             .y(0f)
-                            .alpha(ALPHA_INACTIVE)
+//                            .alpha(ALPHA_INACTIVE)
                             .setInterpolator(EXIT_INTERPOLATOR)
                             .setDuration(getAnimationDurationMs())
                             .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
                 }
                 .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     /**
@@ -514,19 +548,21 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         animate()
                 .scaleY(SCALE_SMALL)
                 .y(-height * (1 - SCALE_SMALL) / 2)
-                .alpha(ALPHA_ACTIVE)
+//                .alpha(ALPHA_ACTIVE)
                 .setInterpolator(ENTER_INTERPOLATOR)
                 .setDuration(getAnimationDurationMs())
                 .withEndAction {
                     animate()
                             .scaleY(SCALE_NORMAL)
                             .y(0f)
-                            .alpha(ALPHA_INACTIVE)
+//                            .alpha(ALPHA_INACTIVE)
                             .setInterpolator(EXIT_INTERPOLATOR)
                             .setDuration(getAnimationDurationMs())
                             .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
                 }
                 .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     /**
@@ -536,19 +572,21 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         animate()
                 .scaleY(SCALE_MID)
                 .y(height * (1 - SCALE_MID) / 2)
-                .alpha(ALPHA_ACTIVE)
+//                .alpha(ALPHA_ACTIVE)
                 .setInterpolator(ENTER_INTERPOLATOR)
                 .setDuration(getAnimationDurationMs())
                 .withEndAction {
                     animate()
                             .scaleY(SCALE_NORMAL)
                             .y(0f)
-                            .alpha(ALPHA_INACTIVE)
+//                            .alpha(ALPHA_INACTIVE)
                             .setInterpolator(EXIT_INTERPOLATOR)
                             .setDuration(getAnimationDurationMs())
                             .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
                 }
                 .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     /**
@@ -557,7 +595,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private fun jiggleDoubleTap() {
         animate()
                 .scaleX(SCALE_MID)
-                .alpha(ALPHA_ACTIVE)
+//                .alpha(ALPHA_ACTIVE)
                 .setInterpolator(AccelerateInterpolator())
                 .setDuration(getAnimationDurationMs())
                 .withEndAction {
@@ -568,14 +606,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             .withEndAction {
                                 animate()
                                         .scaleX(SCALE_NORMAL)
-                                        .alpha(ALPHA_INACTIVE)
+//                                        .alpha(ALPHA_INACTIVE)
                                         .setInterpolator(EXIT_INTERPOLATOR)
                                         .setDuration(getAnimationDurationMs())
                                         .start()
+                                animateActiveLayer(BRIGHTEN_INACTIVE)
                             }
                             .start()
                 }
                 .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     private fun getHoldTime(): Int {
@@ -587,7 +627,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private fun getAnimationDurationMs(): Long {
-        return prefs.getInt("anim_duration", ANIM_DURATION.toInt()).toLong()
+        return prefs.getInt("anim_duration", DEFAULT_ANIM_DURATION.toInt()).toLong()
     }
 
     private fun showHiddenToast() {

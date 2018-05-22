@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/background">
         <shape android:shape="rectangle">
-            <corners android:radius="8dp" />
+            <corners android:radius="@dimen/pill_radius" />
             <solid android:color="#eecccccc" />
         </shape>
     </item>

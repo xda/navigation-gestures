@@ -1,5 +1,6 @@
 package com.xda.nobar.util
 
+import android.annotation.ColorInt
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -197,11 +198,11 @@ object Utils {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height", context.resources.getDimensionPixelSize(R.dimen.pill_height))
     }
 
-    fun getPillBGColor(context: Context): Int {
+    @ColorInt fun getPillBGColor(context: Context): Int {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_bg", Color.argb(0xee, 0xcc, 0xcc, 0xcc))
     }
 
-    fun getPillFGColor(context: Context): Int {
+    @ColorInt fun getPillFGColor(context: Context): Int {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_fg", Color.argb(0x32, 0x22, 0x22, 0x22))
     }
 

@@ -213,7 +213,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
                 WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
-        params.format = PixelFormat.RGBA_8888
+        params.format = PixelFormat.TRANSLUCENT
         params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 
         if (Utils.dontMoveForKeyboard(this)) params.flags = params.flags or
