@@ -417,11 +417,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             when (intent?.action) {
                 Intent.ACTION_SCREEN_ON -> {
                     if (isActivated() && (kgm.isKeyguardLocked || if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) kgm.isDeviceLocked else false)) {
+                        Log.e("NoBar", "on KeyGuard")
                         toggle(true)
                         Utils.setOffForRebootOrScreenLock(this@App, true)
+                    } else if (Utils.isOffForRebootOrScreenLock(this@App)) {
+                        toggle(false)
+                        Utils.setOffForRebootOrScreenLock(this@App, false)
                     }
                 }
                 Intent.ACTION_USER_PRESENT -> {
+                    if (isActivated()) addBar()
                     if (Utils.isOffForRebootOrScreenLock(this@App)) {
                         toggle(false)
                         Utils.setOffForRebootOrScreenLock(this@App, false)
