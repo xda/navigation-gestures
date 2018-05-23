@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
@@ -26,6 +25,7 @@ import com.xda.nobar.services.Actions
 import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.getCustomHeight
 import com.xda.nobar.util.Utils.getCustomWidth
+import com.xda.nobar.util.Utils.getHomeX
 import com.xda.nobar.util.Utils.getHomeY
 import java.util.*
 import java.util.concurrent.Executors
@@ -57,6 +57,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         val EXIT_INTERPOLATOR = AccelerateInterpolator()
     }
 
+    private val app = context.applicationContext as App
+    private val screenRotationListener = ScreenRotationListener()
     private val gestureDetector = GestureManager()
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -69,9 +71,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private lateinit var view: View
     private lateinit var pill: LinearLayout
-
-    private val app = context.applicationContext as App
-    private val screenRotationListener = ScreenRotationListener()
+    private lateinit var pillFlash: LinearLayout
 
     private var reenterTransparencyHandle: ScheduledFuture<*>? = null
 
@@ -97,15 +97,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         view = View.inflate(context, R.layout.pill, this)
         pill = view.findViewById(R.id.pill)
+        pillFlash = pill.findViewById(R.id.pill_tap_flash)
 
         val layers = pill.background as LayerDrawable
-        layers.findDrawableByLayerId(R.id.background).apply {
-            setTint(Utils.getPillBGColor(context))
-            alpha = Color.alpha(Utils.getPillBGColor(context))
+        (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
+            setColor(Utils.getPillBGColor(context))
+            cornerRadius = Utils.getPillCornerRadiusInPx(context).toFloat()
         }
         (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
             setStroke(Utils.dpAsPx(context, 1), Utils.getPillFGColor(context))
-            alpha = Color.alpha(Utils.getPillFGColor(context))
+            cornerRadius = Utils.getPillCornerRadiusInPx(context).toFloat()
+        }
+
+        (pillFlash.background as GradientDrawable).apply {
+            cornerRadius = Utils.getPillCornerRadiusInPx(context).toFloat()
         }
 
         pill.elevation = Utils.dpAsPx(context, if (Utils.shouldShowShadow(context)) 2 else 0).toFloat()
@@ -141,15 +146,21 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             params.y = getHomeY(context)
             wm.updateViewLayout(this, params)
         }
+        if (key == "custom_x") {
+            val params = layoutParams as WindowManager.LayoutParams
+            params.x = getHomeX(context)
+            wm.updateViewLayout(this, params)
+        }
         if (key == "pill_bg" || key == "pill_fg") {
             val layers = pill.background as LayerDrawable
-            layers.findDrawableByLayerId(R.id.background).apply {
-                setTint(Utils.getPillBGColor(context))
-                alpha = Color.alpha(Utils.getPillBGColor(context))
+            (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
+                setColor(Utils.getPillBGColor(context))
             }
             (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
                 setStroke(Utils.dpAsPx(context, 1), Utils.getPillFGColor(context))
-                alpha = Color.alpha(Utils.getPillFGColor(context))
+            }
+            (pillFlash.background as GradientDrawable).apply {
+                cornerRadius = Utils.getPillCornerRadiusInPx(context).toFloat()
             }
         }
         if (key == "show_shadow") {
@@ -172,6 +183,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
         if (key == "audio_feedback") {
             isSoundEffectsEnabled = Utils.feedbackSound(context)
+        }
+        if (key == "pill_corner_radius") {
+            val layers = pill.background as LayerDrawable
+            (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
+                cornerRadius = Utils.dpAsPx(context, Utils.getPillCornerRadiusInDp(context)).toFloat()
+            }
+            (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
+                cornerRadius = Utils.dpAsPx(context, Utils.getPillCornerRadiusInDp(context)).toFloat()
+            }
         }
     }
 
@@ -230,7 +250,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     fun animateActiveLayer(alpha: Float) {
         handler.post {
-            findViewById<LinearLayout>(R.id.pill_tap_flash).apply {
+            pillFlash.apply {
                 animate()
                         .setDuration(getAnimationDurationMs())
                         .alpha(alpha)
@@ -247,8 +267,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if (!isHidden) {
                 jiggleDown()
                 val params = layoutParams as WindowManager.LayoutParams
-                params.flags = params.flags or
-                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+//                params.flags = params.flags or
+//                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 
                 Thread({
                     for (i in params.y downTo -(Utils.getCustomHeight(context) / 2)) {
@@ -287,8 +307,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     }
                     isHidden = false
 
-                    params.flags = params.flags and
-                            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS.inv()
+//                    params.flags = params.flags and
+//                            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS.inv()
 
                     handler?.post {
                         wm.updateViewLayout(this, params)
@@ -359,10 +379,37 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             animate(null, ALPHA_ACTIVE)
         }
 
-        val intent = Intent(Actions.ACTION)
-        intent.putExtra(Actions.EXTRA_ACTION, which)
+        if (!Utils.shouldUseRootCommands(context)) {
+            val intent = Intent(Actions.ACTION)
+            intent.putExtra(Actions.EXTRA_ACTION, which)
 
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+        } else {
+            when (which) {
+                app.typeHome -> app.rootBinder?.goHome()
+                app.typeRecents -> app.rootBinder?.goRecents()
+                app.typeBack -> app.rootBinder?.goBack()
+                app.typeSwitch -> app.rootBinder?.goPreviousApp()
+                app.premTypeNotif -> app.rootBinder?.goPremiumNotifications()
+                app.premTypeQs -> app.rootBinder?.goPremiumNotifications()
+                app.premTypePower -> app.rootBinder?.goPremiumPower()
+                app.premTypeSplit -> app.rootBinder?.goSplitScreen()
+                app.typeAssist -> app.rootBinder?.goAssistant()
+                app.typeOhm -> app.rootBinder?.goOhm()
+                app.premTypePlayPause -> app.rootBinder?.goPremiumPlayPause()
+                app.premTypePrev -> app.rootBinder?.goPremiumPrevious()
+                app.premTypeNext -> app.rootBinder?.goPremiumNext()
+                app.premTypeVibe -> {
+                    //TODO
+                }
+                app.premTypeSilent -> {
+                    //TODO
+                }
+                app.premTypeMute -> {
+                    //TODO
+                }
+            }
+        }
     }
 
     /**
@@ -637,10 +684,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    private fun getHomeX(): Int {
-        return 0
-    }
-
     /**
      * Manage all the gestures on the pill
      */
@@ -662,47 +705,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var oldX = 0F
 
         inner class GD : GestureDetector(context, GestureListener()) {
-            private fun scrollDown() {
-                val params = layoutParams as WindowManager.LayoutParams
-
-                if (params.y > getHomeY(context)) {
-                    params.y = params.y - 1
-                    handler?.post {
-                        wm.updateViewLayout(this@BarView, params)
-                    }
-                }
-            }
-
-            private fun scrollLeft() {
-                val params = layoutParams as WindowManager.LayoutParams
-
-                if (params.x > getHomeX()) {
-                    params.x = params.x - 1
-                    handler?.post {
-                        wm.updateViewLayout(this@BarView, params)
-                    }
-                }
-            }
-
-            private fun scrollRight() {
-                val params = layoutParams as WindowManager.LayoutParams
-
-                if (params.x < getHomeX()) {
-                    params.x = params.x + 1
-                    handler?.post {
-                        wm.updateViewLayout(this@BarView, params)
-                    }
-                }
-            }
-
             override fun onTouchEvent(ev: MotionEvent?): Boolean {
+                val params = layoutParams as WindowManager.LayoutParams
+
                 return if (!isTransparent) {
                     if (reenterTransparencyHandle != null) {
                         reenterTransparencyHandle?.cancel(true)
                         reenterTransparencyHandle = null
                     }
 
-                    val params = layoutParams as WindowManager.LayoutParams
                     val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
                     val time = (getAnimationDurationMs() * animDurScale)
 
@@ -737,12 +748,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             when {
                                 params.y > getHomeY(context) -> {
                                     val distance = (params.y - getHomeY(context)).toFloat()
-                                    val sleepTime = time / distance * 1000F
+                                    val sleepTime = time / distance * 1000f
 
                                     //TODO: this needs a proper fix
                                     try {
                                         val scheduler = Executors.newScheduledThreadPool(1)
-                                        val handle = scheduler.scheduleAtFixedRate({ scrollDown() },
+                                        val handle = scheduler.scheduleAtFixedRate({
+                                                    if (params.y > getHomeY(context)) {
+                                                        params.y = params.y - 1
+
+                                                        handler.post {
+                                                            wm.updateViewLayout(this@BarView, params)
+                                                        }
+                                                    }
+                                                },
                                                 0, sleepTime.toLong(),
                                                 TimeUnit.MICROSECONDS)
                                         scheduler.schedule({
@@ -761,13 +780,21 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                         isSwipeUp = false
                                     }
                                 }
-                                params.x < getHomeX() -> {
-                                    val distance = (params.x - getHomeX()).absoluteValue
+                                params.x < getHomeX(context) -> {
+                                    val distance = (params.x - getHomeX(context)).absoluteValue
                                     val sleepTime = time / distance * 1000F
 
                                     try {
                                         val scheduler = Executors.newScheduledThreadPool(1)
-                                        val handle = scheduler.scheduleAtFixedRate({ scrollRight() },
+                                        val handle = scheduler.scheduleAtFixedRate({
+                                                    if (params.x < getHomeX(context)) {
+                                                        params.x = params.x + 1
+
+                                                        handler.post {
+                                                            wm.updateViewLayout(this@BarView, params)
+                                                        }
+                                                    }
+                                                },
                                                 0, sleepTime.toLong(),
                                                 TimeUnit.MICROSECONDS)
                                         scheduler.schedule({
@@ -786,13 +813,21 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                         isSwipeLeft = false
                                     }
                                 }
-                                params.x > getHomeX() -> {
-                                    val distance = (params.x - getHomeX()).absoluteValue
+                                params.x > getHomeX(context) -> {
+                                    val distance = (params.x - getHomeX(context)).absoluteValue
                                     val sleepTime = time / distance * 1000F
 
                                     try {
                                         val scheduler = Executors.newScheduledThreadPool(1)
-                                        val handle = scheduler.scheduleAtFixedRate({ scrollLeft() },
+                                        val handle = scheduler.scheduleAtFixedRate({
+                                                    if (params.x > getHomeX(context)) {
+                                                        params.x = params.x - 1
+
+                                                        handler.post {
+                                                            wm.updateViewLayout(this@BarView, params)
+                                                        }
+                                                    }
+                                                },
                                                 0, sleepTime.toLong(),
                                                 TimeUnit.MICROSECONDS)
                                         scheduler.schedule({

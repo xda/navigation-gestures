@@ -1,6 +1,5 @@
 package com.xda.nobar.util
 
-import android.annotation.ColorInt
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -190,6 +189,10 @@ object Utils {
         return (Utils.getNavBarHeight(context.resources) / 2 - context.resources.getDimensionPixelSize(R.dimen.pill_height) / 2)
     }
 
+    fun getHomeX(context: Context): Int {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_x", 0)
+    }
+
     fun getCustomWidth(context: Context): Int {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_width", context.resources.getDimensionPixelSize(R.dimen.pill_width))
     }
@@ -198,12 +201,22 @@ object Utils {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height", context.resources.getDimensionPixelSize(R.dimen.pill_height))
     }
 
-    @ColorInt fun getPillBGColor(context: Context): Int {
+    @android.support.annotation.ColorInt
+    fun getPillBGColor(context: Context): Int {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_bg", Color.argb(0xee, 0xcc, 0xcc, 0xcc))
     }
 
-    @ColorInt fun getPillFGColor(context: Context): Int {
+    @android.support.annotation.ColorInt
+    fun getPillFGColor(context: Context): Int {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_fg", Color.argb(0x32, 0x22, 0x22, 0x22))
+    }
+
+    fun getPillCornerRadiusInDp(context: Context): Int {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_corner_radius", 8)
+    }
+
+    fun getPillCornerRadiusInPx(context: Context): Int {
+        return dpAsPx(context, getPillCornerRadiusInDp(context))
     }
 
     fun shouldShowShadow(context: Context): Boolean {
@@ -242,7 +255,7 @@ object Utils {
 
     fun saveBackupImmersive(context: Context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putString("def_imm",
-                Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)).apply()
+                Settings.Global.getString(context.contentResolver, "policy_control")).apply()
     }
 
     fun getBackupImmersive(context: Context): String {
@@ -267,5 +280,9 @@ object Utils {
 
     fun hideOnLauncher(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_on_launcher", false)
+    }
+
+    fun shouldUseRootCommands(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_root", false)
     }
 }

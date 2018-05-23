@@ -12,6 +12,7 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
+import android.os.IBinder
 import android.os.Looper
 import android.preference.PreferenceManager
 import android.provider.Settings
@@ -21,9 +22,11 @@ import android.view.*
 import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.services.Actions
 import com.xda.nobar.services.ForegroundService
+import com.xda.nobar.services.RootService
 import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.util.PremiumHelper
 import com.xda.nobar.util.Utils
+import com.xda.nobar.util.Utils.getHomeX
 import com.xda.nobar.util.Utils.getHomeY
 import com.xda.nobar.views.BarView
 import java.util.*
@@ -48,8 +51,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var premiumHelper: PremiumHelper
     private lateinit var premiumInstallListener: PremiumInstallListener
     private lateinit var compatibilityRotationListener: CompatibilityRotationListener
+    private lateinit var rootServiceIntent: Intent
 
     var isValidPremium: Boolean = false
+    var rootBinder: RootService.RootBinder? = null
+
     private var navHidden = false
 
     lateinit var immersiveListener: ImmersiveListener
@@ -57,6 +63,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val listeners = ArrayList<ActivationListener>()
     private val handler = Handler(Looper.getMainLooper())
+    private val rootConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            rootBinder = service as RootService.RootBinder
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            rootBinder = null
+        }
+    }
 
     val params = WindowManager.LayoutParams()
     /**
@@ -143,6 +158,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         immersiveListener = ImmersiveListener()
         premiumInstallListener = PremiumInstallListener()
         compatibilityRotationListener = CompatibilityRotationListener()
+        rootServiceIntent = Intent(this, RootService::class.java)
+
+        if (Utils.shouldUseRootCommands(this)) {
+            startService(rootServiceIntent)
+            ensureRootServiceBound()
+        }
 
         premiumHelper = PremiumHelper(this, object : LicenseCheckListener {
             override fun onResult(valid: Boolean, reason: String) {
@@ -175,6 +196,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             "is_active" -> {
                 listeners.forEach { it.onChange(sharedPreferences.getBoolean(key, false)) }
             }
+            "use_root" -> {
+                startService(rootServiceIntent)
+                ensureRootServiceBound()
+            }
         }
     }
 
@@ -205,6 +230,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         params.height = Utils.getCustomHeight(this)
         params.gravity = Gravity.CENTER or Gravity.BOTTOM
         params.y = getHomeY(this)
+        params.x = getHomeX(this)
         params.type =
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -212,7 +238,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     WindowManager.LayoutParams.TYPE_PHONE
         params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
-                WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
+                WindowManager.LayoutParams.FLAG_SPLIT_TOUCH or
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         params.format = PixelFormat.TRANSLUCENT
         params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 
@@ -357,6 +384,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         } catch (e: Exception) {}
 
         navHidden = false
+    }
+
+    fun ensureRootServiceBound(): Boolean {
+        return bindService(rootServiceIntent, rootConnection, 0)
     }
 
     /**

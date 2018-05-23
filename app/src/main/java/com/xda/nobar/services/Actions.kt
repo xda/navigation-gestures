@@ -10,8 +10,10 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.support.v4.content.LocalBroadcastManager
+import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -27,8 +29,11 @@ class Actions : AccessibilityService() {
     companion object {
         const val BASE = "com.xda.nobar.action"
         const val ACTION = "$BASE.ACTION"
+        const val DISABLE = "$BASE.DISABLE"
 
         const val EXTRA_ACTION = "action"
+
+        const val SERVICE_NAME = "com.xda.nobar/com.xda.nobar.services.Actions"
     }
 
     private lateinit var receiver: ActionHandler
@@ -67,6 +72,21 @@ class Actions : AccessibilityService() {
 
     override fun onDestroy() {
         receiver.destroy()
+    }
+
+    fun disable() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            disableSelf()
+        } else {
+            val servicesString = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
+
+            if (servicesString != null) {
+                val services = ArrayList(servicesString.split(":"))
+                services.remove(SERVICE_NAME)
+
+                Settings.Secure.putString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, TextUtils.join(":", services))
+            }
+        }
     }
 
     /**
@@ -149,6 +169,8 @@ class Actions : AccessibilityService() {
                         //TODO: Implement
                     }
                 }
+            } else if (intent?.action == DISABLE) {
+                disable()
             }
         }
 

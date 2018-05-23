@@ -26,7 +26,7 @@ class ForegroundService : Service() {
 
         val builder = NotificationCompat.Builder(this, "nobar")
 //                .setContentTitle(resources.getString(R.string.app_name))
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_border_bottom_black_24dp)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setStyle(NotificationCompat.BigTextStyle()
                         .bigText(resources.getText(R.string.foreground_desc))

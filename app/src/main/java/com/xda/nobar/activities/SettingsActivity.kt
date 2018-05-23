@@ -1,14 +1,20 @@
 package com.xda.nobar.activities
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.preference.*
+import android.provider.Settings
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.Toast
 import com.jaredrummler.android.colorpicker.ColorPreference
 import com.xda.nobar.R
+import com.xda.nobar.services.Actions
 import com.xda.nobar.util.Utils
 import com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
 
@@ -60,14 +66,14 @@ class SettingsActivity : AppCompatActivity() {
             super.onCreate(savedInstanceState)
 
             addPreferencesFromResource(R.xml.prefs_main)
-
-            setListeners()
         }
 
         override fun onResume() {
             super.onResume()
 
             activity.title = resources.getText(R.string.settings)
+
+            setListeners()
         }
 
         private fun setListeners() {
@@ -101,18 +107,19 @@ class SettingsActivity : AppCompatActivity() {
             addPreferencesFromResource(R.xml.prefs_gestures)
 
 //            addOHMIfAvail()
-            addNougatActionsIfAvail()
-            addPremiumActionsIfAvail()
 
             preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-
-            updateSummaries()
         }
 
         override fun onResume() {
             super.onResume()
 
             activity.title = resources.getText(R.string.gestures)
+
+            addNougatActionsIfAvail()
+            addPremiumActionsIfAvail()
+
+            updateSummaries()
         }
 
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -248,13 +255,13 @@ class SettingsActivity : AppCompatActivity() {
             super.onCreate(savedInstanceState)
 
             addPreferencesFromResource(R.xml.prefs_appearance)
-            setListeners()
         }
 
         override fun onResume() {
             super.onResume()
 
             activity.title = resources.getText(R.string.appearance)
+            setListeners()
         }
 
         private fun setListeners() {
@@ -265,25 +272,33 @@ class SettingsActivity : AppCompatActivity() {
             val posY = findPreference("custom_y") as SliderPreferenceEmbedded
             val pillColor = findPreference("pill_bg") as ColorPreference
             val pillBorderColor = findPreference("pill_fg") as ColorPreference
+            val pillCornerRadius = findPreference("pill_corner_radius") as SliderPreferenceEmbedded
+            val posX = findPreference("custom_x") as SliderPreferenceEmbedded
 
             val resetW = findPreference("reset_width")
             val resetH = findPreference("reset_height")
             val resetY = findPreference("reset_pos_y")
             val resetPill = findPreference("reset_pill_bg")
             val resetPillBorder = findPreference("reset_pill_fg")
+            val resetCorners = findPreference("reset_pill_corner_radius")
+            val resetX = findPreference("reset_pos_x")
             val defaults = findPreference("defaults")
 
-            width.seekBar.min = Utils.dpAsPx(activity, 30)
-            height.seekBar.min = Utils.dpAsPx(activity, 20)
+            width.seekBar.min = Utils.dpAsPx(activity, 20)
+            height.seekBar.min = Utils.dpAsPx(activity, 10)
             posY.seekBar.min = 0
+            posX.seekBar.min = -(Utils.getRealScreenSize(activity).x.toFloat() / 2f - Utils.getCustomWidth(activity).toFloat() / 2f).toInt()
 
             width.seekBar.max = screenSize.x
             height.seekBar.max = Utils.dpAsPx(activity, 50)
-            posY.seekBar.max = Utils.dpAsPx(activity, 50)
+            posY.seekBar.max = Utils.dpAsPx(activity, 70)
+            posX.seekBar.max = -posX.seekBar.min
 
             width.seekBar.progress = Utils.getCustomWidth(activity)
             height.seekBar.progress = Utils.getCustomHeight(activity)
             posY.seekBar.progress = Utils.getHomeY(activity)
+            posX.seekBar.progress = Utils.getHomeX(activity)
+            pillCornerRadius.seekBar.progress = Utils.getPillCornerRadiusInDp(activity)
 
             pillColor.saveValue(Utils.getPillBGColor(activity))
             pillBorderColor.saveValue(Utils.getPillFGColor(activity))
@@ -293,13 +308,17 @@ class SettingsActivity : AppCompatActivity() {
                     if (it.key == "reset_width" || it.key == "defaults") remove("custom_width")
                     if (it.key == "reset_height" || it.key == "defaults") remove("custom_height")
                     if (it.key == "reset_pos_y" || it.key == "defaults") remove("custom_y")
+                    if (it.key == "reset_pos_x" || it.key == "defaults") remove("custom_x")
                     if (it.key == "reset_pill_bg" || it.key == "defaults") remove("pill_bg")
                     if (it.key == "reset_pill_fg" || it.key == "defaults") remove("pill_fg")
+                    if (it.key == "reset_pill_corner_radius" || it.key == "defaults") remove("pill_corner_radius")
                     apply()
                 }
                 width.seekBar.progress = Utils.getCustomWidth(activity)
                 height.seekBar.progress = Utils.getCustomHeight(activity)
                 posY.seekBar.progress = Utils.getHomeY(activity)
+                posX.seekBar.progress = Utils.getHomeX(activity)
+                pillCornerRadius.seekBar.progress = Utils.getPillCornerRadiusInDp(activity)
                 pillColor.saveValue(Utils.getPillBGColor(activity))
                 pillBorderColor.saveValue(Utils.getPillFGColor(activity))
                 true
@@ -308,8 +327,10 @@ class SettingsActivity : AppCompatActivity() {
             resetW.onPreferenceClickListener = resetListener
             resetH.onPreferenceClickListener = resetListener
             resetY.onPreferenceClickListener = resetListener
+            resetX.onPreferenceClickListener = resetListener
             resetPill.onPreferenceClickListener = resetListener
             resetPillBorder.onPreferenceClickListener = resetListener
+            resetCorners.onPreferenceClickListener = resetListener
             defaults.onPreferenceClickListener = resetListener
         }
     }
@@ -319,14 +340,14 @@ class SettingsActivity : AppCompatActivity() {
             super.onCreate(savedInstanceState)
 
             addPreferencesFromResource(R.xml.prefs_behavior)
-
-            setListeners()
         }
 
         override fun onResume() {
             super.onResume()
 
             activity.title = resources.getText(R.string.behavior)
+
+            setListeners()
         }
 
         private fun setListeners() {
@@ -365,14 +386,14 @@ class SettingsActivity : AppCompatActivity() {
             super.onCreate(savedInstanceState)
 
             addPreferencesFromResource(R.xml.prefs_other)
-
-            setUpListeners()
         }
 
         override fun onResume() {
             super.onResume()
 
             activity.title = resources.getText(R.string.other)
+
+            setUpListeners()
         }
         
         private fun setUpListeners() {
@@ -404,6 +425,24 @@ class SettingsActivity : AppCompatActivity() {
                 rot270Fix.isEnabled = !enabled
                 rot270Fix.isChecked = if (enabled) false else rot270Fix.isChecked
 
+                true
+            }
+
+            val useRoot = findPreference("use_root") as SwitchPreference
+            useRoot.setOnPreferenceChangeListener { _, newValue ->
+                if (newValue.toString().toBoolean()) {
+                    LocalBroadcastManager.getInstance(activity).sendBroadcast(Intent(Actions.DISABLE))
+                } else if (!Utils.isAccessibilityEnabled(activity)) {
+                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+
+                    try {
+                        startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        intent.action = Settings.ACTION_SETTINGS
+                        startActivity(intent)
+                        Toast.makeText(activity, resources.getText(R.string.accessibility_msg), Toast.LENGTH_LONG).show()
+                    }
+                }
                 true
             }
         }
