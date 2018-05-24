@@ -136,6 +136,21 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     val premTypeNext: Int
         get() = resources.getString(R.string.prem_type_next).toInt()
 
+    val typeRootHoldBack: Int
+        get() = resources.getString(R.string.type_hold_back).toInt()
+    val typeRootForward: Int
+        get() = resources.getString(R.string.type_forward).toInt()
+    val typeRootMenu: Int
+        get() = resources.getString(R.string.type_menu).toInt()
+    val typeRootSleep: Int
+        get() = resources.getString(R.string.type_sleep).toInt()
+    val premTypeRootVolUp: Int
+        get() = resources.getString(R.string.prem_type_vol_up).toInt()
+    val premTypeRootVolDown: Int
+        get() = resources.getString(R.string.prem_type_vol_down).toInt()
+    val premTypeRootScreenshot: Int
+        get() = resources.getString(R.string.prem_type_screenshot).toInt()
+
     /**
      * ***************************************************************
      */
@@ -197,8 +212,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 listeners.forEach { it.onChange(sharedPreferences.getBoolean(key, false)) }
             }
             "use_root" -> {
-                startService(rootServiceIntent)
-                ensureRootServiceBound()
+                if (Utils.shouldUseRootCommands(this)) {
+                    startService(rootServiceIntent)
+                    ensureRootServiceBound()
+                } else {
+                    stopService(rootServiceIntent)
+                }
             }
         }
     }

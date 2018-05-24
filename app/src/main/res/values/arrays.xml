@@ -9,9 +9,23 @@
         <item>@string/assist</item>
     </string-array>
 
+    <string-array name="action_values">
+        <item>@string/type_no_action</item>
+        <item>@string/type_home</item>
+        <item>@string/type_back</item>
+        <item>@string/type_recents</item>
+        <item>@string/type_hide</item>
+        <item>@string/type_assist</item>
+    </string-array>
+
     <string-array name="nougat_action_names">
         <item>@string/switch_apps</item>
         <item>@string/split</item>
+    </string-array>
+
+    <string-array name="nougat_action_values">
+        <item>@string/type_switch</item>
+        <item>@string/type_split</item>
     </string-array>
 
     <string-array name="premium_action_names">
@@ -23,19 +37,6 @@
         <item>@string/prem_play_pause</item>
     </string-array>
 
-    <string-array name="ohm_action_names">
-        <item>@string/ohm</item>
-    </string-array>
-
-    <string-array name="action_values">
-        <item>@string/type_no_action</item>
-        <item>@string/type_home</item>
-        <item>@string/type_back</item>
-        <item>@string/type_recents</item>
-        <item>@string/type_hide</item>
-        <item>@string/type_assist</item>
-    </string-array>
-
     <string-array name="premium_action_values">
         <item>@string/prem_type_notif</item>
         <item>@string/prem_type_qs</item>
@@ -45,12 +46,31 @@
         <item>@string/prem_type_play_pause</item>
     </string-array>
 
-    <string-array name="nougat_action_values">
-        <item>@string/type_switch</item>
-        <item>@string/type_split</item>
+    <string-array name="ohm_action_names">
+        <item>@string/ohm</item>
     </string-array>
 
     <string-array name="ohm_action_values">
         <item>@string/type_ohm</item>
+    </string-array>
+
+    <string-array name="root_action_names">
+        <item>@string/hold_back</item>
+        <item>@string/forward</item>
+        <item>@string/menu</item>
+        <item>@string/sleep</item>
+        <item>@string/prem_vol_up</item>
+        <item>@string/prem_vol_down</item>
+        <item>@string/prem_screenshot</item>
+    </string-array>
+
+    <string-array name="root_action_values">
+        <item>@string/type_hold_back</item>
+        <item>@string/type_forward</item>
+        <item>@string/type_menu</item>
+        <item>@string/type_sleep</item>
+        <item>@string/prem_type_vol_up</item>
+        <item>@string/prem_type_vol_down</item>
+        <item>@string/prem_type_screenshot</item>
     </string-array>
 </resources>

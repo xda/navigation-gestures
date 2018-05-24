@@ -1,20 +1,14 @@
 package com.xda.nobar.activities
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.preference.*
-import android.provider.Settings
-import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.widget.Toast
 import com.jaredrummler.android.colorpicker.ColorPreference
 import com.xda.nobar.R
-import com.xda.nobar.services.Actions
 import com.xda.nobar.util.Utils
 import com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
 
@@ -118,6 +112,7 @@ class SettingsActivity : AppCompatActivity() {
 
             addNougatActionsIfAvail()
             addPremiumActionsIfAvail()
+            addRootActionsIfAvail()
 
             updateSummaries()
         }
@@ -176,28 +171,6 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun addPremiumActionsIfAvail() {
-//            if ((activity.application as App).isValidPremium) {
-//                for (i in 0 until preferenceScreen.preferenceCount) {
-//                    val pref = preferenceScreen.getPreference(i)
-//
-//                    if (pref is PreferenceCategory) {
-//                        for (j in 0 until pref.preferenceCount) {
-//                            val child = pref.getPreference(j)
-//
-//                            if (child is ListPreference) {
-//                                val currentEntries = child.entries.clone()
-//                                val currentValues = child.entryValues.clone()
-//
-//                                val premiumEntries = resources.getStringArray(R.array.premium_action_names)
-//                                val premiumValues = resources.getStringArray(R.array.premium_action_values)
-//
-//                                child.entries = currentEntries.plus(premiumEntries)
-//                                child.entryValues = currentValues.plus(premiumValues)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
             for (i in 0 until preferenceScreen.preferenceCount) {
                 val pref = preferenceScreen.getPreference(i)
 
@@ -246,6 +219,31 @@ class SettingsActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+        }
+
+        private fun addRootActionsIfAvail() {
+            if (Utils.shouldUseRootCommands(activity)) {
+                for (i in 0 until preferenceScreen.preferenceCount) {
+                    val pref = preferenceScreen.getPreference(i)
+
+                    if (pref is PreferenceCategory) {
+                        for (j in 0 until pref.preferenceCount) {
+                            val child = pref.getPreference(j)
+
+                            if (child is ListPreference) {
+                                val currentEntries = child.entries.clone()
+                                val currentValues = child.entryValues.clone()
+
+                                val premiumEntries = resources.getStringArray(R.array.root_action_names)
+                                val premiumValues = resources.getStringArray(R.array.root_action_values)
+
+                                child.entries = currentEntries.plus(premiumEntries)
+                                child.entryValues = currentValues.plus(premiumValues)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -425,24 +423,6 @@ class SettingsActivity : AppCompatActivity() {
                 rot270Fix.isEnabled = !enabled
                 rot270Fix.isChecked = if (enabled) false else rot270Fix.isChecked
 
-                true
-            }
-
-            val useRoot = findPreference("use_root") as SwitchPreference
-            useRoot.setOnPreferenceChangeListener { _, newValue ->
-                if (newValue.toString().toBoolean()) {
-                    LocalBroadcastManager.getInstance(activity).sendBroadcast(Intent(Actions.DISABLE))
-                } else if (!Utils.isAccessibilityEnabled(activity)) {
-                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-
-                    try {
-                        startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        intent.action = Settings.ACTION_SETTINGS
-                        startActivity(intent)
-                        Toast.makeText(activity, resources.getText(R.string.accessibility_msg), Toast.LENGTH_LONG).show()
-                    }
-                }
                 true
             }
         }

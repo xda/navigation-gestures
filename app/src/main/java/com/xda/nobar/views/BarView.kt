@@ -352,7 +352,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param key one of ACTION_*
      */
     private fun sendAction(key: String) {
-        val which = actionMap[key]
+        val which = actionMap[key] ?: return
 
         if (which == app.typeNoAction) return
 
@@ -379,36 +379,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             animate(null, ALPHA_ACTIVE)
         }
 
-        if (!Utils.shouldUseRootCommands(context)) {
-            val intent = Intent(Actions.ACTION)
-            intent.putExtra(Actions.EXTRA_ACTION, which)
+        val intent = Intent(Actions.ACTION)
+        intent.putExtra(Actions.EXTRA_ACTION, which)
 
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-        } else {
-            when (which) {
-                app.typeHome -> app.rootBinder?.goHome()
-                app.typeRecents -> app.rootBinder?.goRecents()
-                app.typeBack -> app.rootBinder?.goBack()
-                app.typeSwitch -> app.rootBinder?.goPreviousApp()
-                app.premTypeNotif -> app.rootBinder?.goPremiumNotifications()
-                app.premTypeQs -> app.rootBinder?.goPremiumNotifications()
-                app.premTypePower -> app.rootBinder?.goPremiumPower()
-                app.premTypeSplit -> app.rootBinder?.goSplitScreen()
-                app.typeAssist -> app.rootBinder?.goAssistant()
-                app.typeOhm -> app.rootBinder?.goOhm()
-                app.premTypePlayPause -> app.rootBinder?.goPremiumPlayPause()
-                app.premTypePrev -> app.rootBinder?.goPremiumPrevious()
-                app.premTypeNext -> app.rootBinder?.goPremiumNext()
-                app.premTypeVibe -> {
-                    //TODO
-                }
-                app.premTypeSilent -> {
-                    //TODO
-                }
-                app.premTypeMute -> {
-                    //TODO
-                }
-            }
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+
+        if (Utils.shouldUseRootCommands(context)) {
+            app.rootBinder?.handle(which)
         }
     }
 

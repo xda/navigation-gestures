@@ -86,7 +86,7 @@
     <string name="hide_navbar_in_landscape_desc">Certain devices show the original navigation bar on the side in landscape. Activate this to prevent that behavior.</string>
     <string name="other_desc">Miscellaneous settings</string>
     <string name="tablet_mode_desc">Many tablets force the navigation bar to always be on the bottom of the screen. Turn this on to account for that behavior.</string>
-    <string name="use_root_desc">Use root to perform actions instead of the Accessibility Service.</string>
+    <string name="use_root_desc">Using root unlocks extra actions. The accessibility service will be used in conjunction with root commands, as the latter tend to execute slowly.</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
@@ -130,10 +130,17 @@
     <string name="prem_notif">Notifications (Premium)</string>
     <string name="prem_qs">Quick Settings (Premium)</string>
     <string name="prem_power">Power Menu (Premium)</string>
-    <string name="split">Split Screen</string>
+    <string name="split">Split Screen (Nougat+)</string>
     <string name="prem_prev">Previous Track (Premium)</string>
     <string name="prem_next">Next Track (Premium)</string>
     <string name="prem_play_pause">Play/Pause (Premium)</string>
+    <string name="hold_back">Hold Back (Root)</string>
+    <string name="forward">Go Forward (Root)</string>
+    <string name="menu">Open Menu (Root)</string>
+    <string name="sleep">Sleep (Root)</string>
+    <string name="prem_vol_up">Volume Up (Root) (Premium)</string>
+    <string name="prem_vol_down">Volume Down (Root) (Premium)</string>
+    <string name="prem_screenshot">Screenshot (Root) (Premium)</string>
 
     <!--Messages-->
     <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
@@ -165,6 +172,13 @@
     <string name="prem_type_play_pause">14</string>
     <string name="prem_type_prev">15</string>
     <string name="prem_type_next">16</string>
+    <string name="type_hold_back">17</string>
+    <string name="type_forward">18</string>
+    <string name="type_menu">19</string>
+    <string name="type_sleep">20</string>
+    <string name="prem_type_vol_up">21</string>
+    <string name="prem_type_vol_down">22</string>
+    <string name="prem_type_screenshot">23</string>
 
     <!--Action Keys-->
     <string name="action_left">left</string>
