@@ -160,7 +160,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
         if (!Utils.canRunHiddenCommands(this)) {
-            startActivity(Intent(this, IntroActivity::class.java))
+            val intent = Intent(this, IntroActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
             return
         }
 
