@@ -25,6 +25,10 @@ import com.xda.nobar.R
 import com.xda.nobar.util.SuUtils
 import com.xda.nobar.util.Utils
 
+/**
+ * Introduction activity for Navigation Gestures
+ * Lead user through setup process
+ */
 class IntroActivity : IntroActivity() {
     companion object {
         fun needsToRun(context: Context): Boolean {
@@ -43,6 +47,7 @@ class IntroActivity : IntroActivity() {
         buttonBackFunction = BUTTON_BACK_FUNCTION_BACK
         isButtonBackVisible = true
 
+        //Only show the intro if the device is able to run the needed commands. Otherwise, show failure screen
         if (Utils.canRunHiddenCommands(this)) {
             if (Utils.isFirstRun(this)) {
                 addSlide(FragmentSlide.Builder()
@@ -209,6 +214,10 @@ class IntroActivity : IntroActivity() {
         } catch (e: Exception) {}
     }
 
+    /**
+     * The first slide: show a welcome
+     * Uses a custom layout to show a video instead of an image
+     */
     class WelcomeFragment : SlideFragment() {
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             return inflater.inflate(R.layout.slide_welcome, container, false)
@@ -243,6 +252,9 @@ class IntroActivity : IntroActivity() {
         }
     }
 
+    /**
+     * Similar to WelcomeFragment but with a different video
+     */
     class WriteSecureFragment : SlideFragment() {
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             return inflater.inflate(R.layout.slide_welcome, container, false)
@@ -277,12 +289,19 @@ class IntroActivity : IntroActivity() {
         }
     }
 
+    /**
+     * The library only checks once if the user can go forward in the simple builder
+     * so we need to wrap that builder
+     */
     class DynamicForwardSlide(builder: SimpleSlide.Builder, private val action: () -> Boolean) : SimpleSlide(builder) {
         override fun canGoForward(): Boolean {
             return action.invoke()
         }
     }
 
+    /**
+     * Same as DynamicForwardSlide but for FragmentSlides
+     */
     class DynamicForwardFragmentSlide(builder: FragmentSlide.Builder, private val action: () -> Boolean) : FragmentSlide(builder) {
         override fun canGoForward(): Boolean {
             return action.invoke()

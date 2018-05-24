@@ -136,7 +136,12 @@ object Utils {
             it.apply()
         }
     }
-    
+
+    /**
+     * Load the actions corresponding to each gesture
+     * @param context a context object
+     * @param map the HashMap to fill/update
+     */
     fun getActionList(context: Context, map: HashMap<String, Int>) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val app = getHandler(context)
@@ -164,31 +169,64 @@ object Utils {
         map[app.actionRightHold] = holdRight
     }
 
+    /**
+     * Check to see if overscan should be used
+     * @param context a context object
+     * @return true if device has a navigation bar and is below P
+     */
     fun shouldUseOverscanMethod(context: Context): Boolean {
-        return hasNavBar(context) && Build.VERSION.SDK_INT < 28 //TODO: Replace with constant on P release
+        return hasNavBar(context) && Build.VERSION.SDK_INT < 28 //TODO: Replace with constant on P release or remove if workaround isn't removed
     }
 
+    /**
+     * Check to see if device has a software navigation bar
+     * @param context a context object
+     * @return true if the device has a soft navbar
+     */
     fun hasNavBar(context: Context): Boolean {
         val id = context.resources.getIdentifier("config_showNavigationBar", "bool", "android")
         return id > 0 && context.resources.getBoolean(id) || Build.MODEL.contains("Android SDK built for x86")
     }
 
-    fun touchWizNavEnabled(context: Context): Boolean {
+    /**
+     * Special function for TouchWiz devices, some of which can hide the navigation bar
+     * @param context a context object
+     * @return true if the navigation bar is current hidden by TouchWiz
+     */
+    fun touchWizHideNavEnabled(context: Context): Boolean {
         return Settings.Global.getInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0) == 0
     }
 
+    /**
+     * Make sure the TouchWiz navbar is not hidden
+     * @param context a context object
+     */
     fun forceTouchWizNavEnabled(context: Context) {
         if (hasNavBar(context)) Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0)
     }
 
+    /**
+     * Get the user-defined or default vertical position of the pill
+     * @param context a context object
+     * @return the position, in pixels, from the bottom of the screen
+     */
     fun getHomeY(context: Context): Int {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_y", getDefaultY(context))
     }
 
+    /**
+     * Get the default vertical position
+     * @param context a context object
+     * @return the default position, in pixels, from the bottom of the screen
+     */
     fun getDefaultY(context: Context): Int {
         return (Utils.getNavBarHeight(context.resources) / 2 - context.resources.getDimensionPixelSize(R.dimen.pill_height) / 2)
     }
 
+    /**
+     * Get the user-defined or default horizontal position of the pill
+     * @param context a context object
+     */
     fun getHomeX(context: Context): Int {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_x", 0)
     }

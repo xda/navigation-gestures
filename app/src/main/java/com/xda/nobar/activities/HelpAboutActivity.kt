@@ -10,7 +10,9 @@ import android.widget.Toast
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.R
 
-
+/**
+ * Information about the app
+ */
 class HelpAboutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +36,9 @@ class HelpAboutActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    /**
+     * Main fragment for the activity
+     */
     class HelpFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)

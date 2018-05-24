@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 
+/**
+ * Activity used solely for showing a dialog outside of an activity context
+ */
 class DialogActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_TITLE = "title"
@@ -68,6 +71,10 @@ class DialogActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Builder class
+     * Create a DialogActivity instance using this
+     */
     class Builder(private val context: Context) {
         var title = android.R.string.untitled
         var message = android.R.string.untitled

@@ -9,6 +9,10 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.xda.nobar.R
 
+/**
+ * Used for receiving notifications
+ * THIS SHOULD NEVER BE USED!!
+ */
 class FCMService : FirebaseMessagingService() {
     override fun onMessageReceived(msg: RemoteMessage?) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

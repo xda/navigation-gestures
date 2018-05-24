@@ -10,6 +10,9 @@ import com.xda.nobar.activities.DialogActivity
 import com.xda.nobar.util.SuUtils
 import java.io.DataOutputStream
 
+/**
+ * Supplemental actions for rooted devices
+ */
 class RootService : Service() {
     val handler = Handler(Looper.getMainLooper())
     var su: java.lang.Process? = null

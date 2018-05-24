@@ -10,6 +10,9 @@ import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import com.xda.nobar.R
 
+/**
+ * Used to prevent the device from killing NoBar
+ */
 class ForegroundService : Service() {
     override fun onBind(intent: Intent): IBinder? {
         return null

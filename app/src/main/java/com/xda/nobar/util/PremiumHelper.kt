@@ -4,6 +4,9 @@ import android.content.*
 import android.content.pm.PackageManager
 import com.xda.nobar.App
 
+/**
+ * Helper class for managing premium detection
+ */
 class PremiumHelper(private val context: Context, private val listener: App.LicenseCheckListener) {
     companion object {
         const val COMPANION_PACKAGE = "com.xda.nobar.premium"

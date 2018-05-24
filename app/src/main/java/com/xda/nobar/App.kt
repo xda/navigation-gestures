@@ -121,7 +121,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         get() = resources.getString(R.string.prem_type_qs).toInt()
     val premTypePower: Int
         get() = resources.getString(R.string.prem_type_power).toInt()
-    val premTypeSplit: Int
+    val typeSplit: Int
         get() = resources.getString(R.string.type_split).toInt()
     val premTypeVibe: Int
         get() = resources.getString(R.string.prem_type_vibe).toInt()
@@ -379,7 +379,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Hide the navbar
      */
     fun hideNav() {
-        if (!Utils.touchWizNavEnabled(this)) Utils.forceTouchWizNavEnabled(this)
+        if (!Utils.touchWizHideNavEnabled(this)) Utils.forceTouchWizNavEnabled(this)
 
         if (Utils.shouldUseOverscanMethod(this) && !Utils.isInImmersive(this)) {
             IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(resources) + 1)

@@ -43,6 +43,10 @@ object IWindowManager {
         }
     }
 
+    /**
+     * Check if the device is able to execute WindowManager commands
+     * @return true if the above condition is met
+     */
     fun canRunCommands(): Boolean {
         return try {
             Class.forName("android.view.IWindowManager")

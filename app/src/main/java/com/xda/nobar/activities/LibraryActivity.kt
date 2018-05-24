@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.xda.nobar.R
 
+/**
+ * List the libraries this app is using
+ */
 class LibraryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

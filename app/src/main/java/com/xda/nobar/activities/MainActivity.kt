@@ -12,6 +12,9 @@ import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.util.Utils
 
+/**
+ * The main app activity
+ */
 class MainActivity : AppCompatActivity(), App.ActivationListener {
     private lateinit var switch: Switch
     private lateinit var handler: App
@@ -47,6 +50,9 @@ class MainActivity : AppCompatActivity(), App.ActivationListener {
         }
     }
 
+    /**
+     * Make sure the toggle switch updates for the current activation state
+     */
     override fun onChange(activated: Boolean) {
         switch.isChecked = activated
     }
@@ -59,6 +65,9 @@ class MainActivity : AppCompatActivity(), App.ActivationListener {
         } catch (e: Exception) {}
     }
 
+    /**
+     * Add buttons to the action bar
+     */
     private fun setUpActionBar() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)

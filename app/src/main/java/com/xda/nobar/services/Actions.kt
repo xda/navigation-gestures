@@ -88,36 +88,14 @@ class Actions : AccessibilityService() {
                     app.typeHome -> performGlobalAction(GLOBAL_ACTION_HOME)
                     app.typeRecents -> performGlobalAction(GLOBAL_ACTION_RECENTS)
                     app.typeBack -> performGlobalAction(GLOBAL_ACTION_BACK)
-                    app.typeSwitch -> {
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                            performGlobalAction(GLOBAL_ACTION_RECENTS)
-                            handler.postDelayed({ performGlobalAction(GLOBAL_ACTION_RECENTS) }, 100)
-                        } else {
-                            DialogActivity.Builder(this@Actions).apply {
-                                title = R.string.nougat_required
-                                message = R.string.nougat_required_desc
-                                showYes = true
-                                yesRes = android.R.string.ok
-                                start()
-                            }
-                        }
+                    app.typeSwitch -> runNougatAction {
+                        performGlobalAction(GLOBAL_ACTION_RECENTS)
+                        handler.postDelayed({ performGlobalAction(GLOBAL_ACTION_RECENTS) }, 100)
                     }
+                    app.typeSplit -> runNougatAction { performGlobalAction(GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN) }
                     app.premTypeNotif -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) }
                     app.premTypeQs -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) }
                     app.premTypePower -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }
-                    app.premTypeSplit -> {
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                            performGlobalAction(GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN)
-                        } else {
-                            DialogActivity.Builder(this@Actions).apply {
-                                title = R.string.nougat_required
-                                message = R.string.nougat_required_desc
-                                showYes = true
-                                yesRes = android.R.string.ok
-                                start()
-                            }
-                        }
-                    }
                     app.typeAssist -> {
                         val assist = Intent(RecognizerIntent.ACTION_WEB_SEARCH)
                         assist.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -160,6 +138,10 @@ class Actions : AccessibilityService() {
             } catch (e: Exception) {}
         }
 
+        /**
+         * Check for valid premium and run the action if possible
+         * Otherwise show a warning dialog
+         */
         private fun runPremiumAction(action: () -> Unit) {
             if (app.isValidPremium) action.invoke()
             else {
@@ -169,6 +151,24 @@ class Actions : AccessibilityService() {
                     showYes = true
                     showNo = true
                     yesUrl = "https://play.google.com/store/apps/details?id=com.xda.nobar.premium"
+                    start()
+                }
+            }
+        }
+
+        /**
+         * Run action if device is on Nougat or later
+         * Otherwise show a warning dialog
+         */
+        private fun runNougatAction(action: () -> Unit) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                action.invoke()
+            } else {
+                DialogActivity.Builder(this@Actions).apply {
+                    title = R.string.nougat_required
+                    message = R.string.nougat_required_desc
+                    showYes = true
+                    yesRes = android.R.string.ok
                     start()
                 }
             }

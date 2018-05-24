@@ -4,7 +4,14 @@ import android.util.Log
 import java.io.DataOutputStream
 import java.io.IOException
 
+/**
+ * Helper for performing root-related actions
+ */
 object SuUtils {
+    /**
+     * Run commands as root
+     * @param strings series of commands
+     */
     @JvmStatic
     fun sudo(vararg strings: String) {
         try {
@@ -32,6 +39,10 @@ object SuUtils {
 
     }
 
+    /**
+     * Test for sudo presence and permission
+     * @return true if root is present and granted to NoBar
+     */
     fun testSudo(): Boolean {
         return try {
             val su = Runtime.getRuntime().exec("su")
@@ -50,6 +61,10 @@ object SuUtils {
         }
     }
 
+    /**
+     * Get a su process
+     * @return a new su process
+     */
     fun getSudo(): Process? {
         return try {
             val su = Runtime.getRuntime().exec("su")

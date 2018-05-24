@@ -248,6 +248,9 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Appearance settings
+     */
     class AppearanceFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -333,6 +336,9 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Behavior settings
+     */
     class BehaviorFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -379,6 +385,9 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Other settings
+     */
     class OtherFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
