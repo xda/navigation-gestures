@@ -384,6 +384,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         if (Utils.shouldUseOverscanMethod(this) && !Utils.isInImmersive(this)) {
             IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(resources) + 1)
             compatibilityRotationListener.enable()
+            Utils.forceNavBlack(this)
         } else if (!Utils.isInImmersive(this) && Utils.hasNavBar(this)) {
             try {
                 Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation")
@@ -400,6 +401,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         if (Utils.shouldUseOverscanMethod(this) && !Utils.isInImmersive(this)) {
             IWindowManager.setOverscan(0, 0, 0, 0)
             compatibilityRotationListener.disable()
+            Utils.clearBlackNav(this)
         } else try {
             Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
         } catch (e: Exception) {}

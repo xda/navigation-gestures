@@ -323,4 +323,16 @@ object Utils {
     fun shouldUseRootCommands(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_root", false)
     }
+
+    fun forceNavBlack(context: Context) {
+        Settings.Global.putInt(context.contentResolver, "navigationbar_color", Color.BLACK)
+        Settings.Global.putInt(context.contentResolver, "navigationbar_current_color", Color.BLACK)
+        Settings.Global.putInt(context.contentResolver, "navigationbar_use_theme_default", 0)
+    }
+
+    fun clearBlackNav(context: Context) {
+        Settings.Global.putString(context.contentResolver, "navigationbar_color", null)
+        Settings.Global.putString(context.contentResolver, "navigationbar_current_color", null)
+        Settings.Global.putString(context.contentResolver, "navigation_bar_use_theme_default", null)
+    }
 }
