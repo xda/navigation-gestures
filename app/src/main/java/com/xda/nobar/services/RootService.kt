@@ -7,6 +7,7 @@ import android.view.KeyEvent
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
+import com.xda.nobar.util.SuUtils
 import java.io.DataOutputStream
 
 class RootService : Service() {
@@ -20,7 +21,7 @@ class RootService : Service() {
     override fun onCreate() {
         super.onCreate()
         Thread {
-            su = Runtime.getRuntime().exec("su")
+            su = SuUtils.getSudo()
         }.start()
     }
 
@@ -121,7 +122,7 @@ class RootService : Service() {
 
         private fun command(vararg commands: String) {
             Thread {
-                val outputStream = DataOutputStream(service.su?.outputStream)
+                val outputStream = DataOutputStream(service.su?.outputStream ?: return@Thread)
 
                 for (s in commands) {
                     outputStream.writeBytes(s + "\n")

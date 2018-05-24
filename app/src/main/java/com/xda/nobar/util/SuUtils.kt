@@ -49,4 +49,15 @@ object SuUtils {
             false
         }
     }
+
+    fun getSudo(): Process? {
+        return try {
+            val su = Runtime.getRuntime().exec("su")
+
+            if (su.waitFor() == 0) su
+            else null
+        } catch (e: Exception) {
+            null
+        }
+    }
 }
