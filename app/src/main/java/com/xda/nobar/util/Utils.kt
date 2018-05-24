@@ -226,80 +226,167 @@ object Utils {
     /**
      * Get the user-defined or default horizontal position of the pill
      * @param context a context object
+     * @return the position, in pixels, from the horizontal center of the screen
      */
     fun getHomeX(context: Context): Int {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_x", 0)
     }
 
+    /**
+     * Get the user-defined or default width of the pill
+     * @param context a context object
+     * @return the width, in pixels
+     */
     fun getCustomWidth(context: Context): Int {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_width", context.resources.getDimensionPixelSize(R.dimen.pill_width))
     }
 
+    /**
+     * Get the user-defined or default height of the pill
+     * @param context a context object
+     * @return the height, in pixels
+     */
     fun getCustomHeight(context: Context): Int {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height", context.resources.getDimensionPixelSize(R.dimen.pill_height))
     }
 
+    /**
+     * Get the user-defined or default pill color
+     * @param context a context object
+     * @return the color, as a ColorInt
+     */
     @android.support.annotation.ColorInt
     fun getPillBGColor(context: Context): Int {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_bg", Color.argb(0xee, 0xcc, 0xcc, 0xcc))
     }
 
+    /**
+     * Get the user-defined or default pill border color
+     * @param context a context object
+     * @return the color, as a ColorInt
+     */
     @android.support.annotation.ColorInt
     fun getPillFGColor(context: Context): Int {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_fg", Color.argb(0x32, 0x22, 0x22, 0x22))
     }
 
+    /**
+     * Get the user-defined or default pill corner radius
+     * @param context a context object
+     * @return the corner radius, in dp
+     */
     fun getPillCornerRadiusInDp(context: Context): Int {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_corner_radius", 8)
     }
 
+    /**
+     * Get the user-defined or default pill corner radius
+     * @param context a context object
+     * @return the corner radius, in px
+     */
     fun getPillCornerRadiusInPx(context: Context): Int {
         return dpAsPx(context, getPillCornerRadiusInDp(context))
     }
 
+    /**
+     * Whether or not the pill should have a shadow
+     * @param context a context object
+     * @return true if the pill should be elevated
+     */
     fun shouldShowShadow(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_shadow", true)
     }
 
+    /**
+     * Whether or not to move the pill with the input method
+     * @param context a context object
+     * @return true if the pill should NOT move (should stay at the bottom of the screen
+     */
     fun dontMoveForKeyboard(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("static_pill", false)
     }
 
+    /**
+     * Whether or not to change the overscan to the top in rotation 270 (top of device on the right)
+     * This isn't needed for all devices, so it's an option
+     * @param context a context object
+     * @return true to dynamically change the overscan
+     */
     fun useRot270Fix(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("rot270_fix", false)
     }
 
+    /**
+     * Tablets usually have the software nav on the bottom, which isn't always the physical bottom.
+     * @param context a context object
+     * @return true to dynamically change the overscan to hide the navbar
+     */
     fun useTabletMode(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("tablet_mode", false)
     }
 
+    /**
+     * Whether or not to provide audio feedback for taps
+     * @param context a context object
+     * @return true if audio feedback is enabled
+     * //TODO: add a user-facing option for this
+     */
     fun feedbackSound(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("audio_feedback", true)
     }
 
+    /**
+     * Check if the accessibility service is currently enabled
+     * @param context a context object
+     * @return true if accessibility is running
+     */
     fun isAccessibilityEnabled(context: Context): Boolean {
         val services = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
 
         return services != null && services.contains(context.packageName)
     }
 
+    /**
+     * Check if this is the app's first run
+     * @param context a context object
+     * @return true if this is the first run
+     */
     fun isFirstRun(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("first_run", true)
     }
 
+    /**
+     * Set whether or not the next start should be counted as the first run
+     * @param context a context object
+     * @param isFirst true to "reset" app to first run
+     */
     fun setFirstRun(context: Context, isFirst: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("first_run", isFirst).apply()
     }
 
+    /**
+     * Save the current immersive policy, to restore on deactivation
+     * @param context a context object
+     */
     fun saveBackupImmersive(context: Context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putString("def_imm",
                 Settings.Global.getString(context.contentResolver, "policy_control")).apply()
     }
 
+    /**
+     * Get the saved immersive policy for restoration
+     * @param context a context object
+     * @return the saved immersive policy
+     */
     fun getBackupImmersive(context: Context): String {
         return PreferenceManager.getDefaultSharedPreferences(context).getString("def_imm", "immersive.none")
     }
 
+    /**
+     * Check if the current device can use the necessary hidden APIs
+     * @param context a context object
+     * @return true if this app can be used
+     */
     fun canRunHiddenCommands(context: Context): Boolean {
         return try {
             (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(Rect())
@@ -309,6 +396,12 @@ object Utils {
         } && IWindowManager.canRunCommands()
     }
 
+    /**
+     * Get the package name of the default launcher
+     * @param context a context object
+     * @return the package name, eg com.android.launcher3
+     * //TODO: this doesn't seem to work properly
+     */
     fun getLauncherPackage(context: Context): String {
         val intent = Intent(Intent.ACTION_MAIN)
         intent.addCategory(Intent.CATEGORY_HOME)
@@ -316,20 +409,39 @@ object Utils {
         return context.packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY).activityInfo.packageName
     }
 
+    /**
+     * Check whether or not the pill should be hidden on the launcher
+     * @param context a context object
+     * @return true if the pill should be hidden
+     */
     fun hideOnLauncher(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_on_launcher", false)
     }
 
+    /**
+     * Check if the supplemental root actions should be allowed
+     * @param context a context object
+     * @return true to show root actions
+     */
     fun shouldUseRootCommands(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_root", false)
     }
 
+    /**
+     * Force the navigation bar black, to mask the white line people are complaining so much about
+     * @param context a context object
+     */
     fun forceNavBlack(context: Context) {
         Settings.Global.putInt(context.contentResolver, "navigationbar_color", Color.BLACK)
         Settings.Global.putInt(context.contentResolver, "navigationbar_current_color", Color.BLACK)
         Settings.Global.putInt(context.contentResolver, "navigationbar_use_theme_default", 0)
     }
 
+    /**
+     * Clear the navigation bar color
+     * Used when showing the software nav
+     * @param context a context object
+     */
     fun clearBlackNav(context: Context) {
         Settings.Global.putString(context.contentResolver, "navigationbar_color", null)
         Settings.Global.putString(context.contentResolver, "navigationbar_current_color", null)

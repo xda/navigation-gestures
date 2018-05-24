@@ -448,9 +448,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
     }
 
+    /**
+     * Double tapping has a default action, so we need to make sure to set it to nothing below Nougat
+     */
     private fun setDoubleTapToNoActionPreNougat() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            prefs.edit().putString("double_tap", "-1").apply()
+            prefs.edit().putString("double_tap", typeNoAction.toString()).apply()
         }
     }
 
@@ -497,6 +500,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
     }
 
+    /**
+     * Listen for changes in Car Mode (Android Auto, etc)
+     * We want to disable NoBar when Car Mode is active
+     */
     inner class CarModeHandler : BroadcastReceiver() {
         private var isDisabledForCarMode = false
 
@@ -533,6 +540,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
     }
 
+    /**
+     * Handle changes in Immersive Mode
+     * We need to deactivate overscan when nav immersive is active, to avoid cut-off content
+     * //TODO: More work is needed on detection
+     */
     inner class ImmersiveListener : ContentObserver(handler), View.OnSystemUiVisibilityChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
         private var isDisabledForContent = false
 
@@ -588,6 +600,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
     }
 
+    /**
+     * Listen to see if the premium add-on has been installed/uninstalled, and refresh the premium state
+     */
     inner class PremiumInstallListener : BroadcastReceiver() {
         init {
             val filter = IntentFilter()
@@ -616,6 +631,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
     }
 
+    /**
+     * Listen for changes in rotation, and handle appropriately
+     */
     inner class CompatibilityRotationListener : OrientationEventListener(this) {
         private var oldRot = Surface.ROTATION_0
 
@@ -668,10 +686,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
     }
 
+    /**
+     * Used to listen for changes in activation
+     */
     interface ActivationListener {
         fun onChange(activated: Boolean)
     }
 
+    /**
+     * Used to listen for changes in premium state
+     */
     interface LicenseCheckListener {
         fun onResult(valid: Boolean, reason: String)
     }

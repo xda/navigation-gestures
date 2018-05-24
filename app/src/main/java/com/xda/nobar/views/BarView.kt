@@ -86,6 +86,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         loadActionMap()
     }
 
+    /**
+     * Perform setup
+     */
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         prefs.registerOnSharedPreferenceChangeListener(this)
@@ -127,6 +130,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         return gestureDetector.gestureDetector.onTouchEvent(event)
     }
 
+    /**
+     * Listen for relevant changes in the SharedPreferences
+     */
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (actionMap.keys.contains(key)) {
             loadActionMap()
@@ -195,6 +201,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
+    /**
+     * Perform cleanup
+     */
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         prefs.unregisterOnSharedPreferenceChangeListener(this)
@@ -248,6 +257,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         .start()
     }
 
+    /**
+     * This is called twice to "flash" the pill when an action is performed
+     */
     fun animateActiveLayer(alpha: Float) {
         handler.post {
             pillFlash.apply {
@@ -267,8 +279,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if (!isHidden) {
                 jiggleDown()
                 val params = layoutParams as WindowManager.LayoutParams
-//                params.flags = params.flags or
-//                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 
                 Thread({
                     for (i in params.y downTo -(Utils.getCustomHeight(context) / 2)) {
@@ -307,9 +317,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     }
                     isHidden = false
 
-//                    params.flags = params.flags and
-//                            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS.inv()
-
                     handler?.post {
                         wm.updateViewLayout(this, params)
                     }
@@ -318,6 +325,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         } catch (e: IllegalArgumentException) {}
     }
 
+    /**
+     * Make the pill transparent.
+     * In this mode, the pill will be invisible until touched, when it will become visible, allowing the user to perform an action.
+     */
     fun enterTransparencyMode() {
         if (!isTransparent) {
             isTransparent = true
@@ -329,6 +340,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
+    /**
+     * Make the pill opaque again
+     */
     fun exitTransparencyMode() {
         if (isTransparent) {
             isTransparent = false
@@ -455,6 +469,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
+    /**
+     * The animation for a swipe-left and hold on the pill
+     */
     private fun jiggleLeftHold() {
         animate()
                 .scaleX(SCALE_SMALL)
@@ -499,6 +516,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
+    /**
+     * The animation for a swipe-right and hold on the pill
+     */
     private fun jiggleRightHold() {
         animate()
                 .scaleX(SCALE_SMALL)
@@ -642,18 +662,33 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
+    /**
+     * Get the user-defined or default time the user must hold a swipe to perform the swipe and hold action
+     * @return the time, in ms
+     */
     private fun getHoldTime(): Int {
         return prefs.getInt("hold_time", 1000)
     }
 
+    /**
+     * Get the user-defined or default duration of the feedback vibration
+     * @return the duration, in ms
+     */
     private fun getVibrationDuration(): Int {
         return prefs.getInt("vibration_duration", VIB_SHORT.toInt())
     }
 
+    /**
+     * Get the user-defined or default duration of the pill animations
+     * @return the duration, in ms
+     */
     private fun getAnimationDurationMs(): Long {
         return prefs.getInt("anim_duration", DEFAULT_ANIM_DURATION.toInt()).toLong()
     }
 
+    /**
+     * Show a toast when the pill is hidden. Only shows once.
+     */
     private fun showHiddenToast() {
         if (prefs.getBoolean("show_hidden_toast", true)) {
             Toast.makeText(context, resources.getString(R.string.pill_hidden), Toast.LENGTH_LONG).show()
@@ -681,6 +716,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var oldY = 0F
         private var oldX = 0F
 
+        /**
+         * The main gesture detection
+         */
         inner class GD : GestureDetector(context, GestureListener()) {
             override fun onTouchEvent(ev: MotionEvent?): Boolean {
                 val params = layoutParams as WindowManager.LayoutParams
@@ -999,6 +1037,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
+    /**
+     * Listen for screen rotation changes and handle any special modes that may be active
+     */
     inner class ScreenRotationListener : OrientationEventListener(context) {
         private var oldRot = Surface.ROTATION_0
 
