@@ -12,13 +12,13 @@
     <string name="toggle">Toggle</string>
     <string name="width">Pill Width</string>
     <string name="height">Pill Height</string>
-    <string name="position_y">Vertical Position</string>
-    <string name="position_x">Horizontal Position</string>
+    <string name="position_y">Vertical (Y) Position</string>
+    <string name="position_x">Horizontal (X) Position</string>
     <string name="reset_all">Reset All</string>
     <string name="reset_width">Reset Width</string>
     <string name="reset_height">Reset Height</string>
-    <string name="reset_pos_y">Reset Vertical Position</string>
-    <string name="reset_pos_x">Reset Horizontal Position</string>
+    <string name="reset_pos_y">Reset Vertical (Y) Position</string>
+    <string name="reset_pos_x">Reset Horizontal (X) Position</string>
     <string name="taps">Taps</string>
     <string name="swipes">Swipes</string>
     <string name="version">Version</string>

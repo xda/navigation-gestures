@@ -280,6 +280,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 jiggleDown()
                 val params = layoutParams as WindowManager.LayoutParams
 
+                params.flags = params.flags or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+
                 Thread({
                     for (i in params.y downTo -(Utils.getCustomHeight(context) / 2)) {
                         handler?.post {
@@ -305,6 +307,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if (isHidden) {
                 jiggleUp()
                 val params = layoutParams as WindowManager.LayoutParams
+
+                params.flags = params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS.inv()
 
                 Thread({
                     for (i in params.y..getHomeY(context)) {

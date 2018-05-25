@@ -259,8 +259,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     WindowManager.LayoutParams.TYPE_PHONE
         params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
-                WindowManager.LayoutParams.FLAG_SPLIT_TOUCH or
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
         params.format = PixelFormat.TRANSLUCENT
         params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 
@@ -398,7 +397,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Show the navbar
      */
     fun showNav() {
-        if (Utils.shouldUseOverscanMethod(this) && !Utils.isInImmersive(this)) {
+        if (Utils.shouldUseOverscanMethod(this)) {
             IWindowManager.setOverscan(0, 0, 0, 0)
             compatibilityRotationListener.disable()
             Utils.clearBlackNav(this)
@@ -449,10 +448,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     }
 
     /**
-     * Double tapping has a default action, so we need to make sure to set it to nothing below Nougat
+     * Double tapping has a default action of switching to the previus app,
+     * so we need to make sure to set it to nothing below Nougat
+     * if it's currently set to switch apps
      */
     private fun setDoubleTapToNoActionPreNougat() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N && prefs.getString("double_tap", typeSwitch.toString()) == typeSwitch.toString()) {
             prefs.edit().putString("double_tap", typeNoAction.toString()).apply()
         }
     }
@@ -557,6 +558,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             val screenRes = Utils.getRealScreenSize(this@App)
 
             bar.getWindowVisibleDisplayFrame(rect)
+
+            Log.e("Nobar", rect.toString())
 
             if (rect.bottom < screenRes.y - 10) {
                 onSystemUiVisibilityChange(0)
