@@ -447,4 +447,8 @@ object Utils {
         Settings.Global.putString(context.contentResolver, "navigationbar_current_color", null)
         Settings.Global.putString(context.contentResolver, "navigation_bar_use_theme_default", null)
     }
+
+    fun hideInFullscreen(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_in_fullscreen", false)
+    }
 }

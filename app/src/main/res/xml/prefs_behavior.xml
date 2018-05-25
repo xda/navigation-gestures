@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreference
-        android:title="@string/hide_in_landscape"
-        android:summary="@string/hide_in_landscape_desc"
-        android:key="hide_in_landscape" />
+        android:title="@string/hide_in_fullscreen"
+        android:summary="@string/hide_in_fullscreen_desc"
+        android:key="hide_in_fullscreen" />
 
     <SwitchPreference
         android:title="@string/hide_on_launcher"

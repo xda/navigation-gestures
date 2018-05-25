@@ -52,6 +52,9 @@ class Actions : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
+//        Log.e("NoBar", event.toString())
+
+//        Log.e("NoBar", "${event.packageName} ${Utils.getLauncherPackage(this)}")
         if (event.packageName == Utils.getLauncherPackage(this)) {
             if (Utils.hideOnLauncher(this)) {
                 isBarHiddenForLauncher = true
@@ -63,6 +66,7 @@ class Actions : AccessibilityService() {
                 app.addBar()
             }
         }
+        app.immersiveListener.onGlobalLayout()
     }
 
     override fun onInterrupt() {}

@@ -559,26 +559,32 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
             bar.getWindowVisibleDisplayFrame(rect)
 
-            Log.e("Nobar", rect.toString())
+            val navCondition = if (Utils.hasNavBar(this@App)) rect.bottom <= screenRes.y - 1 else true
 
-            if (rect.bottom < screenRes.y - 10) {
+//            Log.e("Nobar", rect.toString())
+
+            if (navCondition && rect.top > 0) {
                 onSystemUiVisibilityChange(0)
-            }
+            } else {
+                val nav = rect.bottom >= screenRes.y && rect.bottom < screenRes.y * 2
 
-            if (rect.bottom > screenRes.y && rect.bottom < screenRes.y * 2) {
-                onSystemUiVisibilityChange(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
+                if (Utils.hasNavBar(this@App) && nav) {
+                    onSystemUiVisibilityChange(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
+                }
+
+                if (rect.top <= 0 && (if (Utils.hasNavBar(this@App)) nav else true)) {
+                    onSystemUiVisibilityChange(View.SYSTEM_UI_FLAG_FULLSCREEN)
+                }
             }
         }
 
         override fun onSystemUiVisibilityChange(visibility: Int) {
+//            Log.e("NoBar", visibility.toString())
             if (isActivated()) {
-                if (visibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0) {
-                    showNav()
-                    isDisabledForContent = true
-                } else if (isDisabledForContent) {
-                    hideNav()
-                    isDisabledForContent = false
-                }
+                handleImmersiveChange(visibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0
+                        || visibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
+                        || visibility and View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN != 0
+                        || visibility and 7 != 0)
             }
         }
 
@@ -587,14 +593,26 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 if (uri == Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL)) {
                     val current = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)
 
-                    if (current != null && (current.contains("full") || current.contains("nav"))) {
-                        showNav()
-                        isDisabledForContent = true
-                    } else if (isDisabledForContent) {
-                        hideNav()
-                        isDisabledForContent = false
-                    }
+                    handleImmersiveChange(current != null && (current.contains("full") || current.contains("nav")))
                 }
+            }
+        }
+
+        private fun handleImmersiveChange(isImmersive: Boolean) {
+            val hideInFullScreen = Utils.hideInFullscreen(this@App)
+            if (isImmersive) {
+                showNav()
+                if (hideInFullScreen) {
+                    bar.hidePill(true)
+                }
+                isDisabledForContent = true
+            } else if (isDisabledForContent) {
+                hideNav()
+                if (hideInFullScreen && bar.isAutoHidden) {
+                    bar.isAutoHidden = false
+                    bar.showPill()
+                }
+                isDisabledForContent = false
             }
         }
 

@@ -38,7 +38,7 @@ import kotlin.math.absoluteValue
  */
 class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener {
     companion object {
-        const val ALPHA_INACTIVE = 0.7f
+        const val ALPHA_HIDDEN = 0.2f
         const val ALPHA_ACTIVE = 1.0f
         const val ALPHA_GONE = 0.0f
 
@@ -58,7 +58,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private val app = context.applicationContext as App
-    private val screenRotationListener = ScreenRotationListener()
     private val gestureDetector = GestureManager()
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -68,10 +67,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var isHidden = false
     var beingTouched = false
     var isTransparent = false
+    var isAutoHidden = false
 
-    private lateinit var view: View
-    private lateinit var pill: LinearLayout
-    private lateinit var pillFlash: LinearLayout
+    private var view: View
+    private var pill: LinearLayout
+    private var pillFlash: LinearLayout
 
     private var reenterTransparencyHandle: ScheduledFuture<*>? = null
 
@@ -82,6 +82,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     init {
         alpha = ALPHA_GONE
+        view = View.inflate(context, R.layout.pill, this)
+        pill = view.findViewById(R.id.pill)
+        pillFlash = pill.findViewById(R.id.pill_tap_flash)
 
         loadActionMap()
     }
@@ -92,15 +95,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         prefs.registerOnSharedPreferenceChangeListener(this)
-        screenRotationListener.enable()
-
-        val rot = wm.defaultDisplay.rotation
-
-        if ((rot == Surface.ROTATION_90 || rot == Surface.ROTATION_270) && prefs.getBoolean("hide_in_landscape", false)) enterTransparencyMode()
-
-        view = View.inflate(context, R.layout.pill, this)
-        pill = view.findViewById(R.id.pill)
-        pillFlash = pill.findViewById(R.id.pill_tap_flash)
 
         val layers = pill.background as LayerDrawable
         (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
@@ -207,7 +201,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         prefs.unregisterOnSharedPreferenceChangeListener(this)
-        screenRotationListener.disable()
     }
 
     /**
@@ -274,29 +267,61 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     /**
      * "Hide" the pill by moving it partially offscreen
      */
-    fun hidePill() {
+    fun hidePill(auto: Boolean) {
         try {
             if (!isHidden) {
-                jiggleDown()
+                isAutoHidden = auto
+                isHidden = true
+
                 val params = layoutParams as WindowManager.LayoutParams
 
-                params.flags = params.flags or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+                val time = (getAnimationDurationMs() * animDurScale)
+                val distance = params.y.toFloat()
+                val sleepTime = time / distance * 1000f
 
-                Thread({
-                    for (i in params.y downTo -(Utils.getCustomHeight(context) / 2)) {
-                        handler?.post {
-                            params.y = i
-                            wm.updateViewLayout(this, params)
+                try {
+                    val handle = Executors.newScheduledThreadPool(1).scheduleAtFixedRate({
+                        if (params.y > 0) {
+                            params.y -= 1
+
+                            handler?.post { wm.updateViewLayout(this, params) }
                         }
+                    }, 0, sleepTime.toLong(), TimeUnit.MICROSECONDS)
 
-                        Thread.sleep(3L)
-                    }
-                    isHidden = true
-                }).start()
+                    Executors.newScheduledThreadPool(1).schedule({
+                        handle.cancel(true)
+                        animateHide()
+                    }, time.toLong(), TimeUnit.MILLISECONDS)
+                } catch (e: Exception) {
+                    params.y = 0
+                    handler?.post { wm.updateViewLayout(this, params) }
+
+                    animateHide()
+                }
 
                 showHiddenToast()
             }
         } catch (e: IllegalArgumentException) {}
+    }
+
+    private fun animateHide() {
+        val params = layoutParams as WindowManager.LayoutParams
+
+        pill.animate()
+                .translationY(pill.height.toFloat() / 2f)
+                .alpha(ALPHA_HIDDEN)
+                .setInterpolator(ENTER_INTERPOLATOR)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    pill.translationY = pill.height.toFloat() / 2f
+
+                    handler?.post {
+                        jiggleDown()
+
+                        wm.updateViewLayout(this, params)
+                    }
+                }
     }
 
     /**
@@ -305,28 +330,58 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     fun showPill() {
         try {
             if (isHidden) {
-                jiggleUp()
+                if (isAutoHidden) {
+                    handler?.postDelayed({ hidePill(true) }, 1500)
+                }
+                isHidden = false
+
                 val params = layoutParams as WindowManager.LayoutParams
 
-                params.flags = params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS.inv()
+                val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+                val time = (getAnimationDurationMs() * animDurScale)
+                val distance = Utils.getHomeY(context)
+                val sleepTime = time / distance * 1000f
 
-                Thread({
-                    for (i in params.y..getHomeY(context)) {
-                        handler?.post {
-                            params.y = i
-                            wm.updateViewLayout(this, params)
+                try {
+                    val handle = Executors.newScheduledThreadPool(1).scheduleAtFixedRate({
+                        if (params.y < distance) {
+                            params.y += 1
+
+                            handler?.post { wm.updateViewLayout(this, params) }
                         }
+                    }, 0, sleepTime.toLong(), TimeUnit.MICROSECONDS)
 
-                        Thread.sleep(3L)
-                    }
-                    isHidden = false
+                    Executors.newScheduledThreadPool(1).schedule({
+                        handle.cancel(true)
+                        animateShow()
+                    }, time.toLong(), TimeUnit.MILLISECONDS)
+                } catch (e: Exception) {
+                    params.y = 0
+                    handler?.post { wm.updateViewLayout(this, params) }
 
-                    handler?.post {
-                        wm.updateViewLayout(this, params)
-                    }
-                }).start()
+                    animateShow()
+                }
             }
         } catch (e: IllegalArgumentException) {}
+    }
+
+    private fun animateShow() {
+        val params = layoutParams as WindowManager.LayoutParams
+
+        pill.animate()
+                .translationY(0f)
+                .alpha(ALPHA_ACTIVE)
+                .setInterpolator(EXIT_INTERPOLATOR)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    pill.translationY = 0f
+
+                    handler?.post {
+                        jiggleUp()
+
+                        wm.updateViewLayout(this, params)
+                    }
+                }
     }
 
     /**
@@ -379,7 +434,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (key == app.actionDouble) handler?.postDelayed({ vibrate(getVibrationDuration().toLong()) }, getVibrationDuration().toLong())
 
         if (which == app.typeHide) {
-            hidePill()
+            hidePill(false)
             return
         }
 
@@ -738,6 +793,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                     when (ev?.action) {
                         MotionEvent.ACTION_DOWN -> {
+                            app.immersiveListener.onGlobalLayout()
                             oldY = ev.rawY
                             oldX = ev.rawX
                             beingTouched = true
@@ -1038,33 +1094,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     false
                 }
             }
-        }
-    }
-
-    /**
-     * Listen for screen rotation changes and handle any special modes that may be active
-     */
-    inner class ScreenRotationListener : OrientationEventListener(context) {
-        private var oldRot = Surface.ROTATION_0
-
-        override fun onOrientationChanged(orientation: Int) {
-            handler?.postDelayed({
-                val newRot = wm.defaultDisplay.rotation
-
-                if (newRot != oldRot) {
-                    oldRot = newRot
-
-                    if (newRot == Surface.ROTATION_270 || newRot == Surface.ROTATION_90) {
-                        if (prefs.getBoolean("hide_in_landscape", false)) enterTransparencyMode()
-                    } else {
-                        if (reenterTransparencyHandle != null) {
-                            reenterTransparencyHandle?.cancel(true)
-                            reenterTransparencyHandle = null
-                        }
-                        exitTransparencyMode()
-                    }
-                }
-            }, 200)
         }
     }
 }
