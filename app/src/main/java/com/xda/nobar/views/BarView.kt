@@ -365,7 +365,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }
                     }, time.toLong(), TimeUnit.MILLISECONDS)
                 } catch (e: Exception) {
-                    params.y = 0
+                    params.y = distance
                     handler?.post {
                         wm.updateViewLayout(this, params)
                         animateShow()
@@ -862,7 +862,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                         val scheduler = Executors.newScheduledThreadPool(1)
                                         val handle = scheduler.scheduleAtFixedRate({
                                                     if (params.y > getHomeY(context)) {
-                                                        params.y = params.y - 1
+                                                        params.y -= 1
 
                                                         handler.post {
                                                             wm.updateViewLayout(this@BarView, params)
@@ -896,7 +896,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                         val scheduler = Executors.newScheduledThreadPool(1)
                                         val handle = scheduler.scheduleAtFixedRate({
                                                     if (params.x < getHomeX(context)) {
-                                                        params.x = params.x + 1
+                                                        params.x += 1
 
                                                         handler.post {
                                                             wm.updateViewLayout(this@BarView, params)
@@ -915,7 +915,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                             }
                                         }, time.toLong(), TimeUnit.MILLISECONDS)
                                     } catch (e: Exception) {
-                                        params.x = Utils.getRealScreenSize(context).x / 2
+                                        params.x = getHomeX(context)
                                         wm.updateViewLayout(this@BarView, params)
                                         if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
                                         isActing = false
@@ -931,7 +931,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                         val scheduler = Executors.newScheduledThreadPool(1)
                                         val handle = scheduler.scheduleAtFixedRate({
                                                     if (params.x > getHomeX(context)) {
-                                                        params.x = params.x - 1
+                                                        params.x -= 1
 
                                                         handler.post {
                                                             wm.updateViewLayout(this@BarView, params)
@@ -950,7 +950,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                             }
                                         }, time.toLong(), TimeUnit.MILLISECONDS)
                                     } catch (e: Exception) {
-                                        params.x = Utils.getRealScreenSize(context).x / 2
+                                        params.x = getHomeX(context)
                                         wm.updateViewLayout(this@BarView, params)
                                         if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
                                         isActing = false
