@@ -398,7 +398,7 @@ class SettingsActivity : AppCompatActivity() {
         override fun onResume() {
             super.onResume()
 
-            activity.title = resources.getText(R.string.other)
+            activity.title = resources.getText(R.string.compatibility)
 
             setUpListeners()
         }

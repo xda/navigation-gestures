@@ -17,8 +17,8 @@
         android:key="behavior" />
 
     <Preference
-        android:title="@string/other"
-        android:summary="@string/other_desc"
+        android:title="@string/compatibility_desc"
+        android:summary="@string/compatibility_pref_desc"
         android:key="other" />
 
 </PreferenceScreen>
