@@ -19,6 +19,6 @@
     <Preference
         android:title="@string/compatibility"
         android:summary="@string/compatibility_pref_desc"
-        android:key="other" />
+        android:key="compatibility" />
 
 </PreferenceScreen>

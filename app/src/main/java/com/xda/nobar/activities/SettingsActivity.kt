@@ -76,7 +76,7 @@ class SettingsActivity : AppCompatActivity() {
                     "gestures" -> GestureFragment()
                     "appearance" -> AppearanceFragment()
                     "behavior" -> BehaviorFragment()
-                    "other" -> CompatibilityFragment()
+                    "compatibility" -> CompatibilityFragment()
                     else -> null
                 }
 
@@ -87,7 +87,7 @@ class SettingsActivity : AppCompatActivity() {
             findPreference("gestures").onPreferenceClickListener = listener
             findPreference("appearance").onPreferenceClickListener = listener
             findPreference("behavior").onPreferenceClickListener = listener
-            findPreference("other").onPreferenceClickListener = listener
+            findPreference("compatibility").onPreferenceClickListener = listener
         }
     }
 
