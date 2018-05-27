@@ -76,7 +76,7 @@ class SettingsActivity : AppCompatActivity() {
                     "gestures" -> GestureFragment()
                     "appearance" -> AppearanceFragment()
                     "behavior" -> BehaviorFragment()
-                    "other" -> OtherFragment()
+                    "other" -> CompatibilityFragment()
                     else -> null
                 }
 
@@ -386,13 +386,13 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     /**
-     * Other settings
+     * Compatibility settings
      */
-    class OtherFragment : PreferenceFragment() {
+    class CompatibilityFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
 
-            addPreferencesFromResource(R.xml.prefs_other)
+            addPreferencesFromResource(R.xml.prefs_compatibility)
         }
 
         override fun onResume() {
