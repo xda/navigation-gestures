@@ -100,6 +100,9 @@ class SettingsActivity : AppCompatActivity() {
 
             addPreferencesFromResource(R.xml.prefs_gestures)
 
+            addNougatActionsIfAvail()
+            addPremiumActionsIfAvail()
+            addRootActionsIfAvail()
 //            addOHMIfAvail()
 
             preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
@@ -109,10 +112,6 @@ class SettingsActivity : AppCompatActivity() {
             super.onResume()
 
             activity.title = resources.getText(R.string.gestures)
-
-            addNougatActionsIfAvail()
-            addPremiumActionsIfAvail()
-            addRootActionsIfAvail()
 
             updateSummaries()
         }
