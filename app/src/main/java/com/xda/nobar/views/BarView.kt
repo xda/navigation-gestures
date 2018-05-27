@@ -880,7 +880,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                 isSwipeUp = false
                                             }
                                         }, time.toLong(), TimeUnit.MILLISECONDS)
-                                    } catch (e: IllegalArgumentException) {
+                                    } catch (e: Exception) {
                                         params.y = getHomeY(context)
                                         wm.updateViewLayout(this@BarView, params)
                                         isActing = false
@@ -914,7 +914,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                 isSwipeLeft = false
                                             }
                                         }, time.toLong(), TimeUnit.MILLISECONDS)
-                                    } catch (e: IllegalArgumentException) {
+                                    } catch (e: Exception) {
                                         params.x = Utils.getRealScreenSize(context).x / 2
                                         wm.updateViewLayout(this@BarView, params)
                                         if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
@@ -949,7 +949,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                 isSwipeRight = false
                                             }
                                         }, time.toLong(), TimeUnit.MILLISECONDS)
-                                    } catch (e: IllegalArgumentException) {
+                                    } catch (e: Exception) {
                                         params.x = Utils.getRealScreenSize(context).x / 2
                                         wm.updateViewLayout(this@BarView, params)
                                         if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
