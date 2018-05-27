@@ -187,6 +187,8 @@ object Utils {
         val id = context.resources.getIdentifier("config_showNavigationBar", "bool", "android")
         return id > 0 && context.resources.getBoolean(id)
                 || Build.MODEL.contains("Android SDK built for x86")
+
+//        return context.resources.getBoolean(com.android.internal.R.bool.config_showNavigationBar)
     }
 
     /**

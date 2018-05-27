@@ -11,9 +11,9 @@
         android:summary="@string/tablet_mode_desc"
         android:key="tablet_mode" />
 
-    <SwitchPreference
-        android:title="@string/use_root"
-        android:summary="@string/use_root_desc"
-        android:key="use_root" />
+    <!--<SwitchPreference-->
+        <!--android:title="@string/use_root"-->
+        <!--android:summary="@string/use_root_desc"-->
+        <!--android:key="use_root" />-->
 
 </PreferenceScreen>

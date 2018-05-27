@@ -544,7 +544,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     /**
      * Handle changes in Immersive Mode
      * We need to deactivate overscan when nav immersive is active, to avoid cut-off content
-     * //TODO: More work is needed on detection
+     * //TODO: More work may be needed on detection
      */
     inner class ImmersiveListener : ContentObserver(handler), View.OnSystemUiVisibilityChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
         private var isDisabledForContent = false

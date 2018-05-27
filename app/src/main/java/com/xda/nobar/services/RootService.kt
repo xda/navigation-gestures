@@ -63,7 +63,7 @@ class RootService : Service() {
         }
 
         private fun goScreenOff() {
-            keyEvent(KeyEvent.KEYCODE_SLEEP)
+            keyEvent(KeyEvent.KEYCODE_POWER)
         }
 
         private fun goPremiumScreenshot() {
