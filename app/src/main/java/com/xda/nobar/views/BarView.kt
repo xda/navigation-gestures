@@ -281,6 +281,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 val sleepTime = time / distance * 1000f
 
                 try {
+                    if (time == 0f) throw Exception()
                     val handle = Executors.newScheduledThreadPool(1).scheduleAtFixedRate({
                         if (params.y > 0) {
                             params.y -= 1
@@ -348,6 +349,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 val sleepTime = time / distance * 1000f
 
                 try {
+                    if (time == 0f) throw Exception()
                     val handle = Executors.newScheduledThreadPool(1).scheduleAtFixedRate({
                         if (params.y < distance) {
                             params.y += 1
@@ -856,6 +858,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                                     //TODO: this needs a proper fix
                                     try {
+                                        if (time == 0f) throw Exception()
                                         val scheduler = Executors.newScheduledThreadPool(1)
                                         val handle = scheduler.scheduleAtFixedRate({
                                                     if (params.y > getHomeY(context)) {
@@ -889,6 +892,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     val sleepTime = time / distance * 1000F
 
                                     try {
+                                        if (time == 0f) throw Exception()
                                         val scheduler = Executors.newScheduledThreadPool(1)
                                         val handle = scheduler.scheduleAtFixedRate({
                                                     if (params.x < getHomeX(context)) {
@@ -923,6 +927,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     val sleepTime = time / distance * 1000F
 
                                     try {
+                                        if (time == 0f) throw Exception()
                                         val scheduler = Executors.newScheduledThreadPool(1)
                                         val handle = scheduler.scheduleAtFixedRate({
                                                     if (params.x > getHomeX(context)) {
