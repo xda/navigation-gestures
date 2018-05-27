@@ -475,7 +475,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             when (intent?.action) {
                 Intent.ACTION_SCREEN_ON -> {
                     if (isActivated() && (kgm.isKeyguardLocked || if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) kgm.isDeviceLocked else false)) {
-                        Log.e("NoBar", "on KeyGuard")
+//                        Log.e("NoBar", "on KeyGuard")
                         toggle(true)
                         Utils.setOffForRebootOrScreenLock(this@App, true)
                     } else if (Utils.isOffForRebootOrScreenLock(this@App)) {
@@ -563,7 +563,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
 //            Log.e("Nobar", rect.toString())
 
-            if (navCondition && rect.top > 0) {
+            if (navCondition) {
                 onSystemUiVisibilityChange(0)
             } else {
                 val nav = rect.bottom >= screenRes.y && rect.bottom < screenRes.y * 2

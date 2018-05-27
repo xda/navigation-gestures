@@ -175,7 +175,7 @@ object Utils {
      * @return true if device has a navigation bar and is below P
      */
     fun shouldUseOverscanMethod(context: Context): Boolean {
-        return hasNavBar(context) && Build.VERSION.SDK_INT < 28 //TODO: Replace with constant on P release or remove if workaround isn't removed
+        return hasNavBar(context)
     }
 
     /**
@@ -185,7 +185,8 @@ object Utils {
      */
     fun hasNavBar(context: Context): Boolean {
         val id = context.resources.getIdentifier("config_showNavigationBar", "bool", "android")
-        return id > 0 && context.resources.getBoolean(id) || Build.MODEL.contains("Android SDK built for x86")
+        return id > 0 && context.resources.getBoolean(id)
+                || Build.MODEL.contains("Android SDK built for x86")
     }
 
     /**

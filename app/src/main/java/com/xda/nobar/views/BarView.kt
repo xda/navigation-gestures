@@ -291,13 +291,17 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                     Executors.newScheduledThreadPool(1).schedule({
                         handle.cancel(true)
-                        animateHide()
+                        handler?.post {
+                            animateHide()
+                        }
                     }, time.toLong(), TimeUnit.MILLISECONDS)
                 } catch (e: Exception) {
                     params.y = 0
-                    handler?.post { wm.updateViewLayout(this, params) }
+                    handler?.post {
+                        wm.updateViewLayout(this, params)
+                        animateHide()
+                    }
 
-                    animateHide()
                 }
 
                 showHiddenToast()
@@ -322,6 +326,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         wm.updateViewLayout(this, params)
                     }
                 }
+                .start()
     }
 
     /**
@@ -353,13 +358,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                     Executors.newScheduledThreadPool(1).schedule({
                         handle.cancel(true)
-                        animateShow()
+                        handler?.post {
+                            animateShow()
+                        }
                     }, time.toLong(), TimeUnit.MILLISECONDS)
                 } catch (e: Exception) {
                     params.y = 0
-                    handler?.post { wm.updateViewLayout(this, params) }
-
-                    animateShow()
+                    handler?.post {
+                        wm.updateViewLayout(this, params)
+                        animateShow()
+                    }
                 }
             }
         } catch (e: IllegalArgumentException) {}
@@ -382,6 +390,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         wm.updateViewLayout(this, params)
                     }
                 }
+                .start()
     }
 
     /**
@@ -820,6 +829,26 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 sendAction(app.actionRight)
                             }
 
+                            if (pill.translationX != 0f) {
+                                val currTrans = pill.translationX
+                                pill.animate()
+                                        .translationX(0f)
+                                        .setDuration(getAnimationDurationMs())
+                                        .withEndAction {
+                                            handler?.post {
+                                                if (params.x == getHomeX(context)) {
+                                                    if (currTrans < 0 && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
+                                                    if (currTrans > 0 && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
+                                                }
+                                            }
+
+                                            isActing = false
+                                            isSwipeLeft = false
+                                            isSwipeRight = false
+                                        }
+                                        .start()
+                            }
+
                             when {
                                 params.y > getHomeY(context) -> {
                                     val distance = (params.y - getHomeY(context)).toFloat()
@@ -884,6 +913,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     } catch (e: IllegalArgumentException) {
                                         params.x = Utils.getRealScreenSize(context).x / 2
                                         wm.updateViewLayout(this@BarView, params)
+                                        if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
                                         isActing = false
                                         isSwipeLeft = false
                                     }
@@ -917,6 +947,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     } catch (e: IllegalArgumentException) {
                                         params.x = Utils.getRealScreenSize(context).x / 2
                                         wm.updateViewLayout(this@BarView, params)
+                                        if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
                                         isActing = false
                                         isSwipeRight = false
                                     }
@@ -963,8 +994,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 val velocity = ev.rawX - oldX
                                 oldX = ev.rawX
 
-                                params.x = params.x + (velocity / 2).toInt()
-                                wm.updateViewLayout(this@BarView, params)
+                                val half = (Utils.getRealScreenSize(context).x.toFloat() / 2f - Utils.getCustomWidth(context).toFloat() / 2f).toInt()
+
+                                when {
+                                    params.x == -half && !isSwipeRight -> pill.translationX += -velocity
+                                    params.x == half && !isSwipeLeft -> pill.translationX += velocity
+                                    else -> {
+                                        params.x = params.x + (velocity / 2).toInt()
+                                        wm.updateViewLayout(this@BarView, params)
+                                    }
+                                }
 
                                 if (isSwipeLeft) {
                                     if (leftHoldHandle == null) {
