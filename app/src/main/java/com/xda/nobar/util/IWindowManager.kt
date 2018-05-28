@@ -15,14 +15,15 @@ object IWindowManager {
     private var iWindowManager: Any? = null
 
     init {
-        if (canRunCommands()) {
-            iWindowManagerClass = Class.forName("android.view.IWindowManager")
-            val stubClass = Class.forName("android.view.IWindowManager\$Stub")
-            val serviceManagerClass = Class.forName("android.os.ServiceManager")
+//        if (canRunCommands()) {
+//
+//        }
+        iWindowManagerClass = Class.forName("android.view.IWindowManager")
+        val stubClass = Class.forName("android.view.IWindowManager\$Stub")
+        val serviceManagerClass = Class.forName("android.os.ServiceManager")
 
-            val binder = serviceManagerClass.getMethod("checkService", String::class.java).invoke(null, Context.WINDOW_SERVICE)
-            iWindowManager = stubClass.getMethod("asInterface", IBinder::class.java).invoke(null, binder)
-        }
+        val binder = serviceManagerClass.getMethod("checkService", String::class.java).invoke(null, Context.WINDOW_SERVICE)
+        iWindowManager = stubClass.getMethod("asInterface", IBinder::class.java).invoke(null, binder)
     }
 
     /**
@@ -52,6 +53,7 @@ object IWindowManager {
             Class.forName("android.view.IWindowManager")
             true
         } catch (e: Throwable) {
+            e.printStackTrace()
             false
         }
     }

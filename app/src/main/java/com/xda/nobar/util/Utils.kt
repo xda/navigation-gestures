@@ -93,6 +93,7 @@ object Utils {
      */
     fun getNavBarHeight(resources: Resources): Int {
         return resources.getDimensionPixelSize(resources.getIdentifier("navigation_bar_height", "dimen", "android"))
+//        return resources.getDimensionPixelSize(com.android.internal.R.dimen.navigation_bar_height)
     }
 
     /**
@@ -184,28 +185,28 @@ object Utils {
      */
     fun hasNavBar(context: Context): Boolean {
         val id = context.resources.getIdentifier("config_showNavigationBar", "bool", "android")
-        return id > 0 && context.resources.getBoolean(id)
+        return context.resources.getBoolean(id)
                 || Build.MODEL.contains("Android SDK built for x86")
 
-//        return context.resources.getBoolean(com.android.internal.R.bool.config_showNavigationBar)
+//        return context.resources.getBoolean(com.android.internal.R.bool.config_showNavigationBar) || Build.MODEL.contains("Android SDK")
     }
 
-    /**
-     * Special function for TouchWiz devices, some of which can hide the navigation bar
-     * @param context a context object
-     * @return true if the navigation bar is current hidden by TouchWiz
-     */
-    fun touchWizHideNavEnabled(context: Context): Boolean {
-        return Settings.Global.getInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0) == 0
-    }
+//    /**
+//     * Special function for TouchWiz devices, some of which can hide the navigation bar
+//     * @param context a context object
+//     * @return true if the navigation bar is currently hidden by TouchWiz
+//     */
+//    fun touchWizHideNavEnabled(context: Context): Boolean {
+//        return Settings.Global.getInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0) == 0
+//    }
 
-    /**
-     * Make sure the TouchWiz navbar is not hidden
-     * @param context a context object
-     */
-    fun forceTouchWizNavEnabled(context: Context) {
-        if (hasNavBar(context)) Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0)
-    }
+//    /**
+//     * Make sure the TouchWiz navbar is not hidden
+//     * @param context a context object
+//     */
+//    fun forceTouchWizNavEnabled(context: Context) {
+//        if (hasNavBar(context)) Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0)
+//    }
 
     /**
      * Get the user-defined or default vertical position of the pill
@@ -222,7 +223,7 @@ object Utils {
      * @return the default position, in pixels, from the bottom of the screen
      */
     fun getDefaultY(context: Context): Int {
-        return (Utils.getNavBarHeight(context.resources) / 2 - context.resources.getDimensionPixelSize(R.dimen.pill_height) / 2)
+        return (getNavBarHeight(context.resources) / 2 - context.resources.getDimensionPixelSize(R.dimen.pill_height) / 2)
     }
 
     /**

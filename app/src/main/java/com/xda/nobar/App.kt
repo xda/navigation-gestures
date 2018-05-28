@@ -210,7 +210,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             }
             "use_root" -> {
                 if (Utils.shouldUseRootCommands(this)) {
-                    ContextCompat.startForegroundService(this, rootServiceIntent)
+                    startService(rootServiceIntent)
                     ensureRootServiceBound()
                 } else {
                     stopService(rootServiceIntent)
@@ -277,7 +277,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         ContextCompat.startForegroundService(this, Intent(this, ForegroundService::class.java))
 
         if (Utils.shouldUseRootCommands(this)) {
-            ContextCompat.startForegroundService(this, rootServiceIntent)
+            startService(rootServiceIntent)
             ensureRootServiceBound()
         }
 
@@ -377,7 +377,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Hide the navbar
      */
     fun hideNav() {
-        if (!Utils.touchWizHideNavEnabled(this)) Utils.forceTouchWizNavEnabled(this)
+//        if (!Utils.touchWizHideNavEnabled(this)) Utils.forceTouchWizNavEnabled(this)
 
         if (Utils.shouldUseOverscanMethod(this) && !Utils.isInImmersive(this)) {
             IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(resources) + 1)
