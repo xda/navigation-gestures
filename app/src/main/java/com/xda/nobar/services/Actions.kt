@@ -2,10 +2,7 @@ package com.xda.nobar.services
 
 import android.accessibilityservice.AccessibilityService
 import android.app.ActivityManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.media.AudioManager
 import android.os.Build
 import android.os.Handler
@@ -104,7 +101,19 @@ class Actions : AccessibilityService() {
                         val assist = Intent(RecognizerIntent.ACTION_WEB_SEARCH)
                         assist.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-                        startActivity(assist)
+                        try {
+                            startActivity(assist)
+                        } catch (e: ActivityNotFoundException) {
+                            assist.action = RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE
+
+                            try {
+                                startActivity(assist)
+                            } catch (e: ActivityNotFoundException) {
+                                assist.action = Intent.ACTION_VOICE_ASSIST
+
+                                startActivity(assist)
+                            }
+                        }
                     }
                     app.typeOhm -> {
                         val ohm = Intent("com.xda.onehandedmode.intent.action.TOGGLE_OHM")
