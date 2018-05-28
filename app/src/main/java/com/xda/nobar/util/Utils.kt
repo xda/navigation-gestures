@@ -463,6 +463,6 @@ object Utils {
     }
 
     fun hideInFullscreen(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_in_fullscreen", false)
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_in_fullscreen", true)
     }
 }

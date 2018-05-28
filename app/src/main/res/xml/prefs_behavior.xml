@@ -5,7 +5,8 @@
     <SwitchPreference
         android:title="@string/hide_in_fullscreen"
         android:summary="@string/hide_in_fullscreen_desc"
-        android:key="hide_in_fullscreen" />
+        android:key="hide_in_fullscreen"
+        android:defaultValue="true" />
 
     <!--<SwitchPreference-->
         <!--android:title="@string/hide_on_launcher"-->
