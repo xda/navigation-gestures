@@ -17,6 +17,7 @@ import android.util.AttributeSet
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.xda.nobar.App
@@ -52,6 +53,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         const val SCALE_SMALL = 0.3f
 
         const val VIB_SHORT = 50L
+
+        const val DEF_MARGIN_LEFT_DP = 2
+        const val DEF_MARGIN_RIGHT_DP = 2
+        const val DEF_MARGIN_BOTTOM_DP = 2
 
         val ENTER_INTERPOLATOR = DecelerateInterpolator()
         val EXIT_INTERPOLATOR = AccelerateInterpolator()
@@ -111,6 +116,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         pill.elevation = Utils.dpAsPx(context, if (Utils.shouldShowShadow(context)) 2 else 0).toFloat()
+        (pill.layoutParams as FrameLayout.LayoutParams).apply {
+            val shadow = Utils.shouldShowShadow(context)
+            marginEnd = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_RIGHT_DP) else 0
+            marginStart = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_LEFT_DP) else 0
+            bottomMargin = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_BOTTOM_DP) else 0
+
+            pill.layoutParams = this
+        }
 
         layoutParams.width = getCustomWidth(context)
         layoutParams.height = getCustomHeight(context)
@@ -164,7 +177,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
         if (key == "show_shadow") {
-            pill.elevation = Utils.dpAsPx(context, if (Utils.shouldShowShadow(context)) 2 else 0).toFloat()
+            val shadow = Utils.shouldShowShadow(context)
+            pill.elevation = Utils.dpAsPx(context, if (shadow) 2 else 0).toFloat()
+
+            (pill.layoutParams as FrameLayout.LayoutParams).apply {
+                marginEnd = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_RIGHT_DP) else 0
+                marginStart = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_LEFT_DP) else 0
+                bottomMargin = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_BOTTOM_DP) else 0
+
+                pill.layoutParams = this
+            }
         }
         if (key == "static_pill") {
             val params = layoutParams as WindowManager.LayoutParams
