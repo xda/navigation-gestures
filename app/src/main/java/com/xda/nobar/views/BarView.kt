@@ -819,6 +819,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var isSwipeLeft = false
         private var isSwipeRight = false
         private var isOverrideTap = false
+        private var isOverrideSwipeUp = false
 
         private var upHoldHandle: ScheduledFuture<*>? = null
         private var leftHoldHandle: ScheduledFuture<*>? = null
@@ -845,6 +846,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                     when (ev?.action) {
                         MotionEvent.ACTION_DOWN -> {
+                            isOverrideSwipeUp = isHidden
                             app.immersiveListener.onGlobalLayout()
                             oldY = ev.rawY
                             oldX = ev.rawX
@@ -853,6 +855,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                         MotionEvent.ACTION_UP -> {
                             beingTouched = false
+
+                            if (isOverrideSwipeUp) {
+                                isSwipeUp = false
+                                isOverrideSwipeUp = false
+                            }
 
                             if (isSwipeUp) {
                                 upHoldHandle?.cancel(true)
