@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 
 project.version = 31
-def name = "1.2.0-internal"
+def name = "1.2.1-internal"
 
 android {
     compileSdkVersion 27

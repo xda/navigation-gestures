@@ -305,22 +305,36 @@ class SettingsActivity : AppCompatActivity() {
             
             val resetListener = Preference.OnPreferenceClickListener {
                 preferenceManager.sharedPreferences.edit().apply {
-                    if (it.key == "reset_width" || it.key == "defaults") remove("custom_width")
-                    if (it.key == "reset_height" || it.key == "defaults") remove("custom_height")
-                    if (it.key == "reset_pos_y" || it.key == "defaults") remove("custom_y")
-                    if (it.key == "reset_pos_x" || it.key == "defaults") remove("custom_x")
-                    if (it.key == "reset_pill_bg" || it.key == "defaults") remove("pill_bg")
-                    if (it.key == "reset_pill_fg" || it.key == "defaults") remove("pill_fg")
-                    if (it.key == "reset_pill_corner_radius" || it.key == "defaults") remove("pill_corner_radius")
+                    if (it.key == "reset_width" || it.key == "defaults") {
+                        remove("custom_width")
+                        width.seekBar.progress = Utils.getCustomWidth(activity)
+                    }
+                    if (it.key == "reset_height" || it.key == "defaults") {
+                        remove("custom_height")
+                        height.seekBar.progress = Utils.getCustomHeight(activity)
+                    }
+                    if (it.key == "reset_pos_y" || it.key == "defaults") {
+                        remove("custom_y")
+                        posY.seekBar.progress = Utils.getHomeY(activity)
+                    }
+                    if (it.key == "reset_pos_x" || it.key == "defaults") {
+                        remove("custom_x")
+                        posX.seekBar.progress = Utils.getHomeX(activity)
+                    }
+                    if (it.key == "reset_pill_bg" || it.key == "defaults") {
+                        remove("pill_bg")
+                        pillColor.saveValue(Utils.getPillBGColor(activity))
+                    }
+                    if (it.key == "reset_pill_fg" || it.key == "defaults") {
+                        remove("pill_fg")
+                        pillBorderColor.saveValue(Utils.getPillFGColor(activity))
+                    }
+                    if (it.key == "reset_pill_corner_radius" || it.key == "defaults") {
+                        remove("pill_corner_radius")
+                        pillCornerRadius.seekBar.progress = Utils.getPillCornerRadiusInDp(activity)
+                    }
                     apply()
                 }
-                width.seekBar.progress = Utils.getCustomWidth(activity)
-                height.seekBar.progress = Utils.getCustomHeight(activity)
-                posY.seekBar.progress = Utils.getHomeY(activity)
-                posX.seekBar.progress = Utils.getHomeX(activity)
-                pillCornerRadius.seekBar.progress = Utils.getPillCornerRadiusInDp(activity)
-                pillColor.saveValue(Utils.getPillBGColor(activity))
-                pillBorderColor.saveValue(Utils.getPillFGColor(activity))
                 true
             }
 
@@ -365,13 +379,19 @@ class SettingsActivity : AppCompatActivity() {
 
             val listener = Preference.OnPreferenceClickListener {
                 preferenceManager.sharedPreferences.edit().apply {
-                    if (it.key == "reset_hold_time" || it.key == "reset_all") remove("hold_time")
-                    if (it.key == "reset_vibration_duration" || it.key == "reset_all") remove("vibration_duration")
-                    if (it.key == "reset_anim_duration" || it.key == "reset_all") remove("anim_duration")
+                    if (it.key == "reset_hold_time" || it.key == "reset_all") {
+                        remove("hold_time")
+                        hold.seekBar.resetProgress()
+                    }
+                    if (it.key == "reset_vibration_duration" || it.key == "reset_all") {
+                        remove("vibration_duration")
+                        vib.seekBar.resetProgress()
+                    }
+                    if (it.key == "reset_anim_duration" || it.key == "reset_all") {
+                        remove("anim_duration")
+                        anim.seekBar.resetProgress()
+                    }
 
-                    hold.seekBar.resetProgress()
-                    vib.seekBar.resetProgress()
-                    anim.seekBar.resetProgress()
                     apply()
                 }
                 true
