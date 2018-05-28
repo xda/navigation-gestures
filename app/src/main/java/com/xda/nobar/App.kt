@@ -495,10 +495,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 }
             }
         }
-
-        fun destroy() {
-            unregisterReceiver(this)
-        }
     }
 
     /**
@@ -534,10 +530,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     }
                 }
             }
-        }
-
-        fun destroy() {
-            unregisterReceiver(this)
         }
     }
 
@@ -601,23 +593,22 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         private fun handleImmersiveChange(isImmersive: Boolean) {
             val hideInFullScreen = Utils.hideInFullscreen(this@App)
             if (isImmersive) {
-                showNav()
-                if (hideInFullScreen) {
-                    bar.hidePill(true)
+                if (!isDisabledForContent) {
+                    showNav()
+                    if (hideInFullScreen) {
+                        bar.hidePill(true)
+                    }
+                    isDisabledForContent = true
                 }
-                isDisabledForContent = true
             } else if (isDisabledForContent) {
                 hideNav()
+
                 if (hideInFullScreen && bar.isAutoHidden) {
                     bar.isAutoHidden = false
-                    bar.showPill()
+                    bar.showPill(true)
                 }
                 isDisabledForContent = false
             }
-        }
-
-        fun destroy() {
-            contentResolver.unregisterContentObserver(this)
         }
     }
 
@@ -645,10 +636,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     refreshPremium()
                 }
             }
-        }
-
-        fun destroy() {
-            unregisterReceiver(this)
         }
     }
 

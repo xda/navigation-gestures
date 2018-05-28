@@ -352,14 +352,23 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 .start()
     }
 
+    private var hideHandle: ScheduledFuture<*>? = null
+
     /**
      * "Show" the pill by moving it back to its normal position
      */
-    fun showPill() {
+    fun showPill(forceNotAuto: Boolean) {
         try {
             if (isHidden) {
-                if (isAutoHidden) {
-                    handler?.postDelayed({ hidePill(true) }, 1500)
+                if (hideHandle != null) {
+                    hideHandle?.cancel(true)
+                    hideHandle = null
+                }
+
+                if (isAutoHidden && !forceNotAuto) {
+                    hideHandle = Executors.newScheduledThreadPool(1).schedule({
+                        if (isAutoHidden && !forceNotAuto) hidePill(true)
+                    }, 1500, TimeUnit.MILLISECONDS)
                 }
                 isHidden = false
 
@@ -1093,7 +1102,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 isSwipeRight = true
                                 true
                             }
-                            e2.y - e1.y > 50 && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
+                            e2.y - e1.y > 30 && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
                                 isActing = true
                                 sendAction(app.actionDown)
                                 true
@@ -1110,7 +1119,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             && e2 != null
                             && e2.y - e1.y < -50
                             && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
-                        showPill()
+                        showPill(false)
                         true
                     } else false
                 } catch (e: IllegalArgumentException) {
@@ -1153,7 +1162,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 } else if (isHidden) {
                     isOverrideTap = false
                     vibrate(getVibrationDuration().toLong())
-                    showPill()
+                    showPill(false)
                     true
                 } else {
                     isOverrideTap = false
