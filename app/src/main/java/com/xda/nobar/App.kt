@@ -353,24 +353,28 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * @return true if hidden
      */
     fun isNavBarHidden(): Boolean {
-        return when (wm.defaultDisplay.rotation) {
-            Surface.ROTATION_0 -> {
-                getOverscan().bottom.absoluteValue > 0
-            }
-            Surface.ROTATION_90 -> {
-                if (Utils.useTabletMode(this)) getOverscan().left.absoluteValue > 0 else getOverscan().bottom.absoluteValue > 0
-            }
-            Surface.ROTATION_180 -> {
-                if (Utils.useTabletMode(this) || Utils.useRot270Fix(this)) getOverscan().top.absoluteValue > 0 else getOverscan().bottom.absoluteValue > 0
-            }
-            else -> {
-                when {
-                    Utils.useTabletMode(this) -> getOverscan().right.absoluteValue > 0
-                    Utils.useRot270Fix(this) -> getOverscan().top.absoluteValue > 0
-                    else -> getOverscan().bottom.absoluteValue > 0
-                }
-            }
-        } || getOverscan().bottom.absoluteValue > 0
+//        return when (wm.defaultDisplay.rotation) {
+//            Surface.ROTATION_0 -> {
+//                getOverscan().bottom.absoluteValue > 0
+//            }
+//            Surface.ROTATION_90 -> {
+//                if (Utils.useTabletMode(this)) getOverscan().left.absoluteValue > 0 else getOverscan().bottom.absoluteValue > 0
+//            }
+//            Surface.ROTATION_180 -> {
+//                if (Utils.useTabletMode(this) || Utils.useRot270Fix(this)) getOverscan().top.absoluteValue > 0 else getOverscan().bottom.absoluteValue > 0
+//            }
+//            else -> {
+//                when {
+//                    Utils.useTabletMode(this) -> getOverscan().right.absoluteValue > 0
+//                    Utils.useRot270Fix(this) -> getOverscan().top.absoluteValue > 0
+//                    else -> getOverscan().bottom.absoluteValue > 0
+//                }
+//            }
+//        } || getOverscan().bottom.absoluteValue > 0
+
+        val overscan = getOverscan()
+
+        return overscan.bottom < 0 || overscan.top < 0 || overscan.left < 0 || overscan.right < 0
     }
 
     /**
@@ -550,27 +554,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
             bar.getWindowVisibleDisplayFrame(rect)
 
-            val navCondition = if (Utils.hasNavBar(this@App)) rect.bottom <= screenRes.y - 1 else true
+            Log.e("Nobar", "$rect $screenRes")
 
-//            Log.e("Nobar", rect.toString())
+            val hidden = ((rect.top - rect.bottom).absoluteValue >= screenRes.y && (rect.left - rect.right).absoluteValue >= screenRes.x)
 
-            if (navCondition) {
-                onSystemUiVisibilityChange(0)
+            if (Utils.hasNavBar(this@App) && hidden) {
+                onSystemUiVisibilityChange(View.SYSTEM_UI_FLAG_FULLSCREEN)
             } else {
-                val nav = rect.bottom >= screenRes.y && rect.bottom < screenRes.y * 2
-
-                if (Utils.hasNavBar(this@App) && nav) {
-                    onSystemUiVisibilityChange(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
-                }
-
-                if (rect.top <= 0 && (if (Utils.hasNavBar(this@App)) nav else true)) {
-                    onSystemUiVisibilityChange(View.SYSTEM_UI_FLAG_FULLSCREEN)
-                }
+                onSystemUiVisibilityChange(0)
             }
         }
 
         override fun onSystemUiVisibilityChange(visibility: Int) {
-//            Log.e("NoBar", visibility.toString())
+            Log.e("NoBar", visibility.toString())
             if (isActivated()) {
                 handleImmersiveChange(visibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0
                         || visibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
@@ -645,7 +641,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         private var oldRot = Surface.ROTATION_0
 
         override fun onOrientationChanged(orientation: Int) {
-            if (navHidden && (Utils.useRot270Fix(this@App) || Utils.useTabletMode(this@App))) {
+            if (isNavBarHidden() && (Utils.useRot270Fix(this@App) || Utils.useTabletMode(this@App))) {
                 val newRot = wm.defaultDisplay.rotation
 
                 if (oldRot != newRot) {
