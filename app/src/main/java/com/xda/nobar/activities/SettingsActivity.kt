@@ -284,8 +284,8 @@ class SettingsActivity : AppCompatActivity() {
             val resetX = findPreference("reset_pos_x")
             val defaults = findPreference("defaults")
 
-            width.seekBar.min = Utils.dpAsPx(activity, 20)
-            height.seekBar.min = Utils.dpAsPx(activity, 10)
+            width.seekBar.min = Utils.dpAsPx(activity, 10)
+            height.seekBar.min = Utils.dpAsPx(activity, 5)
             posY.seekBar.min = 0
             posX.seekBar.min = -(Utils.getRealScreenSize(activity).x.toFloat() / 2f - Utils.getCustomWidth(activity).toFloat() / 2f).toInt()
 
