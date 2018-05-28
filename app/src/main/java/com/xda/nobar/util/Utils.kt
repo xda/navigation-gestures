@@ -420,9 +420,11 @@ object Utils {
      * Check whether or not the pill should be hidden on the launcher
      * @param context a context object
      * @return true if the pill should be hidden
+     * TODO: re-enable this once it's fixed
      */
     fun hideOnLauncher(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_on_launcher", false)
+//        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_on_launcher", false)
+        return false
     }
 
     /**
