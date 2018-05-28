@@ -425,7 +425,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         updateLayout(params)
                     }
 
-                    isHidden = false
+                    handler?.postDelayed(Runnable { isHidden = false }, (if (getAnimationDurationMs() < 12) 12 else 0))
                 }
                 .start()
     }
