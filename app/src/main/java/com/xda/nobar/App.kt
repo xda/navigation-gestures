@@ -177,11 +177,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         compatibilityRotationListener = CompatibilityRotationListener()
         rootServiceIntent = Intent(this, RootService::class.java)
 
-        if (Utils.shouldUseRootCommands(this)) {
-            startService(rootServiceIntent)
-            ensureRootServiceBound()
-        }
-
         premiumHelper = PremiumHelper(this, object : LicenseCheckListener {
             override fun onResult(valid: Boolean, reason: String) {
                 Log.e("NoBar", reason)
@@ -215,7 +210,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             }
             "use_root" -> {
                 if (Utils.shouldUseRootCommands(this)) {
-                    startService(rootServiceIntent)
+                    ContextCompat.startForegroundService(this, rootServiceIntent)
                     ensureRootServiceBound()
                 } else {
                     stopService(rootServiceIntent)
@@ -283,6 +278,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         wm.addView(bar, params)
         ContextCompat.startForegroundService(this, Intent(this, ForegroundService::class.java))
 
+        if (Utils.shouldUseRootCommands(this)) {
+            ContextCompat.startForegroundService(this, rootServiceIntent)
+            ensureRootServiceBound()
+        }
+
         bar.show(null)
         bar.setOnSystemUiVisibilityChangeListener(immersiveListener)
         bar.viewTreeObserver.addOnGlobalLayoutListener(immersiveListener)
@@ -332,6 +332,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 showNav()
                 removeBar()
                 stopService(Intent(this@App, ForegroundService::class.java))
+                stopService(rootServiceIntent)
             } else {
                 hideNav()
                 addBar()

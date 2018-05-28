@@ -2,7 +2,6 @@ package com.xda.nobar.util
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Point
@@ -405,11 +404,16 @@ object Utils {
      * @return the package name, eg com.android.launcher3
      * //TODO: this doesn't seem to work properly
      */
-    fun getLauncherPackage(context: Context): String {
+    fun getLauncherPackage(context: Context): ArrayList<String> {
         val intent = Intent(Intent.ACTION_MAIN)
         intent.addCategory(Intent.CATEGORY_HOME)
 
-        return context.packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY).activityInfo.packageName
+        val info = context.packageManager.queryIntentActivities(intent, 0)
+        val ret = ArrayList<String>()
+
+        info.forEach { ret.add(it.activityInfo.packageName) }
+
+        return ret
     }
 
     /**
@@ -435,9 +439,11 @@ object Utils {
      * @param context a context object
      */
     fun forceNavBlack(context: Context) {
-        Settings.Global.putInt(context.contentResolver, "navigationbar_color", Color.BLACK)
-        Settings.Global.putInt(context.contentResolver, "navigationbar_current_color", Color.BLACK)
-        Settings.Global.putInt(context.contentResolver, "navigationbar_use_theme_default", 0)
+        if (hasNavBar(context)) {
+            Settings.Global.putInt(context.contentResolver, "navigationbar_color", Color.BLACK)
+            Settings.Global.putInt(context.contentResolver, "navigationbar_current_color", Color.BLACK)
+            Settings.Global.putInt(context.contentResolver, "navigationbar_use_theme_default", 0)
+        }
     }
 
     /**
@@ -446,9 +452,11 @@ object Utils {
      * @param context a context object
      */
     fun clearBlackNav(context: Context) {
-        Settings.Global.putString(context.contentResolver, "navigationbar_color", null)
-        Settings.Global.putString(context.contentResolver, "navigationbar_current_color", null)
-        Settings.Global.putString(context.contentResolver, "navigation_bar_use_theme_default", null)
+        if (hasNavBar(context)) {
+            Settings.Global.putString(context.contentResolver, "navigationbar_color", null)
+            Settings.Global.putString(context.contentResolver, "navigationbar_current_color", null)
+            Settings.Global.putString(context.contentResolver, "navigation_bar_use_theme_default", null)
+        }
     }
 
     fun hideInFullscreen(context: Context): Boolean {

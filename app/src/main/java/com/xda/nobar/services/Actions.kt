@@ -15,6 +15,7 @@ import android.view.accessibility.AccessibilityEvent
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
+import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.util.Utils
 
 /**
@@ -52,18 +53,21 @@ class Actions : AccessibilityService() {
 //        Log.e("NoBar", event.toString())
 
 //        Log.e("NoBar", "${event.packageName} ${Utils.getLauncherPackage(this)}")
-        if (event.packageName == Utils.getLauncherPackage(this)) {
-            if (Utils.hideOnLauncher(this)) {
-                isBarHiddenForLauncher = true
-                app.removeBar()
+
+        if (!IntroActivity.needsToRun(this)) {
+            if (Utils.getLauncherPackage(this).contains(event.packageName)) {
+                if (Utils.hideOnLauncher(this)) {
+                    isBarHiddenForLauncher = true
+                    app.removeBar()
+                }
+            } else {
+                if (isBarHiddenForLauncher) {
+                    isBarHiddenForLauncher = false
+                    app.addBar()
+                }
             }
-        } else {
-            if (isBarHiddenForLauncher) {
-                isBarHiddenForLauncher = false
-                app.addBar()
-            }
+            app.immersiveListener.onGlobalLayout()
         }
-        app.immersiveListener.onGlobalLayout()
     }
 
     override fun onInterrupt() {}
