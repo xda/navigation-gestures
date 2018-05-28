@@ -115,7 +115,25 @@ class Actions : AccessibilityService() {
                             } catch (e: ActivityNotFoundException) {
                                 assist.action = Intent.ACTION_VOICE_ASSIST
 
-                                startActivity(assist)
+                                try {
+                                    startActivity(assist)
+                                } catch (e: ActivityNotFoundException) {
+                                    assist.action = Intent.ACTION_VOICE_COMMAND
+
+                                    try {
+                                        startActivity(assist)
+                                    } catch (e: ActivityNotFoundException) {
+                                        assist.action = Intent.ACTION_ASSIST
+
+                                        try {
+                                            startActivity(assist)
+                                        } catch (e: ActivityNotFoundException) {
+                                            assist.action = Intent.ACTION_SEARCH_LONG_PRESS
+
+                                            startActivity(assist)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
