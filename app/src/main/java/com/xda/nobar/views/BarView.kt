@@ -819,7 +819,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var isSwipeLeft = false
         private var isSwipeRight = false
         private var isOverrideTap = false
-        private var isOverrideSwipeUp = false
+        private var wasHidden = false
 
         private var upHoldHandle: ScheduledFuture<*>? = null
         private var leftHoldHandle: ScheduledFuture<*>? = null
@@ -846,7 +846,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                     when (ev?.action) {
                         MotionEvent.ACTION_DOWN -> {
-                            isOverrideSwipeUp = isHidden
+                            wasHidden = isHidden
                             app.immersiveListener.onGlobalLayout()
                             oldY = ev.rawY
                             oldX = ev.rawX
@@ -856,9 +856,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         MotionEvent.ACTION_UP -> {
                             beingTouched = false
 
-                            if (isOverrideSwipeUp) {
+                            if (wasHidden) {
                                 isSwipeUp = false
-                                isOverrideSwipeUp = false
                             }
 
                             if (isSwipeUp) {
@@ -1006,7 +1005,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     }
                                 }
                                 else -> {
-                                    if (actionMap[app.actionDouble] == app.typeNoAction && !isActing) {
+                                    if (actionMap[app.actionDouble] == app.typeNoAction && !isActing && !wasHidden) {
                                         isOverrideTap = true
                                         sendAction(app.actionTap)
                                     }
@@ -1017,6 +1016,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     isSwipeRight = false
                                 }
                             }
+
+                            wasHidden = isHidden
                         }
                         MotionEvent.ACTION_MOVE -> {
                             if (isSwipeUp && !isSwipeLeft && !isSwipeRight) {
