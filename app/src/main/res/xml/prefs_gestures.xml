@@ -14,7 +14,7 @@
             android:entries="@array/action_names" />
 
         <ListPreference
-            android:defaultValue="@string/type_switch"
+            android:defaultValue="@string/type_no_action"
             android:entries="@array/action_names"
             android:entryValues="@array/action_values"
             android:icon="@drawable/double_tap"

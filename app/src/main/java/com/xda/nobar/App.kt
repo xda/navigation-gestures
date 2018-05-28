@@ -192,7 +192,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         prefs.registerOnSharedPreferenceChangeListener(this)
 
         refreshPremium()
-        setDoubleTapToNoActionPreNougat()
 
         if (isActivated() && !IntroActivity.needsToRun(this)) {
             toggle(false)
@@ -447,17 +446,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 Utils.enableNavImmersive(this)
                 showNav()
             }
-        }
-    }
-
-    /**
-     * Double tapping has a default action of switching to the previus app,
-     * so we need to make sure to set it to nothing below Nougat
-     * if it's currently set to switch apps
-     */
-    private fun setDoubleTapToNoActionPreNougat() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N && prefs.getString("double_tap", typeSwitch.toString()) == typeSwitch.toString()) {
-            prefs.edit().putString("double_tap", typeNoAction.toString()).apply()
         }
     }
 
