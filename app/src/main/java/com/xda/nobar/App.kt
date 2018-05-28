@@ -554,7 +554,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
             bar.getWindowVisibleDisplayFrame(rect)
 
-            Log.e("Nobar", "$rect $screenRes")
+//            Log.e("Nobar", "$rect $screenRes")
 
             val hidden = ((rect.top - rect.bottom).absoluteValue >= screenRes.y && (rect.left - rect.right).absoluteValue >= screenRes.x)
 
@@ -566,7 +566,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         override fun onSystemUiVisibilityChange(visibility: Int) {
-            Log.e("NoBar", visibility.toString())
+//            Log.e("NoBar", visibility.toString())
             if (isActivated()) {
                 handleImmersiveChange(visibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0
                         || visibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
