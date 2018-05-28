@@ -295,7 +295,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         try {
             if (!isHidden) {
                 isAutoHidden = auto
-                isHidden = true
 
                 val params = layoutParams as WindowManager.LayoutParams
 
@@ -350,6 +349,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                         updateLayout(params)
                     }
+
+                    isHidden = true
                 }
                 .start()
     }
@@ -372,7 +373,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         if (isAutoHidden && !forceNotAuto) hidePill(true)
                     }, 1500, TimeUnit.MILLISECONDS)
                 }
-                isHidden = false
 
                 val params = layoutParams as WindowManager.LayoutParams
 
@@ -424,6 +424,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                         updateLayout(params)
                     }
+
+                    isHidden = false
                 }
                 .start()
     }
