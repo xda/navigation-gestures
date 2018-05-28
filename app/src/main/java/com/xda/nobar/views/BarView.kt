@@ -276,7 +276,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * This is called twice to "flash" the pill when an action is performed
      */
     fun animateActiveLayer(alpha: Float) {
-        handler.post {
+        handler?.post {
             pillFlash.apply {
                 animate()
                         .setDuration(getAnimationDurationMs())
@@ -895,7 +895,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                     if (params.y > getHomeY(context)) {
                                                         params.y -= 1
 
-                                                        handler.post {
+                                                        handler?.post {
                                                             wm.updateViewLayout(this@BarView, params)
                                                         }
                                                     }
@@ -929,7 +929,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                     if (params.x < getHomeX(context)) {
                                                         params.x += 1
 
-                                                        handler.post {
+                                                        handler?.post {
                                                             wm.updateViewLayout(this@BarView, params)
                                                         }
                                                     }
@@ -964,7 +964,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                     if (params.x > getHomeX(context)) {
                                                         params.x -= 1
 
-                                                        handler.post {
+                                                        handler?.post {
                                                             wm.updateViewLayout(this@BarView, params)
                                                         }
                                                     }
