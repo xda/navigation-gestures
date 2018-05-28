@@ -258,13 +258,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         params.format = PixelFormat.TRANSLUCENT
         params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 
-        if (Utils.dontMoveForKeyboard(this)) params.flags = params.flags or
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
-                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-
-        if (bar.isHidden) {
-            params.flags = params.flags or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-            params.y = -(Utils.getCustomHeight(this) / 2)
+        if (Utils.dontMoveForKeyboard(this)) {
+            params.flags = params.flags or
+                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
+                    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+            params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
         }
 
         addBarInternal()

@@ -157,12 +157,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (key == "custom_y") {
             val params = layoutParams as WindowManager.LayoutParams
             params.y = getHomeY(context)
-            wm.updateViewLayout(this, params)
+            updateLayout(params)
         }
         if (key == "custom_x") {
             val params = layoutParams as WindowManager.LayoutParams
             params.x = getHomeX(context)
-            wm.updateViewLayout(this, params)
+            updateLayout(params)
         }
         if (key == "pill_bg" || key == "pill_fg") {
             val layers = pill.background as LayerDrawable
@@ -195,13 +195,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 params.flags = params.flags or
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
                         WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
             } else {
                 params.flags = params.flags or
                         WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM and
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
+                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
             }
 
-            wm.updateViewLayout(this, params)
+            updateLayout(params)
         }
         if (key == "audio_feedback") {
             isSoundEffectsEnabled = Utils.feedbackSound(context)
@@ -308,7 +310,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         if (params.y > 0) {
                             params.y -= 1
 
-                            handler?.post { wm.updateViewLayout(this, params) }
+                            handler?.post { updateLayout(params) }
                         }
                     }, 0, sleepTime.toLong(), TimeUnit.MICROSECONDS)
 
@@ -321,7 +323,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 } catch (e: Exception) {
                     params.y = 0
                     handler?.post {
-                        wm.updateViewLayout(this, params)
+                        updateLayout(params)
                         animateHide()
                     }
 
@@ -346,7 +348,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     handler?.post {
                         jiggleDown()
 
-                        wm.updateViewLayout(this, params)
+                        updateLayout(params)
                     }
                 }
                 .start()
@@ -385,7 +387,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         if (params.y < distance) {
                             params.y += 1
 
-                            handler?.post { wm.updateViewLayout(this, params) }
+                            handler?.post { updateLayout(params) }
                         }
                     }, 0, sleepTime.toLong(), TimeUnit.MICROSECONDS)
 
@@ -398,7 +400,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 } catch (e: Exception) {
                     params.y = distance
                     handler?.post {
-                        wm.updateViewLayout(this, params)
+                        updateLayout(params)
                         animateShow()
                     }
                 }
@@ -420,7 +422,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     handler?.post {
                         jiggleUp()
 
-                        wm.updateViewLayout(this, params)
+                        updateLayout(params)
                     }
                 }
                 .start()
@@ -796,6 +798,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             prefs.edit().putBoolean("show_hidden_toast", false).apply()
         }
     }
+    
+    private fun updateLayout(params: WindowManager.LayoutParams) {
+        try {
+            wm.updateViewLayout(this, params)
+        } catch (e: Exception) {}
+    }
 
     /**
      * Manage all the gestures on the pill
@@ -896,7 +904,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                         params.y -= 1
 
                                                         handler?.post {
-                                                            wm.updateViewLayout(this@BarView, params)
+                                                            updateLayout(params)
                                                         }
                                                     }
                                                 },
@@ -913,7 +921,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                         }, time.toLong(), TimeUnit.MILLISECONDS)
                                     } catch (e: Exception) {
                                         params.y = getHomeY(context)
-                                        wm.updateViewLayout(this@BarView, params)
+                                        updateLayout(params)
                                         isActing = false
                                         isSwipeUp = false
                                     }
@@ -930,7 +938,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                         params.x += 1
 
                                                         handler?.post {
-                                                            wm.updateViewLayout(this@BarView, params)
+                                                            updateLayout(params)
                                                         }
                                                     }
                                                 },
@@ -947,7 +955,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                         }, time.toLong(), TimeUnit.MILLISECONDS)
                                     } catch (e: Exception) {
                                         params.x = getHomeX(context)
-                                        wm.updateViewLayout(this@BarView, params)
+                                        updateLayout(params)
                                         if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
                                         isActing = false
                                         isSwipeLeft = false
@@ -965,7 +973,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                         params.x -= 1
 
                                                         handler?.post {
-                                                            wm.updateViewLayout(this@BarView, params)
+                                                            updateLayout(params)
                                                         }
                                                     }
                                                 },
@@ -982,7 +990,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                         }, time.toLong(), TimeUnit.MILLISECONDS)
                                     } catch (e: Exception) {
                                         params.x = getHomeX(context)
-                                        wm.updateViewLayout(this@BarView, params)
+                                        updateLayout(params)
                                         if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
                                         isActing = false
                                         isSwipeRight = false
@@ -1010,7 +1018,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                                 if (params.y < Utils.getRealScreenSize(context).y / 6 + getHomeY(context)) {
                                     params.y = params.y + (velocity / 2).toInt()
-                                    wm.updateViewLayout(this@BarView, params)
+                                    updateLayout(params)
                                 }
 
                                 if (upHoldHandle == null) {
@@ -1037,7 +1045,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     params.x == half && !isSwipeLeft -> pill.translationX += velocity
                                     else -> {
                                         params.x = params.x + (velocity / 2).toInt()
-                                        wm.updateViewLayout(this@BarView, params)
+                                        updateLayout(params)
                                     }
                                 }
 
