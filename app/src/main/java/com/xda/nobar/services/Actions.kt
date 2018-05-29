@@ -102,7 +102,7 @@ class Actions : AccessibilityService() {
                     app.premTypeQs -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) }
                     app.premTypePower -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }
                     app.typeAssist -> {
-                        val assist = Intent(RecognizerIntent.ACTION_WEB_SEARCH)
+                        val assist = Intent(Intent.ACTION_SEARCH_LONG_PRESS)
                         assist.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
                         try {
@@ -128,7 +128,7 @@ class Actions : AccessibilityService() {
                                         try {
                                             startActivity(assist)
                                         } catch (e: ActivityNotFoundException) {
-                                            assist.action = Intent.ACTION_SEARCH_LONG_PRESS
+                                            assist.action = RecognizerIntent.ACTION_WEB_SEARCH
 
                                             startActivity(assist)
                                         }
