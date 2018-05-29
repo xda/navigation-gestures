@@ -444,7 +444,7 @@ object Utils {
      * @param context a context object
      */
     fun forceNavBlack(context: Context) {
-        if (hasNavBar(context)) {
+        if (hasNavBar(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             Settings.Global.putInt(context.contentResolver, "navigationbar_color", Color.BLACK)
             Settings.Global.putInt(context.contentResolver, "navigationbar_current_color", Color.BLACK)
             Settings.Global.putInt(context.contentResolver, "navigationbar_use_theme_default", 0)
@@ -457,7 +457,7 @@ object Utils {
      * @param context a context object
      */
     fun clearBlackNav(context: Context) {
-        if (hasNavBar(context)) {
+        if (hasNavBar(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             Settings.Global.putString(context.contentResolver, "navigationbar_color", null)
             Settings.Global.putString(context.contentResolver, "navigationbar_current_color", null)
             Settings.Global.putString(context.contentResolver, "navigation_bar_use_theme_default", null)
