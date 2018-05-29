@@ -432,9 +432,11 @@ object Utils {
      * Check if the supplemental root actions should be allowed
      * @param context a context object
      * @return true to show root actions
+     * //TODO: re-enable when this is fixed
      */
     fun shouldUseRootCommands(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_root", false)
+//        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_root", false)
+        return false
     }
 
     /**
