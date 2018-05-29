@@ -38,7 +38,7 @@ android {
 }
 
 static def getDate() {
-    return new Date().format('yyyy_MM_dd_HHmm_ss')
+    return new Date().format('yy_MM_dd_HHmm_ss')
 }
 
 dependencies {
