@@ -26,7 +26,9 @@ class ForegroundService : Service() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
             notificationManager.createNotificationChannel(NotificationChannel("nobar", resources.getString(R.string.app_name), NotificationManager.IMPORTANCE_LOW))
         }
+    }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val builder = NotificationCompat.Builder(this, "nobar")
 //                .setContentTitle(resources.getString(R.string.app_name))
                 .setSmallIcon(R.drawable.ic_border_bottom_black_24dp)
@@ -36,9 +38,7 @@ class ForegroundService : Service() {
                         .setBigContentTitle(resources.getText(R.string.foreground)))
 
         startForeground(10, builder.build())
-    }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return START_STICKY
     }
 }
