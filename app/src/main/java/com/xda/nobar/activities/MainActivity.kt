@@ -54,8 +54,16 @@ class MainActivity : AppCompatActivity(), App.ActivationListener {
         hideNavSwitch.isChecked = Utils.shouldUseOverscanMethod(this)
         hideNavSwitch.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("hide_nav", isChecked).apply()
-            if (isChecked) handler.hideNav()
-            else handler.showNav()
+            if (isChecked) {
+                if (!IntroActivity.hasWss(this)) {
+                    val activity = Intent(this, IntroActivity::class.java)
+                    activity.putExtra(IntroActivity.EXTRA_WSS_ONLY, true)
+                    startActivity(activity)
+                    hideNavSwitch.isChecked = false
+                } else {
+                    handler.hideNav()
+                }
+            } else handler.showNav()
         }
     }
 

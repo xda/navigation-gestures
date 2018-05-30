@@ -201,9 +201,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
-            "use_immersive" -> {
-                switchImmersive(!Utils.shouldUseImmersiveInsteadOfOverscan(this))
-            }
             "is_active" -> {
                 listeners.forEach { it.onChange(sharedPreferences.getBoolean(key, false)) }
             }
@@ -333,7 +330,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             val state = inCarMode || currentState
 
             if (state) {
-                showNav()
+                if (!Utils.shouldUseOverscanMethod(this)) showNav()
                 removeBar()
                 stopService(Intent(this@App, ForegroundService::class.java))
                 stopService(rootServiceIntent)
@@ -402,13 +399,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Show the navbar
      */
     fun showNav() {
-        if (Utils.shouldUseOverscanMethod(this)) {
-            IWindowManager.setOverscan(0, 0, 0, 0)
-            compatibilityRotationListener.disable()
-            Utils.clearBlackNav(this)
-        } else try {
-            Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
-        } catch (e: Exception) {}
+        IWindowManager.setOverscan(0, 0, 0, 0)
+        compatibilityRotationListener.disable()
+        Utils.clearBlackNav(this)
 
         navHidden = false
     }
@@ -434,22 +427,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      */
     fun setState(activated: Boolean) {
         prefs.edit().putBoolean("is_active", activated).apply()
-    }
-
-    /**
-     * If the user turns on compatibility mode while NoBar is active, that needs to be handled
-     * @param toOverscan if true, compatibility mode has been deactivated
-     */
-    private fun switchImmersive(toOverscan: Boolean) {
-        if (isActivated()) {
-            if (toOverscan) {
-                Utils.disableNavImmersive(this)
-                hideNav()
-            } else {
-                Utils.enableNavImmersive(this)
-                showNav()
-            }
-        }
     }
 
     /**
