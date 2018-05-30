@@ -471,6 +471,6 @@ object Utils {
     }
 
     fun largerHitbox(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("larger_hitbox", false)
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("larger_hitbox", true)
     }
 }
