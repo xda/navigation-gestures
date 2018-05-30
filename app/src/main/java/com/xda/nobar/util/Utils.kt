@@ -252,7 +252,10 @@ object Utils {
      * @return the height, in pixels
      */
     fun getCustomHeight(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height", context.resources.getDimensionPixelSize(R.dimen.pill_height))
+        var defHeight = PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height", context.resources.getDimensionPixelSize(R.dimen.pill_height))
+        if (largerHitbox(context)) defHeight += context.resources.getDimensionPixelSize(R.dimen.pill_large_hitbox_height_increase)
+
+        return defHeight
     }
 
     /**

@@ -220,7 +220,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (key == "larger_hitbox") {
             val enabled = Utils.largerHitbox(context)
             val margins = getPillMargins()
-            params.height = Utils.getCustomHeight(context) + (if (enabled) resources.getDimensionPixelSize(R.dimen.pill_large_hitbox_height_increase) else 0)
+            params.height = Utils.getCustomHeight(context)
             margins.top = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
             changePillMargins(margins)
             updateLayout(params)
