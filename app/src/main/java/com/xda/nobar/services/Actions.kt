@@ -11,7 +11,6 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.os.UserHandle
 import android.speech.RecognizerIntent
 import android.support.v4.content.LocalBroadcastManager
 import android.view.KeyEvent
@@ -134,7 +133,7 @@ class Actions : AccessibilityService() {
                                             startActivity(assist)
                                         } catch (e: Exception) {
                                             val searchMan = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-                                            searchMan.launchLegacyAssist(null, UserHandle.USER_CURRENT, null)
+                                            searchMan.launchAssist(null)
                                         }
                                     }
                                 }

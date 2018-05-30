@@ -576,7 +576,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         private fun handleImmersiveChange(isImmersive: Boolean) {
-            if (!IntroActivity.needsToRun(this@App)) {
+            if (!IntroActivity.needsToRun(this@App) && !bar.isHidden) {
                 val hideInFullScreen = Utils.hideInFullscreen(this@App)
                 if (isImmersive) {
                     if (!isDisabledForContent) {
