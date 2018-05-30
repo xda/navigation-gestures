@@ -42,31 +42,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Switch
+        <com.xda.nobar.views.TextSwitch
+            android:minHeight="48dp"
             android:id="@+id/activate"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:background="?android:selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
-            android:text="@string/activated"
-            android:textSize="18sp" />
+            app:title_text="@string/activated"
+            app:title_text_size="18sp" />
 
-        <Switch
+        <com.xda.nobar.views.TextSwitch
+            android:minHeight="48dp"
             android:id="@+id/hide_nav"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="?android:selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
-            android:text="@string/hide_nav"
-            android:textSize="18sp" />
+            app:summary_text="@string/hide_nav_summary"
+            app:title_text="@string/hide_nav"
+            app:title_text_size="18sp" />
 
     </LinearLayout>
 

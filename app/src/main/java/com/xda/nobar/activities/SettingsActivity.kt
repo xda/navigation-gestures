@@ -293,15 +293,6 @@ class SettingsActivity : AppCompatActivity() {
             height.seekBar.max = Utils.dpAsPx(activity, 50)
             posY.seekBar.max = Utils.dpAsPx(activity, 70)
             posX.seekBar.max = -posX.seekBar.min
-
-            width.seekBar.progress = Utils.getCustomWidth(activity)
-            height.seekBar.progress = Utils.getCustomHeight(activity)
-            posY.seekBar.progress = Utils.getHomeY(activity)
-            posX.seekBar.progress = Utils.getHomeX(activity)
-            pillCornerRadius.seekBar.progress = Utils.getPillCornerRadiusInDp(activity)
-
-            pillColor.saveValue(Utils.getPillBGColor(activity))
-            pillBorderColor.saveValue(Utils.getPillFGColor(activity))
             
             val resetListener = Preference.OnPreferenceClickListener {
                 preferenceManager.sharedPreferences.edit().apply {

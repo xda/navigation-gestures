@@ -7,17 +7,18 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
-import android.widget.Switch
+import android.widget.CompoundButton
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.util.Utils
+import com.xda.nobar.views.TextSwitch
 
 /**
  * The main app activity
  */
 class MainActivity : AppCompatActivity(), App.ActivationListener {
-    private lateinit var gestureSwitch: Switch
-    private lateinit var hideNavSwitch: Switch
+    private lateinit var gestureSwitch: TextSwitch
+    private lateinit var hideNavSwitch: TextSwitch
     private lateinit var handler: App
     private lateinit var prefs: SharedPreferences
 
@@ -47,12 +48,12 @@ class MainActivity : AppCompatActivity(), App.ActivationListener {
         handler.addActivationListener(this)
 
         gestureSwitch.isChecked = handler.isActivated()
-        gestureSwitch.setOnCheckedChangeListener { _, isChecked ->
+        gestureSwitch.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
             handler.toggle(!isChecked)
         }
 
         hideNavSwitch.isChecked = Utils.shouldUseOverscanMethod(this)
-        hideNavSwitch.setOnCheckedChangeListener { _, isChecked ->
+        hideNavSwitch.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("hide_nav", isChecked).apply()
             if (isChecked) {
                 if (!IntroActivity.hasWss(this)) {
