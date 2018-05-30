@@ -383,7 +383,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 //        if (!Utils.touchWizHideNavEnabled(this)) Utils.forceTouchWizNavEnabled(this)
 
         if (Utils.shouldUseOverscanMethod(this) && !Utils.isInImmersive(this)) {
-            IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(resources) + 1)
+            IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this) + 1)
             compatibilityRotationListener.enable()
             Utils.forceNavBlack(this)
         } else if (!Utils.isInImmersive(this) && Utils.hasNavBar(this)) {
@@ -495,8 +495,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * We want to disable NoBar when Car Mode is active
      */
     inner class CarModeHandler : BroadcastReceiver() {
-        private var isDisabledForCarMode = false
-
         init {
             val filter = IntentFilter()
             filter.addAction(UiModeManager.ACTION_ENTER_CAR_MODE)
@@ -509,19 +507,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (isActivated()) {
                 when (intent?.action) {
                     UiModeManager.ACTION_ENTER_CAR_MODE -> {
-                        removeBar()
-                        showNav()
-                        isDisabledForCarMode = true
+                        params.height = Utils.getCustomHeight(this@App) * 2
                     }
 
                     UiModeManager.ACTION_EXIT_CAR_MODE -> {
-                        if (isDisabledForCarMode) {
-                            addBar()
-                            hideNav()
-                            isDisabledForCarMode = false
-                        }
+                        params.height = Utils.getCustomHeight(this@App)
                     }
                 }
+
+                wm.updateViewLayout(bar, params)
+                hideNav()
             }
         }
     }
@@ -650,9 +645,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         private fun handle270() {
             if (oldRot == Surface.ROTATION_270 || oldRot == Surface.ROTATION_180) {
-                IWindowManager.setOverscan(0, -Utils.getNavBarHeight(resources) + 1, 0, 0)
+                IWindowManager.setOverscan(0, -Utils.getNavBarHeight(this@App) + 1, 0, 0)
             } else {
-                IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(resources) + 1)
+                IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this@App) + 1)
             }
         }
 
@@ -660,19 +655,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (Utils.shouldUseOverscanMethod(this@App) && !Utils.isInImmersive(this@App)) {
                 when (oldRot) {
                     Surface.ROTATION_0 -> {
-                        IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(resources) + 1)
+                        IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this@App) + 1)
                     }
 
                     Surface.ROTATION_90 -> {
-                        IWindowManager.setOverscan(-Utils.getNavBarHeight(resources) + 1, 0, 0, 0)
+                        IWindowManager.setOverscan(-Utils.getNavBarHeight(this@App) + 1, 0, 0, 0)
                     }
 
                     Surface.ROTATION_180 -> {
-                        IWindowManager.setOverscan(0, -Utils.getNavBarHeight(resources) + 1, 0 ,0)
+                        IWindowManager.setOverscan(0, -Utils.getNavBarHeight(this@App) + 1, 0 ,0)
                     }
 
                     Surface.ROTATION_270 -> {
-                        IWindowManager.setOverscan(0, 0, -Utils.getNavBarHeight(resources) + 1, 0)
+                        IWindowManager.setOverscan(0, 0, -Utils.getNavBarHeight(this@App) + 1, 0)
                     }
                 }
             }

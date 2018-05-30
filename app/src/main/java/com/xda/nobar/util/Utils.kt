@@ -1,8 +1,9 @@
 package com.xda.nobar.util
 
+import android.app.UiModeManager
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
@@ -88,12 +89,14 @@ object Utils {
 
     /**
      * Get the height of the navigation bar
-     * @param resources resources object
+     * @param context context object
      * @return the height of the navigation bar
      */
-    fun getNavBarHeight(resources: Resources): Int {
-        return resources.getDimensionPixelSize(resources.getIdentifier("navigation_bar_height", "dimen", "android"))
-//        return resources.getDimensionPixelSize(com.android.internal.R.dimen.navigation_bar_height)
+    fun getNavBarHeight(context: Context): Int {
+        val uim = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+        return if (uim.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
+            context.resources.getDimensionPixelSize(context.resources.getIdentifier("navigation_bar_height_car_mode", "dimen", "android"))
+        } else context.resources.getDimensionPixelSize(context.resources.getIdentifier("navigation_bar_height", "dimen", "android"))
     }
 
     /**
@@ -223,7 +226,7 @@ object Utils {
      * @return the default position, in pixels, from the bottom of the screen
      */
     fun getDefaultY(context: Context): Int {
-        return (getNavBarHeight(context.resources) / 2 - context.resources.getDimensionPixelSize(R.dimen.pill_height) / 2)
+        return (getNavBarHeight(context) / 2 - context.resources.getDimensionPixelSize(R.dimen.pill_height) / 2)
     }
 
     /**
