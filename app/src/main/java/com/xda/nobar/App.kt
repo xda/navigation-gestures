@@ -573,23 +573,25 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         private fun handleImmersiveChange(isImmersive: Boolean) {
-            val hideInFullScreen = Utils.hideInFullscreen(this@App)
-            if (isImmersive) {
-                if (!isDisabledForContent) {
-                    showNav()
-                    if (hideInFullScreen) {
-                        bar.hidePill(true)
+            if (!IntroActivity.needsToRun(this@App)) {
+                val hideInFullScreen = Utils.hideInFullscreen(this@App)
+                if (isImmersive) {
+                    if (!isDisabledForContent) {
+                        showNav()
+                        if (hideInFullScreen) {
+                            bar.hidePill(true)
+                        }
+                        isDisabledForContent = true
                     }
-                    isDisabledForContent = true
-                }
-            } else if (isDisabledForContent) {
-                hideNav()
+                } else if (isDisabledForContent) {
+                    hideNav()
 
-                if (hideInFullScreen && bar.isAutoHidden) {
-                    bar.isAutoHidden = false
-                    bar.showPill(true)
+                    if (hideInFullScreen && bar.isAutoHidden) {
+                        bar.isAutoHidden = false
+                        bar.showPill(true)
+                    }
+                    isDisabledForContent = false
                 }
-                isDisabledForContent = false
             }
         }
     }

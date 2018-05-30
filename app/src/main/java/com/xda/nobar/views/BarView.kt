@@ -62,6 +62,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         val EXIT_INTERPOLATOR = AccelerateInterpolator()
     }
 
+    val params: WindowManager.LayoutParams
+        get() = layoutParams as WindowManager.LayoutParams
+
     private val app = context.applicationContext as App
     private val gestureDetector = GestureManager()
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -155,12 +158,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             wm.updateViewLayout(this, layoutParams as WindowManager.LayoutParams)
         }
         if (key == "custom_y") {
-            val params = layoutParams as WindowManager.LayoutParams
             params.y = getHomeY(context)
             updateLayout(params)
         }
         if (key == "custom_x") {
-            val params = layoutParams as WindowManager.LayoutParams
             params.x = getHomeX(context)
             updateLayout(params)
         }
@@ -189,8 +190,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
         if (key == "static_pill") {
-            val params = layoutParams as WindowManager.LayoutParams
-
             if (Utils.dontMoveForKeyboard(context)) {
                 params.flags = params.flags or
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
@@ -296,8 +295,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if (!isHidden) {
                 isAutoHidden = auto
 
-                val params = layoutParams as WindowManager.LayoutParams
-
                 val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
                 val time = (getAnimationDurationMs() * animDurScale)
                 val distance = params.y.toFloat()
@@ -334,8 +331,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private fun animateHide() {
-        val params = layoutParams as WindowManager.LayoutParams
-
         pill.animate()
                 .translationY(pill.height.toFloat() / 2f)
                 .alpha(ALPHA_HIDDEN)
@@ -374,8 +369,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     }, 1500, TimeUnit.MILLISECONDS)
                 }
 
-                val params = layoutParams as WindowManager.LayoutParams
-
                 val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
                 val time = (getAnimationDurationMs() * animDurScale)
                 val distance = Utils.getHomeY(context)
@@ -409,8 +402,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private fun animateShow() {
-        val params = layoutParams as WindowManager.LayoutParams
-
         pill.animate()
                 .translationY(0f)
                 .alpha(ALPHA_ACTIVE)
@@ -833,8 +824,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
          */
         inner class GD : GestureDetector(context, GestureListener()) {
             override fun onTouchEvent(ev: MotionEvent?): Boolean {
-                val params = layoutParams as WindowManager.LayoutParams
-
                 return if (!isTransparent) {
                     if (reenterTransparencyHandle != null) {
                         reenterTransparencyHandle?.cancel(true)
