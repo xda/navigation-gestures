@@ -42,7 +42,7 @@ class IntroActivity : IntroActivity() {
         }
 
         fun hasWss(context: Context): Boolean {
-            return context.checkCallingPermission(Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED
+            return context.checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED
         }
     }
 
@@ -77,9 +77,7 @@ class IntroActivity : IntroActivity() {
                 }, { prefs.getBoolean("has_confirmed_skip_wss", false) })
 
         if (intent.hasExtra(EXTRA_WSS_ONLY)) {
-            if (checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
-                addSlide(wssSlide)
-            }
+            addSlide(wssSlide)
 
             addOnNavigationBlockedListener { index, dir ->
                 if (index == indexOfSlide(wssSlide)) {
@@ -92,8 +90,6 @@ class IntroActivity : IntroActivity() {
                             })
                             .setNegativeButton(android.R.string.no, null)
                             .show()
-                } else if (dir == OnNavigationBlockedListener.DIRECTION_FORWARD) {
-                    Toast.makeText(this, resources.getString(R.string.grant_permission), Toast.LENGTH_LONG).show()
                 }
             }
         } else {

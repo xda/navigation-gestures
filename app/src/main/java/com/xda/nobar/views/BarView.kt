@@ -151,12 +151,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (key == "custom_width") {
             layoutParams.width = getCustomWidth(context)
             layoutParams = layoutParams
-            wm.updateViewLayout(this, layoutParams as WindowManager.LayoutParams)
+            updateLayout(params)
         }
         if (key == "custom_height") {
             layoutParams.height = getCustomHeight(context)
             layoutParams = layoutParams
-            wm.updateViewLayout(this, layoutParams as WindowManager.LayoutParams)
+            updateLayout(params)
         }
         if (key == "custom_y") {
             params.y = getHomeY(context)
@@ -315,7 +315,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         if (params.y > 0) {
                             params.y -= 1
 
-                            handler?.post { updateLayout(params) }
+                            updateLayout(params)
                         }
                     }, 0, sleepTime.toLong(), TimeUnit.MICROSECONDS)
 
@@ -327,8 +327,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     }, time.toLong(), TimeUnit.MILLISECONDS)
                 } catch (e: Exception) {
                     params.y = 0
+                    updateLayout(params)
                     handler?.post {
-                        updateLayout(params)
                         animateHide()
                     }
 
@@ -350,9 +350,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                     handler?.post {
                         jiggleDown()
-
-                        updateLayout(params)
                     }
+
+                    updateLayout(params)
 
                     isHidden = true
                 }
@@ -389,7 +389,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         if (params.y < distance) {
                             params.y += 1
 
-                            handler?.post { updateLayout(params) }
+                            updateLayout(params)
                         }
                     }, 0, sleepTime.toLong(), TimeUnit.MICROSECONDS)
 
@@ -401,8 +401,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     }, time.toLong(), TimeUnit.MILLISECONDS)
                 } catch (e: Exception) {
                     params.y = distance
+                    updateLayout(params)
                     handler?.post {
-                        updateLayout(params)
                         animateShow()
                     }
                 }
@@ -421,9 +421,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                     handler?.post {
                         jiggleUp()
-
-                        updateLayout(params)
                     }
+
+                    updateLayout(params)
 
                     handler?.postDelayed(Runnable { isHidden = false }, (if (getAnimationDurationMs() < 12) 12 else 0))
                 }
@@ -826,9 +826,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
     
     private fun updateLayout(params: WindowManager.LayoutParams) {
-        try {
-            wm.updateViewLayout(this, params)
-        } catch (e: Exception) {}
+        handler?.post {
+            try {
+                wm.updateViewLayout(this, params)
+            } catch (e: Exception) {}
+        }
     }
 
     /**
@@ -922,7 +924,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                             when {
                                 params.y > getHomeY(context) -> {
-                                    val distance = (params.y - getHomeY(context)).toFloat()
+                                    val distance = (params.y - getHomeY(context)).absoluteValue
                                     val sleepTime = time / distance * 1000f
 
                                     //TODO: this needs a proper fix
@@ -933,9 +935,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                     if (params.y > getHomeY(context)) {
                                                         params.y -= 1
 
-                                                        handler?.post {
-                                                            updateLayout(params)
-                                                        }
+                                                        updateLayout(params)
                                                     }
                                                 },
                                                 0, sleepTime.toLong(),
@@ -967,9 +967,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                     if (params.x < getHomeX(context)) {
                                                         params.x += 1
 
-                                                        handler?.post {
-                                                            updateLayout(params)
-                                                        }
+                                                        updateLayout(params)
                                                     }
                                                 },
                                                 0, sleepTime.toLong(),
@@ -1002,9 +1000,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                     if (params.x > getHomeX(context)) {
                                                         params.x -= 1
 
-                                                        handler?.post {
-                                                            updateLayout(params)
-                                                        }
+                                                        updateLayout(params)
                                                     }
                                                 },
                                                 0, sleepTime.toLong(),
