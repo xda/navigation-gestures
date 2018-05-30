@@ -469,4 +469,8 @@ object Utils {
     fun hideInFullscreen(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_in_fullscreen", true)
     }
+
+    fun largerHitbox(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("larger_hitbox", false)
+    }
 }

@@ -15,6 +15,11 @@
         android:summary="@string/tablet_mode_desc"
         android:key="tablet_mode" />
 
+    <SwitchPreference
+        android:title="@string/larger_hitbox"
+        android:summary="@string/larger_hitbox_desc"
+        android:key="larger_hitbox" />
+
     <!--<SwitchPreference-->
         <!--android:title="@string/use_root"-->
         <!--android:summary="@string/use_root_desc"-->

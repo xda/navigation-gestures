@@ -264,6 +264,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
         }
 
+        if (Utils.largerHitbox(this)) {
+            params.height += resources.getDimensionPixelSize(R.dimen.pill_large_hitbox_height_increase)
+            val margins = bar.getPillMargins()
+            margins.top = resources.getDimensionPixelSize(R.dimen.pill_margin_top_large_hitbox)
+            bar.changePillMargins(margins)
+        }
+
         addBarInternal()
     }
 

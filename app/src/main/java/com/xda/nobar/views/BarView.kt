@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
@@ -216,6 +217,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 cornerRadius = Utils.dpAsPx(context, Utils.getPillCornerRadiusInDp(context)).toFloat()
             }
         }
+        if (key == "larger_hitbox") {
+            val enabled = Utils.largerHitbox(context)
+            val margins = getPillMargins()
+            params.height = Utils.getCustomHeight(context) + (if (enabled) resources.getDimensionPixelSize(R.dimen.pill_large_hitbox_height_increase) else 0)
+            margins.top = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
+            changePillMargins(margins)
+            updateLayout(params)
+        }
     }
 
     /**
@@ -419,6 +428,30 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     handler?.postDelayed(Runnable { isHidden = false }, (if (getAnimationDurationMs() < 12) 12 else 0))
                 }
                 .start()
+    }
+
+    fun changePillMargins(margins: Rect) {
+        (pill.layoutParams as FrameLayout.LayoutParams).apply {
+            bottomMargin = margins.bottom
+            topMargin = margins.top
+            marginStart = margins.left
+            marginEnd = margins.right
+
+            pill.layoutParams = pill.layoutParams
+        }
+    }
+
+    fun getPillMargins(): Rect {
+        val rect = Rect()
+
+        (pill.layoutParams as FrameLayout.LayoutParams).apply {
+            rect.bottom = bottomMargin
+            rect.top = topMargin
+            rect.left = marginStart
+            rect.right = marginEnd
+        }
+
+        return rect
     }
 
     /**
