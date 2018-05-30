@@ -3,7 +3,10 @@ package com.xda.nobar.services
 import android.accessibilityservice.AccessibilityService
 import android.app.ActivityManager
 import android.app.SearchManager
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Build
 import android.os.Handler
@@ -109,27 +112,27 @@ class Actions : AccessibilityService() {
 
                         try {
                             startActivity(assist)
-                        } catch (e: ActivityNotFoundException) {
+                        } catch (e: Exception) {
                             assist.action = RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE
 
                             try {
                                 startActivity(assist)
-                            } catch (e: ActivityNotFoundException) {
+                            } catch (e: Exception) {
                                 assist.action = Intent.ACTION_VOICE_ASSIST
 
                                 try {
                                     startActivity(assist)
-                                } catch (e: ActivityNotFoundException) {
+                                } catch (e: Exception) {
                                     assist.action = Intent.ACTION_VOICE_COMMAND
 
                                     try {
                                         startActivity(assist)
-                                    } catch (e: ActivityNotFoundException) {
+                                    } catch (e: Exception) {
                                         assist.action = Intent.ACTION_ASSIST
 
                                         try {
                                             startActivity(assist)
-                                        } catch (e: ActivityNotFoundException) {
+                                        } catch (e: Exception) {
                                             val searchMan = getSystemService(Context.SEARCH_SERVICE) as SearchManager
                                             searchMan.launchLegacyAssist(null, UserHandle.USER_CURRENT, null)
                                         }
