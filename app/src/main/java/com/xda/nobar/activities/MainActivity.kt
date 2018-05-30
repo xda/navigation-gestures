@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity(), App.ActivationListener {
                     activity.putExtra(IntroActivity.EXTRA_WSS_ONLY, true)
                     startActivity(activity)
                     hideNavSwitch.isChecked = false
+                    prefs.edit().putBoolean("hide_nav", false).apply()
                 } else {
                     handler.hideNav()
                 }
