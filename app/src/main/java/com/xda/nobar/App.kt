@@ -393,10 +393,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this) + 1)
             compatibilityRotationListener.enable()
             Utils.forceNavBlack(this)
-        } else if (!Utils.isInImmersive(this) && Utils.hasNavBar(this)) {
-            try {
-                Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation")
-            } catch (e: Exception) {}
         }
 
         navHidden = true
@@ -552,7 +548,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
             val hidden = ((rect.top - rect.bottom).absoluteValue >= screenRes.y && (rect.left - rect.right).absoluteValue >= screenRes.x)
 
-            if (Utils.hasNavBar(this@App) && hidden) {
+            if (Utils.shouldUseOverscanMethod(this@App) && hidden) {
                 onSystemUiVisibilityChange(View.SYSTEM_UI_FLAG_FULLSCREEN)
             } else {
                 onSystemUiVisibilityChange(0)

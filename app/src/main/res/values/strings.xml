@@ -69,6 +69,8 @@
     <string name="reset_pill_corner_radius">Reset Pill Corner Radius</string>
     <string name="hide_in_fullscreen">Hide in Fullscreen Apps</string>
     <string name="larger_hitbox">Larger Hitbox</string>
+    <string name="hide_nav">Hide Navigation Bar</string>
+    <string name="are_you_sure">Are you sure?</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -96,7 +98,7 @@
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
     <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
     <string name="accessibility_desc">This app uses an Accessibility Service to simulate the original navigation buttons. Click \“Grant\” below to enable access.</string>
-    <string name="write_secure_settings_desc">We can completely hide your stock navigation bar, but we need access to a special permission to do so. Click the button below to learn how you can grant it. If you are rooted, accept the root prompt.</string>
+    <string name="write_secure_settings_desc">We can completely hide your stock navigation bar, but we need access to a special permission to do so. Click the button below to learn how you can grant it. If you are rooted, accept the root prompt. If you don\'t have a software navigation bar, or your phone has another way to hide the software navigation bar, you can skip this step.</string>
     <string name="ready_first_run_desc">You\’re ready to use navigation gestures on your device. You can toggle the pill-nav on the following page or from a Quick Settings tile that we have provided. For your convenience, we have enabled some gestures that we think you might like. You can customize these in the Settings.</string>
     <string name="ready_desc">You\’re ready to use navigation gestures on your device.</string>
     <string name="root_found_desc">Don\'t worry. You can still use this app. Root actually makes the setup easier. If you like, we can use root access to grant this permission automatically. Otherwise, you can choose to use the tutorial/manual method.</string>
@@ -109,6 +111,7 @@
     <string name="warning_desc">If you decide to uninstall Navigation Gestures, disable it before doing so! We are unable to detect an app uninstall, so we cannot revert changes automatically.</string>
     <string name="white_bar_desc">Using this app you may notice a small white bar at the very bottom of the display. This is not a bug! It is required to prevent much more serious issues. It should not occur on TouchWiz devices.</string>
     <string name="compatibility_desc">While using this app, if you notice that the original navigation bar is present when it shouldn\'t be, head over to Settings>>Compatibility and try the compatibility options there.</string>
+    <string name="skip_wss_message">You can always come back to this step by toggling the Hide Navigation Bar switch on in the main screen of this app.</string>
 
     <!--Gestures-->
     <string name="tap">Tap</string>
@@ -150,7 +153,7 @@
     <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
     <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
     <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
-    <string name="deactivate_before_uninstall">Deactivate before uninstalling!</string>
+    <string name="deactivate_before_uninstall">Deactivate BOTH SWITCHES before uninstalling!</string>
     <string name="copied_to_clipboard">Email copied to clipboard</string>
     
     <!--Libraries-->

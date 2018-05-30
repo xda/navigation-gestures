@@ -16,7 +16,8 @@ import com.xda.nobar.util.Utils
  * The main app activity
  */
 class MainActivity : AppCompatActivity(), App.ActivationListener {
-    private lateinit var switch: Switch
+    private lateinit var gestureSwitch: Switch
+    private lateinit var hideNavSwitch: Switch
     private lateinit var handler: App
     private lateinit var prefs: SharedPreferences
 
@@ -37,16 +38,24 @@ class MainActivity : AppCompatActivity(), App.ActivationListener {
         setContentView(R.layout.activity_main)
         setUpActionBar()
 
-        switch = findViewById(R.id.activate)
+        gestureSwitch = findViewById(R.id.activate)
+        hideNavSwitch = findViewById(R.id.hide_nav)
         handler = application as App
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
         handler.refreshPremium()
         handler.addActivationListener(this)
 
-        switch.isChecked = handler.isActivated()
-        switch.setOnCheckedChangeListener { _, isChecked ->
+        gestureSwitch.isChecked = handler.isActivated()
+        gestureSwitch.setOnCheckedChangeListener { _, isChecked ->
             handler.toggle(!isChecked)
+        }
+
+        hideNavSwitch.isChecked = Utils.shouldUseOverscanMethod(this)
+        hideNavSwitch.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("hide_nav", isChecked).apply()
+            if (isChecked) handler.hideNav()
+            else handler.showNav()
         }
     }
 
@@ -54,7 +63,7 @@ class MainActivity : AppCompatActivity(), App.ActivationListener {
      * Make sure the toggle switch updates for the current activation state
      */
     override fun onChange(activated: Boolean) {
-        switch.isChecked = activated
+        gestureSwitch.isChecked = activated
     }
 
     override fun onDestroy() {

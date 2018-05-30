@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
@@ -34,15 +35,15 @@ class IntroActivity : IntroActivity() {
         fun needsToRun(context: Context): Boolean {
             val overlaysGranted = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) Settings.canDrawOverlays(context) else true
             val accessibilityGranted = Utils.isAccessibilityEnabled(context)
-            val writeSecureGranted = context.checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED
-                    || !Utils.hasNavBar(context)
 
-            return !overlaysGranted || !accessibilityGranted || !writeSecureGranted || Utils.isFirstRun(context) || !Utils.canRunHiddenCommands(context)
+            return !overlaysGranted || !accessibilityGranted || Utils.isFirstRun(context) || !Utils.canRunHiddenCommands(context)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
         buttonBackFunction = BUTTON_BACK_FUNCTION_BACK
         isButtonBackVisible = true
@@ -108,31 +109,30 @@ class IntroActivity : IntroActivity() {
                         {Utils.isAccessibilityEnabled(this)}))
             }
 
-            if (Utils.hasNavBar(this)) {
-                if (checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
-                    addSlide(DynamicForwardFragmentSlide(FragmentSlide.Builder()
-                            .background(R.color.slide_4)
-                            .backgroundDark(R.color.slide_4_dark)
-                            .fragment(WriteSecureFragment())
-                            .buttonCtaLabel(R.string.grant)
-                            .buttonCtaClickListener {
-                                if (SuUtils.testSudo()) {
-                                    AlertDialog.Builder(this)
-                                            .setTitle(R.string.root_found)
-                                            .setMessage(R.string.root_found_desc)
-                                            .setPositiveButton(R.string.use_root, { _, _ ->
-                                                SuUtils.sudo("pm grant $packageName ${Manifest.permission.WRITE_SECURE_SETTINGS}")
-                                            })
-                                            .setNegativeButton(R.string.non_root, { _, _ ->
-                                                nonRootDialog()
-                                            })
-                                            .show()
-                                } else {
-                                    nonRootDialog()
-                                }
-                            },
-                            { checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED }))
-                }
+            val wssSlide = DynamicForwardFragmentSlide(FragmentSlide.Builder()
+                    .background(R.color.slide_4)
+                    .backgroundDark(R.color.slide_4_dark)
+                    .fragment(WriteSecureFragment())
+                    .buttonCtaLabel(R.string.grant)
+                    .buttonCtaClickListener {
+                        if (SuUtils.testSudo()) {
+                            AlertDialog.Builder(this)
+                                    .setTitle(R.string.root_found)
+                                    .setMessage(R.string.root_found_desc)
+                                    .setPositiveButton(R.string.use_root, { _, _ ->
+                                        SuUtils.sudo("pm grant $packageName ${Manifest.permission.WRITE_SECURE_SETTINGS}")
+                                    })
+                                    .setNegativeButton(R.string.non_root, { _, _ ->
+                                        nonRootDialog()
+                                    })
+                                    .show()
+                        } else {
+                            nonRootDialog()
+                        }
+                    }, { prefs.getBoolean("has_confirmed_skip_wss", false) })
+
+            if (checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
+                addSlide(wssSlide)
             }
 
             if (Utils.isFirstRun(this) && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
@@ -173,8 +173,18 @@ class IntroActivity : IntroActivity() {
                     .backgroundDark(R.color.slide_5_dark)
                     .build())
 
-            addOnNavigationBlockedListener { _, dir ->
-                if (dir == OnNavigationBlockedListener.DIRECTION_FORWARD) {
+            addOnNavigationBlockedListener { index, dir ->
+                if (index == indexOfSlide(wssSlide)) {
+                    AlertDialog.Builder(this)
+                            .setTitle(R.string.are_you_sure)
+                            .setMessage(R.string.skip_wss_message)
+                            .setPositiveButton(android.R.string.yes, { _, _ ->
+                                prefs.edit().putBoolean("has_confirmed_skip_wss", true).apply()
+                                nextSlide()
+                            })
+                            .setNegativeButton(android.R.string.no, null)
+                            .show()
+                } else if (dir == OnNavigationBlockedListener.DIRECTION_FORWARD) {
                     Toast.makeText(this, resources.getString(R.string.grant_permission), Toast.LENGTH_LONG).show()
                 }
             }

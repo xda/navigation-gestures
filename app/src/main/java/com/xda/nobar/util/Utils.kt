@@ -177,21 +177,21 @@ object Utils {
      * @return true if device has a navigation bar and is below P
      */
     fun shouldUseOverscanMethod(context: Context): Boolean {
-        return hasNavBar(context)
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_nav", false)
     }
 
-    /**
-     * Check to see if device has a software navigation bar
-     * @param context a context object
-     * @return true if the device has a soft navbar
-     */
-    fun hasNavBar(context: Context): Boolean {
-        val id = context.resources.getIdentifier("config_showNavigationBar", "bool", "android")
-        return context.resources.getBoolean(id)
-                || Build.MODEL.contains("Android SDK built for x86")
-
-//        return context.resources.getBoolean(com.android.internal.R.bool.config_showNavigationBar) || Build.MODEL.contains("Android SDK")
-    }
+//    /**
+//     * Check to see if device has a software navigation bar
+//     * @param context a context object
+//     * @return true if the device has a soft navbar
+//     */
+//    fun hasNavBar(context: Context): Boolean {
+//        val id = context.resources.getIdentifier("config_showNavigationBar", "bool", "android")
+//        return context.resources.getBoolean(id)
+//                || Build.MODEL.contains("Android SDK built for x86")
+//
+////        return context.resources.getBoolean(com.android.internal.R.bool.config_showNavigationBar) || Build.MODEL.contains("Android SDK")
+//    }
 
 //    /**
 //     * Special function for TouchWiz devices, some of which can hide the navigation bar
@@ -446,7 +446,7 @@ object Utils {
      * @param context a context object
      */
     fun forceNavBlack(context: Context) {
-        if (!IntroActivity.needsToRun(context) && hasNavBar(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (!IntroActivity.needsToRun(context) && shouldUseOverscanMethod(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             Settings.Global.putInt(context.contentResolver, "navigationbar_color", Color.BLACK)
             Settings.Global.putInt(context.contentResolver, "navigationbar_current_color", Color.BLACK)
             Settings.Global.putInt(context.contentResolver, "navigationbar_use_theme_default", 0)
@@ -459,7 +459,7 @@ object Utils {
      * @param context a context object
      */
     fun clearBlackNav(context: Context) {
-        if (!IntroActivity.needsToRun(context) && hasNavBar(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (!IntroActivity.needsToRun(context) && shouldUseOverscanMethod(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             Settings.Global.putString(context.contentResolver, "navigationbar_color", null)
             Settings.Global.putString(context.contentResolver, "navigationbar_current_color", null)
             Settings.Global.putString(context.contentResolver, "navigation_bar_use_theme_default", null)
