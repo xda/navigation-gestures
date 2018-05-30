@@ -29,7 +29,6 @@ import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.getHomeX
 import com.xda.nobar.util.Utils.getHomeY
 import com.xda.nobar.views.BarView
-import java.util.*
 import kotlin.math.absoluteValue
 
 
@@ -57,11 +56,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     var rootBinder: RootService.RootBinder? = null
 
     private var navHidden = false
+    private var pillShown = false
 
     lateinit var immersiveListener: ImmersiveListener
     lateinit var bar: BarView
 
-    private val listeners = ArrayList<ActivationListener>()
+    private val gestureListeners = ArrayList<GestureActivationListener>()
+    private val navbarListeners = ArrayList<NavBarHideListener>()
     private val handler = Handler(Looper.getMainLooper())
     private val rootConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -187,8 +188,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         isValidPremium = prefs.getBoolean("valid_prem", false)
 
-        if (!isActivated()) Utils.saveBackupImmersive(this)
-
         prefs.registerOnSharedPreferenceChangeListener(this)
 
         refreshPremium()
@@ -202,7 +201,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
             "is_active" -> {
-                listeners.forEach { it.onChange(sharedPreferences.getBoolean(key, false)) }
+                gestureListeners.forEach { it.onChange(sharedPreferences.getBoolean(key, false)) }
+            }
+            "hide_nav" -> {
+                navbarListeners.forEach { it.onNavChange(sharedPreferences.getBoolean(key, false)) }
             }
             "use_root" -> {
                 if (Utils.shouldUseRootCommands(this)) {
@@ -223,21 +225,30 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Add an activation listener
      * Notifies caller when a change in activation occurs
      */
-    fun addActivationListener(listener: ActivationListener) {
-        listeners.add(listener)
+    fun addGestureActivationListener(listener: GestureActivationListener) {
+        gestureListeners.add(listener)
     }
 
     /**
      * Remove an activation listener
      */
-    fun removeActivationListener(listener: ActivationListener) {
-        listeners.remove(listener)
+    fun removeGestureActivationListener(listener: GestureActivationListener) {
+        gestureListeners.remove(listener)
+    }
+
+    fun addNavBarHideListener(listener: NavBarHideListener) {
+        navbarListeners.add(listener)
+    }
+
+    fun removeNavbarHideListener(listener: NavBarHideListener) {
+        navbarListeners.remove(listener)
     }
 
     /**
      * Add the pill to the screen
      */
     fun addBar() {
+        pillShown = true
         params.width = Utils.getCustomWidth(this)
         params.height = Utils.getCustomHeight(this)
         params.gravity = Gravity.CENTER or Gravity.BOTTOM
@@ -293,6 +304,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Remove the pill from the screen
      */
     fun removeBar() {
+        pillShown = false
         bar.hide(object : Animator.AnimatorListener {
             override fun onAnimationCancel(animation: Animator?) {}
 
@@ -342,12 +354,26 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
     }
 
+    fun toggleGestureBar() {
+        if (isPillShown()) removeBar()
+        else addBar()
+    }
+
+    fun toggleNavState() {
+        if (isNavBarHidden()) showNav()
+        else hideNav()
+    }
+
     /**
      * Check if NoBar is currently active
      * @return true if active
      */
     fun isActivated(): Boolean {
-        return prefs.getBoolean("is_active", false) || isNavBarHidden()
+        return prefs.getBoolean("is_active", false)
+    }
+
+    fun isPillShown(): Boolean {
+        return isActivated() && pillShown
     }
 
     /**
@@ -389,9 +415,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this) + 1)
             compatibilityRotationListener.enable()
             Utils.forceNavBlack(this)
+
+            navHidden = true
         }
 
-        navHidden = true
     }
 
     /**
@@ -446,21 +473,17 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 when (intent?.action) {
                     Intent.ACTION_SCREEN_ON -> {
                         handler.postDelayed({
-                            if (isActivated() && (kgm.isKeyguardLocked || if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) kgm.isDeviceLocked else false)) {
-//                        Log.e("NoBar", "on KeyGuard")
-                                toggle(true)
-                                Utils.setOffForRebootOrScreenLock(this@App, true)
-                            } else if (Utils.isOffForRebootOrScreenLock(this@App)) {
-                                toggle(false)
-                                Utils.setOffForRebootOrScreenLock(this@App, false)
+                            if (isNavBarHidden() && (kgm.isKeyguardLocked || if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) kgm.isDeviceLocked else false)) {
+                                showNav()
+                            } else if (Utils.shouldUseOverscanMethod(this@App)) {
+                                hideNav()
                             }
                         }, 100)
                     }
                     Intent.ACTION_USER_PRESENT -> {
                         if (isActivated()) addBar()
-                        if (Utils.isOffForRebootOrScreenLock(this@App)) {
-                            toggle(false)
-                            Utils.setOffForRebootOrScreenLock(this@App, false)
+                        if (Utils.shouldUseOverscanMethod(this@App)) {
+                            hideNav()
                         }
                     }
                     TOGGLE -> {
@@ -497,6 +520,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 }
 
                 wm.updateViewLayout(bar, params)
+            }
+
+            if (Utils.shouldUseOverscanMethod(this@App)) {
                 hideNav()
             }
         }
@@ -533,7 +559,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         override fun onSystemUiVisibilityChange(visibility: Int) {
 //            Log.e("NoBar", visibility.toString())
-            if (isActivated()) {
+            if (Utils.shouldUseOverscanMethod(this@App)) {
                 handleImmersiveChange(visibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0
                         || visibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
                         || visibility and View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN != 0
@@ -542,7 +568,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         override fun onChange(selfChange: Boolean, uri: Uri?) {
-            if (isActivated()) {
+            if (Utils.shouldUseOverscanMethod(this@App)) {
                 if (uri == Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL)) {
                     val current = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)
 
@@ -660,8 +686,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     /**
      * Used to listen for changes in activation
      */
-    interface ActivationListener {
+    interface GestureActivationListener {
         fun onChange(activated: Boolean)
+    }
+
+    interface NavBarHideListener {
+        fun onNavChange(hidden: Boolean)
     }
 
     /**

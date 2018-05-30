@@ -4,6 +4,8 @@
     <!--Titles-->
     <string name="hidden">Gestures On</string>
     <string name="shown">Gestures Off</string>
+    <string name="nav_hidden">NavBar Hidden</string>
+    <string name="nav_shown">NavBar Shown</string>
     <string name="settings">Settings</string>
     <string name="gestures">Gestures</string>
     <string name="appearance">Appearance</string>

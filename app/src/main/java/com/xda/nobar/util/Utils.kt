@@ -180,6 +180,10 @@ object Utils {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_nav", false)
     }
 
+    fun setShouldUseOverscanMethod(context: Context, use: Boolean) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("hide_nav", use).apply()
+    }
+
 //    /**
 //     * Check to see if device has a software navigation bar
 //     * @param context a context object

@@ -16,7 +16,7 @@ import com.xda.nobar.views.TextSwitch
 /**
  * The main app activity
  */
-class MainActivity : AppCompatActivity(), App.ActivationListener {
+class MainActivity : AppCompatActivity(), App.GestureActivationListener, App.NavBarHideListener {
     private lateinit var gestureSwitch: TextSwitch
     private lateinit var hideNavSwitch: TextSwitch
     private lateinit var handler: App
@@ -45,14 +45,15 @@ class MainActivity : AppCompatActivity(), App.ActivationListener {
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
         handler.refreshPremium()
-        handler.addActivationListener(this)
+        handler.addGestureActivationListener(this)
+        handler.addNavBarHideListener(this)
 
         gestureSwitch.isChecked = handler.isActivated()
         gestureSwitch.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
             handler.toggle(!isChecked)
         }
 
-        hideNavSwitch.isChecked = Utils.shouldUseOverscanMethod(this)
+        hideNavSwitch.isChecked = Utils.shouldUseOverscanMethod(this) && handler.isNavBarHidden()
         hideNavSwitch.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("hide_nav", isChecked).apply()
             if (isChecked) {
@@ -76,11 +77,15 @@ class MainActivity : AppCompatActivity(), App.ActivationListener {
         gestureSwitch.isChecked = activated
     }
 
+    override fun onNavChange(hidden: Boolean) {
+        hideNavSwitch.isChecked = hidden
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
         try {
-            handler.removeActivationListener(this)
+            handler.removeGestureActivationListener(this)
         } catch (e: Exception) {}
     }
 
