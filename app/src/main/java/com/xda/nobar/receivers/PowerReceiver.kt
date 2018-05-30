@@ -15,23 +15,17 @@ class PowerReceiver : BroadcastReceiver() {
         val app = Utils.getHandler(context)
         when (intent.action) {
             Intent.ACTION_REBOOT -> {
-                if (app.isActivated()) Utils.setOffForRebootOrScreenLock(context, true)
-                Utils.getHandler(context).toggle(true)
+                app.showNav()
             }
             Intent.ACTION_SHUTDOWN -> {
-                if (app.isActivated()) Utils.setOffForRebootOrScreenLock(context, true)
-                Utils.getHandler(context).toggle(true)
+                app.showNav()
             }
             Intent.ACTION_BOOT_COMPLETED -> {
                 val km = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-                if (app.isActivated()) {
-                    Utils.setOffForRebootOrScreenLock(context, true)
-                    if (km.isKeyguardLocked) Utils.getHandler(context).toggle(true)
-                }
+                if (km.isKeyguardLocked) app.showNav()
             }
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
-                val handler = Utils.getHandler(context)
-                if (handler.isActivated()) handler.addBar()
+                if (app.areGesturesActivated()) app.addBar()
             }
         }
     }

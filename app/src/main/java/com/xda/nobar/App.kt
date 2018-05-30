@@ -192,7 +192,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         refreshPremium()
 
-        if (isActivated() && !IntroActivity.needsToRun(this)) {
+        if (areGesturesActivated() && !IntroActivity.needsToRun(this)) {
             toggle(false)
         }
         if (isNavBarHidden()) compatibilityRotationListener.enable()
@@ -324,7 +324,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Toggle whether the pill is shown or hidden
      */
     fun toggle() {
-        toggle(isActivated())
+        toggle(areGesturesActivated())
     }
 
     /**
@@ -368,12 +368,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Check if NoBar is currently active
      * @return true if active
      */
-    fun isActivated(): Boolean {
+    fun areGesturesActivated(): Boolean {
         return prefs.getBoolean("is_active", false)
     }
 
     fun isPillShown(): Boolean {
-        return isActivated() && pillShown
+        return areGesturesActivated() && pillShown
     }
 
     /**
@@ -481,7 +481,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         }, 100)
                     }
                     Intent.ACTION_USER_PRESENT -> {
-                        if (isActivated()) addBar()
+                        if (areGesturesActivated()) addBar()
                         if (Utils.shouldUseOverscanMethod(this@App)) {
                             hideNav()
                         }
@@ -508,7 +508,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (isActivated()) {
+            if (areGesturesActivated()) {
                 when (intent?.action) {
                     UiModeManager.ACTION_ENTER_CAR_MODE -> {
                         params.height = Utils.getCustomHeight(this@App) * 2

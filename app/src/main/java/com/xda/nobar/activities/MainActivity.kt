@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity(), App.GestureActivationListener, App.Nav
         handler.addGestureActivationListener(this)
         handler.addNavBarHideListener(this)
 
-        gestureSwitch.isChecked = handler.isActivated()
+        gestureSwitch.isChecked = handler.areGesturesActivated()
         gestureSwitch.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
             handler.toggle(!isChecked)
         }
