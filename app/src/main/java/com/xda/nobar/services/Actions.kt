@@ -3,15 +3,13 @@ package com.xda.nobar.services
 import android.accessibilityservice.AccessibilityService
 import android.app.ActivityManager
 import android.app.SearchManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.media.AudioManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.UserHandle
+import android.speech.RecognizerIntent
 import android.support.v4.content.LocalBroadcastManager
 import android.view.KeyEvent
 import android.view.WindowManager
@@ -106,43 +104,39 @@ class Actions : AccessibilityService() {
                     app.premTypeQs -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) }
                     app.premTypePower -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }
                     app.typeAssist -> {
-                        val searchMan = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-                        searchMan.launchLegacyAssist(null, UserHandle.USER_CURRENT, null)
+                        val assist = Intent(RecognizerIntent.ACTION_WEB_SEARCH)
+                        assist.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-//                        val assist = Intent(Intent.ACTION_SEARCH_LONG_PRESS)
-//                        assist.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//
-//                        try {
-//                            startActivity(assist)
-//                        } catch (e: ActivityNotFoundException) {
-//                            assist.action = RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE
-//
-//                            try {
-//                                startActivity(assist)
-//                            } catch (e: ActivityNotFoundException) {
-//                                assist.action = Intent.ACTION_VOICE_ASSIST
-//
-//                                try {
-//                                    startActivity(assist)
-//                                } catch (e: ActivityNotFoundException) {
-//                                    assist.action = Intent.ACTION_VOICE_COMMAND
-//
-//                                    try {
-//                                        startActivity(assist)
-//                                    } catch (e: ActivityNotFoundException) {
-//                                        assist.action = Intent.ACTION_ASSIST
-//
-//                                        try {
-//                                            startActivity(assist)
-//                                        } catch (e: ActivityNotFoundException) {
-//                                            assist.action = RecognizerIntent.ACTION_WEB_SEARCH
-//
-//                                            startActivity(assist)
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
+                        try {
+                            startActivity(assist)
+                        } catch (e: ActivityNotFoundException) {
+                            assist.action = RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE
+
+                            try {
+                                startActivity(assist)
+                            } catch (e: ActivityNotFoundException) {
+                                assist.action = Intent.ACTION_VOICE_ASSIST
+
+                                try {
+                                    startActivity(assist)
+                                } catch (e: ActivityNotFoundException) {
+                                    assist.action = Intent.ACTION_VOICE_COMMAND
+
+                                    try {
+                                        startActivity(assist)
+                                    } catch (e: ActivityNotFoundException) {
+                                        assist.action = Intent.ACTION_ASSIST
+
+                                        try {
+                                            startActivity(assist)
+                                        } catch (e: ActivityNotFoundException) {
+                                            val searchMan = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+                                            searchMan.launchLegacyAssist(null, UserHandle.USER_CURRENT, null)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     app.typeOhm -> {
                         val ohm = Intent("com.xda.onehandedmode.intent.action.TOGGLE_OHM")
