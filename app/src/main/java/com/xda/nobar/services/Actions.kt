@@ -31,8 +31,6 @@ class Actions : AccessibilityService() {
         const val ACTION = "$BASE.ACTION"
 
         const val EXTRA_ACTION = "action"
-
-        const val SERVICE_NAME = "com.xda.nobar/com.xda.nobar.services.Actions"
     }
 
     private lateinit var receiver: ActionHandler
