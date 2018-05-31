@@ -1,6 +1,8 @@
 package com.xda.nobar.views
 
 import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -927,99 +929,43 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             when {
                                 params.y > getHomeY(context) -> {
                                     val distance = (params.y - getHomeY(context)).absoluteValue
-                                    val sleepTime = time / distance * 1000f
-
-                                    //TODO: this needs a proper fix
-                                    try {
-                                        if (time == 0f) throw Exception()
-                                        val handle = pool.scheduleAtFixedRate({
-                                                    if (params.y > getHomeY(context)) {
-                                                        params.y -= 1
-
-                                                        updateLayout(params)
-                                                    }
-                                                },
-                                                0, sleepTime.toLong(),
-                                                TimeUnit.MICROSECONDS)
-                                        pool.schedule({
-                                            handle.cancel(false)
-                                            handler?.post {
-                                                if (isSwipeUp) jiggleDown()
-
-                                                isActing = false
-                                                isSwipeUp = false
-                                            }
-                                        }, time.toLong(), TimeUnit.MILLISECONDS)
-                                    } catch (e: Exception) {
-                                        params.y = getHomeY(context)
+                                    val animator = ValueAnimator.ofInt(params.y, getHomeY(context))
+                                    animator.interpolator = DecelerateInterpolator()
+                                    animator.addUpdateListener {
+                                        params.y = it.animatedValue.toString().toInt()
                                         updateLayout(params)
-                                        isActing = false
-                                        isSwipeUp = false
                                     }
+                                    animator.addListener(object : AnimatorListenerAdapter() {
+                                        override fun onAnimationEnd(animation: Animator?) {
+                                            if (isSwipeUp) jiggleDown()
+//
+                                            isActing = false
+                                            isSwipeUp = false
+                                        }
+                                    })
+                                    animator.duration = (time * distance / 100f).toLong()
+                                    animator.start()
                                 }
-                                params.x < getHomeX(context) -> {
+                                params.x < getHomeX(context) || params.x > getHomeX(context) -> {
                                     val distance = (params.x - getHomeX(context)).absoluteValue
-                                    val sleepTime = time / distance * 1000F
-
-                                    try {
-                                        if (time == 0f) throw Exception()
-                                        val handle = pool.scheduleAtFixedRate({
-                                                    if (params.x < getHomeX(context)) {
-                                                        params.x += 1
-
-                                                        updateLayout(params)
-                                                    }
-                                                },
-                                                0, sleepTime.toLong(),
-                                                TimeUnit.MICROSECONDS)
-                                        pool.schedule({
-                                            handle.cancel(false)
-                                            handler?.post {
-                                                if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
-
-                                                isActing = false
-                                                isSwipeLeft = false
-                                            }
-                                        }, time.toLong(), TimeUnit.MILLISECONDS)
-                                    } catch (e: Exception) {
-                                        params.x = getHomeX(context)
+                                    val animator = ValueAnimator.ofInt(params.x, getHomeX(context))
+                                    animator.interpolator = DecelerateInterpolator()
+                                    animator.addUpdateListener {
+                                        params.x = it.animatedValue.toString().toInt()
                                         updateLayout(params)
-                                        if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
-                                        isActing = false
-                                        isSwipeLeft = false
                                     }
-                                }
-                                params.x > getHomeX(context) -> {
-                                    val distance = (params.x - getHomeX(context)).absoluteValue
-                                    val sleepTime = time / distance * 1000F
+                                    animator.addListener(object : AnimatorListenerAdapter() {
+                                        override fun onAnimationEnd(animation: Animator?) {
+                                            if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
+                                            if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
 
-                                    try {
-                                        if (time == 0f) throw Exception()
-                                        val handle = pool.scheduleAtFixedRate({
-                                                    if (params.x > getHomeX(context)) {
-                                                        params.x -= 1
-
-                                                        updateLayout(params)
-                                                    }
-                                                },
-                                                0, sleepTime.toLong(),
-                                                TimeUnit.MICROSECONDS)
-                                        pool.schedule({
-                                            handle.cancel(false)
-                                            handler?.post {
-                                                if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
-
-                                                isActing = false
-                                                isSwipeRight = false
-                                            }
-                                        }, time.toLong(), TimeUnit.MILLISECONDS)
-                                    } catch (e: Exception) {
-                                        params.x = getHomeX(context)
-                                        updateLayout(params)
-                                        if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
-                                        isActing = false
-                                        isSwipeRight = false
-                                    }
+                                            isActing = false
+                                            isSwipeLeft = false
+                                            isSwipeRight = false
+                                        }
+                                    })
+                                    animator.duration = (time * distance / 100f).toLong()
+                                    animator.start()
                                 }
                                 else -> {
                                     if (actionMap[app.actionDouble] == app.typeNoAction && !isActing && !wasHidden) {
