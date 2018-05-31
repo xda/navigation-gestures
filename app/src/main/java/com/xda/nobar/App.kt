@@ -388,7 +388,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Hide the navbar
      */
     fun hideNav() {
-        if (Utils.shouldUseOverscanMethod(this) && !Utils.isInImmersive(this)) {
+        if (Utils.isInImmersive(this)) {
+            Utils.saveBackupImmersive(this)
+            Utils.disableNavImmersive(this)
+        }
+
+        if (Utils.shouldUseOverscanMethod(this)) {
             if (!Utils.useRot270Fix(this) && !Utils.useTabletMode(this)) IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this) + 1)
             compatibilityRotationListener.enable()
             Utils.forceNavBlack(this)
@@ -403,6 +408,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Show the navbar
      */
     fun showNav() {
+        Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
+
         navbarListeners.forEach { it.onNavChange(false) }
 
         IWindowManager.setOverscan(0, 0, 0, 0)

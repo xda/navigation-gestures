@@ -56,6 +56,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.jaredrummler:colorpicker:1.0.2'
     implementation 'com.google.firebase:firebase-messaging:17.0.0'
+    implementation 'com.facebook.rebound:rebound:0.3.8'
 }
 
 apply plugin: 'com.google.gms.google-services'

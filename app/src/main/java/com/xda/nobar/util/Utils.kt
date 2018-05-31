@@ -21,24 +21,33 @@ import com.xda.nobar.activities.IntroActivity
  * General utility functions for OHM
  */
 object Utils {
-    const val NAV_BAR_BOTTOM = 0
-    const val NAV_BAR_RIGHT = 1
-    const val NAV_BAR_LEFT = 2
-
-    var navImmersiveAlreadyEnabled = false
-
-    fun enableNavImmersive(context: Context) {
-        if (isInImmersive(context)) {
-            navImmersiveAlreadyEnabled = true
-        } else {
-            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation")
-        }
-    }
-
     fun disableNavImmersive(context: Context) {
-        if (!navImmersiveAlreadyEnabled) {
-            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "")
+        val currentImmersive = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)
+
+        currentImmersive?.apply {
+            when {
+                currentImmersive.contains("immersive.navigation") -> {
+                    saveBackupImmersive(context)
+                    Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, null)
+                }
+
+                currentImmersive.contains("immersive.full") -> {
+                    val split = currentImmersive.split("=")
+                    val insert = try { split[1] } catch (e: Exception) { "*" }
+
+                    saveBackupImmersive(context)
+                    Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.status=$insert")
+                }
+
+                else -> {
+                    resetBackupImmersive(context)
+                }
+            }
+
+            return
         }
+
+        resetBackupImmersive(context)
     }
 
     fun isInImmersive(context: Context): Boolean {
@@ -387,6 +396,10 @@ object Utils {
     fun saveBackupImmersive(context: Context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putString("def_imm",
                 Settings.Global.getString(context.contentResolver, "policy_control")).apply()
+    }
+
+    fun resetBackupImmersive(context: Context) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().remove("def_imm").apply()
     }
 
     /**
