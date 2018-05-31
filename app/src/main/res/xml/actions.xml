@@ -3,7 +3,6 @@
     android:canRetrieveWindowContent="true"
     android:accessibilityEventTypes="typeWindowContentChanged|typeWindowStateChanged|typeWindowsChanged"
     android:notificationTimeout="200"
-    android:canRequestTouchExplorationMode="true"
     android:accessibilityFeedbackType="feedbackHaptic"
     android:accessibilityFlags="flagDefault"
     android:description="@string/accessibility_screen_text"
