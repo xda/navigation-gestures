@@ -306,7 +306,7 @@ class SettingsActivity : AppCompatActivity() {
                     apply()
                 }
                 width.seekBar.progress = Utils.getCustomWidth(activity)
-                height.seekBar.progress = Utils.getCustomHeight(activity)
+                height.seekBar.progress = Utils.getCustomHeightWithoutHitbox(activity)
                 posY.seekBar.progress = Utils.getHomeY(activity)
                 posX.seekBar.progress = Utils.getHomeX(activity)
                 pillCornerRadius.seekBar.progress = Utils.getPillCornerRadiusInDp(activity)

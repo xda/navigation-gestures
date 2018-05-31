@@ -262,6 +262,10 @@ object Utils {
         return defHeight
     }
 
+    fun getCustomHeightWithoutHitbox(context: Context): Int {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height", context.resources.getDimensionPixelSize(R.dimen.pill_height))
+    }
+
     /**
      * Get the user-defined or default pill color
      * @param context a context object

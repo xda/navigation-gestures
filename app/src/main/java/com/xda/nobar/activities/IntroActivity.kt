@@ -74,7 +74,7 @@ class IntroActivity : IntroActivity() {
                     } else {
                         nonRootDialog()
                     }
-                }, { prefs.getBoolean("has_confirmed_skip_wss", false) })
+                }, { prefs.getBoolean("has_confirmed_skip_wss", false) || hasWss(this) })
 
         if (intent.hasExtra(EXTRA_WSS_ONLY)) {
             addSlide(wssSlide)

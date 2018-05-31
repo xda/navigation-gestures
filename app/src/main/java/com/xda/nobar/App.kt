@@ -20,7 +20,6 @@ import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.*
 import com.xda.nobar.activities.IntroActivity
-import com.xda.nobar.services.Actions
 import com.xda.nobar.services.ForegroundService
 import com.xda.nobar.services.RootService
 import com.xda.nobar.util.IWindowManager
@@ -37,10 +36,6 @@ import kotlin.math.absoluteValue
  * Centralize important stuff in the App class, so we can be sure to have an instance of it
  */
 class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
-    companion object {
-        const val TOGGLE = "${Actions.BASE}.TOGGLE"
-    }
-
     private lateinit var wm: WindowManager
     private lateinit var um: UiModeManager
     private lateinit var kgm: KeyguardManager
@@ -193,7 +188,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         refreshPremium()
 
         if (areGesturesActivated() && !IntroActivity.needsToRun(this)) {
-            toggle(false)
+            addBar()
         }
         if (isNavBarHidden()) compatibilityRotationListener.enable()
     }
@@ -249,6 +244,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      */
     fun addBar() {
         pillShown = true
+        gestureListeners.forEach { it.onChange(true) }
+
         params.width = Utils.getCustomWidth(this)
         params.height = Utils.getCustomHeight(this)
         params.gravity = Gravity.CENTER or Gravity.BOTTOM
@@ -305,6 +302,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      */
     fun removeBar() {
         pillShown = false
+        gestureListeners.forEach { it.onChange(false) }
         bar.hide(object : Animator.AnimatorListener {
             override fun onAnimationCancel(animation: Animator?) {}
 
@@ -381,25 +379,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * @return true if hidden
      */
     fun isNavBarHidden(): Boolean {
-//        return when (wm.defaultDisplay.rotation) {
-//            Surface.ROTATION_0 -> {
-//                getOverscan().bottom.absoluteValue > 0
-//            }
-//            Surface.ROTATION_90 -> {
-//                if (Utils.useTabletMode(this)) getOverscan().left.absoluteValue > 0 else getOverscan().bottom.absoluteValue > 0
-//            }
-//            Surface.ROTATION_180 -> {
-//                if (Utils.useTabletMode(this) || Utils.useRot270Fix(this)) getOverscan().top.absoluteValue > 0 else getOverscan().bottom.absoluteValue > 0
-//            }
-//            else -> {
-//                when {
-//                    Utils.useTabletMode(this) -> getOverscan().right.absoluteValue > 0
-//                    Utils.useRot270Fix(this) -> getOverscan().top.absoluteValue > 0
-//                    else -> getOverscan().bottom.absoluteValue > 0
-//                }
-//            }
-//        } || getOverscan().bottom.absoluteValue > 0
-
         val overscan = getOverscan()
 
         return overscan.bottom < 0 || overscan.top < 0 || overscan.left < 0 || overscan.right < 0
@@ -409,13 +388,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Hide the navbar
      */
     fun hideNav() {
-//        if (!Utils.touchWizHideNavEnabled(this)) Utils.forceTouchWizNavEnabled(this)
-
         if (Utils.shouldUseOverscanMethod(this) && !Utils.isInImmersive(this)) {
-            IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this) + 1)
+            if (!Utils.useRot270Fix(this) && !Utils.useTabletMode(this)) IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this) + 1)
             compatibilityRotationListener.enable()
             Utils.forceNavBlack(this)
 
+            navbarListeners.forEach { it.onNavChange(true) }
             navHidden = true
         }
 
@@ -425,6 +403,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Show the navbar
      */
     fun showNav() {
+        navbarListeners.forEach { it.onNavChange(false) }
+
         IWindowManager.setOverscan(0, 0, 0, 0)
         compatibilityRotationListener.disable()
         Utils.clearBlackNav(this)
@@ -463,33 +443,27 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             val filter = IntentFilter()
             filter.addAction(Intent.ACTION_SCREEN_ON)
             filter.addAction(Intent.ACTION_USER_PRESENT)
-            filter.addAction(TOGGLE)
 
             registerReceiver(this, filter)
         }
 
         override fun onReceive(context: Context?, intent: Intent?) {
             if (!IntroActivity.needsToRun(this@App)) {
-                when (intent?.action) {
-                    Intent.ACTION_SCREEN_ON -> {
-                        handler.postDelayed({
-                            if (isNavBarHidden() && (kgm.isKeyguardLocked || if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) kgm.isDeviceLocked else false)) {
+                handler.postDelayed({
+                    when (intent?.action) {
+                        Intent.ACTION_SCREEN_ON -> {
+                            if (isNavBarHidden() && kgm.isKeyguardLocked) {
                                 showNav()
-                            } else if (Utils.shouldUseOverscanMethod(this@App)) {
+                            } else {
                                 hideNav()
                             }
-                        }, 100)
-                    }
-                    Intent.ACTION_USER_PRESENT -> {
-                        if (areGesturesActivated()) addBar()
-                        if (Utils.shouldUseOverscanMethod(this@App)) {
+                        }
+                        Intent.ACTION_USER_PRESENT -> {
+                            if (areGesturesActivated()) addBar()
                             hideNav()
                         }
                     }
-                    TOGGLE -> {
-                        toggle()
-                    }
-                }
+                }, 300)
             }
         }
     }
@@ -541,19 +515,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         override fun onGlobalLayout() {
-            val rect = Rect()
-            val screenRes = Utils.getRealScreenSize(this@App)
+            if (isPillShown()) {
+                val rect = Rect()
+                val screenRes = Utils.getRealScreenSize(this@App)
 
-            bar.getWindowVisibleDisplayFrame(rect)
+                bar.getWindowVisibleDisplayFrame(rect)
 
-//            Log.e("Nobar", "$rect $screenRes")
+                val hidden = ((rect.top - rect.bottom).absoluteValue >= screenRes.y && (rect.left - rect.right).absoluteValue >= screenRes.x)
 
-            val hidden = ((rect.top - rect.bottom).absoluteValue >= screenRes.y && (rect.left - rect.right).absoluteValue >= screenRes.x)
-
-            if (Utils.shouldUseOverscanMethod(this@App) && hidden) {
-                onSystemUiVisibilityChange(View.SYSTEM_UI_FLAG_FULLSCREEN)
-            } else {
-                onSystemUiVisibilityChange(0)
+                if (hidden) {
+                    onSystemUiVisibilityChange(View.SYSTEM_UI_FLAG_FULLSCREEN)
+                } else {
+                    onSystemUiVisibilityChange(0)
+                }
             }
         }
 
@@ -578,7 +552,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         private fun handleImmersiveChange(isImmersive: Boolean) {
-            if (!IntroActivity.needsToRun(this@App) && !bar.isHidden) {
+            if (!IntroActivity.needsToRun(this@App)) {
                 val hideInFullScreen = Utils.hideInFullscreen(this@App)
                 if (isImmersive) {
                     if (!isDisabledForContent) {
@@ -635,25 +609,30 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         private var oldRot = Surface.ROTATION_0
 
         override fun onOrientationChanged(orientation: Int) {
-            if (isNavBarHidden() && (Utils.useRot270Fix(this@App) || Utils.useTabletMode(this@App))) {
+            if (Utils.shouldUseOverscanMethod(this@App) && (Utils.useRot270Fix(this@App) || Utils.useTabletMode(this@App))) {
                 val newRot = wm.defaultDisplay.rotation
 
                 if (oldRot != newRot) {
                     oldRot = newRot
 
-                    if (Utils.useRot270Fix(this@App)) handle270()
-                    if (Utils.useTabletMode(this@App)) handleTablet()
+                    handle()
                 }
             }
         }
 
         override fun enable() {
+            handle()
+
             super.enable()
-            onOrientationChanged(0)
+        }
+
+        private fun handle() {
+            if (Utils.useRot270Fix(this@App)) handle270()
+            if (Utils.useTabletMode(this@App)) handleTablet()
         }
 
         private fun handle270() {
-            if (oldRot == Surface.ROTATION_270 || oldRot == Surface.ROTATION_180) {
+            if (wm.defaultDisplay.rotation == Surface.ROTATION_270 || wm.defaultDisplay.rotation == Surface.ROTATION_180) {
                 IWindowManager.setOverscan(0, -Utils.getNavBarHeight(this@App) + 1, 0, 0)
             } else {
                 IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this@App) + 1)
@@ -662,7 +641,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         private fun handleTablet() {
             if (Utils.shouldUseOverscanMethod(this@App) && !Utils.isInImmersive(this@App)) {
-                when (oldRot) {
+                when (wm.defaultDisplay.rotation) {
                     Surface.ROTATION_0 -> {
                         IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this@App) + 1)
                     }

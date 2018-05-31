@@ -22,6 +22,21 @@ class MainActivity : AppCompatActivity(), App.GestureActivationListener, App.Nav
     private lateinit var handler: App
     private lateinit var prefs: SharedPreferences
 
+    private val navListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
+        prefs.edit().putBoolean("hide_nav", isChecked).apply()
+        if (isChecked) {
+            if (!IntroActivity.hasWss(this)) {
+                val activity = Intent(this, IntroActivity::class.java)
+                activity.putExtra(IntroActivity.EXTRA_WSS_ONLY, true)
+                startActivity(activity)
+                hideNavSwitch.isChecked = false
+                prefs.edit().putBoolean("hide_nav", false).apply()
+            } else {
+                handler.hideNav()
+            }
+        } else handler.showNav()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -54,20 +69,7 @@ class MainActivity : AppCompatActivity(), App.GestureActivationListener, App.Nav
         }
 
         hideNavSwitch.isChecked = Utils.shouldUseOverscanMethod(this) && handler.isNavBarHidden()
-        hideNavSwitch.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
-            prefs.edit().putBoolean("hide_nav", isChecked).apply()
-            if (isChecked) {
-                if (!IntroActivity.hasWss(this)) {
-                    val activity = Intent(this, IntroActivity::class.java)
-                    activity.putExtra(IntroActivity.EXTRA_WSS_ONLY, true)
-                    startActivity(activity)
-                    hideNavSwitch.isChecked = false
-                    prefs.edit().putBoolean("hide_nav", false).apply()
-                } else {
-                    handler.hideNav()
-                }
-            } else handler.showNav()
-        }
+        hideNavSwitch.onCheckedChangeListener = navListener
     }
 
     /**
@@ -78,7 +80,9 @@ class MainActivity : AppCompatActivity(), App.GestureActivationListener, App.Nav
     }
 
     override fun onNavChange(hidden: Boolean) {
+        hideNavSwitch.onCheckedChangeListener = null
         hideNavSwitch.isChecked = hidden
+        hideNavSwitch.onCheckedChangeListener = navListener
     }
 
     override fun onDestroy() {

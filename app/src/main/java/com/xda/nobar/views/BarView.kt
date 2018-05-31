@@ -72,6 +72,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val actionMap = HashMap<String, Int>()
+    private val pool = Executors.newScheduledThreadPool(1)
 
     var isHidden = false
     var beingTouched = false
@@ -83,6 +84,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private var pillFlash: LinearLayout
 
     private var reenterTransparencyHandle: ScheduledFuture<*>? = null
+
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet?) : super(context, attributeSet)
@@ -301,7 +303,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     fun hidePill(auto: Boolean) {
         try {
-            if (!isHidden) {
+            if (!isHidden && app.isPillShown()) {
                 isAutoHidden = auto
 
                 val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
@@ -311,7 +313,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                 try {
                     if (time == 0f) throw Exception()
-                    val handle = Executors.newScheduledThreadPool(1).scheduleAtFixedRate({
+                    val handle = pool.scheduleAtFixedRate({
                         if (params.y > 0) {
                             params.y -= 1
 
@@ -319,7 +321,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }
                     }, 0, sleepTime.toLong(), TimeUnit.MICROSECONDS)
 
-                    Executors.newScheduledThreadPool(1).schedule({
+                    pool.schedule({
                         handle.cancel(true)
                         handler?.post {
                             animateHide()
@@ -366,14 +368,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     fun showPill(forceNotAuto: Boolean) {
         try {
-            if (isHidden) {
+            if (isHidden && app.isPillShown()) {
                 if (hideHandle != null) {
                     hideHandle?.cancel(true)
                     hideHandle = null
                 }
 
                 if (isAutoHidden && !forceNotAuto) {
-                    hideHandle = Executors.newScheduledThreadPool(1).schedule({
+                    hideHandle = pool.schedule({
                         if (isAutoHidden && !forceNotAuto) hidePill(true)
                     }, 1500, TimeUnit.MILLISECONDS)
                 }
@@ -385,7 +387,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                 try {
                     if (time == 0f) throw Exception()
-                    val handle = Executors.newScheduledThreadPool(1).scheduleAtFixedRate({
+                    val handle = pool.scheduleAtFixedRate({
                         if (params.y < distance) {
                             params.y += 1
 
@@ -393,7 +395,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }
                     }, 0, sleepTime.toLong(), TimeUnit.MICROSECONDS)
 
-                    Executors.newScheduledThreadPool(1).schedule({
+                    pool.schedule({
                         handle.cancel(true)
                         handler?.post {
                             animateShow()
@@ -930,8 +932,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     //TODO: this needs a proper fix
                                     try {
                                         if (time == 0f) throw Exception()
-                                        val scheduler = Executors.newScheduledThreadPool(1)
-                                        val handle = scheduler.scheduleAtFixedRate({
+                                        val handle = pool.scheduleAtFixedRate({
                                                     if (params.y > getHomeY(context)) {
                                                         params.y -= 1
 
@@ -940,7 +941,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                 },
                                                 0, sleepTime.toLong(),
                                                 TimeUnit.MICROSECONDS)
-                                        scheduler.schedule({
+                                        pool.schedule({
                                             handle.cancel(false)
                                             handler?.post {
                                                 if (isSwipeUp) jiggleDown()
@@ -962,8 +963,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                                     try {
                                         if (time == 0f) throw Exception()
-                                        val scheduler = Executors.newScheduledThreadPool(1)
-                                        val handle = scheduler.scheduleAtFixedRate({
+                                        val handle = pool.scheduleAtFixedRate({
                                                     if (params.x < getHomeX(context)) {
                                                         params.x += 1
 
@@ -972,7 +972,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                 },
                                                 0, sleepTime.toLong(),
                                                 TimeUnit.MICROSECONDS)
-                                        scheduler.schedule({
+                                        pool.schedule({
                                             handle.cancel(false)
                                             handler?.post {
                                                 if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
@@ -995,8 +995,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                                     try {
                                         if (time == 0f) throw Exception()
-                                        val scheduler = Executors.newScheduledThreadPool(1)
-                                        val handle = scheduler.scheduleAtFixedRate({
+                                        val handle = pool.scheduleAtFixedRate({
                                                     if (params.x > getHomeX(context)) {
                                                         params.x -= 1
 
@@ -1005,7 +1004,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                 },
                                                 0, sleepTime.toLong(),
                                                 TimeUnit.MICROSECONDS)
-                                        scheduler.schedule({
+                                        pool.schedule({
                                             handle.cancel(false)
                                             handler?.post {
                                                 if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
@@ -1050,7 +1049,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 }
 
                                 if (upHoldHandle == null) {
-                                    upHoldHandle = Executors.newScheduledThreadPool(1).schedule({
+                                    upHoldHandle = pool.schedule({
                                         handler?.post {
                                             sendAction(app.actionUpHold)
                                             isSwipeUp = false
@@ -1079,7 +1078,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                                 if (isSwipeLeft) {
                                     if (leftHoldHandle == null) {
-                                        leftHoldHandle = Executors.newScheduledThreadPool(1).schedule({
+                                        leftHoldHandle = pool.schedule({
                                             handler?.post {
                                                 sendAction(app.actionLeftHold)
                                                 isSwipeLeft = false
@@ -1091,7 +1090,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                                 if (isSwipeRight) {
                                     if (rightHoldHandle == null) {
-                                        rightHoldHandle = Executors.newScheduledThreadPool(1).schedule({
+                                        rightHoldHandle = pool.schedule({
                                             handler?.post {
                                                 sendAction(app.actionRightHold)
                                                 isSwipeRight = false
@@ -1109,7 +1108,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     if (ev?.action == MotionEvent.ACTION_UP) {
                         exitTransparencyMode()
                         if (reenterTransparencyHandle == null) {
-                            reenterTransparencyHandle = Executors.newScheduledThreadPool(1).schedule({
+                            reenterTransparencyHandle = pool.schedule({
                                 handler?.post {
                                     reenterTransparencyHandle = null
                                     enterTransparencyMode()
