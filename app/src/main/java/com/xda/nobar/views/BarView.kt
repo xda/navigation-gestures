@@ -980,7 +980,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 val velocity = (oldY - ev.rawY)
                                 oldY = ev.rawY
 
-                                if (params.y < Utils.getRealScreenSize(context).y / 6 + getHomeY(context)) {
+                                if (params.y < Utils.getRealScreenSize(context).y / 6 + getHomeY(context) && getAnimationDurationMs() > 0) {
                                     params.y = params.y + (velocity / 2).toInt()
                                     updateLayout(params)
                                 }
@@ -1004,12 +1004,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                                 val half = (Utils.getRealScreenSize(context).x.toFloat() / 2f - Utils.getCustomWidth(context).toFloat() / 2f).toInt()
 
-                                when {
-                                    params.x == -half && !isSwipeRight -> pill.translationX += -velocity
-                                    params.x == half && !isSwipeLeft -> pill.translationX += velocity
-                                    else -> {
-                                        params.x = params.x + (velocity / 2).toInt()
-                                        updateLayout(params)
+                                if (getAnimationDurationMs() > 0) {
+                                    when {
+                                        params.x == -half && !isSwipeRight -> pill.translationX += -velocity
+                                        params.x == half && !isSwipeLeft -> pill.translationX += velocity
+                                        else -> {
+                                            params.x = params.x + (velocity / 2).toInt()
+                                            updateLayout(params)
+                                        }
                                     }
                                 }
 
