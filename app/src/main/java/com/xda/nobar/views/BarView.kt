@@ -7,6 +7,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -179,9 +180,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
                 setStroke(Utils.dpAsPx(context, 1), Utils.getPillFGColor(context))
             }
-            (pillFlash.background as GradientDrawable).apply {
-                cornerRadius = Utils.getPillCornerRadiusInPx(context).toFloat()
-            }
         }
         if (key == "show_shadow") {
             val shadow = Utils.shouldShowShadow(context)
@@ -220,6 +218,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
             (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
                 cornerRadius = Utils.dpAsPx(context, Utils.getPillCornerRadiusInDp(context)).toFloat()
+            }
+            (pillFlash.background as GradientDrawable).apply {
+                cornerRadius = Utils.getPillCornerRadiusInPx(context).toFloat()
             }
         }
         if (key == "larger_hitbox") {
@@ -293,9 +294,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     fun animateActiveLayer(alpha: Float) {
         handler?.post {
             pillFlash.apply {
+                val alphaRatio = Color.alpha(Utils.getPillBGColor(context)).toFloat() / 255f
                 animate()
                         .setDuration(getAnimationDurationMs())
-                        .alpha(alpha)
+                        .alpha(alpha * alphaRatio)
                         .start()
             }
         }
