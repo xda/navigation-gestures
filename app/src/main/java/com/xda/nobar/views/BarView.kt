@@ -85,8 +85,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private var pill: LinearLayout
     private var pillFlash: LinearLayout
 
-    private var reenterTransparencyHandle: ScheduledFuture<*>? = null
-
+    private val hideLock = Any()
+    private val tapLock = Any()
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet?) : super(context, attributeSet)
@@ -371,44 +371,35 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     fun showPill(forceNotAuto: Boolean) {
         try {
             if (isHidden && app.isPillShown()) {
-                if (hideHandle != null) {
-                    hideHandle?.cancel(true)
-                    hideHandle = null
-                }
+                synchronized(hideLock) {
+                    if (hideHandle != null) {
+                        hideHandle?.cancel(true)
+                        hideHandle = null
+                    }
 
-                if (isAutoHidden && !forceNotAuto) {
-                    hideHandle = pool.schedule({
-                        if (isAutoHidden && !forceNotAuto) hidePill(true)
-                    }, 1500, TimeUnit.MILLISECONDS)
-                }
+                    if (isAutoHidden && !forceNotAuto) {
+                        hideHandle = pool.schedule({
+                            if (isAutoHidden && !forceNotAuto) hidePill(true)
+                        }, 1500, TimeUnit.MILLISECONDS)
+                    }
 
-                val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-                val time = (getAnimationDurationMs() * animDurScale)
-                val distance = Utils.getHomeY(context)
-                val sleepTime = time / distance * 1000f
+                    val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+                    val time = (getAnimationDurationMs() * animDurScale)
+                    val distance = Utils.getHomeY(context)
 
-                try {
-                    if (time == 0f) throw Exception()
-                    val handle = pool.scheduleAtFixedRate({
-                        if (params.y < distance) {
-                            params.y += 1
-
-                            updateLayout(params)
-                        }
-                    }, 0, sleepTime.toLong(), TimeUnit.MICROSECONDS)
-
-                    pool.schedule({
-                        handle.cancel(true)
-                        handler?.post {
+                    val animator = ValueAnimator.ofInt(params.y, getHomeY(context))
+                    animator.interpolator = DecelerateInterpolator()
+                    animator.addUpdateListener {
+                        params.y = it.animatedValue.toString().toInt()
+                        updateLayout(params)
+                    }
+                    animator.addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator?) {
                             animateShow()
                         }
-                    }, time.toLong(), TimeUnit.MILLISECONDS)
-                } catch (e: Exception) {
-                    params.y = distance
-                    updateLayout(params)
-                    handler?.post {
-                        animateShow()
-                    }
+                    })
+                    animator.duration = (time * distance / 100f).toLong()
+                    animator.start()
                 }
             }
         } catch (e: IllegalArgumentException) {}
@@ -863,15 +854,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
          */
         inner class GD : GestureDetector(context, GestureListener()) {
             override fun onTouchEvent(ev: MotionEvent?): Boolean {
-                return if (!isTransparent) {
-                    if (reenterTransparencyHandle != null) {
-                        reenterTransparencyHandle?.cancel(true)
-                        reenterTransparencyHandle = null
-                    }
+                val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+                val time = (getAnimationDurationMs() * animDurScale)
 
-                    val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-                    val time = (getAnimationDurationMs() * animDurScale)
-
+                synchronized(hideLock) {
                     when (ev?.action) {
                         MotionEvent.ACTION_DOWN -> {
                             wasHidden = isHidden
@@ -969,8 +955,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 }
                                 else -> {
                                     if (actionMap[app.actionDouble] == app.typeNoAction && !isActing && !wasHidden) {
-                                        isOverrideTap = true
-                                        sendAction(app.actionTap)
+                                        synchronized(tapLock) {
+                                            isOverrideTap = true
+                                            sendAction(app.actionTap)
+                                        }
                                     }
 
                                     isActing = false
@@ -1049,20 +1037,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }
                     }
 
-                    super.onTouchEvent(ev)
-                } else {
-                    if (ev?.action == MotionEvent.ACTION_UP) {
-                        exitTransparencyMode()
-                        if (reenterTransparencyHandle == null) {
-                            reenterTransparencyHandle = pool.schedule({
-                                handler?.post {
-                                    reenterTransparencyHandle = null
-                                    enterTransparencyMode()
-                                }
-                            }, 1500, TimeUnit.MILLISECONDS)
-                        }
-                    }
-                    false
+                    return super.onTouchEvent(ev)
                 }
             }
         }
@@ -1133,21 +1108,25 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
              * Handle the single tap
              */
             override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                return if (!isOverrideTap && !isHidden) {
-                    isActing = false
+                synchronized(tapLock) {
+                    synchronized(hideLock) {
+                        return if (!isOverrideTap && !isHidden) {
+                            isActing = false
 
-                    if (!isHidden) {
-                        sendAction(app.actionTap)
+                            if (!isHidden) {
+                                sendAction(app.actionTap)
+                            }
+                            true
+                        } else if (isHidden) {
+                            isOverrideTap = false
+                            vibrate(getVibrationDuration().toLong())
+                            showPill(false)
+                            true
+                        } else {
+                            isOverrideTap = false
+                            false
+                        }
                     }
-                    true
-                } else if (isHidden) {
-                    isOverrideTap = false
-                    vibrate(getVibrationDuration().toLong())
-                    showPill(false)
-                    true
-                } else {
-                    isOverrideTap = false
-                    false
                 }
             }
         }

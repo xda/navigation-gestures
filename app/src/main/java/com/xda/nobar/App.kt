@@ -388,8 +388,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Hide the navbar
      */
     fun hideNav() {
+        Utils.saveBackupImmersive(this)
         if (Utils.isInImmersive(this)) {
-            Utils.saveBackupImmersive(this)
             Utils.disableNavImmersive(this)
         }
 
@@ -525,10 +525,18 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (isPillShown()) {
                 val rect = Rect()
                 val screenRes = Utils.getRealScreenSize(this@App)
+                val overscan = getOverscan()
 
                 bar.getWindowVisibleDisplayFrame(rect)
 
-                val hidden = ((rect.top - rect.bottom).absoluteValue >= screenRes.y && (rect.left - rect.right).absoluteValue >= screenRes.x)
+                val vertical = (rect.top - rect.bottom).absoluteValue + overscan.top + overscan.bottom
+                val horizontal = (rect.left - rect.right).absoluteValue + overscan.left + overscan.right
+                val landscape = wm.defaultDisplay.rotation == Surface.ROTATION_270 || wm.defaultDisplay.rotation == Surface.ROTATION_90
+
+                val hidden = when {
+                    landscape && !Utils.useTabletMode(this@App) -> horizontal >= screenRes.x
+                    else -> vertical >= screenRes.y
+                }
 
                 if (hidden) {
                     onSystemUiVisibilityChange(View.SYSTEM_UI_FLAG_FULLSCREEN)
@@ -540,21 +548,17 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         override fun onSystemUiVisibilityChange(visibility: Int) {
 //            Log.e("NoBar", visibility.toString())
-            if (Utils.shouldUseOverscanMethod(this@App)) {
-                handleImmersiveChange(visibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0
-                        || visibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
-                        || visibility and View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN != 0
-                        || visibility and 7 != 0)
-            }
+            handleImmersiveChange(visibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0
+                    || visibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
+                    || visibility and View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN != 0
+                    || visibility and 7 != 0)
         }
 
         override fun onChange(selfChange: Boolean, uri: Uri?) {
-            if (Utils.shouldUseOverscanMethod(this@App)) {
-                if (uri == Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL)) {
-                    val current = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)
+            if (uri == Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL)) {
+                val current = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)
 
-                    handleImmersiveChange(current != null && (current.contains("full") || current.contains("nav")))
-                }
+                handleImmersiveChange(current != null && (current.contains("full") || current.contains("nav")))
             }
         }
 
@@ -563,15 +567,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 val hideInFullScreen = Utils.hideInFullscreen(this@App)
                 if (isImmersive) {
                     if (!isDisabledForContent) {
-                        showNav()
-                        if (hideInFullScreen) {
-                            bar.hidePill(true)
-                        }
+                        if (Utils.shouldUseOverscanMethod(this@App)) showNav()
+                        if (hideInFullScreen) bar.hidePill(true)
                         isDisabledForContent = true
                     }
                 } else if (isDisabledForContent) {
-                    hideNav()
-
+                    if (Utils.shouldUseOverscanMethod(this@App)) hideNav()
                     if (hideInFullScreen && bar.isAutoHidden) {
                         bar.isAutoHidden = false
                         bar.showPill(true)
