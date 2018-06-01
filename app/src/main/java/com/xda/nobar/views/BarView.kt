@@ -84,6 +84,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private var view: View
     private var pill: LinearLayout
     private var pillFlash: LinearLayout
+    private var yDownAnimator: ValueAnimator? = null
 
     private val hideLock = Any()
     private val tapLock = Any()
@@ -308,35 +309,28 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if (!isHidden && app.isPillShown()) {
                 isAutoHidden = auto
 
+                if (actionMap[app.actionUp] == app.typeHide || actionMap[app.actionUpHold] == app.typeHide) {
+                    yDownAnimator?.cancel()
+                    yDownAnimator = null
+                }
+
                 val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
                 val time = (getAnimationDurationMs() * animDurScale)
-                val distance = params.y.toFloat()
-                val sleepTime = time / distance * 1000f
+                val distance = getHomeY(context).toFloat()
 
-                try {
-                    if (time == 0f) throw Exception()
-                    val handle = pool.scheduleAtFixedRate({
-                        if (params.y > 0) {
-                            params.y -= 1
-
-                            updateLayout(params)
-                        }
-                    }, 0, sleepTime.toLong(), TimeUnit.MICROSECONDS)
-
-                    pool.schedule({
-                        handle.cancel(true)
-                        handler?.post {
-                            animateHide()
-                        }
-                    }, time.toLong(), TimeUnit.MILLISECONDS)
-                } catch (e: Exception) {
-                    params.y = 0
+                val animator = ValueAnimator.ofInt(params.y, 0)
+                animator.interpolator = DecelerateInterpolator()
+                animator.addUpdateListener {
+                    params.y = it.animatedValue.toString().toInt()
                     updateLayout(params)
-                    handler?.post {
+                }
+                animator.addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
                         animateHide()
                     }
-
-                }
+                })
+                animator.duration = (time * distance / 100f).toLong()
+                animator.start()
 
                 showHiddenToast()
             }
@@ -915,22 +909,28 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             when {
                                 params.y > getHomeY(context) -> {
                                     val distance = (params.y - getHomeY(context)).absoluteValue
-                                    val animator = ValueAnimator.ofInt(params.y, getHomeY(context))
-                                    animator.interpolator = DecelerateInterpolator()
-                                    animator.addUpdateListener {
+                                    if (yDownAnimator != null) {
+                                        yDownAnimator?.cancel()
+                                        yDownAnimator = null
+                                    }
+                                    yDownAnimator = ValueAnimator.ofInt(params.y, getHomeY(context))
+                                    yDownAnimator?.interpolator = DecelerateInterpolator()
+                                    yDownAnimator?.addUpdateListener {
                                         params.y = it.animatedValue.toString().toInt()
                                         updateLayout(params)
                                     }
-                                    animator.addListener(object : AnimatorListenerAdapter() {
+                                    yDownAnimator?.addListener(object : AnimatorListenerAdapter() {
                                         override fun onAnimationEnd(animation: Animator?) {
                                             if (isSwipeUp) jiggleDown()
 //
                                             isActing = false
                                             isSwipeUp = false
+
+                                            yDownAnimator = null
                                         }
                                     })
-                                    animator.duration = (time * distance / 100f).toLong()
-                                    animator.start()
+                                    yDownAnimator?.duration = (time * distance / 100f).toLong()
+                                    yDownAnimator?.start()
                                 }
                                 params.x < getHomeX(context) || params.x > getHomeX(context) -> {
                                     val distance = (params.x - getHomeX(context)).absoluteValue
