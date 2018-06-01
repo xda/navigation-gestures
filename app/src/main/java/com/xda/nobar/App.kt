@@ -41,7 +41,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var kgm: KeyguardManager
     private lateinit var stateHandler: ScreenStateHandler
     private lateinit var carModeHandler: CarModeHandler
-    private lateinit var prefs: SharedPreferences
     private lateinit var premiumHelper: PremiumHelper
     private lateinit var premiumInstallListener: PremiumInstallListener
     private lateinit var compatibilityRotationListener: CompatibilityRotationListener
@@ -55,6 +54,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     lateinit var immersiveListener: ImmersiveListener
     lateinit var bar: BarView
+    lateinit var prefs: SharedPreferences
 
     private val gestureListeners = ArrayList<GestureActivationListener>()
     private val navbarListeners = ArrayList<NavBarHideListener>()
@@ -355,11 +355,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     fun toggleGestureBar() {
         if (isPillShown()) removeBar()
         else addBar()
-    }
-
-    fun toggleNavState() {
-        if (isNavBarHidden()) showNav()
-        else hideNav()
     }
 
     /**

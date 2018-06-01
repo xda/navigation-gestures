@@ -1,12 +1,14 @@
 package com.xda.nobar.tiles
 
 import android.annotation.TargetApi
+import android.content.Intent
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import com.xda.nobar.App
 import com.xda.nobar.R
+import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.util.Utils
 
 /**
@@ -31,8 +33,18 @@ class NavBarToggle : TileService(), App.NavBarHideListener {
     }
 
     override fun onClick() {
-        handler.toggleNavState()
-        Utils.setShouldUseOverscanMethod(this, !Utils.shouldUseOverscanMethod(this))
+        val hidden = handler.isNavBarHidden()
+        handler.prefs.edit().putBoolean("hide_nav", !hidden).apply()
+        if (!handler.isNavBarHidden()) {
+            if (!IntroActivity.hasWss(this)) {
+                val activity = Intent(this, IntroActivity::class.java)
+                activity.putExtra(IntroActivity.EXTRA_WSS_ONLY, true)
+                startActivity(activity)
+                handler.prefs.edit().putBoolean("hide_nav", false).apply()
+            } else {
+                handler.hideNav()
+            }
+        } else handler.showNav()
         updateState()
     }
 
