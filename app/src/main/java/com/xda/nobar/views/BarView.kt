@@ -309,14 +309,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if (!isHidden && app.isPillShown()) {
                 isAutoHidden = auto
 
-                if (actionMap[app.actionUp] == app.typeHide || actionMap[app.actionUpHold] == app.typeHide) {
-                    yDownAnimator?.cancel()
-                    yDownAnimator = null
-                }
-
                 val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
                 val time = (getAnimationDurationMs() * animDurScale)
-                val distance = getHomeY(context).toFloat()
+                val distance = params.y
 
                 val animator = ValueAnimator.ofInt(params.y, 0)
                 animator.interpolator = DecelerateInterpolator()
@@ -493,6 +488,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (key == app.actionDouble) handler?.postDelayed({ vibrate(getVibrationDuration().toLong()) }, getVibrationDuration().toLong())
 
         if (which == app.typeHide) {
+            if (key == app.actionUp || key == app.actionUpHold) {
+                yDownAnimator?.cancel()
+                yDownAnimator = null
+            }
             hidePill(false)
             return
         }
@@ -927,6 +926,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                             isSwipeUp = false
 
                                             yDownAnimator = null
+                                        }
+
+                                        override fun onAnimationCancel(animation: Animator?) {
+                                            onAnimationEnd(animation)
                                         }
                                     })
                                     yDownAnimator?.duration = (time * distance / 100f).toLong()
