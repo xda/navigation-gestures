@@ -16,11 +16,6 @@
     <string name="height">Pill Height</string>
     <string name="position_y">Vertical (Y) Position</string>
     <string name="position_x">Horizontal (X) Position</string>
-    <string name="reset_all">Reset All</string>
-    <string name="reset_width">Reset Width</string>
-    <string name="reset_height">Reset Height</string>
-    <string name="reset_pos_y">Reset Vertical (Y) Position</string>
-    <string name="reset_pos_x">Reset Horizontal (X) Position</string>
     <string name="taps">Taps</string>
     <string name="swipes">Swipes</string>
     <string name="version">Version</string>
@@ -41,8 +36,6 @@
     <string name="nougat_required">Requires Nougat</string>
     <string name="hold_time">Swipe and Hold Time</string>
     <string name="vibration_duration">Vibration Duration</string>
-    <string name="reset_hold_time">Reset Hold Time</string>
-    <string name="reset_vibration_duration">Reset Vibration Duration</string>
     <string name="buy_premium">Buy Premium</string>
     <string name="libraries">Libraries</string>
     <string name="qs_tile">Quick Settings Tile</string>
@@ -53,7 +46,6 @@
     <string name="sorry">Sorry :(</string>
     <string name="anim_duration">Animation Duration</string>
     <string name="warning">Warning!</string>
-    <string name="reset_anim_duration">Reset Animation Duration</string>
     <string name="hide_on_launcher">Hide on Launcher</string>
     <string name="pill_color">Pill Color</string>
     <string name="pill_border_color">Pill Border Color</string>
@@ -68,7 +60,6 @@
     <string name="compatibility">Compatibility</string>
     <string name="foreground">Foreground Service</string>
     <string name="pill_corner_radius">Pill Corner Radius</string>
-    <string name="reset_pill_corner_radius">Reset Pill Corner Radius</string>
     <string name="hide_in_fullscreen">Hide in Fullscreen Apps</string>
     <string name="larger_hitbox">Larger Hitbox</string>
     <string name="hide_nav">Hide Navigation Bar</string>
