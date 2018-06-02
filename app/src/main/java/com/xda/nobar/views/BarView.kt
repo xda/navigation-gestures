@@ -1008,8 +1008,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                                 if (getAnimationDurationMs() > 0) {
                                     when {
-                                        params.x >= -half && !isSwipeRight -> pill.translationX += -velocity
-                                        params.x <= half && !isSwipeLeft -> pill.translationX += velocity
+                                        params.x <= -half && !isSwipeRight -> pill.translationX -= velocity
+                                        params.x >= half && !isSwipeLeft -> pill.translationX += velocity
                                         else -> {
                                             params.x = params.x + (velocity / 2).toInt()
                                             updateLayout(params)
