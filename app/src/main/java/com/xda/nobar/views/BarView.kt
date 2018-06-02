@@ -374,46 +374,42 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }, 1500, TimeUnit.MILLISECONDS)
                     }
 
-                    val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-                    val time = (getAnimationDurationMs() * animDurScale)
-                    val distance = Utils.getHomeY(context)
+                    pill.animate()
+                            .translationY(0f)
+                            .alpha(ALPHA_ACTIVE)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .withEndAction {
+                                pill.translationY = 0f
 
-                    val animator = ValueAnimator.ofInt(params.y, getHomeY(context))
-                    animator.interpolator = DecelerateInterpolator()
-                    animator.addUpdateListener {
-                        params.y = it.animatedValue.toString().toInt()
-                        updateLayout(params)
-                    }
-                    animator.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator?) {
-                            animateShow()
-                        }
-                    })
-                    animator.duration = (time * distance / 100f).toLong()
-                    animator.start()
+                                animateShow()
+                            }
+                            .start()
                 }
             }
         } catch (e: IllegalArgumentException) {}
     }
 
     private fun animateShow() {
-        pill.animate()
-                .translationY(0f)
-                .alpha(ALPHA_ACTIVE)
-                .setInterpolator(EXIT_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    pill.translationY = 0f
+        val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+        val time = (getAnimationDurationMs() * animDurScale)
+        val distance = Utils.getHomeY(context)
+        val animator = ValueAnimator.ofInt(params.y, getHomeY(context))
 
-                    handler?.post {
-                        jiggleUp()
-                    }
+        animator.interpolator = DecelerateInterpolator()
+        animator.addUpdateListener {
+            params.y = it.animatedValue.toString().toInt()
+            updateLayout(params)
+        }
+        animator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                jiggleUp()
 
-                    updateLayout(params)
-
-                    handler?.postDelayed(Runnable { isHidden = false }, (if (getAnimationDurationMs() < 12) 12 else 0))
-                }
-                .start()
+                handler?.postDelayed(Runnable { isHidden = false }, (if (getAnimationDurationMs() < 12) 12 else 0))
+            }
+        })
+        animator.duration = (time * distance / 100f).toLong()
+        animator.start()
     }
 
     fun changePillMargins(margins: Rect) {
