@@ -392,6 +392,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (!Utils.useRot270Fix(this) && !Utils.useTabletMode(this)) IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this) + 1)
             compatibilityRotationListener.enable()
             Utils.forceNavBlack(this)
+            Utils.forceTouchWizNavEnabled(this)
 
             navbarListeners.forEach { it.onNavChange(true) }
             navHidden = true
@@ -410,6 +411,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         IWindowManager.setOverscan(0, 0, 0, 0)
         compatibilityRotationListener.disable()
         Utils.clearBlackNav(this)
+        Utils.undoForceTouchWizNavEnabled(this)
 
         navHidden = false
     }

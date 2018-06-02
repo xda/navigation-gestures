@@ -215,13 +215,17 @@ object Utils {
 //        return Settings.Global.getInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0) == 0
 //    }
 
-//    /**
-//     * Make sure the TouchWiz navbar is not hidden
-//     * @param context a context object
-//     */
-//    fun forceTouchWizNavEnabled(context: Context) {
-//        if (hasNavBar(context)) Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0)
-//    }
+    /**
+     * Make sure the TouchWiz navbar is not hidden
+     * @param context a context object
+     */
+    fun forceTouchWizNavEnabled(context: Context) {
+        Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0)
+    }
+
+    fun undoForceTouchWizNavEnabled(context: Context) {
+        Settings.Global.putString(context.contentResolver, "navigationbar_hide_bar_enabled", null)
+    }
 
     /**
      * Get the user-defined or default vertical position of the pill
