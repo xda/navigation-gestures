@@ -474,9 +474,10 @@ object Utils {
      * @param context a context object
      */
     fun forceNavBlack(context: Context) {
+        val color= Color.argb(0x01, 0x00, 0x00, 0x00)
         if (!IntroActivity.needsToRun(context) && shouldUseOverscanMethod(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            Settings.Global.putInt(context.contentResolver, "navigationbar_color", Color.TRANSPARENT)
-            Settings.Global.putInt(context.contentResolver, "navigationbar_current_color", Color.TRANSPARENT)
+            Settings.Global.putInt(context.contentResolver, "navigationbar_color", color)
+            Settings.Global.putInt(context.contentResolver, "navigationbar_current_color", color)
             Settings.Global.putInt(context.contentResolver, "navigationbar_use_theme_default", 0)
         }
     }
