@@ -28,10 +28,6 @@
         app:show_popup="false"
         app:format="%sms" />
 
-    <Preference
-        android:title="@string/reset_hold_time"
-        android:key="reset_hold_time" />
-
     <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
         android:title="@string/vibration_duration"
         android:key="vibration_duration"
@@ -42,10 +38,6 @@
         app:show_popup="false"
         app:format="%sms" />
 
-    <Preference
-        android:title="@string/reset_vibration_duration"
-        android:key="reset_vibration_duration" />
-
     <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
         android:title="@string/anim_duration"
         android:key="anim_duration"
@@ -54,13 +46,5 @@
         app:default_progress="500"
         app:show_text="true"
         app:show_popup="false" />
-
-    <Preference
-        android:title="@string/reset_anim_duration"
-        android:key="reset_anim_duration" />
-
-    <Preference
-        android:title="@string/reset_all"
-        android:key="reset_all" />
 
 </PreferenceScreen>

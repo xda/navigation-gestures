@@ -36,19 +36,11 @@
         android:title="@string/pill_corner_radius"
         android:key="pill_corner_radius" />
 
-    <Preference
-        android:title="@string/reset_pill_corner_radius"
-        android:key="reset_pill_corner_radius" />
-
     <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
         app:show_text="true"
         app:show_popup="false"
         android:title="@string/width"
         android:key="custom_width" />
-
-    <Preference
-        android:title="@string/reset_width"
-        android:key="reset_width" />
 
     <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
         app:show_text="true"
@@ -56,32 +48,16 @@
         android:title="@string/height"
         android:key="custom_height" />
 
-    <Preference
-        android:title="@string/reset_height"
-        android:key="reset_height" />
-
     <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
         app:show_text="true"
         app:show_popup="false"
         android:title="@string/position_y"
         android:key="custom_y" />
 
-    <Preference
-        android:title="@string/reset_pos_y"
-        android:key="reset_pos_y" />
-
     <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
         app:show_text="true"
         app:show_popup="false"
         android:title="@string/position_x"
         android:key="custom_x" />
-
-    <Preference
-        android:title="@string/reset_pos_x"
-        android:key="reset_pos_x" />
-
-    <Preference
-        android:title="@string/reset_all"
-        android:key="defaults" />
 
 </PreferenceScreen>
