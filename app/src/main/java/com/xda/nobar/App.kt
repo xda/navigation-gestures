@@ -348,7 +348,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 addBar()
             }
 
-            setState(!state)
+            setGestureState(!state)
         }
     }
 
@@ -431,9 +431,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     }
 
     /**
-     * Save the current NoBar state to preferences
+     * Save the current NoBar gesture state to preferences
      */
-    fun setState(activated: Boolean) {
+    fun setGestureState(activated: Boolean) {
         prefs.edit().putBoolean("is_active", activated).apply()
     }
 
