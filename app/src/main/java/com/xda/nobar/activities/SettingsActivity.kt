@@ -275,6 +275,9 @@ class SettingsActivity : AppCompatActivity() {
             val pillCornerRadius = findPreference("pill_corner_radius") as SliderPreferenceEmbedded
             val posX = findPreference("custom_x") as SliderPreferenceEmbedded
 
+            val resetPillColor = findPreference("reset_pill_bg")
+            val resetPillBorderColor = findPreference("reset_pill_fg")
+
             width.seekBar.min = Utils.dpAsPx(activity, 10)
             height.seekBar.min = Utils.dpAsPx(activity, 5)
             posY.seekBar.min = 0
@@ -285,11 +288,27 @@ class SettingsActivity : AppCompatActivity() {
             posY.seekBar.defaultProgress = Utils.getDefaultY(activity)
             posX.seekBar.defaultProgress = 0
             pillCornerRadius.seekBar.defaultProgress = 8
+            pillColor.setDefaultValue(Utils.getPillBGColor(activity))
+            pillBorderColor.setDefaultValue(Utils.getPillFGColor(activity))
+            pillColor.saveValue(Utils.getPillBGColor(activity))
+            pillBorderColor.saveValue(Utils.getPillFGColor(activity))
 
             width.seekBar.max = screenSize.x
             height.seekBar.max = Utils.dpAsPx(activity, 50)
             posY.seekBar.max = Utils.dpAsPx(activity, 70)
             posX.seekBar.max = -posX.seekBar.min
+
+            resetPillColor.setOnPreferenceClickListener {
+                preferenceManager.sharedPreferences.edit().remove("pill_bg").apply()
+                pillColor.saveValue(Utils.getPillBGColor(activity))
+                true
+            }
+
+            resetPillBorderColor.setOnPreferenceClickListener {
+                preferenceManager.sharedPreferences.edit().remove("pill_fg").apply()
+                pillBorderColor.saveValue(Utils.getPillFGColor(activity))
+                true
+            }
         }
     }
 
