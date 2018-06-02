@@ -471,8 +471,8 @@ object Utils {
      */
     fun forceNavBlack(context: Context) {
         if (!IntroActivity.needsToRun(context) && shouldUseOverscanMethod(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            Settings.Global.putInt(context.contentResolver, "navigationbar_color", Color.BLACK)
-            Settings.Global.putInt(context.contentResolver, "navigationbar_current_color", Color.BLACK)
+            Settings.Global.putInt(context.contentResolver, "navigationbar_color", Color.TRANSPARENT)
+            Settings.Global.putInt(context.contentResolver, "navigationbar_current_color", Color.TRANSPARENT)
             Settings.Global.putInt(context.contentResolver, "navigationbar_use_theme_default", 0)
         }
     }
