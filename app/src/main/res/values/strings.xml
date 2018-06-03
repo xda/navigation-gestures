@@ -64,6 +64,8 @@
     <string name="larger_hitbox">Larger Hitbox</string>
     <string name="hide_nav">Hide Navigation Bar</string>
     <string name="are_you_sure">Are you sure?</string>
+    <string name="color_prefs">Colors</string>
+    <string name="dimension_prefs">Dimensions</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>

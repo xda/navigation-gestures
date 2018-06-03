@@ -2,62 +2,72 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreference
-        android:title="@string/show_pill_shadow"
-        android:key="show_shadow"
-        android:defaultValue="true" />
+    <PreferenceCategory
+        android:title="@string/color_prefs">
 
-    <com.jaredrummler.android.colorpicker.ColorPreference
-        android:title="@string/pill_color"
-        android:key="pill_bg"
-        app:cpv_showAlphaSlider="true"
-        app:cpv_allowCustom="true" />
+        <SwitchPreference
+            android:title="@string/show_pill_shadow"
+            android:key="show_shadow"
+            android:defaultValue="true" />
 
-    <Preference
-        android:title="@string/reset_pill_color"
-        android:key="reset_pill_bg" />
+        <com.jaredrummler.android.colorpicker.ColorPreference
+            android:title="@string/pill_color"
+            android:key="pill_bg"
+            app:cpv_showAlphaSlider="true"
+            app:cpv_allowCustom="true" />
 
-    <com.jaredrummler.android.colorpicker.ColorPreference
-        android:title="@string/pill_border_color"
-        android:key="pill_fg"
-        app:cpv_showAlphaSlider="true"
-        app:cpv_allowCustom="true" />
+        <Preference
+            android:title="@string/reset_pill_color"
+            android:key="reset_pill_bg" />
 
-    <Preference
-        android:title="@string/reset_pill_border_color"
-        android:key="reset_pill_fg" />
+        <com.jaredrummler.android.colorpicker.ColorPreference
+            android:title="@string/pill_border_color"
+            android:key="pill_fg"
+            app:cpv_showAlphaSlider="true"
+            app:cpv_allowCustom="true" />
 
-    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
-        app:show_text="true"
-        app:show_popup="false"
-        app:format="%sdp"
-        app:seek_min="0"
-        app:seek_max="10"
-        android:title="@string/pill_corner_radius"
-        android:key="pill_corner_radius" />
+        <Preference
+            android:title="@string/reset_pill_border_color"
+            android:key="reset_pill_fg" />
 
-    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
-        app:show_text="true"
-        app:show_popup="false"
-        android:title="@string/width"
-        android:key="custom_width" />
+    </PreferenceCategory>
 
-    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
-        app:show_text="true"
-        app:show_popup="false"
-        android:title="@string/height"
-        android:key="custom_height" />
+    <PreferenceCategory
+        android:title="@string/dimension_prefs">
 
-    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
-        app:show_text="true"
-        app:show_popup="false"
-        android:title="@string/position_y"
-        android:key="custom_y" />
+        <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+            app:show_text="true"
+            app:show_popup="false"
+            app:format="%sdp"
+            app:seek_min="0"
+            app:seek_max="10"
+            android:title="@string/pill_corner_radius"
+            android:key="pill_corner_radius" />
 
-    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
-        app:show_text="true"
-        app:show_popup="false"
-        android:title="@string/position_x"
-        android:key="custom_x" />
+        <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+            app:show_text="true"
+            app:show_popup="false"
+            android:title="@string/width"
+            android:key="custom_width" />
+
+        <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+            app:show_text="true"
+            app:show_popup="false"
+            android:title="@string/height"
+            android:key="custom_height" />
+
+        <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+            app:show_text="true"
+            app:show_popup="false"
+            android:title="@string/position_y"
+            android:key="custom_y" />
+
+        <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+            app:show_text="true"
+            app:show_popup="false"
+            android:title="@string/position_x"
+            android:key="custom_x" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>
