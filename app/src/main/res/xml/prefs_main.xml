@@ -4,21 +4,25 @@
     <Preference
         android:title="@string/gestures"
         android:summary="@string/gestures_desc"
+        android:icon="@drawable/ic_gesture_black_24dp"
         android:key="gestures" />
 
     <Preference
         android:title="@string/appearance"
         android:summary="@string/appearance_desc"
+        android:icon="@drawable/ic_color_lens_black_24dp"
         android:key="appearance" />
 
     <Preference
         android:title="@string/behavior"
         android:summary="@string/behavior_desc"
+        android:icon="@drawable/ic_animation_black_24dp"
         android:key="behavior" />
 
     <Preference
         android:title="@string/compatibility"
         android:summary="@string/compatibility_pref_desc"
+        android:icon="@drawable/ic_warning_black_24dp"
         android:key="compatibility" />
 
 </PreferenceScreen>

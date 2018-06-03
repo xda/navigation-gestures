@@ -8,26 +8,31 @@
         <SwitchPreference
             android:title="@string/show_pill_shadow"
             android:key="show_shadow"
+            android:icon="@drawable/ic_shadow_black_24dp"
             android:defaultValue="true" />
 
         <com.jaredrummler.android.colorpicker.ColorPreference
             android:title="@string/pill_color"
             android:key="pill_bg"
+            android:icon="@drawable/ic_color_lens_black_24dp"
             app:cpv_showAlphaSlider="true"
             app:cpv_allowCustom="true" />
 
         <Preference
             android:title="@string/reset_pill_color"
+            android:icon="@drawable/ic_reset_black_24dp"
             android:key="reset_pill_bg" />
 
         <com.jaredrummler.android.colorpicker.ColorPreference
             android:title="@string/pill_border_color"
             android:key="pill_fg"
+            android:icon="@drawable/ic_color_lens_black_24dp"
             app:cpv_showAlphaSlider="true"
             app:cpv_allowCustom="true" />
 
         <Preference
             android:title="@string/reset_pill_border_color"
+            android:icon="@drawable/ic_reset_black_24dp"
             android:key="reset_pill_fg" />
 
     </PreferenceCategory>
@@ -42,31 +47,36 @@
             app:seek_min="0"
             app:seek_max="10"
             android:title="@string/pill_corner_radius"
+            android:icon="@drawable/ic_rounded_corner_black_24dp"
             android:key="pill_corner_radius" />
 
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
             app:show_text="true"
             app:show_popup="false"
             android:title="@string/width"
+            android:icon="@drawable/ic_arrow_expanded_horizontal_black_24dp"
             android:key="custom_width" />
 
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
             app:show_text="true"
             app:show_popup="false"
             android:title="@string/height"
+            android:icon="@drawable/ic_arrow_expanded_vertical_black_24dp"
             android:key="custom_height" />
 
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
             app:show_text="true"
             app:show_popup="false"
-            android:title="@string/position_y"
-            android:key="custom_y" />
+            android:title="@string/position_x"
+            android:icon="@drawable/ic_swap_horiz_black_24dp"
+            android:key="custom_x" />
 
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
             app:show_text="true"
             app:show_popup="false"
-            android:title="@string/position_x"
-            android:key="custom_x" />
+            android:title="@string/position_y"
+            android:icon="@drawable/ic_swap_vert_black_24dp"
+            android:key="custom_y" />
 
     </PreferenceCategory>
 

@@ -6,6 +6,7 @@
         android:title="@string/hide_in_fullscreen"
         android:summary="@string/hide_in_fullscreen_desc"
         android:key="hide_in_fullscreen"
+        android:icon="@drawable/ic_visibility_off_black_24dp"
         android:defaultValue="true" />
 
     <!--<SwitchPreference-->
@@ -16,11 +17,13 @@
     <SwitchPreference
         android:title="@string/static_pill"
         android:summary="@string/static_pill_desc"
+        android:icon="@drawable/ic_swap_vert_black_24dp"
         android:key="static_pill" />
 
     <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
         android:title="@string/hold_time"
         android:key="hold_time"
+        android:icon="@drawable/ic_timer_black_24dp"
         app:seek_min="200"
         app:seek_max="2000"
         app:default_progress="1000"
@@ -31,6 +34,7 @@
     <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
         android:title="@string/vibration_duration"
         android:key="vibration_duration"
+        android:icon="@drawable/ic_timer_black_24dp"
         app:seek_min="0"
         app:seek_max="500"
         app:default_progress="50"
@@ -41,6 +45,7 @@
     <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
         android:title="@string/anim_duration"
         android:key="anim_duration"
+        android:icon="@drawable/ic_timer_black_24dp"
         app:seek_min="0"
         app:seek_max="500"
         app:default_progress="500"
