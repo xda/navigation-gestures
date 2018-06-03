@@ -31,7 +31,6 @@
 
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
             app:show_text="true"
-            app:show_popup="false"
             app:format="%sdp"
             app:seek_min="0"
             app:seek_max="10"
@@ -42,21 +41,18 @@
 
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
             app:show_text="true"
-            app:show_popup="false"
             android:title="@string/width"
             android:icon="@drawable/ic_arrow_expanded_horizontal_black_24dp"
             android:key="custom_width" />
 
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
             app:show_text="true"
-            app:show_popup="false"
             android:title="@string/height"
             android:icon="@drawable/ic_arrow_expanded_vertical_black_24dp"
             android:key="custom_height" />
 
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
             app:show_text="true"
-            app:show_popup="false"
             android:defaultValue="0"
             android:title="@string/position_x"
             android:icon="@drawable/ic_swap_horiz_black_24dp"
@@ -64,7 +60,6 @@
 
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
             app:show_text="true"
-            app:show_popup="false"
             android:title="@string/position_y"
             android:icon="@drawable/ic_swap_vert_black_24dp"
             android:key="custom_y" />

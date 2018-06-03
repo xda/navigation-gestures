@@ -3,7 +3,6 @@
     android:background="?android:selectableItemBackgroundBorderless"
     android:focusable="true"
     android:clickable="true"
-    android:id="@+id/action_settings"
     android:layout_gravity="end"
     app:srcCompat="@drawable/ic_settings_black_24dp"
     android:tint="#fff"

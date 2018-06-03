@@ -28,7 +28,6 @@
         app:seek_max="2000"
         android:defaultValue="1000"
         app:show_text="true"
-        app:show_popup="false"
         app:format="%sms" />
 
     <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
@@ -39,7 +38,6 @@
         app:seek_max="500"
         android:defaultValue="50"
         app:show_text="true"
-        app:show_popup="false"
         app:format="%sms" />
 
     <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
@@ -49,7 +47,6 @@
         app:seek_min="0"
         app:seek_max="500"
         android:defaultValue="500"
-        app:show_text="true"
-        app:show_popup="false" />
+        app:show_text="true" />
 
 </PreferenceScreen>
