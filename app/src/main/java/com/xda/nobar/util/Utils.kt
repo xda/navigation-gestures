@@ -286,7 +286,11 @@ object Utils {
      */
     @android.support.annotation.ColorInt
     fun getPillBGColor(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_bg", Color.argb(0xee, 0xcc, 0xcc, 0xcc))
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_bg", getDefaultPillBGColor())
+    }
+
+    fun getDefaultPillBGColor(): Int {
+        return Color.argb(0xee, 0xcc, 0xcc, 0xcc)
     }
 
     /**
@@ -296,7 +300,11 @@ object Utils {
      */
     @android.support.annotation.ColorInt
     fun getPillFGColor(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_fg", Color.argb(0x32, 0x22, 0x22, 0x22))
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_fg", getDefaultPillFGColor())
+    }
+
+    fun getDefaultPillFGColor(): Int {
+        return Color.argb(0x32, 0x22, 0x22, 0x22)
     }
 
     /**

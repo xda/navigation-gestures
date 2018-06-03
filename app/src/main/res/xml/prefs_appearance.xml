@@ -18,23 +18,12 @@
             app:cpv_showAlphaSlider="true"
             app:cpv_allowCustom="true" />
 
-        <Preference
-            android:title="@string/reset_pill_color"
-            android:icon="@drawable/ic_reset_black_24dp"
-            android:key="reset_pill_bg" />
-
         <com.jaredrummler.android.colorpicker.ColorPreference
             android:title="@string/pill_border_color"
             android:key="pill_fg"
             android:icon="@drawable/ic_color_lens_black_24dp"
             app:cpv_showAlphaSlider="true"
             app:cpv_allowCustom="true" />
-
-        <Preference
-            android:title="@string/reset_pill_border_color"
-            android:icon="@drawable/ic_reset_black_24dp"
-            android:key="reset_pill_fg" />
-
     </PreferenceCategory>
 
     <PreferenceCategory

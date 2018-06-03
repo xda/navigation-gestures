@@ -1,3 +1,4 @@
-include ':app' , ':SliderPref', ':SeekBar'
+include ':app' , ':SliderPref', ':SeekBar', ':NoBar-ColorPicker'
 project(':SliderPref').projectDir = new File('/mnt/AA387BDB387BA54B/StudioProjects/SliderPreferenceEmbedded/app')
 project(':SeekBar').projectDir = new File('/mnt/AA387BDB387BA54B/StudioProjects/SliderPreferenceEmbedded/discreteSeekBar-master/library')
+project(':NoBar-ColorPicker').projectDir = new File('/mnt/AA387BDB387BA54B/StudioProjects/NoBar/ColorPicker')

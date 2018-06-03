@@ -272,11 +272,7 @@ class SettingsActivity : AppCompatActivity() {
             val posY = findPreference("custom_y") as SliderPreferenceEmbedded
             val pillColor = findPreference("pill_bg") as ColorPreference
             val pillBorderColor = findPreference("pill_fg") as ColorPreference
-            val pillCornerRadius = findPreference("pill_corner_radius") as SliderPreferenceEmbedded
             val posX = findPreference("custom_x") as SliderPreferenceEmbedded
-
-            val resetPillColor = findPreference("reset_pill_bg")
-            val resetPillBorderColor = findPreference("reset_pill_fg")
 
             width.seekBar.min = Utils.dpAsPx(activity, 10)
             height.seekBar.min = Utils.dpAsPx(activity, 5)
@@ -286,8 +282,9 @@ class SettingsActivity : AppCompatActivity() {
             width.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_width))
             height.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_height))
             posY.setDefaultValue(Utils.getDefaultY(activity))
-            pillColor.setDefaultValue(Utils.getPillBGColor(activity))
-            pillBorderColor.setDefaultValue(Utils.getPillFGColor(activity))
+            pillColor.setDefaultValue(Utils.getDefaultPillBGColor(activity))
+            pillBorderColor.setDefaultValue(Utils.getDefaultPillFGColor(activity))
+
             pillColor.saveValue(Utils.getPillBGColor(activity))
             pillBorderColor.saveValue(Utils.getPillFGColor(activity))
 
@@ -295,18 +292,6 @@ class SettingsActivity : AppCompatActivity() {
             height.seekBar.max = Utils.dpAsPx(activity, 50)
             posY.seekBar.max = Utils.dpAsPx(activity, 70)
             posX.seekBar.max = -posX.seekBar.min
-
-            resetPillColor.setOnPreferenceClickListener {
-                preferenceManager.sharedPreferences.edit().remove("pill_bg").apply()
-                pillColor.saveValue(Utils.getPillBGColor(activity))
-                true
-            }
-
-            resetPillBorderColor.setOnPreferenceClickListener {
-                preferenceManager.sharedPreferences.edit().remove("pill_fg").apply()
-                pillBorderColor.saveValue(Utils.getPillFGColor(activity))
-                true
-            }
         }
     }
 

@@ -49,8 +49,6 @@
     <string name="hide_on_launcher">Hide on Launcher</string>
     <string name="pill_color">Pill Color</string>
     <string name="pill_border_color">Pill Border Color</string>
-    <string name="reset_pill_color">Reset Pill Color</string>
-    <string name="reset_pill_border_color">Reset Pill Border Color</string>
     <string name="show_pill_shadow">Show Pill Shadow</string>
     <string name="static_pill">Don\'t Move Pill</string>
     <string name="other">Other</string>
