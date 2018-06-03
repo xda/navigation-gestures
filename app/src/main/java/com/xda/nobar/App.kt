@@ -19,6 +19,7 @@ import android.provider.Settings
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.services.ForegroundService
 import com.xda.nobar.services.RootService
@@ -509,6 +510,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     /**
      * Handle changes in Immersive Mode
      * We need to deactivate overscan when nav immersive is active, to avoid cut-off content
+     * Also listen for TouchWiz navbar hiding and disable it
      * //TODO: More work may be needed on detection
      */
     inner class ImmersiveListener : ContentObserver(handler), View.OnSystemUiVisibilityChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
@@ -516,6 +518,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         init {
             contentResolver.registerContentObserver(Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL), true, this)
+            contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
         }
 
         override fun onGlobalLayout() {
@@ -556,6 +559,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 val current = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)
 
                 handleImmersiveChange(current != null && (current.contains("full") || current.contains("nav")))
+            }
+            if (uri == Settings.Global.getUriFor("navigationbar_hide_bar_enabled")) {
+                val current = Settings.Global.getInt(contentResolver, "navigationbar_hide_bar_enabled")
+
+                if (current != 0) {
+                    Settings.Global.putInt(contentResolver, "navigationbar_hide_bar_enabled", 0)
+
+                    Toast.makeText(this@App, resources.getText(R.string.feature_not_avail), Toast.LENGTH_SHORT).show()
+                }
             }
         }
 

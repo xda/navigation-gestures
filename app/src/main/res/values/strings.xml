@@ -106,6 +106,7 @@
     <string name="white_bar_desc">Using this app you may notice a small white bar at the very bottom of the display. This is not a bug! It is required to prevent much more serious issues. It should not occur on TouchWiz devices.</string>
     <string name="compatibility_desc">While using this app, if you notice that the original navigation bar is present when it shouldn\'t be, head over to Settings>>Compatibility and try the compatibility options there.</string>
     <string name="skip_wss_message">You can always come back to this step by toggling the Hide Navigation Bar switch on in the main screen of this app.</string>
+    <string name="feature_not_avail">This feature cannot be used while Navigation Gestures is hiding the navigation bar.</string>
 
     <!--Gestures-->
     <string name="tap">Tap</string>
