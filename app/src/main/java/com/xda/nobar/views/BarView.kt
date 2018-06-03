@@ -962,6 +962,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                         }
                                     }
 
+                                    if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
+                                    if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
+                                    if (isSwipeUp) jiggleDown()
+
                                     isActing = false
                                     isSwipeUp = false
                                     isSwipeLeft = false
