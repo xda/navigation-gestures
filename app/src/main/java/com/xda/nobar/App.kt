@@ -457,15 +457,17 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 handler.postDelayed({
                     when (intent?.action) {
                         Intent.ACTION_SCREEN_ON -> {
-                            if (isNavBarHidden() && kgm.isKeyguardLocked) {
-                                showNav()
-                            } else {
-                                hideNav()
+                            if (Utils.shouldUseOverscanMethod(this@App)) {
+                                if (isNavBarHidden() && kgm.isKeyguardLocked) {
+                                    showNav()
+                                } else {
+                                    hideNav()
+                                }
                             }
                         }
                         Intent.ACTION_USER_PRESENT -> {
                             if (areGesturesActivated()) addBar()
-                            hideNav()
+                            if (Utils.shouldUseOverscanMethod(this@App)) hideNav()
                         }
                     }
                 }, 300)
