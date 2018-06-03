@@ -283,11 +283,9 @@ class SettingsActivity : AppCompatActivity() {
             posY.seekBar.min = 0
             posX.seekBar.min = -(Utils.getRealScreenSize(activity).x.toFloat() / 2f - Utils.getCustomWidth(activity).toFloat() / 2f).toInt()
 
-            width.seekBar.defaultProgress = resources.getDimensionPixelSize(R.dimen.pill_width)
-            height.seekBar.defaultProgress = resources.getDimensionPixelSize(R.dimen.pill_height)
-            posY.seekBar.defaultProgress = Utils.getDefaultY(activity)
-            posX.seekBar.defaultProgress = 0
-            pillCornerRadius.seekBar.defaultProgress = 8
+            width.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_width))
+            height.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_height))
+            posY.setDefaultValue(Utils.getDefaultY(activity))
             pillColor.setDefaultValue(Utils.getPillBGColor(activity))
             pillBorderColor.setDefaultValue(Utils.getPillFGColor(activity))
             pillColor.saveValue(Utils.getPillBGColor(activity))

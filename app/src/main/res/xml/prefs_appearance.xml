@@ -46,6 +46,7 @@
             app:format="%sdp"
             app:seek_min="0"
             app:seek_max="10"
+            android:defaultValue="8"
             android:title="@string/pill_corner_radius"
             android:icon="@drawable/ic_rounded_corner_black_24dp"
             android:key="pill_corner_radius" />
@@ -67,6 +68,7 @@
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
             app:show_text="true"
             app:show_popup="false"
+            android:defaultValue="0"
             android:title="@string/position_x"
             android:icon="@drawable/ic_swap_horiz_black_24dp"
             android:key="custom_x" />

@@ -26,7 +26,7 @@
         android:icon="@drawable/ic_timer_black_24dp"
         app:seek_min="200"
         app:seek_max="2000"
-        app:default_progress="1000"
+        android:defaultValue="1000"
         app:show_text="true"
         app:show_popup="false"
         app:format="%sms" />
@@ -37,7 +37,7 @@
         android:icon="@drawable/ic_timer_black_24dp"
         app:seek_min="0"
         app:seek_max="500"
-        app:default_progress="50"
+        android:defaultValue="50"
         app:show_text="true"
         app:show_popup="false"
         app:format="%sms" />
@@ -48,7 +48,7 @@
         android:icon="@drawable/ic_timer_black_24dp"
         app:seek_min="0"
         app:seek_max="500"
-        app:default_progress="500"
+        android:defaultValue="500"
         app:show_text="true"
         app:show_popup="false" />
 
