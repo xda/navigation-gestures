@@ -561,13 +561,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 handleImmersiveChange(current != null && (current.contains("full") || current.contains("nav")))
             }
             if (uri == Settings.Global.getUriFor("navigationbar_hide_bar_enabled")) {
-                val current = Settings.Global.getInt(contentResolver, "navigationbar_hide_bar_enabled")
+                try {
+                    val current = Settings.Global.getInt(contentResolver, "navigationbar_hide_bar_enabled")
 
-                if (current != 0) {
-                    Settings.Global.putInt(contentResolver, "navigationbar_hide_bar_enabled", 0)
+                    if (current != 0) {
+                        Settings.Global.putInt(contentResolver, "navigationbar_hide_bar_enabled", 0)
 
-                    Toast.makeText(this@App, resources.getText(R.string.feature_not_avail), Toast.LENGTH_SHORT).show()
-                }
+                        Toast.makeText(this@App, resources.getText(R.string.feature_not_avail), Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Settings.SettingNotFoundException) {}
             }
         }
 
