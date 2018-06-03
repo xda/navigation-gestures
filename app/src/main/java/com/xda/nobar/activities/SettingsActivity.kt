@@ -282,8 +282,8 @@ class SettingsActivity : AppCompatActivity() {
             width.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_width))
             height.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_height))
             posY.setDefaultValue(Utils.getDefaultY(activity))
-            pillColor.setDefaultValue(Utils.getDefaultPillBGColor(activity))
-            pillBorderColor.setDefaultValue(Utils.getDefaultPillFGColor(activity))
+            pillColor.setDefaultValue(Utils.getDefaultPillBGColor())
+            pillBorderColor.setDefaultValue(Utils.getDefaultPillFGColor())
 
             pillColor.saveValue(Utils.getPillBGColor(activity))
             pillBorderColor.saveValue(Utils.getPillFGColor(activity))
