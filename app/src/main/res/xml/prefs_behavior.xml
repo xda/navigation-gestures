@@ -24,7 +24,7 @@
         android:title="@string/hold_time"
         android:key="hold_time"
         android:icon="@drawable/ic_timer_black_24dp"
-        app:seek_min="200"
+        app:seek_min="100"
         app:seek_max="2000"
         android:defaultValue="1000"
         app:show_text="true"
