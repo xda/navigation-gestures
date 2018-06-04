@@ -847,6 +847,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             override fun onTouchEvent(ev: MotionEvent?): Boolean {
                 val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
                 val time = (getAnimationDurationMs() * animDurScale)
+                val ultimateReturn = super.onTouchEvent(ev)
 
                 synchronized(hideLock) {
                     when (ev?.action) {
@@ -955,13 +956,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     animator.start()
                                 }
                                 else -> {
-                                    if (actionMap[app.actionDouble] == app.typeNoAction && !isActing && !wasHidden) {
-                                        synchronized(tapLock) {
-                                            isOverrideTap = true
-                                            sendAction(app.actionTap)
-                                        }
-                                    }
-
                                     if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
                                     if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
                                     if (isSwipeUp) jiggleDown()
@@ -976,6 +970,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             wasHidden = isHidden
                         }
                         MotionEvent.ACTION_MOVE -> {
+
+
                             if (isSwipeUp && !isSwipeLeft && !isSwipeRight) {
                                 if (!isActing) isActing = true
 
@@ -1043,9 +1039,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             }
                         }
                     }
-
-                    return super.onTouchEvent(ev)
                 }
+
+                return ultimateReturn
             }
         }
 
@@ -1057,20 +1053,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 return try {
                     if (!isHidden && !isActing && e1 != null && e2 != null) {
                         when {
-                            e2.x - e1.x < -50 && distanceY.absoluteValue < distanceX.absoluteValue -> { //left swipe
+                            e2.x - e1.x < 0 && distanceY.absoluteValue < distanceX.absoluteValue -> { //left swipe
                                 isSwipeLeft = true
                                 true
                             }
-                            e2.x - e1.x > 50 && distanceY.absoluteValue < distanceX.absoluteValue -> { //right swipe
+                            e2.x - e1.x > 0 && distanceY.absoluteValue < distanceX.absoluteValue -> { //right swipe
                                 isSwipeRight = true
                                 true
                             }
-                            e2.y - e1.y > 30 && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
+                            e2.y - e1.y > 0 && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
                                 isActing = true
                                 sendAction(app.actionDown)
                                 true
                             }
-                            e2.y - e1.y < -50 && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
+                            e2.y - e1.y < 0 && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
                                 isSwipeUp = true
                                 true
                             }
@@ -1080,7 +1076,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             && !isActing
                             && e1 != null
                             && e2 != null
-                            && e2.y - e1.y < -50
+                            && e2.y - e1.y < 0
                             && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
                         showPill(false)
                         true
@@ -1088,6 +1084,17 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 } catch (e: IllegalArgumentException) {
                     false
                 }
+            }
+
+            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                return if (actionMap[app.actionDouble] == app.typeNoAction && !isActing && !wasHidden) {
+                    synchronized(tapLock) {
+                        isOverrideTap = true
+                        sendAction(app.actionTap)
+                    }
+                    isActing = false
+                    true
+                } else false
             }
 
             /**
