@@ -191,6 +191,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         if (areGesturesActivated() && !IntroActivity.needsToRun(this)) {
             addBar()
         }
+
+        if (Utils.useRot270Fix(this) || Utils.useTabletMode(this)) compatibilityRotationListener.enable()
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
