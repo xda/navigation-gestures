@@ -15,10 +15,10 @@ class PowerReceiver : BroadcastReceiver() {
         val app = Utils.getHandler(context)
         when (intent.action) {
             Intent.ACTION_REBOOT -> {
-                app.showNav()
+                if (Utils.shouldUseOverscanMethod(context)) app.showNav()
             }
             Intent.ACTION_SHUTDOWN -> {
-                app.showNav()
+                if (Utils.shouldUseOverscanMethod(context)) app.showNav()
             }
             Intent.ACTION_BOOT_COMPLETED -> {
                 val km = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
