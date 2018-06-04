@@ -191,7 +191,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         if (areGesturesActivated() && !IntroActivity.needsToRun(this)) {
             addBar()
         }
-        if (isNavBarHidden()) compatibilityRotationListener.enable()
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
@@ -209,6 +208,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 } else {
                     stopService(rootServiceIntent)
                 }
+            }
+            "rot270_fix" -> {
+                if (Utils.useRot270Fix(this)) compatibilityRotationListener.enable()
+                else if (!Utils.useTabletMode(this)) compatibilityRotationListener.disable()
+            }
+            "tablet_mode" -> {
+                if (Utils.useTabletMode(this)) compatibilityRotationListener.enable()
+                else if (!Utils.useRot270Fix(this)) compatibilityRotationListener.disable()
             }
         }
     }
@@ -391,7 +398,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         if (Utils.shouldUseOverscanMethod(this)) {
             if (!Utils.useRot270Fix(this) && !Utils.useTabletMode(this)) IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this) + 1)
-            compatibilityRotationListener.enable()
+            else {
+                compatibilityRotationListener.enable()
+            }
             Utils.forceNavBlack(this)
             Utils.forceTouchWizNavEnabled(this)
 
