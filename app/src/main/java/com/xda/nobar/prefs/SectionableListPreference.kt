@@ -205,22 +205,19 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
 
         init {
             isClickable = false
-            setTypeface(typeface, Typeface.ITALIC)
+            setTypeface(typeface, Typeface.BOLD)
 
             gravity = Gravity.CENTER_VERTICAL
 
             height = Utils.dpAsPx(context, 48)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
 
             setTextColor(resources.getColor(R.color.colorAccent))
-            setPaddingRelative(Utils.dpAsPx(context, 16), 0, Utils.dpAsPx(context, 16), 0)
+            setPaddingRelative(Utils.dpAsPx(context, 16), 0, 0, 0)
         }
     }
 
     inner class Holder(context: Context) : LinearLayout(context) {
-        private var scrollView: ScrollView? = null
-        private var checkedItem: ItemView? = null
-
         init {
             val params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
