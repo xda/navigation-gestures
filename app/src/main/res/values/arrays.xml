@@ -75,9 +75,9 @@
     </string-array>
     
     <string-array name="action_section_names">
-        <item>Basic</item>
-        <item>Nougat</item>
-        <item>Premium</item>
+        <item>@string/basic</item>
+        <item>@string/nougat</item>
+        <item>@string/premium</item>
     </string-array>
     
     <array name="action_section_data_names">
