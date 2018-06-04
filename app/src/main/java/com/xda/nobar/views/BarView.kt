@@ -1053,11 +1053,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 return try {
                     if (!isHidden && !isActing && e1 != null && e2 != null) {
                         when {
-                            e2.x - e1.x < 0 && distanceY.absoluteValue < distanceX.absoluteValue -> { //left swipe
+                            e2.x - e1.x < 0 && distanceY.absoluteValue <= distanceX.absoluteValue -> { //left swipe
                                 isSwipeLeft = true
                                 true
                             }
-                            e2.x - e1.x > 0 && distanceY.absoluteValue < distanceX.absoluteValue -> { //right swipe
+                            e2.x - e1.x > 0 && distanceY.absoluteValue <= distanceX.absoluteValue -> { //right swipe
                                 isSwipeRight = true
                                 true
                             }
