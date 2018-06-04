@@ -77,8 +77,12 @@ object Utils {
      * @return the DP value in terms of px
      */
     fun dpAsPx(context: Context, dpVal: Int): Int {
+        return dpAsPx(context, dpVal.toFloat())
+    }
+
+    fun dpAsPx(context: Context, dpVal: Float): Int {
         val r = context.resources
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal.toFloat(), r.displayMetrics))
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal, r.displayMetrics))
     }
 
     /**
@@ -178,6 +182,38 @@ object Utils {
         map[app.actionUpHold] = holdUp
         map[app.actionLeftHold] = holdLeft
         map[app.actionRightHold] = holdRight
+    }
+
+    fun actionToName(context: Context, action: Int): String {
+        val app = context.applicationContext as App
+        return context.resources.getString(when (action) {
+            app.typeNoAction -> R.string.nothing
+            app.typeBack -> R.string.back
+            app.typeOhm -> R.string.ohm
+            app.typeRecents -> R.string.recents
+            app.typeHide -> R.string.hide
+            app.typeSwitch -> R.string.switch_apps
+            app.typeAssist -> R.string.assist
+            app.typeHome -> R.string.home
+            app.premTypeNotif -> R.string.prem_notif
+            app.premTypeQs -> R.string.prem_qs
+            app.premTypePower -> R.string.prem_power
+            app.typeSplit -> R.string.split
+            app.premTypeVibe -> android.R.string.untitled
+            app.premTypeSilent -> android.R.string.untitled
+            app.premTypeMute -> android.R.string.untitled
+            app.premTypePlayPause -> R.string.prem_play_pause
+            app.premTypeNext -> R.string.prem_next
+            app.premTypePrev -> R.string.prem_prev
+            app.typeRootHoldBack -> R.string.hold_back
+            app.typeRootForward -> R.string.forward
+            app.typeRootMenu -> R.string.menu
+            app.typeRootSleep -> R.string.sleep
+            app.premTypeRootVolUp -> R.string.prem_vol_up
+            app.premTypeRootVolDown -> R.string.prem_vol_down
+            app.premTypeRootScreenshot -> R.string.prem_type_screenshot
+            else -> android.R.string.untitled
+        })
     }
 
     /**

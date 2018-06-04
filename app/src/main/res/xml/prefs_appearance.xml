@@ -24,6 +24,7 @@
             android:icon="@drawable/ic_color_lens_black_24dp"
             app:cpv_showAlphaSlider="true"
             app:cpv_allowCustom="true" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

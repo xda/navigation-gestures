@@ -73,4 +73,22 @@
         <item>@string/prem_type_vol_down</item>
         <item>@string/prem_type_screenshot</item>
     </string-array>
+    
+    <string-array name="action_section_names">
+        <item>Basic</item>
+        <item>Nougat</item>
+        <item>Premium</item>
+    </string-array>
+    
+    <array name="action_section_data_names">
+        <item>@array/action_names</item>
+        <item>@array/nougat_action_names</item>
+        <item>@array/premium_action_names</item>
+    </array>
+
+    <array name="action_section_data_values">
+        <item>@array/action_values</item>
+        <item>@array/nougat_action_values</item>
+        <item>@array/premium_action_values</item>
+    </array>
 </resources>

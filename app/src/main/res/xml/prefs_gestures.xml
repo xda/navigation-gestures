@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         android:title="@string/taps"
         android:key="taps">
 
-        <ListPreference
+        <com.xda.nobar.prefs.SectionableListPreference
             android:defaultValue="@string/type_home"
             android:title="@string/tap"
             android:key="@string/action_tap"
             android:icon="@drawable/tap"
-            android:entryValues="@array/action_values"
-            android:entries="@array/action_names" />
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"  />
 
-        <ListPreference
+        <com.xda.nobar.prefs.SectionableListPreference
             android:defaultValue="@string/type_no_action"
-            android:entries="@array/action_names"
-            android:entryValues="@array/action_values"
             android:icon="@drawable/double_tap"
             android:key="@string/action_double"
-            android:title="@string/double_tap" />
+            android:title="@string/double_tap"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values" />
 
-        <ListPreference
+        <com.xda.nobar.prefs.SectionableListPreference
             android:defaultValue="@string/type_assist"
-            android:entries="@array/action_names"
-            android:entryValues="@array/action_values"
             android:icon="@drawable/tap_hold"
             android:key="@string/action_hold"
-            android:title="@string/hold" />
+            android:title="@string/hold"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values" />
 
     </PreferenceCategory>
 
@@ -35,61 +39,68 @@
         android:title="@string/swipes"
         android:key="swipes">
 
-        <ListPreference
+        <com.xda.nobar.prefs.SectionableListPreference
             android:defaultValue="@string/type_no_action"
             android:title="@string/swipe_up_hold"
             android:key="@string/action_up_hold"
             android:icon="@drawable/swipe_up_hold"
-            android:entryValues="@array/action_values"
-            android:entries="@array/action_names" />
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values" />
 
-        <ListPreference
+        <com.xda.nobar.prefs.SectionableListPreference
             android:defaultValue="@string/type_back"
             android:title="@string/left"
             android:key="@string/action_left"
             android:icon="@drawable/swipe_left"
-            android:entryValues="@array/action_values"
-            android:entries="@array/action_names" />
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values" />
 
-        <ListPreference
+        <com.xda.nobar.prefs.SectionableListPreference
             android:defaultValue="@string/type_no_action"
             android:title="@string/left_hold"
             android:key="@string/action_left_hold"
             android:icon="@drawable/swipe_left"
-            android:entryValues="@array/action_values"
-            android:entries="@array/action_names" />
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values" />
 
-        <ListPreference
+        <com.xda.nobar.prefs.SectionableListPreference
             android:defaultValue="@string/type_recents"
             android:title="@string/right"
             android:key="@string/action_right"
             android:icon="@drawable/swipe_right"
-            android:entryValues="@array/action_values"
-            android:entries="@array/action_names" />
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values" />
 
-        <ListPreference
+        <com.xda.nobar.prefs.SectionableListPreference
             android:defaultValue="@string/type_no_action"
             android:title="@string/right_hold"
             android:key="@string/action_right_hold"
             android:icon="@drawable/swipe_right"
-            android:entryValues="@array/action_values"
-            android:entries="@array/action_names" />
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values" />
 
-        <ListPreference
+        <com.xda.nobar.prefs.SectionableListPreference
             android:defaultValue="@string/type_no_action"
             android:title="@string/up"
             android:key="@string/action_up"
             android:icon="@drawable/swipe_up"
-            android:entryValues="@array/action_values"
-            android:entries="@array/action_names" />
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values" />
 
-        <ListPreference
+        <com.xda.nobar.prefs.SectionableListPreference
             android:defaultValue="@string/type_hide"
             android:title="@string/down"
             android:key="@string/action_down"
             android:icon="@drawable/swipe_down"
-            android:entryValues="@array/action_values"
-            android:entries="@array/action_names" />
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values" />
 
     </PreferenceCategory>
 
