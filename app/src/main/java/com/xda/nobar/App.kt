@@ -513,6 +513,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Handle changes in Immersive Mode
      * We need to deactivate overscan when nav immersive is active, to avoid cut-off content
      * Also listen for TouchWiz navbar hiding and disable it
+     * Also listen for TouchWiz navbar color change and make sure it stays transparent-black
      * //TODO: More work may be needed on detection
      */
     inner class ImmersiveListener : ContentObserver(handler), View.OnSystemUiVisibilityChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
@@ -521,6 +522,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         init {
             contentResolver.registerContentObserver(Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
+            contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_color"), true, this)
+            contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_current_color"), true, this)
+            contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_use_theme_default"), true, this)
         }
 
         override fun onGlobalLayout() {
@@ -572,6 +576,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         Toast.makeText(this@App, resources.getText(R.string.feature_not_avail), Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Settings.SettingNotFoundException) {}
+            }
+            if (uri == Settings.Global.getUriFor("navigationbar_color")
+                    || uri == Settings.Global.getUriFor("navigationbar_current_color")
+                    || uri == Settings.Global.getUriFor("navigationbar_use_theme_default")) {
+                if (isNavBarHidden()) Utils.forceNavBlack(this@App)
             }
         }
 
