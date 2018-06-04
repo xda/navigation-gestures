@@ -100,13 +100,51 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         return sharedPreferences.getString(key, (defaultValue ?: app.typeNoAction).toString())
     }
 
+    fun removeSection(index: Int) {
+        dialog?.dismiss()
+
+        sections.removeAt(index)
+    }
+
+    fun removeItemByValue(value: String) {
+        dialog?.dismiss()
+
+        sections.forEach {
+            val index = it.entryValues.indexOf(value)
+            if (index != -1) {
+                it.entryValues.removeAt(index)
+                it.entryNames.removeAt(index)
+            }
+        }
+    }
+
+    fun removeItemsByValue(values: Array<String>) {
+        values.forEach { removeItemByValue(it) }
+    }
+
+    fun removeItemByName(name: String) {
+        dialog?.dismiss()
+
+        sections.forEach {
+            val index = it.entryNames.indexOf(name)
+            if (index != -1) {
+                it.entryNames.removeAt(index)
+                it.entryValues.removeAt(index)
+            }
+        }
+    }
+
+    fun removeItemsByName(names: Array<String>) {
+        names.forEach { removeItemByName(it) }
+    }
+
     override fun onSetInitialValue(restorePersistedValue: Boolean, defaultValue: Any?) {
         saveValue(if (restorePersistedValue) sharedPreferences.getString(key, app.typeNoAction.toString()) else defaultValue.toString())
     }
 
     override fun onItemChosen(value: String?) {
         tempValue = value
-        dialog.dismiss()
+        dialog?.dismiss()
         saveValue(tempValue)
     }
 
@@ -143,8 +181,8 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         }
 
         val holder = Holder(context)
-        holder.setup(this, sections)
         scroller.addView(holder)
+        holder.setup(this, sections, scroller)
 
         return topContainer
     }
@@ -153,7 +191,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         if (positiveResult) saveValue(tempValue)
     }
 
-    inner class Section(val title: String, val entryNames: ArrayList<String>, val entryValues: ArrayList<String>) {
+    inner class Section(val title: String?, val entryNames: ArrayList<String>, val entryValues: ArrayList<String>) {
         override fun toString(): String {
             return "Title: $title\nEntry Names: $entryNames\nEntry Values: $entryValues"
         }
@@ -180,6 +218,9 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     inner class Holder(context: Context) : LinearLayout(context) {
+        private var scrollView: ScrollView? = null
+        private var checkedItem: ItemView? = null
+
         init {
             val params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
@@ -187,11 +228,11 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
             orientation = LinearLayout.VERTICAL
         }
 
-        fun setup(listener: Interfaces.ItemChosenListener, sections: ArrayList<Section>) {
+        fun setup(listener: Interfaces.ItemChosenListener, sections: ArrayList<Section>, scrollView: ScrollView) {
             sections.forEach {
                 val sectionView = SectionTitleView(context)
                 sectionView.name = it.title
-                addView(sectionView)
+                if (it.title != null && it.title.isNotBlank()) addView(sectionView)
 
                 for (i in 0 until it.entryNames.size) {
                     val itemView = View.inflate(context, R.layout.item_view, null) as ItemView
@@ -199,7 +240,13 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
                     itemView.value = it.entryValues[i]
                     addView(itemView)
 
-                    if (getSavedValue() == itemView.value) itemView.isChecked = true
+                    if (getSavedValue() == itemView.value) {
+                        itemView.isChecked = true
+
+                        itemView.viewTreeObserver.addOnGlobalLayoutListener {
+                            scrollView.scrollTo(0, itemView.top)
+                        }
+                    }
 
                     itemView.setOnClickListener {
                         if (it is ItemView) {

@@ -1,14 +1,17 @@
 package com.xda.nobar.activities
 
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.preference.*
+import android.preference.Preference
+import android.preference.PreferenceCategory
+import android.preference.PreferenceFragment
+import android.preference.SwitchPreference
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.jaredrummler.android.colorpicker.ColorPreference
 import com.xda.nobar.R
+import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.util.Utils
 import com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
 
@@ -100,10 +103,8 @@ class SettingsActivity : AppCompatActivity() {
 
             addPreferencesFromResource(R.xml.prefs_gestures)
 
-            addNougatActionsIfAvail()
-            addPremiumActionsIfAvail()
-            addRootActionsIfAvail()
-//            addOHMIfAvail()
+            removeNougatActionsIfNeeded()
+            removeRootActionsIfNeeded()
 
             preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         }
@@ -136,16 +137,16 @@ class SettingsActivity : AppCompatActivity() {
                     for (j in 0 until pref.preferenceCount) {
                         val child = pref.getPreference(j)
 
-                        if (child is ListPreference) {
-                            child.summary = child.entry
+                        if (child is SectionableListPreference) {
+                            child.updateSummary(child.getSavedValue())
                         }
                     }
                 }
             }
         }
 
-        private fun addNougatActionsIfAvail() {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+        private fun removeNougatActionsIfNeeded() {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                 for (i in 0 until preferenceScreen.preferenceCount) {
                     val pref = preferenceScreen.getPreference(i)
 
@@ -153,15 +154,9 @@ class SettingsActivity : AppCompatActivity() {
                         for (j in 0 until pref.preferenceCount) {
                             val child = pref.getPreference(j)
 
-                            if (child is ListPreference) {
-                                val currentEntries = child.entries.clone()
-                                val currentValues = child.entryValues.clone()
-
-                                val nougatEntries = resources.getStringArray(R.array.nougat_action_names)
-                                val nougatValues = resources.getStringArray(R.array.nougat_action_values)
-
-                                child.entries = currentEntries.plus(nougatEntries)
-                                child.entryValues = currentValues.plus(nougatValues)
+                            if (child is SectionableListPreference) {
+                                val actions = resources.getStringArray(R.array.nougat_action_values)
+                                child.removeItemsByValue(actions)
                             }
                         }
                     }
@@ -169,33 +164,8 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        private fun addPremiumActionsIfAvail() {
-            for (i in 0 until preferenceScreen.preferenceCount) {
-                val pref = preferenceScreen.getPreference(i)
-
-                if (pref is PreferenceCategory) {
-                    for (j in 0 until pref.preferenceCount) {
-                        val child = pref.getPreference(j)
-
-                        if (child is ListPreference) {
-                            val currentEntries = child.entries.clone()
-                            val currentValues = child.entryValues.clone()
-
-                            val premiumEntries = resources.getStringArray(R.array.premium_action_names)
-                            val premiumValues = resources.getStringArray(R.array.premium_action_values)
-
-                            child.entries = currentEntries.plus(premiumEntries)
-                            child.entryValues = currentValues.plus(premiumValues)
-                        }
-                    }
-                }
-            }
-        }
-
-        private fun addOHMIfAvail() {
-            try {
-                activity.packageManager.getPackageInfo("com.xda.onehandedmode", PackageManager.GET_META_DATA)
-
+        private fun removeRootActionsIfNeeded() {
+            if (!Utils.shouldUseRootCommands(activity)) {
                 for (i in 0 until preferenceScreen.preferenceCount) {
                     val pref = preferenceScreen.getPreference(i)
 
@@ -203,42 +173,9 @@ class SettingsActivity : AppCompatActivity() {
                         for (j in 0 until pref.preferenceCount) {
                             val child = pref.getPreference(j)
 
-                            if (child is ListPreference) {
-                                val currentEntries = child.entries.clone()
-                                val currentValues = child.entryValues.clone()
-
-                                val ohmEntries = resources.getStringArray(R.array.ohm_action_names)
-                                val ohmValues = resources.getStringArray(R.array.ohm_action_values)
-
-                                child.entries = currentEntries.plus(ohmEntries)
-                                child.entryValues = currentValues.plus(ohmValues)
-                            }
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        private fun addRootActionsIfAvail() {
-            if (Utils.shouldUseRootCommands(activity)) {
-                for (i in 0 until preferenceScreen.preferenceCount) {
-                    val pref = preferenceScreen.getPreference(i)
-
-                    if (pref is PreferenceCategory) {
-                        for (j in 0 until pref.preferenceCount) {
-                            val child = pref.getPreference(j)
-
-                            if (child is ListPreference) {
-                                val currentEntries = child.entries.clone()
-                                val currentValues = child.entryValues.clone()
-
-                                val premiumEntries = resources.getStringArray(R.array.root_action_names)
-                                val premiumValues = resources.getStringArray(R.array.root_action_values)
-
-                                child.entries = currentEntries.plus(premiumEntries)
-                                child.entryValues = currentValues.plus(premiumValues)
+                            if (child is SectionableListPreference) {
+                                val actions = resources.getStringArray(R.array.root_action_values)
+                                child.removeItemsByValue(actions)
                             }
                         }
                     }

@@ -62,9 +62,9 @@
     <string name="are_you_sure">Are you sure?</string>
     <string name="color_prefs">Colors</string>
     <string name="dimension_prefs">Dimensions</string>
-    <string name="basic">Basic</string>
-    <string name="nougat">Nougat</string>
-    <string name="premium">Premium</string>
+    <string name="navigation">Navigation</string>
+    <string name="system">System</string>
+    <string name="media">Media</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>

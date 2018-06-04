@@ -73,22 +73,77 @@
         <item>@string/prem_type_vol_down</item>
         <item>@string/prem_type_screenshot</item>
     </string-array>
+
+    <string-array name="no_action_names">
+        <item>@string/nothing</item>
+    </string-array>
+
+    <string-array name="no_action_values">
+        <item>@string/type_no_action</item>
+    </string-array>
+    
+    <string-array name="navigation_action_names">
+        <item>@string/home</item>
+        <item>@string/back</item>
+        <item>@string/recents</item>
+        <item>@string/switch_apps</item>
+        <item>@string/hide</item>
+    </string-array>
+
+    <string-array name="navigation_action_values">
+        <item>@string/type_home</item>
+        <item>@string/type_back</item>
+        <item>@string/type_recents</item>
+        <item>@string/type_switch</item>
+        <item>@string/type_hide</item>
+    </string-array>
+
+    <string-array name="system_action_names">
+        <item>@string/assist</item>
+        <item>@string/split</item>
+        <item>@string/prem_notif</item>
+        <item>@string/prem_qs</item>
+        <item>@string/prem_power</item>
+    </string-array>
+
+    <string-array name="system_action_values">
+        <item>@string/type_assist</item>
+        <item>@string/type_split</item>
+        <item>@string/prem_type_notif</item>
+        <item>@string/prem_type_qs</item>
+        <item>@string/prem_type_power</item>
+    </string-array>
+
+    <string-array name="media_action_names">
+        <item>@string/prem_prev</item>
+        <item>@string/prem_play_pause</item>
+        <item>@string/prem_next</item>
+    </string-array>
+
+    <string-array name="media_action_values">
+        <item>@string/prem_type_prev</item>
+        <item>@string/prem_type_play_pause</item>
+        <item>@string/prem_type_next</item>
+    </string-array>
     
     <string-array name="action_section_names">
-        <item>@string/basic</item>
-        <item>@string/nougat</item>
-        <item>@string/premium</item>
+        <item> </item>
+        <item>@string/navigation</item>
+        <item>@string/system</item>
+        <item>@string/media</item>
     </string-array>
     
     <array name="action_section_data_names">
-        <item>@array/action_names</item>
-        <item>@array/nougat_action_names</item>
-        <item>@array/premium_action_names</item>
+        <item>@array/no_action_names</item>
+        <item>@array/navigation_action_names</item>
+        <item>@array/system_action_names</item>
+        <item>@array/media_action_names</item>
     </array>
 
     <array name="action_section_data_values">
-        <item>@array/action_values</item>
-        <item>@array/nougat_action_values</item>
-        <item>@array/premium_action_values</item>
+        <item>@array/no_action_values</item>
+        <item>@array/navigation_action_values</item>
+        <item>@array/system_action_values</item>
+        <item>@array/media_action_values</item>
     </array>
 </resources>
