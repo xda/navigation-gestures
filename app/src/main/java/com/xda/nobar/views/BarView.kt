@@ -154,7 +154,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (actionMap.keys.contains(key)) {
             loadActionMap()
         }
-        if (key == "custom_width") {
+        if (key == "custom_width_percent") {
             layoutParams.width = getCustomWidth(context)
             layoutParams = layoutParams
             updateLayout(params)
@@ -168,7 +168,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             params.y = getHomeY(context)
             updateLayout(params)
         }
-        if (key == "custom_x") {
+        if (key == "custom_x_percent") {
             params.x = getHomeX(context)
             updateLayout(params)
         }
@@ -811,7 +811,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
     
-    private fun updateLayout(params: WindowManager.LayoutParams) {
+    fun updateLayout(params: WindowManager.LayoutParams) {
         handler?.post {
             try {
                 wm.updateViewLayout(this, params)
@@ -853,7 +853,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     when (ev?.action) {
                         MotionEvent.ACTION_DOWN -> {
                             wasHidden = isHidden
-                            app.immersiveListener.onGlobalLayout()
+                            app.uiHandler.onGlobalLayout()
                             oldY = ev.rawY
                             oldX = ev.rawX
                             beingTouched = true
@@ -970,8 +970,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             wasHidden = isHidden
                         }
                         MotionEvent.ACTION_MOVE -> {
-
-
                             if (isSwipeUp && !isSwipeLeft && !isSwipeRight) {
                                 if (!isActing) isActing = true
 

@@ -26,6 +26,7 @@ import com.xda.nobar.services.RootService
 import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.util.PremiumHelper
 import com.xda.nobar.util.Utils
+import com.xda.nobar.util.Utils.getCustomWidth
 import com.xda.nobar.util.Utils.getHomeX
 import com.xda.nobar.util.Utils.getHomeY
 import com.xda.nobar.views.BarView
@@ -44,7 +45,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var carModeHandler: CarModeHandler
     private lateinit var premiumHelper: PremiumHelper
     private lateinit var premiumInstallListener: PremiumInstallListener
-    private lateinit var compatibilityRotationListener: CompatibilityRotationListener
     private lateinit var rootServiceIntent: Intent
 
     var isValidPremium: Boolean = false
@@ -53,7 +53,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     private var navHidden = false
     private var pillShown = false
 
-    lateinit var immersiveListener: ImmersiveListener
+    lateinit var uiHandler: UIHandler
     lateinit var bar: BarView
     lateinit var prefs: SharedPreferences
 
@@ -169,9 +169,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         bar = BarView(this)
         stateHandler = ScreenStateHandler()
         carModeHandler = CarModeHandler()
-        immersiveListener = ImmersiveListener()
+        uiHandler = UIHandler()
         premiumInstallListener = PremiumInstallListener()
-        compatibilityRotationListener = CompatibilityRotationListener()
         rootServiceIntent = Intent(this, RootService::class.java)
 
         premiumHelper = PremiumHelper(this, object : LicenseCheckListener {
@@ -192,7 +191,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             addBar()
         }
 
-        if (Utils.useRot270Fix(this) || Utils.useTabletMode(this)) compatibilityRotationListener.enable()
+        if (Utils.useRot270Fix(this) || Utils.useTabletMode(this)) uiHandler.handleRot()
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
@@ -212,12 +211,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 }
             }
             "rot270_fix" -> {
-                if (Utils.useRot270Fix(this)) compatibilityRotationListener.enable()
-                else if (!Utils.useTabletMode(this)) compatibilityRotationListener.disable()
+                if (Utils.useRot270Fix(this)) uiHandler.handleRot()
             }
             "tablet_mode" -> {
-                if (Utils.useTabletMode(this)) compatibilityRotationListener.enable()
-                else if (!Utils.useRot270Fix(this)) compatibilityRotationListener.disable()
+                if (Utils.useTabletMode(this)) uiHandler.handleRot()
             }
         }
     }
@@ -302,9 +299,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         bar.show(null)
-        bar.setOnSystemUiVisibilityChangeListener(immersiveListener)
-        bar.viewTreeObserver.addOnGlobalLayoutListener(immersiveListener)
-        immersiveListener.onGlobalLayout()
+        bar.setOnSystemUiVisibilityChangeListener(uiHandler)
+        bar.viewTreeObserver.addOnGlobalLayoutListener(uiHandler)
+        uiHandler.onGlobalLayout()
     }
 
     /**
@@ -401,7 +398,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         if (Utils.shouldUseOverscanMethod(this)) {
             if (!Utils.useRot270Fix(this) && !Utils.useTabletMode(this)) IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this) + 1)
             else {
-                compatibilityRotationListener.enable()
+                uiHandler.handleRot()
             }
             Utils.forceNavBlack(this)
             Utils.forceTouchWizNavEnabled(this)
@@ -421,7 +418,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         navbarListeners.forEach { it.onNavChange(false) }
 
         IWindowManager.setOverscan(0, 0, 0, 0)
-        compatibilityRotationListener.disable()
         Utils.clearBlackNav(this)
         Utils.undoForceTouchWizNavEnabled(this)
 
@@ -521,14 +517,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     }
 
     /**
-     * Handle changes in Immersive Mode
-     * We need to deactivate overscan when nav immersive is active, to avoid cut-off content
-     * Also listen for TouchWiz navbar hiding and disable it
-     * Also listen for TouchWiz navbar color change and make sure it stays transparent-black
-     * //TODO: More work may be needed on detection
+     * Basically does everything that needs to be dynamically managed
+     * Listens for changes in Immersive Mode and adjusts appropriately
+     * Listens for changes in rotation and adjusts appropriately
+     * Listens for TouchWiz navbar hiding and coloring and adjusts appropriately
+     * //TODO: More work may be needed on immersive detection
      */
-    inner class ImmersiveListener : ContentObserver(handler), View.OnSystemUiVisibilityChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
+    inner class UIHandler : ContentObserver(handler), View.OnSystemUiVisibilityChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
         private var isDisabledForContent = false
+        private var oldRot = Surface.ROTATION_0
 
         init {
             contentResolver.registerContentObserver(Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL), true, this)
@@ -540,6 +537,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         override fun onGlobalLayout() {
             if (isPillShown()) {
+                val rot = wm.defaultDisplay.rotation
+                if (oldRot != rot) {
+                    bar.params.x = getHomeX(this@App)
+                    bar.params.width = getCustomWidth(this@App)
+                    bar.updateLayout(bar.params)
+                    oldRot = rot
+                    handleRot()
+                }
+
                 val rect = Rect()
                 val screenRes = Utils.getRealScreenSize(this@App)
                 val overscan = getOverscan()
@@ -616,60 +622,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 }
             }
         }
-    }
 
-    /**
-     * Listen to see if the premium add-on has been installed/uninstalled, and refresh the premium state
-     */
-    inner class PremiumInstallListener : BroadcastReceiver() {
-        init {
-            val filter = IntentFilter()
-            filter.addAction(Intent.ACTION_PACKAGE_ADDED)
-            filter.addAction(Intent.ACTION_PACKAGE_CHANGED)
-            filter.addAction(Intent.ACTION_PACKAGE_REPLACED)
-            filter.addAction(Intent.ACTION_PACKAGE_REMOVED)
-            filter.addDataScheme("package")
-
-            registerReceiver(this, filter)
-        }
-
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == Intent.ACTION_PACKAGE_ADDED
-                    || intent?.action == Intent.ACTION_PACKAGE_CHANGED
-                    || intent?.action == Intent.ACTION_PACKAGE_REPLACED
-                    || intent?.action == Intent.ACTION_PACKAGE_REMOVED) {
-                if (intent.dataString.contains("com.xda.nobar.premium")) {
-                    refreshPremium()
-                }
-            }
-        }
-    }
-
-    /**
-     * Listen for changes in rotation, and handle appropriately
-     */
-    inner class CompatibilityRotationListener : OrientationEventListener(this) {
-        private var oldRot = Surface.ROTATION_0
-
-        override fun onOrientationChanged(orientation: Int) {
-            if (Utils.shouldUseOverscanMethod(this@App) && (Utils.useRot270Fix(this@App) || Utils.useTabletMode(this@App))) {
-                val newRot = wm.defaultDisplay.rotation
-
-                if (oldRot != newRot) {
-                    oldRot = newRot
-
-                    handle()
-                }
-            }
-        }
-
-        override fun enable() {
-            handle()
-
-            super.enable()
-        }
-
-        private fun handle() {
+        fun handleRot() {
             if (Utils.useRot270Fix(this@App)) handle270()
             if (Utils.useTabletMode(this@App)) handleTablet()
         }
@@ -700,6 +654,33 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     Surface.ROTATION_270 -> {
                         IWindowManager.setOverscan(0, 0, -Utils.getNavBarHeight(this@App) + 1, 0)
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * Listen to see if the premium add-on has been installed/uninstalled, and refresh the premium state
+     */
+    inner class PremiumInstallListener : BroadcastReceiver() {
+        init {
+            val filter = IntentFilter()
+            filter.addAction(Intent.ACTION_PACKAGE_ADDED)
+            filter.addAction(Intent.ACTION_PACKAGE_CHANGED)
+            filter.addAction(Intent.ACTION_PACKAGE_REPLACED)
+            filter.addAction(Intent.ACTION_PACKAGE_REMOVED)
+            filter.addDataScheme("package")
+
+            registerReceiver(this, filter)
+        }
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == Intent.ACTION_PACKAGE_ADDED
+                    || intent?.action == Intent.ACTION_PACKAGE_CHANGED
+                    || intent?.action == Intent.ACTION_PACKAGE_REPLACED
+                    || intent?.action == Intent.ACTION_PACKAGE_REMOVED) {
+                if (intent.dataString.contains("com.xda.nobar.premium")) {
+                    refreshPremium()
                 }
             }
         }

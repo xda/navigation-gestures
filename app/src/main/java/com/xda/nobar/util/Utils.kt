@@ -287,7 +287,14 @@ object Utils {
      * @return the position, in pixels, from the horizontal center of the screen
      */
     fun getHomeX(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_x", 0)
+        val percent = ((getHomeXPercent(context)) / 100f)
+        val screenWidthHalf = getRealScreenSize(context).x / 2f - getCustomWidth(context) / 2f
+
+        return (percent * screenWidthHalf).toInt()
+    }
+
+    fun getHomeXPercent(context: Context): Int {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_x_percent", context.resources.getInteger(R.integer.pill_x_pos_percent))
     }
 
     /**
@@ -296,7 +303,14 @@ object Utils {
      * @return the width, in pixels
      */
     fun getCustomWidth(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_width", context.resources.getDimensionPixelSize(R.dimen.pill_width))
+        val percent = (getCustomWidthPercent(context) / 100f)
+        val screenWidth = getRealScreenSize(context).x
+
+        return (percent * screenWidth).toInt()
+    }
+
+    fun getCustomWidthPercent(context: Context): Int {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_width_percent", context.resources.getInteger(R.integer.pill_width_percent))
     }
 
     /**

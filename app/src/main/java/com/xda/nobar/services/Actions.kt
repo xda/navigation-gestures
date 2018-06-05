@@ -68,7 +68,7 @@ class Actions : AccessibilityService() {
                     app.addBar()
                 }
             }
-            app.immersiveListener.onGlobalLayout()
+            app.uiHandler.onGlobalLayout()
         }
     }
 

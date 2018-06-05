@@ -41,26 +41,35 @@
             android:key="pill_corner_radius" />
 
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+            app:seek_min="1"
+            app:seek_max="100"
+            app:format="%s%%"
             app:show_text="true"
+            android:defaultValue="@integer/pill_width_percent"
             android:title="@string/width"
             android:icon="@drawable/ic_arrow_expanded_horizontal_black_24dp"
-            android:key="custom_width" />
+            android:key="custom_width_percent" />
 
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
             app:show_text="true"
+            app:format="%spx"
             android:title="@string/height"
             android:icon="@drawable/ic_arrow_expanded_vertical_black_24dp"
             android:key="custom_height" />
 
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+            app:seek_min="-100"
+            app:seek_max="100"
+            app:format="%s%%"
             app:show_text="true"
-            android:defaultValue="0"
+            android:defaultValue="@integer/pill_x_pos_percent"
             android:title="@string/position_x"
             android:icon="@drawable/ic_swap_horiz_black_24dp"
-            android:key="custom_x" />
+            android:key="custom_x_percent" />
 
         <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
             app:show_text="true"
+            app:format="%spx"
             android:title="@string/position_y"
             android:icon="@drawable/ic_swap_vert_black_24dp"
             android:key="custom_y" />

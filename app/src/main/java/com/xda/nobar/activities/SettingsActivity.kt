@@ -202,21 +202,14 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun setListeners() {
-            val screenSize = Utils.getRealScreenSize(activity)
-
-            val width = findPreference("custom_width") as SliderPreferenceEmbedded
             val height = findPreference("custom_height") as SliderPreferenceEmbedded
             val posY = findPreference("custom_y") as SliderPreferenceEmbedded
             val pillColor = findPreference("pill_bg") as ColorPreference
             val pillBorderColor = findPreference("pill_fg") as ColorPreference
-            val posX = findPreference("custom_x") as SliderPreferenceEmbedded
 
-            width.seekBar.min = Utils.dpAsPx(activity, 10)
             height.seekBar.min = Utils.dpAsPx(activity, 5)
             posY.seekBar.min = 0
-            posX.seekBar.min = -(Utils.getRealScreenSize(activity).x.toFloat() / 2f - Utils.getCustomWidth(activity).toFloat() / 2f).toInt()
 
-            width.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_width))
             height.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_height))
             posY.setDefaultValue(Utils.getDefaultY(activity))
             pillColor.setDefaultValue(Utils.getDefaultPillBGColor())
@@ -225,10 +218,8 @@ class SettingsActivity : AppCompatActivity() {
             pillColor.saveValue(Utils.getPillBGColor(activity))
             pillBorderColor.saveValue(Utils.getPillFGColor(activity))
 
-            width.seekBar.max = screenSize.x
             height.seekBar.max = Utils.dpAsPx(activity, 50)
             posY.seekBar.max = Utils.dpAsPx(activity, 70)
-            posX.seekBar.max = -posX.seekBar.min
         }
     }
 
