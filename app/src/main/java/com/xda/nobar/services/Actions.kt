@@ -16,6 +16,7 @@ import android.support.v4.content.LocalBroadcastManager
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
+import android.view.inputmethod.InputMethodManager
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
@@ -37,6 +38,7 @@ class Actions : AccessibilityService() {
     private lateinit var wm: WindowManager
     private lateinit var am: ActivityManager
     private lateinit var audio: AudioManager
+    private lateinit var imm: InputMethodManager
     private lateinit var app: App
 
     private val handler = Handler(Looper.getMainLooper())
@@ -48,6 +50,7 @@ class Actions : AccessibilityService() {
         wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         app = application as App
     }
 
@@ -154,6 +157,9 @@ class Actions : AccessibilityService() {
                     app.premTypeNext -> runPremiumAction {
                         audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
                         audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
+                    }
+                    app.premTypeSwitchIme -> runPremiumAction {
+                        imm.showInputMethodPicker()
                     }
                     app.premTypeVibe -> {
                         //TODO: Implement

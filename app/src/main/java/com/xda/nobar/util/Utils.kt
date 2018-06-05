@@ -212,6 +212,7 @@ object Utils {
             app.premTypeRootVolUp -> R.string.prem_vol_up
             app.premTypeRootVolDown -> R.string.prem_vol_down
             app.premTypeRootScreenshot -> R.string.prem_type_screenshot
+            app.premTypeSwitchIme -> R.string.prem_switch_ime
             else -> android.R.string.untitled
         })
     }

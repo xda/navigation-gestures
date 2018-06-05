@@ -141,6 +141,7 @@
     <string name="prem_vol_up">Volume Up (Root) (Premium)</string>
     <string name="prem_vol_down">Volume Down (Root) (Premium)</string>
     <string name="prem_screenshot">Screenshot (Root) (Premium)</string>
+    <string name="prem_switch_ime">Switch Keyboard (Premium)</string>
 
     <!--Messages-->
     <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
@@ -179,6 +180,7 @@
     <string name="prem_type_vol_up">21</string>
     <string name="prem_type_vol_down">22</string>
     <string name="prem_type_screenshot">23</string>
+    <string name="prem_type_switch_ime">24</string>
 
     <!--Action Keys-->
     <string name="action_left">left</string>

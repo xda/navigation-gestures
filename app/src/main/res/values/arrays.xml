@@ -104,6 +104,7 @@
         <item>@string/prem_notif</item>
         <item>@string/prem_qs</item>
         <item>@string/prem_power</item>
+        <item>@string/prem_switch_ime</item>
     </string-array>
 
     <string-array name="system_action_values">
@@ -112,6 +113,7 @@
         <item>@string/prem_type_notif</item>
         <item>@string/prem_type_qs</item>
         <item>@string/prem_type_power</item>
+        <item>@string/prem_type_switch_ime</item>
     </string-array>
 
     <string-array name="media_action_names">
