@@ -2,7 +2,9 @@ package com.xda.nobar.util
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Rect
 import android.os.IBinder
+import android.util.Log
 import android.view.Display
 
 
@@ -24,6 +26,8 @@ object IWindowManager {
 
         val binder = serviceManagerClass.getMethod("checkService", String::class.java).invoke(null, Context.WINDOW_SERVICE)
         iWindowManager = stubClass.getMethod("asInterface", IBinder::class.java).invoke(null, binder)
+
+        Log.e("NoBar", iWindowManager!!::class.java.name)
     }
 
     /**
@@ -54,6 +58,17 @@ object IWindowManager {
             true
         } catch (e: Throwable) {
             e.printStackTrace()
+            false
+        }
+    }
+
+    fun getStableInsetsForDefaultDisplay(rect: Rect): Boolean {
+        return try {
+            iWindowManagerClass
+                    ?.getMethod("getStableInsets", Int::class.java, Rect::class.java)
+                    ?.invoke(iWindowManager, Display.DEFAULT_DISPLAY, rect)
+            true
+        } catch (e: Exception) {
             false
         }
     }

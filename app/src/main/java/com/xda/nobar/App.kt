@@ -8,6 +8,7 @@ import android.content.*
 import android.content.res.Configuration
 import android.database.ContentObserver
 import android.graphics.PixelFormat
+import android.graphics.Point
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -30,8 +31,8 @@ import com.xda.nobar.util.Utils.getCustomWidth
 import com.xda.nobar.util.Utils.getHomeX
 import com.xda.nobar.util.Utils.getHomeY
 import com.xda.nobar.views.BarView
+import com.xda.nobar.views.ImmersiveHelperView
 import kotlin.math.absoluteValue
-
 
 
 /**
@@ -55,6 +56,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     lateinit var uiHandler: UIHandler
     lateinit var bar: BarView
+    lateinit var immersiveHelperView: ImmersiveHelperView
     lateinit var prefs: SharedPreferences
 
     private val gestureListeners = ArrayList<GestureActivationListener>()
@@ -169,6 +171,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         um = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
         kgm = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         bar = BarView(this)
+        immersiveHelperView = ImmersiveHelperView(this)
         stateHandler = ScreenStateHandler()
         carModeHandler = CarModeHandler()
         uiHandler = UIHandler()
@@ -194,6 +197,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         if (Utils.useRot270Fix(this) || Utils.useTabletMode(this)) uiHandler.handleRot()
+
+        wm.addView(immersiveHelperView, immersiveHelperView.params)
+        immersiveHelperView.viewTreeObserver.addOnGlobalLayoutListener(uiHandler)
+        uiHandler.onGlobalLayout()
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
@@ -301,9 +308,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         bar.show(null)
-        bar.setOnSystemUiVisibilityChangeListener(uiHandler)
-        bar.viewTreeObserver.addOnGlobalLayoutListener(uiHandler)
-        uiHandler.onGlobalLayout()
+//        bar.setOnSystemUiVisibilityChangeListener(uiHandler)
     }
 
     /**
@@ -479,7 +484,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                             if (Utils.shouldUseOverscanMethod(this@App)) hideNav()
                         }
                     }
-                }, 300)
+                }, 50)
             }
         }
     }
@@ -529,6 +534,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         private var isDisabledForContent = false
         private var oldRot = Surface.ROTATION_0
 
+        private var isActing = false
+
         init {
             contentResolver.registerContentObserver(Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
@@ -541,6 +548,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (isPillShown()) {
                 val rot = wm.defaultDisplay.rotation
                 if (oldRot != rot) {
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     bar.params.x = getHomeX(this@App)
                     bar.params.width = getCustomWidth(this@App)
                     bar.updateLayout(bar.params)
@@ -548,26 +556,35 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     handleRot()
                 }
 
-                val rect = Rect()
-                val screenRes = Utils.getRealScreenSize(this@App)
-                val overscan = getOverscan()
+                if (!isActing) handler.postDelayed({
+                    val screenRes = Utils.getRealScreenSize(this@App)
+                    val overscan = getOverscan()
 
-                bar.getWindowVisibleDisplayFrame(rect)
+                    val rect = Rect()
+                    immersiveHelperView.getWindowVisibleDisplayFrame(rect)
 
-                val vertical = (rect.top - rect.bottom).absoluteValue + overscan.top + overscan.bottom
-                val horizontal = (rect.left - rect.right).absoluteValue + overscan.left + overscan.right
-                val landscape = wm.defaultDisplay.rotation == Surface.ROTATION_270 || wm.defaultDisplay.rotation == Surface.ROTATION_90
+                    val insets = Rect()
+                    IWindowManager.getStableInsetsForDefaultDisplay(insets)
 
-                val hidden = when {
-                    landscape && !Utils.useTabletMode(this@App) -> horizontal >= screenRes.x
-                    else -> vertical >= screenRes.y
-                }
+                    val height = Point(screenRes.x - rect.left - rect.right,
+                            screenRes.y - rect.top - rect.bottom)
 
-                if (hidden) {
-                    onSystemUiVisibilityChange(View.SYSTEM_UI_FLAG_FULLSCREEN)
-                } else {
-                    onSystemUiVisibilityChange(0)
-                }
+                    val totalOverscan = overscan.left + overscan.top + overscan.right + overscan.bottom
+
+                    val hidden = when {
+                        (wm.defaultDisplay.rotation == Surface.ROTATION_270
+                                || wm.defaultDisplay.rotation == Surface.ROTATION_90)
+                                && !Utils.useTabletMode(this@App) -> height.x.absoluteValue == totalOverscan.absoluteValue
+                        else -> height.y.absoluteValue == totalOverscan.absoluteValue
+                    }
+
+                    if (hidden) {
+                        onSystemUiVisibilityChange(View.SYSTEM_UI_FLAG_FULLSCREEN)
+                    } else {
+                        onSystemUiVisibilityChange(0)
+                    }
+                    isActing = false
+                }, 50)
             }
         }
 
