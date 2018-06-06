@@ -3,7 +3,9 @@ package com.xda.nobar.activities
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.ResolveInfo
+import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
@@ -72,7 +74,7 @@ class AppLaunchSelectActivity : AppCompatActivity() {
                 .subscribe {
                     val apps = ArrayList<AppInfo>()
                     it.forEach { info ->
-                        apps.add(AppInfo(info.resolvePackageName,
+                        apps.add(AppInfo(info.activityInfo.packageName,
                                 info.activityInfo.name,
                                 info.loadLabel(packageManager).toString(),
                                 info.loadIcon(packageManager)))
@@ -127,7 +129,17 @@ class AppLaunchSelectActivity : AppCompatActivity() {
             val icon = view.findViewById<ImageView>(R.id.icon)
 
             title.text = app.displayName
-            icon.background = app.icon
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+                val iconDrawable = app.icon
+                if (iconDrawable is AdaptiveIconDrawable) {
+                    icon.background = iconDrawable.foreground
+                } else {
+                    icon.background = iconDrawable
+                }
+            } else {
+                icon.background = app.icon
+            }
 
             view.setOnClickListener {
                 listener.onAppSelected(app)
