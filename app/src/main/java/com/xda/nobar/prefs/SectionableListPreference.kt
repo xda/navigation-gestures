@@ -1,6 +1,7 @@
 package com.xda.nobar.prefs
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Typeface
 import android.preference.DialogPreference
@@ -98,7 +99,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     fun getSavedValue(): String {
-        return sharedPreferences.getString(key, (defaultValue ?: app.typeNoAction).toString())
+        return getPersistedString(defaultValue.toString())
     }
 
     fun removeSection(index: Int) {
@@ -139,8 +140,12 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         names.forEach { removeItemByName(it) }
     }
 
+    override fun onGetDefaultValue(a: TypedArray, index: Int): String {
+        return a.getString(index) ?: app.typeNoAction.toString()
+    }
+
     override fun onSetInitialValue(restorePersistedValue: Boolean, defaultValue: Any?) {
-        saveValue(if (restorePersistedValue) sharedPreferences.getString(key, app.typeNoAction.toString()) else defaultValue.toString())
+        saveValue(if (restorePersistedValue) getPersistedString(defaultValue.toString()) else defaultValue.toString())
     }
 
     override fun onItemChosen(value: String?) {
