@@ -48,6 +48,7 @@ class AppLaunchSelectActivity : AppCompatActivity() {
         }
 
         app = application as App
+        app.refreshPremium()
 
         setContentView(R.layout.activity_app_launch_select)
 

@@ -73,6 +73,12 @@ class MainActivity : AppCompatActivity(), App.GestureActivationListener, App.Nav
         hideNavSwitch.onCheckedChangeListener = navListener
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        handler.refreshPremium()
+    }
+
     /**
      * Make sure the toggle switch updates for the current activation state
      */
