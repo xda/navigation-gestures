@@ -3,10 +3,7 @@ package com.xda.nobar.services
 import android.accessibilityservice.AccessibilityService
 import android.app.ActivityManager
 import android.app.SearchManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.media.AudioManager
 import android.os.Build
 import android.os.Handler
@@ -32,6 +29,7 @@ class Actions : AccessibilityService() {
         const val ACTION = "$BASE.ACTION"
 
         const val EXTRA_ACTION = "action"
+        const val EXTRA_GESTURE = "gesture"
     }
 
     private lateinit var receiver: ActionHandler
@@ -160,6 +158,22 @@ class Actions : AccessibilityService() {
                     }
                     app.premTypeSwitchIme -> runPremiumAction {
                         imm.showInputMethodPicker()
+                    }
+                    app.premTypeLaunchApp -> runPremiumAction {
+                        val key = "${intent.getStringExtra(EXTRA_GESTURE)}_package"
+                        val launchPackage = app.prefs.getString(key, null)
+
+                        if (launchPackage != null) {
+                            val launch = Intent(Intent.ACTION_MAIN)
+                            launch.addCategory(Intent.CATEGORY_LAUNCHER)
+                            launch.`package` = launchPackage.split("/")[0]
+                            launch.component = ComponentName(launch.`package`, launchPackage.split("/")[1])
+
+                            try {
+                                launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                startActivity(launch)
+                            } catch (e: Exception) {}
+                        }
                     }
                     app.premTypeVibe -> {
                         //TODO: Implement

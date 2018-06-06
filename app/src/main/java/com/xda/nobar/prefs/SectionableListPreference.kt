@@ -86,6 +86,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     fun saveValue(value: String?) {
         persistString(value)
         notifyChanged()
+        callChangeListener(value)
         updateSummary(value)
     }
 

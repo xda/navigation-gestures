@@ -510,6 +510,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         val intent = Intent(Actions.ACTION)
         intent.putExtra(Actions.EXTRA_ACTION, which)
+        intent.putExtra(Actions.EXTRA_GESTURE, key)
 
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
 

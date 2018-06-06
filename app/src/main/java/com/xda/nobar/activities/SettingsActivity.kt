@@ -1,5 +1,7 @@
 package com.xda.nobar.activities
 
+import android.app.Activity
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -10,10 +12,12 @@ import android.preference.SwitchPreference
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.jaredrummler.android.colorpicker.ColorPreference
+import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.util.Utils
 import com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+import java.util.*
 
 /**
  * The configuration activity
@@ -98,13 +102,22 @@ class SettingsActivity : AppCompatActivity() {
      * Gesture preferences
      */
     class GestureFragment : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
+        private val listPrefs = ArrayList<SectionableListPreference>()
+
+        private lateinit var app: App
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
 
+            app = activity.application as App
+
             addPreferencesFromResource(R.xml.prefs_gestures)
+
+            listPrefs.addAll(getAllListPrefs())
 
             removeNougatActionsIfNeeded()
             removeRootActionsIfNeeded()
+            setListeners()
 
             preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         }
@@ -129,7 +142,86 @@ class SettingsActivity : AppCompatActivity() {
             preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         }
 
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            if (requestCode == 10) {
+                val key = data?.getStringExtra(AppLaunchSelectActivity.EXTRA_KEY)
+                val appName = data?.getStringExtra(AppLaunchSelectActivity.EXTRA_RESULT_DISPLAY_NAME)
+
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        updateAppLaunchSummary(key ?: return, appName ?: return)
+                    }
+
+                    Activity.RESULT_CANCELED -> {
+                        listPrefs.forEach {
+                            if (it.key == key) {
+                                it.saveValue(app.typeNoAction.toString())
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private fun updateAppLaunchSummary(key: String, appName: String) {
+            listPrefs.forEach {
+                if (key == it.key) {
+                    it.summary = String.format(Locale.getDefault(), it.summary.toString(), appName)
+                    return@forEach
+                }
+            }
+        }
+
         private fun updateSummaries() {
+            listPrefs.forEach {
+                it.updateSummary(it.getSavedValue())
+
+                if (it.getSavedValue() == app.premTypeLaunchApp.toString()) {
+                    val packageInfo = preferenceManager.sharedPreferences.getString("${it.key}_package", null) ?: return
+
+                    it.summary = String.format(Locale.getDefault(),
+                            it.summary.toString(),
+                            activity.packageManager.getApplicationLabel(
+                                            activity.packageManager.getApplicationInfo(packageInfo.split("/")[0], 0)))
+                }
+            }
+        }
+
+        private fun removeNougatActionsIfNeeded() {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                listPrefs.forEach {
+                    val actions = resources.getStringArray(R.array.nougat_action_values)
+                    it.removeItemsByValue(actions)
+                }
+            }
+        }
+
+        private fun removeRootActionsIfNeeded() {
+            if (!Utils.shouldUseRootCommands(activity)) {
+                listPrefs.forEach {
+                    val actions = resources.getStringArray(R.array.root_action_values)
+                    it.removeItemsByValue(actions)
+                }
+            }
+        }
+
+        private fun setListeners() {
+            listPrefs.forEach {
+                it.setOnPreferenceChangeListener { preference, newValue ->
+                    if (newValue?.toString() == app.premTypeLaunchApp.toString()) {
+                        val intent = Intent(activity, AppLaunchSelectActivity::class.java)
+                        intent.putExtra(AppLaunchSelectActivity.EXTRA_KEY, it.key)
+
+                        startActivityForResult(intent, 10)
+                    }
+                    true
+                }
+            }
+        }
+
+        private fun getAllListPrefs(): ArrayList<SectionableListPreference> {
+            val ret = ArrayList<SectionableListPreference>()
+
             for (i in 0 until preferenceScreen.preferenceCount) {
                 val pref = preferenceScreen.getPreference(i)
 
@@ -137,50 +229,12 @@ class SettingsActivity : AppCompatActivity() {
                     for (j in 0 until pref.preferenceCount) {
                         val child = pref.getPreference(j)
 
-                        if (child is SectionableListPreference) {
-                            child.updateSummary(child.getSavedValue())
-                        }
+                        if (child is SectionableListPreference) ret.add(child)
                     }
                 }
             }
-        }
 
-        private fun removeNougatActionsIfNeeded() {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                for (i in 0 until preferenceScreen.preferenceCount) {
-                    val pref = preferenceScreen.getPreference(i)
-
-                    if (pref is PreferenceCategory) {
-                        for (j in 0 until pref.preferenceCount) {
-                            val child = pref.getPreference(j)
-
-                            if (child is SectionableListPreference) {
-                                val actions = resources.getStringArray(R.array.nougat_action_values)
-                                child.removeItemsByValue(actions)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private fun removeRootActionsIfNeeded() {
-            if (!Utils.shouldUseRootCommands(activity)) {
-                for (i in 0 until preferenceScreen.preferenceCount) {
-                    val pref = preferenceScreen.getPreference(i)
-
-                    if (pref is PreferenceCategory) {
-                        for (j in 0 until pref.preferenceCount) {
-                            val child = pref.getPreference(j)
-
-                            if (child is SectionableListPreference) {
-                                val actions = resources.getStringArray(R.array.root_action_values)
-                                child.removeItemsByValue(actions)
-                            }
-                        }
-                    }
-                }
-            }
+            return ret
         }
     }
 

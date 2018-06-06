@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
 import android.os.IBinder
-import android.util.Log
 import android.view.Display
 
 
@@ -26,8 +25,6 @@ object IWindowManager {
 
         val binder = serviceManagerClass.getMethod("checkService", String::class.java).invoke(null, Context.WINDOW_SERVICE)
         iWindowManager = stubClass.getMethod("asInterface", IBinder::class.java).invoke(null, binder)
-
-        Log.e("NoBar", iWindowManager!!::class.java.name)
     }
 
     /**

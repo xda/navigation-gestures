@@ -158,30 +158,32 @@ object Utils {
      * @param map the HashMap to fill/update
      */
     fun getActionList(context: Context, map: HashMap<String, Int>) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val app = getHandler(context)
-        
-        val left = prefs.getString(app.actionLeft, app.typeBack.toString()).toInt()
-        val right = prefs.getString(app.actionRight, app.typeRecents.toString()).toInt()
-        val tap = prefs.getString(app.actionTap, app.typeHome.toString()).toInt()
-        val hold = prefs.getString(app.actionHold, app.typeAssist.toString()).toInt()
-        val up = prefs.getString(app.actionUp, app.typeNoAction.toString()).toInt()
-        val down = prefs.getString(app.actionDown, app.typeHide.toString()).toInt()
-        val double = prefs.getString(app.actionDouble, app.typeNoAction.toString()).toInt()
-        val holdUp = prefs.getString(app.actionUpHold, app.typeNoAction.toString()).toInt()
-        val holdLeft = prefs.getString(app.actionLeftHold, app.typeNoAction.toString()).toInt()
-        val holdRight = prefs.getString(app.actionRightHold, app.typeNoAction.toString()).toInt()
+        try {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+            val app = getHandler(context)
 
-        map[app.actionLeft] = left
-        map[app.actionRight] = right
-        map[app.actionTap] = tap
-        map[app.actionHold] = hold
-        map[app.actionUp] = up
-        map[app.actionDown] = down
-        map[app.actionDouble] = double
-        map[app.actionUpHold] = holdUp
-        map[app.actionLeftHold] = holdLeft
-        map[app.actionRightHold] = holdRight
+            val left = prefs.getString(app.actionLeft, app.typeBack.toString()).toInt()
+            val right = prefs.getString(app.actionRight, app.typeRecents.toString()).toInt()
+            val tap = prefs.getString(app.actionTap, app.typeHome.toString()).toInt()
+            val hold = prefs.getString(app.actionHold, app.typeAssist.toString()).toInt()
+            val up = prefs.getString(app.actionUp, app.typeNoAction.toString()).toInt()
+            val down = prefs.getString(app.actionDown, app.typeHide.toString()).toInt()
+            val double = prefs.getString(app.actionDouble, app.typeNoAction.toString()).toInt()
+            val holdUp = prefs.getString(app.actionUpHold, app.typeNoAction.toString()).toInt()
+            val holdLeft = prefs.getString(app.actionLeftHold, app.typeNoAction.toString()).toInt()
+            val holdRight = prefs.getString(app.actionRightHold, app.typeNoAction.toString()).toInt()
+
+            map[app.actionLeft] = left
+            map[app.actionRight] = right
+            map[app.actionTap] = tap
+            map[app.actionHold] = hold
+            map[app.actionUp] = up
+            map[app.actionDown] = down
+            map[app.actionDouble] = double
+            map[app.actionUpHold] = holdUp
+            map[app.actionLeftHold] = holdLeft
+            map[app.actionRightHold] = holdRight
+        } catch (e: Exception) {}
     }
 
     fun actionToName(context: Context, action: Int): String {
@@ -213,6 +215,7 @@ object Utils {
             app.premTypeRootVolDown -> R.string.prem_vol_down
             app.premTypeRootScreenshot -> R.string.prem_type_screenshot
             app.premTypeSwitchIme -> R.string.prem_switch_ime
+            app.premTypeLaunchApp -> R.string.prem_launch_app
             else -> android.R.string.untitled
         })
     }

@@ -65,6 +65,8 @@
     <string name="navigation">Navigation</string>
     <string name="system">System</string>
     <string name="media">Media</string>
+    <string name="apps">Apps</string>
+    <string name="loading">Loading…</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -142,6 +144,8 @@
     <string name="prem_vol_down">Volume Down (Root) (Premium)</string>
     <string name="prem_screenshot">Screenshot (Root) (Premium)</string>
     <string name="prem_switch_ime">Switch Keyboard (Premium)</string>
+    <string name="prem_launch_app">Launch App (Premium) (%s)</string>
+    <string name="prem_launch_app_no_format">Launch App (Premium)</string>
 
     <!--Messages-->
     <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
@@ -149,7 +153,7 @@
     <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
     <string name="deactivate_before_uninstall">Deactivate BOTH SWITCHES before uninstalling!</string>
     <string name="copied_to_clipboard">Email copied to clipboard</string>
-    
+
     <!--Libraries-->
     <string name="material_intro">Material Intro</string>
     <string name="slider_pref_embedded">SliderPreferenceEmbedded</string>
@@ -181,6 +185,7 @@
     <string name="prem_type_vol_down">22</string>
     <string name="prem_type_screenshot">23</string>
     <string name="prem_type_switch_ime">24</string>
+    <string name="prem_type_launch_app">25</string>
 
     <!--Action Keys-->
     <string name="action_left">left</string>

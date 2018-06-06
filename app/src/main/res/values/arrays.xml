@@ -127,12 +127,21 @@
         <item>@string/prem_type_play_pause</item>
         <item>@string/prem_type_next</item>
     </string-array>
+
+    <string-array name="apps_action_names">
+        <item>@string/prem_launch_app_no_format</item>
+    </string-array>
+
+    <string-array name="apps_action_values">
+        <item>@string/prem_type_launch_app</item>
+    </string-array>
     
     <string-array name="action_section_names">
         <item> </item>
         <item>@string/navigation</item>
         <item>@string/system</item>
         <item>@string/media</item>
+        <item>@string/apps</item>
     </string-array>
     
     <array name="action_section_data_names">
@@ -140,6 +149,7 @@
         <item>@array/navigation_action_names</item>
         <item>@array/system_action_names</item>
         <item>@array/media_action_names</item>
+        <item>@array/apps_action_names</item>
     </array>
 
     <array name="action_section_data_values">
@@ -147,5 +157,6 @@
         <item>@array/navigation_action_values</item>
         <item>@array/system_action_values</item>
         <item>@array/media_action_values</item>
+        <item>@array/apps_action_values</item>
     </array>
 </resources>
