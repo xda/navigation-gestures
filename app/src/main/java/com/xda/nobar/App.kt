@@ -369,7 +369,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     }
 
     fun toggleGestureBar() {
-        if (isPillShown()) removeBar()
+        val shown = isPillShown()
+        setGestureState(!shown)
+        if (shown) removeBar()
         else addBar()
     }
 
