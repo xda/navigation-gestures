@@ -157,6 +157,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (key == "custom_width_percent") {
             layoutParams.width = getCustomWidth(context)
             layoutParams = layoutParams
+            params.x = getHomeX(context)
             updateLayout(params)
         }
         if (key == "custom_height") {

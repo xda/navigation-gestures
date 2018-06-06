@@ -12,11 +12,11 @@ import android.preference.SwitchPreference
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.jaredrummler.android.colorpicker.ColorPreference
+import com.pavelsikun.seekbarpreference.SeekBarPreference
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.util.Utils
-import com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
 import java.util.*
 
 /**
@@ -256,13 +256,13 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun setListeners() {
-            val height = findPreference("custom_height") as SliderPreferenceEmbedded
-            val posY = findPreference("custom_y") as SliderPreferenceEmbedded
+            val height = findPreference("custom_height") as SeekBarPreference
+            val posY = findPreference("custom_y") as SeekBarPreference
             val pillColor = findPreference("pill_bg") as ColorPreference
             val pillBorderColor = findPreference("pill_fg") as ColorPreference
 
-            height.seekBar.min = Utils.dpAsPx(activity, 5)
-            posY.seekBar.min = 0
+            height.minValue = Utils.dpAsPx(activity, 5)
+            posY.minValue = 0
 
             height.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_height))
             posY.setDefaultValue(Utils.getDefaultY(activity))
@@ -272,8 +272,8 @@ class SettingsActivity : AppCompatActivity() {
             pillColor.saveValue(Utils.getPillBGColor(activity))
             pillBorderColor.saveValue(Utils.getPillFGColor(activity))
 
-            height.seekBar.max = Utils.dpAsPx(activity, 50)
-            posY.seekBar.max = Utils.dpAsPx(activity, 70)
+            height.maxValue = Utils.dpAsPx(activity, 50)
+            posY.maxValue = Utils.dpAsPx(activity, 70)
         }
     }
 

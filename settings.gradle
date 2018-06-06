@@ -1,3 +1,2 @@
-include ':app' , ':SliderPref', ':SeekBar'
-project(':SliderPref').projectDir = new File('/mnt/AA387BDB387BA54B/StudioProjects/SliderPreferenceEmbedded/app')
-project(':SeekBar').projectDir = new File('/mnt/AA387BDB387BA54B/StudioProjects/SliderPreferenceEmbedded/discreteSeekBar-master/library')
+include ':app', ':SeekBarPref'
+project(':SeekBarPref').projectDir = new File('/mnt/AA387BDB387BA54B/StudioProjects/MaterialSeekBarPreference/library')

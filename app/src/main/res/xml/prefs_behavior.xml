@@ -20,33 +20,30 @@
         android:icon="@drawable/ic_swap_vert_black_24dp"
         android:key="static_pill" />
 
-    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+    <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/hold_time"
         android:key="hold_time"
         android:icon="@drawable/ic_timer_black_24dp"
-        app:seek_min="100"
-        app:seek_max="2000"
-        android:defaultValue="1000"
-        app:show_text="true"
-        app:format="%sms" />
+        app:msbp_minValue="100"
+        app:msbp_maxValue="2000"
+        app:msbp_measurementUnit="ms"
+        android:defaultValue="1000" />
 
-    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+    <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/vibration_duration"
         android:key="vibration_duration"
         android:icon="@drawable/ic_timer_black_24dp"
-        app:seek_min="0"
-        app:seek_max="500"
-        android:defaultValue="50"
-        app:show_text="true"
-        app:format="%sms" />
+        app:msbp_minValue="0"
+        app:msbp_maxValue="500"
+        app:msbp_measurementUnit="ms"
+        android:defaultValue="50" />
 
-    <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
+    <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/anim_duration"
         android:key="anim_duration"
         android:icon="@drawable/ic_timer_black_24dp"
-        app:seek_min="0"
-        app:seek_max="500"
-        android:defaultValue="500"
-        app:show_text="true" />
+        app:msbp_minValue="0"
+        app:msbp_maxValue="500"
+        android:defaultValue="500" />
 
 </PreferenceScreen>

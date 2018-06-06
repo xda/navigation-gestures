@@ -30,46 +30,41 @@
     <PreferenceCategory
         android:title="@string/dimension_prefs">
 
-        <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
-            app:show_text="true"
-            app:format="%sdp"
-            app:seek_min="0"
-            app:seek_max="10"
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            app:msbp_measurementUnit="dp"
+            app:msbp_minValue="0"
+            app:msbp_maxValue="10"
             android:defaultValue="8"
             android:title="@string/pill_corner_radius"
             android:icon="@drawable/ic_rounded_corner_black_24dp"
             android:key="pill_corner_radius" />
 
-        <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
-            app:seek_min="1"
-            app:seek_max="100"
-            app:format="%s%%"
-            app:show_text="true"
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            app:msbp_minValue="1"
+            app:msbp_maxValue="100"
+            app:msbp_measurementUnit="%"
             android:defaultValue="@integer/pill_width_percent"
             android:title="@string/width"
             android:icon="@drawable/ic_arrow_expanded_horizontal_black_24dp"
             android:key="custom_width_percent" />
 
-        <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
-            app:show_text="true"
-            app:format="%spx"
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            app:msbp_measurementUnit="px"
             android:title="@string/height"
             android:icon="@drawable/ic_arrow_expanded_vertical_black_24dp"
             android:key="custom_height" />
 
-        <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
-            app:seek_min="-100"
-            app:seek_max="100"
-            app:format="%s%%"
-            app:show_text="true"
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            app:msbp_minValue="-100"
+            app:msbp_maxValue="100"
+            app:msbp_measurementUnit="%"
             android:defaultValue="@integer/pill_x_pos_percent"
             android:title="@string/position_x"
             android:icon="@drawable/ic_swap_horiz_black_24dp"
             android:key="custom_x_percent" />
 
-        <com.zacharee1.sliderpreferenceembedded.SliderPreferenceEmbedded
-            app:show_text="true"
-            app:format="%spx"
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            app:msbp_measurementUnit="px"
             android:title="@string/position_y"
             android:icon="@drawable/ic_swap_vert_black_24dp"
             android:key="custom_y" />
