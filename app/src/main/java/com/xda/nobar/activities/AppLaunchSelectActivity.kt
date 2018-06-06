@@ -13,6 +13,7 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -37,6 +38,9 @@ class AppLaunchSelectActivity : AppCompatActivity() {
     private lateinit var list: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (intent == null || !intent.hasExtra(EXTRA_KEY)) {
             setResult(Activity.RESULT_CANCELED)
@@ -97,6 +101,13 @@ class AppLaunchSelectActivity : AppCompatActivity() {
                 }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onBackPressed() {
         val resultIntent = Intent()
         resultIntent.putExtra(EXTRA_KEY, intent.getStringExtra(EXTRA_KEY))
@@ -133,7 +144,11 @@ class AppLaunchSelectActivity : AppCompatActivity() {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
                 val iconDrawable = app.icon
                 if (iconDrawable is AdaptiveIconDrawable) {
-                    icon.background = iconDrawable.foreground
+                    try {
+                        icon.background = iconDrawable
+                    } catch (e: Exception) {
+                        icon.background = iconDrawable.foreground
+                    }
                 } else {
                     icon.background = iconDrawable
                 }
