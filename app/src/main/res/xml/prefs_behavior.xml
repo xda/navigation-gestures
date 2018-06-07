@@ -43,7 +43,7 @@
         android:key="anim_duration"
         android:icon="@drawable/ic_timer_black_24dp"
         app:msbp_minValue="0"
-        app:msbp_maxValue="500"
+        app:msbp_maxValue="300"
         android:defaultValue="500" />
 
 </PreferenceScreen>
