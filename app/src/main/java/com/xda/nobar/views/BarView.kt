@@ -865,6 +865,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var leftHoldHandle: ScheduledFuture<*>? = null
         private var rightHoldHandle: ScheduledFuture<*>? = null
 
+        private var oldEvent: MotionEvent? = null
         private var oldY = 0F
         private var oldX = 0F
 
@@ -875,7 +876,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             override fun onTouchEvent(ev: MotionEvent?): Boolean {
                 val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
                 val time = (getAnimationDurationMs() * animDurScale)
-                val ultimateReturn = super.onTouchEvent(ev)
+                var ultimateReturn = super.onTouchEvent(ev)
 
                 synchronized(hideLock) {
                     when (ev?.action) {
@@ -996,6 +997,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             wasHidden = isHidden
                         }
                         MotionEvent.ACTION_MOVE -> {
+                            ultimateReturn = ultimateReturn || handlePotentialSwipe(ev)
+
                             if (isSwipeUp && !isSwipeLeft && !isSwipeRight) {
                                 if (!isActing) isActing = true
 
@@ -1065,50 +1068,62 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     }
                 }
 
+                oldEvent = MotionEvent.obtain(ev)
+
                 return ultimateReturn
             }
         }
 
-        inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
-            /**
-             * This is where the swipes are managed
-             */
-            override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-                return try {
-                    if (!isHidden && !isActing && e1 != null && e2 != null) {
-                        when {
-                            e2.x - e1.x < 0 && distanceY.absoluteValue <= distanceX.absoluteValue -> { //left swipe
-                                isSwipeLeft = true
-                                true
-                            }
-                            e2.x - e1.x > 0 && distanceY.absoluteValue <= distanceX.absoluteValue -> { //right swipe
-                                isSwipeRight = true
-                                true
-                            }
-                            e2.y - e1.y > 0 && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
-                                isActing = true
-                                sendAction(app.actionDown)
-                                true
-                            }
-                            e2.y - e1.y < 0 && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
-                                isSwipeUp = true
-                                true
-                            }
-                            else -> false
-                        }
-                    } else if (isHidden
-                            && !isActing
-                            && e1 != null
-                            && e2 != null
-                            && e2.y - e1.y < 0
-                            && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
-                        showPill(false)
+        private fun handlePotentialSwipe(motionEvent: MotionEvent?): Boolean {
+            if (oldEvent == null || motionEvent == null) return false
+
+            val oldEvent = MotionEvent.obtain(this.oldEvent)
+            val distanceX = motionEvent.rawX - oldEvent.rawX
+            val distanceY = motionEvent.rawY - oldEvent.rawY
+            val xThresh = Utils.dpAsPx(context, 1)
+            val yThresh = Utils.dpAsPx(context, 2)
+
+            val ret = if (!isHidden && !isActing) {
+                when {
+                    motionEvent.x - oldEvent.x < -xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //left swipe
+                        isSwipeLeft = true
                         true
-                    } else false
-                } catch (e: IllegalArgumentException) {
-                    false
+                    }
+                    motionEvent.x - oldEvent.x > xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //right swipe
+                        isSwipeRight = true
+                        true
+                    }
+                    motionEvent.y - oldEvent.y > yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
+                        isActing = true
+                        sendAction(app.actionDown)
+                        true
+                    }
+                    motionEvent.y - oldEvent.y < yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
+                        isSwipeUp = true
+                        true
+                    }
+                    else -> false
                 }
-            }
+            } else if (isHidden
+                    && !isActing
+                    && motionEvent.y - oldEvent.y < yThresh
+                    && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
+                showPill(false)
+                true
+            } else false
+
+            oldEvent.recycle()
+
+            return ret
+        }
+
+        inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
+//            /**
+//             * This is where the swipes are managed
+//             */
+//            override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+//
+//            }
 
             override fun onSingleTapUp(e: MotionEvent?): Boolean {
                 return if (actionMap[app.actionDouble] == app.typeNoAction && !isActing && !wasHidden) {
