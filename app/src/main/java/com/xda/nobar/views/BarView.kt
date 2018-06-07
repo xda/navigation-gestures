@@ -381,9 +381,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                         isCarryingOutTouchAction = false
 
-                        handler?.post {
-                            jiggleDown()
-                        }
+//                        handler?.post {
+//                            jiggleDown()
+//                        }
 
                         isHidden = true
                     }
@@ -437,7 +437,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             val animator = ValueAnimator.ofInt(params.y, navHeight)
 
             if (distance == 0) {
-                jiggleUp()
+//                jiggleUp()
 
                 handler?.postDelayed(Runnable { isHidden = false }, (if (getAnimationDurationMs() < 12) 12 else 0))
                 isCarryingOutTouchAction = false
@@ -449,7 +449,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
                 animator.addListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
-                        jiggleUp()
+//                        jiggleUp()
 
                         handler?.postDelayed(Runnable { isHidden = false }, (if (getAnimationDurationMs() < 12) 12 else 0))
                         isCarryingOutTouchAction = false
@@ -523,15 +523,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             return
         }
 
-        when (key) {
-            app.actionDouble -> jiggleDoubleTap()
-            app.actionHold -> jiggleHold()
-            app.actionDown -> jiggleDown()
-            app.actionTap -> jiggleTap()
-            app.actionUpHold -> jiggleHoldUp()
-            app.actionLeftHold -> jiggleLeftHold()
-            app.actionRightHold -> jiggleRightHold()
-        }
+//        when (key) {
+//            app.actionDouble -> jiggleDoubleTap()
+//            app.actionHold -> jiggleHold()
+//            app.actionDown -> jiggleDown()
+//            app.actionTap -> jiggleTap()
+//            app.actionUpHold -> jiggleHoldUp()
+//            app.actionLeftHold -> jiggleLeftHold()
+//            app.actionRightHold -> jiggleRightHold()
+//        }
 
         if (key == app.actionUp || key == app.actionLeft || key == app.actionRight) {
             animate(null, ALPHA_ACTIVE)
@@ -942,7 +942,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     }
                                     yDownAnimator?.addListener(object : AnimatorListenerAdapter() {
                                         override fun onAnimationEnd(animation: Animator?) {
-                                            if (isSwipeUp) jiggleDown()
+//                                            if (isSwipeUp) jiggleDown()
 //
                                             isActing = false
                                             isSwipeUp = false
@@ -968,8 +968,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     }
                                     animator.addListener(object : AnimatorListenerAdapter() {
                                         override fun onAnimationEnd(animation: Animator?) {
-                                            if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
-                                            if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
+//                                            if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
+//                                            if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
 
                                             isActing = false
                                             isSwipeLeft = false
@@ -981,9 +981,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     animator.start()
                                 }
                                 else -> {
-                                    if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
-                                    if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
-                                    if (isSwipeUp) jiggleDown()
+//                                    if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
+//                                    if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
+//                                    if (isSwipeUp) jiggleDown()
 
                                     isActing = false
                                     isSwipeUp = false
