@@ -523,15 +523,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             return
         }
 
-//        when (key) {
+        when (key) {
 //            app.actionDouble -> jiggleDoubleTap()
 //            app.actionHold -> jiggleHold()
 //            app.actionDown -> jiggleDown()
-//            app.actionTap -> jiggleTap()
+            app.actionTap -> jiggleTap()
 //            app.actionUpHold -> jiggleHoldUp()
-//            app.actionLeftHold -> jiggleLeftHold()
-//            app.actionRightHold -> jiggleRightHold()
-//        }
+            app.actionLeftHold -> jiggleLeftHold()
+            app.actionRightHold -> jiggleRightHold()
+        }
 
         if (key == app.actionUp || key == app.actionLeft || key == app.actionRight) {
             animate(null, ALPHA_ACTIVE)
