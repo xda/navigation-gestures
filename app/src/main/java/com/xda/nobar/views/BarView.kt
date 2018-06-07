@@ -528,7 +528,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 //            app.actionHold -> jiggleHold()
 //            app.actionDown -> jiggleDown()
             app.actionTap -> jiggleTap()
-//            app.actionUpHold -> jiggleHoldUp()
+            app.actionUpHold -> jiggleHoldUp()
             app.actionLeftHold -> jiggleLeftHold()
             app.actionRightHold -> jiggleRightHold()
         }
