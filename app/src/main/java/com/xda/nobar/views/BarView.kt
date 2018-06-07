@@ -503,12 +503,19 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     /**
      * Parse the action index and broadcast to {@link com.xda.nobar.services.Actions}
-     * @param key one of ACTION_*
+     * @param key one of app.action*
      */
     private fun sendAction(key: String) {
-        val which = actionMap[key] ?: return
+        var which = actionMap[key] ?: return
 
-        if (which == app.typeNoAction) return
+        if (which == app.typeNoAction) {
+            which = when (key) {
+                app.actionUpHold -> actionMap[app.actionUp] ?: return
+                app.actionLeftHold -> actionMap[app.actionLeft] ?: return
+                app.actionRightHold -> actionMap[app.actionRight] ?: return
+                else -> return
+            }
+        }
 
         vibrate(getVibrationDuration().toLong())
 
