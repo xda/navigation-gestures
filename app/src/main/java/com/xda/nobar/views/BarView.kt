@@ -79,8 +79,35 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     var isHidden = false
     var beingTouched = false
-    var isTransparent = false
+    var isCarryingOutTouchAction = false
+        set(value) {
+            field = value
+            if (!value) {
+                queuedLayoutUpdate?.invoke()
+                queuedLayoutUpdate = null
+            }
+        }
     var isAutoHidden = false
+    var isActing = false
+    var isImmersive = false
+        set(value) {
+            field = value
+            if (Utils.shouldUseOverscanMethod(context) && !Utils.hideInFullscreen(context)) {
+                queuedLayoutUpdate = {
+                    if (params.y != getZeroY()) {
+                        params.y = getZeroY()
+                        updateLayout(params)
+                    }
+                }
+
+                if (!isCarryingOutTouchAction) {
+                    queuedLayoutUpdate?.invoke()
+                    queuedLayoutUpdate = null
+                }
+            }
+        }
+
+    private var queuedLayoutUpdate: (() -> Unit)? = null
 
     private var view: View
     private var pill: LinearLayout
@@ -166,7 +193,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             updateLayout(params)
         }
         if (key == "custom_y") {
-            params.y = getHomeY(context)
+            params.y = getZeroY()
             updateLayout(params)
         }
         if (key == "custom_x_percent") {
@@ -308,51 +335,60 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Hide" the pill by moving it partially offscreen
      */
     fun hidePill(auto: Boolean) {
-        try {
+        handler.post {
             if (!isHidden && app.isPillShown()) {
+                isCarryingOutTouchAction = true
                 isAutoHidden = auto
+
+                val navHeight = getZeroY()
 
                 val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
                 val time = (getAnimationDurationMs() * animDurScale)
-                val distance = params.y
+                val distance = (params.y - navHeight).absoluteValue
 
-                val animator = ValueAnimator.ofInt(params.y, 0)
-                animator.interpolator = DecelerateInterpolator()
-                animator.addUpdateListener {
-                    params.y = it.animatedValue.toString().toInt()
-                    updateLayout(params)
-                }
-                animator.addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        animateHide()
+                if (distance == 0) {
+                    animateHide()
+                } else {
+                    val animator = ValueAnimator.ofInt(params.y, navHeight)
+                    animator.interpolator = DecelerateInterpolator()
+                    animator.addUpdateListener {
+                        params.y = it.animatedValue.toString().toInt()
+                        updateLayout(params)
                     }
-                })
-                animator.duration = (time * distance / 100f).toLong()
-                animator.start()
+                    animator.addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator?) {
+                            animateHide()
+                        }
+                    })
+                    animator.duration = (time * distance / 100f).toLong()
+                    animator.start()
+                }
 
                 showHiddenToast()
             }
-        } catch (e: IllegalArgumentException) {}
+        }
     }
 
     private fun animateHide() {
-        pill.animate()
-                .translationY(pill.height.toFloat() / 2f)
-                .alpha(ALPHA_HIDDEN)
-                .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    pill.translationY = pill.height.toFloat() / 2f
+        handler?.post {
+            pill.animate()
+                    .translationY(pill.height.toFloat() / 2f)
+                    .alpha(ALPHA_HIDDEN)
+                    .setInterpolator(ENTER_INTERPOLATOR)
+                    .setDuration(getAnimationDurationMs())
+                    .withEndAction {
+                        pill.translationY = pill.height.toFloat() / 2f
 
-                    handler?.post {
-                        jiggleDown()
+                        isCarryingOutTouchAction = false
+
+                        handler?.post {
+                            jiggleDown()
+                        }
+
+                        isHidden = true
                     }
-
-                    updateLayout(params)
-
-                    isHidden = true
-                }
-                .start()
+                    .start()
+        }
     }
 
     private var hideHandle: ScheduledFuture<*>? = null
@@ -361,10 +397,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Show" the pill by moving it back to its normal position
      */
     fun showPill(forceNotAuto: Boolean) {
-        try {
+        handler.post {
             if (isHidden && app.isPillShown()) {
+                isCarryingOutTouchAction = true
                 synchronized(hideLock) {
-                    if (hideHandle != null) {
+                    if ((forceNotAuto || !isAutoHidden) && hideHandle != null) {
                         hideHandle?.cancel(true)
                         hideHandle = null
                     }
@@ -388,29 +425,40 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             .start()
                 }
             }
-        } catch (e: IllegalArgumentException) {}
+        }
     }
 
     private fun animateShow() {
-        val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-        val time = (getAnimationDurationMs() * animDurScale)
-        val distance = Utils.getHomeY(context)
-        val animator = ValueAnimator.ofInt(params.y, getHomeY(context))
+        handler.post {
+            val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+            val time = (getAnimationDurationMs() * animDurScale)
+            val navHeight = getZeroY()
+            val distance = (navHeight - params.y).absoluteValue
+            val animator = ValueAnimator.ofInt(params.y, navHeight)
 
-        animator.interpolator = DecelerateInterpolator()
-        animator.addUpdateListener {
-            params.y = it.animatedValue.toString().toInt()
-            updateLayout(params)
-        }
-        animator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            if (distance == 0) {
                 jiggleUp()
 
                 handler?.postDelayed(Runnable { isHidden = false }, (if (getAnimationDurationMs() < 12) 12 else 0))
+                isCarryingOutTouchAction = false
+            } else {
+                animator.interpolator = DecelerateInterpolator()
+                animator.addUpdateListener {
+                    params.y = it.animatedValue.toString().toInt()
+                    updateLayout(params)
+                }
+                animator.addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        jiggleUp()
+
+                        handler?.postDelayed(Runnable { isHidden = false }, (if (getAnimationDurationMs() < 12) 12 else 0))
+                        isCarryingOutTouchAction = false
+                    }
+                })
+                animator.duration = (time * distance / 100f).toLong()
+                animator.start()
             }
-        })
-        animator.duration = (time * distance / 100f).toLong()
-        animator.start()
+        }
     }
 
     fun changePillMargins(margins: Rect) {
@@ -437,33 +485,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         return rect
     }
 
-    /**
-     * Make the pill transparent.
-     * In this mode, the pill will be invisible until touched, when it will become visible, allowing the user to perform an action.
-     */
-    fun enterTransparencyMode() {
-        if (!isTransparent) {
-            isTransparent = true
-
-            animate()
-                    .alpha(ALPHA_GONE)
-                    .setDuration(getAnimationDurationMs())
-                    .start()
-        }
-    }
-
-    /**
-     * Make the pill opaque again
-     */
-    fun exitTransparencyMode() {
-        if (isTransparent) {
-            isTransparent = false
-
-            animate()
-                    .alpha(ALPHA_ACTIVE)
-                    .setDuration(getAnimationDurationMs())
-                    .start()
-        }
+    fun getZeroY(): Int {
+        return if (isImmersive && Utils.shouldUseOverscanMethod(context)) {
+            if ((wm.defaultDisplay.rotation == Surface.ROTATION_90
+                            || wm.defaultDisplay.rotation == Surface.ROTATION_270)
+                    && !Utils.useTabletMode(context)) if (Utils.hideInFullscreen(context)) 0 else getHomeY(context)
+            else Utils.getNavBarHeight(context) + if (Utils.hideInFullscreen(context)) 0 else Utils.getHomeY(context)
+        } else getHomeY(context)
     }
 
     /**
@@ -827,8 +855,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     inner class GestureManager {
         val gestureDetector = GD()
 
-        private var isActing = false
-
         private var isSwipeUp = false
         private var isSwipeLeft = false
         private var isSwipeRight = false
@@ -859,6 +885,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             oldY = ev.rawY
                             oldX = ev.rawX
                             beingTouched = true
+                            isCarryingOutTouchAction = true
                         }
 
                         MotionEvent.ACTION_UP -> {
@@ -887,33 +914,27 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             }
 
                             if (pill.translationX != 0f) {
-                                val currTrans = pill.translationX
                                 pill.animate()
                                         .translationX(0f)
                                         .setDuration(getAnimationDurationMs())
                                         .withEndAction {
-                                            handler?.post {
-                                                if (params.x == getHomeX(context)) {
-                                                    if (currTrans < 0 && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
-                                                    if (currTrans > 0 && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
-                                                }
+                                            if (params.x == getHomeX(context)) {
+                                                isActing = false
+                                                isSwipeLeft = false
+                                                isSwipeRight = false
                                             }
-
-                                            isActing = false
-                                            isSwipeLeft = false
-                                            isSwipeRight = false
                                         }
                                         .start()
                             }
 
                             when {
-                                params.y > getHomeY(context) -> {
-                                    val distance = (params.y - getHomeY(context)).absoluteValue
+                                params.y > getZeroY() -> {
+                                    val distance = (params.y - getZeroY()).absoluteValue
                                     if (yDownAnimator != null) {
                                         yDownAnimator?.cancel()
                                         yDownAnimator = null
                                     }
-                                    yDownAnimator = ValueAnimator.ofInt(params.y, getHomeY(context))
+                                    yDownAnimator = ValueAnimator.ofInt(params.y, getZeroY())
                                     yDownAnimator?.interpolator = DecelerateInterpolator()
                                     yDownAnimator?.addUpdateListener {
                                         params.y = it.animatedValue.toString().toInt()
@@ -925,6 +946,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 //
                                             isActing = false
                                             isSwipeUp = false
+                                            isCarryingOutTouchAction = false
 
                                             yDownAnimator = null
                                         }
@@ -952,6 +974,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                             isActing = false
                                             isSwipeLeft = false
                                             isSwipeRight = false
+                                            isCarryingOutTouchAction = false
                                         }
                                     })
                                     animator.duration = (time * distance / 100f).toLong()
@@ -966,6 +989,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     isSwipeUp = false
                                     isSwipeLeft = false
                                     isSwipeRight = false
+                                    isCarryingOutTouchAction = false
                                 }
                             }
 
@@ -978,7 +1002,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 val velocity = (oldY - ev.rawY)
                                 oldY = ev.rawY
 
-                                if (params.y < Utils.getRealScreenSize(context).y / 6 + getHomeY(context) && getAnimationDurationMs() > 0) {
+                                if (params.y < Utils.getRealScreenSize(context).y / 6 + getZeroY() && getAnimationDurationMs() > 0) {
                                     params.y = params.y + (velocity / 2).toInt()
                                     updateLayout(params)
                                 }
@@ -1127,9 +1151,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         return if (!isOverrideTap && !isHidden) {
                             isActing = false
 
-                            if (!isHidden) {
-                                sendAction(app.actionTap)
-                            }
+                            sendAction(app.actionTap)
                             true
                         } else if (isHidden) {
                             isOverrideTap = false
