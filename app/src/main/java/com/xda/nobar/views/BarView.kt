@@ -94,8 +94,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             field = value
             if (Utils.shouldUseOverscanMethod(context) && !Utils.hideInFullscreen(context)) {
                 queuedLayoutUpdate = {
-                    if (params.y != getZeroY()) {
-                        params.y = getZeroY()
+                    if (params.y != getAdjustedHomeY()) {
+                        params.y = getAdjustedHomeY()
                         updateLayout(params)
                     }
                 }
@@ -193,7 +193,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             updateLayout(params)
         }
         if (key == "custom_y") {
-            params.y = getZeroY()
+            params.y = getAdjustedHomeY()
             updateLayout(params)
         }
         if (key == "custom_x_percent") {
@@ -432,7 +432,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         handler.post {
             val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
             val time = (getAnimationDurationMs() * animDurScale)
-            val navHeight = getZeroY()
+            val navHeight = getAdjustedHomeY()
             val distance = (navHeight - params.y).absoluteValue
             val animator = ValueAnimator.ofInt(params.y, navHeight)
 
@@ -485,13 +485,22 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         return rect
     }
 
-    fun getZeroY(): Int {
+    fun getAdjustedHomeY(): Int {
         return if (isImmersive && Utils.shouldUseOverscanMethod(context)) {
             if ((wm.defaultDisplay.rotation == Surface.ROTATION_90
                             || wm.defaultDisplay.rotation == Surface.ROTATION_270)
                     && !Utils.useTabletMode(context)) if (Utils.hideInFullscreen(context)) 0 else getHomeY(context)
             else if (Utils.origBarInFullscreen(context)) 0 else Utils.getNavBarHeight(context) + if (Utils.hideInFullscreen(context)) 0 else Utils.getHomeY(context)
         } else getHomeY(context)
+    }
+
+    fun getZeroY(): Int {
+        return if (isImmersive && Utils.shouldUseOverscanMethod(context)) {
+            if ((wm.defaultDisplay.rotation == Surface.ROTATION_270
+                            || wm.defaultDisplay.rotation == Surface.ROTATION_90)
+                    && !Utils.useTabletMode(context)) 0
+            else if (Utils.origBarInFullscreen(context)) 0 else Utils.getNavBarHeight(context)
+        } else 0
     }
 
     /**
@@ -933,13 +942,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             }
 
                             when {
-                                params.y > getZeroY() -> {
-                                    val distance = (params.y - getZeroY()).absoluteValue
+                                params.y > getAdjustedHomeY() -> {
+                                    val distance = (params.y - getAdjustedHomeY()).absoluteValue
                                     if (yDownAnimator != null) {
                                         yDownAnimator?.cancel()
                                         yDownAnimator = null
                                     }
-                                    yDownAnimator = ValueAnimator.ofInt(params.y, getZeroY())
+                                    yDownAnimator = ValueAnimator.ofInt(params.y, getAdjustedHomeY())
                                     yDownAnimator?.interpolator = DecelerateInterpolator()
                                     yDownAnimator?.addUpdateListener {
                                         params.y = it.animatedValue.toString().toInt()
@@ -1013,7 +1022,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 val velocity = (oldY - ev.rawY)
                                 oldY = ev.rawY
 
-                                if (params.y < Utils.getRealScreenSize(context).y / 6 + getZeroY() && getAnimationDurationMs() > 0) {
+                                if (params.y < Utils.getRealScreenSize(context).y / 6 + getAdjustedHomeY() && getAnimationDurationMs() > 0) {
                                     params.y = params.y + (velocity / 2).toInt()
                                     updateLayout(params)
                                 }
