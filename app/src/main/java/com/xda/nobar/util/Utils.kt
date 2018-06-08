@@ -564,4 +564,8 @@ object Utils {
     fun largerHitbox(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("larger_hitbox", true)
     }
+
+    fun origBarInFullscreen(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("orig_nav_in_immersive", false)
+    }
 }

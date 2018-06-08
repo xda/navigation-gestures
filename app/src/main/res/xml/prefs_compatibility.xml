@@ -21,6 +21,12 @@
         android:key="larger_hitbox"
         android:defaultValue="true" />
 
+    <SwitchPreference
+        android:title="@string/orig_nav_in_immersive"
+        android:summary="@string/orig_nav_in_immersive_desc"
+        android:key="orig_nav_in_immersive"
+        android:defaultValue="false" />
+
     <!--<SwitchPreference-->
         <!--android:title="@string/use_root"-->
         <!--android:summary="@string/use_root_desc"-->

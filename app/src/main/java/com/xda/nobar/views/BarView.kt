@@ -18,7 +18,6 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.content.LocalBroadcastManager
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -437,8 +436,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             val distance = (navHeight - params.y).absoluteValue
             val animator = ValueAnimator.ofInt(params.y, navHeight)
 
-            Log.e("NoBar", navHeight.toString())
-
             if (distance == 0) {
 //                jiggleUp()
 
@@ -493,7 +490,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if ((wm.defaultDisplay.rotation == Surface.ROTATION_90
                             || wm.defaultDisplay.rotation == Surface.ROTATION_270)
                     && !Utils.useTabletMode(context)) if (Utils.hideInFullscreen(context)) 0 else getHomeY(context)
-            else Utils.getNavBarHeight(context) + if (Utils.hideInFullscreen(context)) 0 else Utils.getHomeY(context)
+            else if (Utils.origBarInFullscreen(context)) 0 else Utils.getNavBarHeight(context) + if (Utils.hideInFullscreen(context)) 0 else Utils.getHomeY(context)
         } else getHomeY(context)
     }
 

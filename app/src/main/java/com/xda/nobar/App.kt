@@ -634,12 +634,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 val hideInFullScreen = Utils.hideInFullscreen(this@App)
                 if (isImmersive) {
                     if (!isDisabledForContent) {
-//                        if (Utils.shouldUseOverscanMethod(this@App)) showNav()
+                        if (Utils.shouldUseOverscanMethod(this@App) && Utils.origBarInFullscreen(this@App)) showNav()
                         if (hideInFullScreen) bar.hidePill(true)
                         isDisabledForContent = true
                     }
                 } else if (isDisabledForContent) {
-//                    if (Utils.shouldUseOverscanMethod(this@App)) hideNav()
+                    if (Utils.shouldUseOverscanMethod(this@App)) hideNav()
                     if (hideInFullScreen && bar.isAutoHidden) {
                         bar.isAutoHidden = false
                         bar.showPill(true)
