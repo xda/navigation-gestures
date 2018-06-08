@@ -270,16 +270,17 @@ class SettingsActivity : AppCompatActivity() {
             height.minValue = Utils.dpAsPx(activity, 5)
             posY.minValue = 0
 
+            height.maxValue = Utils.dpAsPx(activity, 50)
+            posY.maxValue = Utils.dpAsPx(activity, 70)
+
             height.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_height))
             posY.setDefaultValue(Utils.getDefaultY(activity))
+
             pillColor.setDefaultValue(Utils.getDefaultPillBGColor())
             pillBorderColor.setDefaultValue(Utils.getDefaultPillFGColor())
 
             pillColor.saveValue(Utils.getPillBGColor(activity))
             pillBorderColor.saveValue(Utils.getPillFGColor(activity))
-
-            height.maxValue = Utils.dpAsPx(activity, 50)
-            posY.maxValue = Utils.dpAsPx(activity, 70)
         }
     }
 
