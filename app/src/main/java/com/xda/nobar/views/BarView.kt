@@ -50,7 +50,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         const val BRIGHTEN_INACTIVE = 0.0f
         const val BRIGHTEN_ACTIVE = 0.5f
 
-        const val DEFAULT_ANIM_DURATION = 500L
+        const val DEFAULT_ANIM_DURATION = 150L
 
         const val SCALE_NORMAL = 1.0f
         const val SCALE_MID = 0.7f
