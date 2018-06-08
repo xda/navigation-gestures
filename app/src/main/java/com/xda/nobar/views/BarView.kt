@@ -1030,7 +1030,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 if (upHoldHandle == null) {
                                     upHoldHandle = pool.schedule({
                                         handler?.post {
-                                            isRunningLongUp
+                                            isRunningLongUp = true
                                             sendAction(app.actionUpHold)
                                             isSwipeUp = false
                                             upHoldHandle = null
