@@ -531,8 +531,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         when (key) {
-//            app.actionDouble -> jiggleDoubleTap()
-//            app.actionHold -> jiggleHold()
+            app.actionDouble -> jiggleDoubleTap()
+            app.actionHold -> jiggleHold()
 //            app.actionDown -> jiggleDown()
             app.actionTap -> jiggleTap()
             app.actionUpHold -> jiggleHoldUp()
@@ -1087,25 +1087,25 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             val oldEvent = MotionEvent.obtain(this.oldEvent)
             val distanceX = motionEvent.rawX - oldEvent.rawX
             val distanceY = motionEvent.rawY - oldEvent.rawY
-            val xThresh = Utils.dpAsPx(context, 1)
-            val yThresh = Utils.dpAsPx(context, 2)
+            val xThresh = Utils.dpAsPx(context, 4)
+            val yThresh = Utils.dpAsPx(context, 18)
 
             val ret = if (!isHidden && !isActing) {
                 when {
-                    motionEvent.x - oldEvent.x < -xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //left swipe
+                    distanceX < -xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //left swipe
                         isSwipeLeft = true
                         true
                     }
-                    motionEvent.x - oldEvent.x > xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //right swipe
+                    distanceX > xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //right swipe
                         isSwipeRight = true
                         true
                     }
-                    motionEvent.y - oldEvent.y > yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
+                    distanceY > yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
                         isActing = true
                         sendAction(app.actionDown)
                         true
                     }
-                    motionEvent.y - oldEvent.y < yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
+                    distanceY < -yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
                         isSwipeUp = true
                         true
                     }
@@ -1113,7 +1113,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
             } else if (isHidden
                     && !isActing
-                    && motionEvent.y - oldEvent.y < yThresh
+                    && distanceY < -yThresh
                     && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
                 showPill(false)
                 true
