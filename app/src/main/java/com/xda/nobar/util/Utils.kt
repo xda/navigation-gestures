@@ -536,6 +536,12 @@ object Utils {
      * @param context a context object
      */
     fun forceNavBlack(context: Context) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        prefs.edit()
+                .putString("navigationbar_color", Settings.Global.getString(context.contentResolver, "navigationbar_color"))
+                .putString("navigationbar_current_color", Settings.Global.getString(context.contentResolver, "navigationbar_current_color"))
+                .putString("navigationbar_use_theme_default", Settings.Global.getString(context.contentResolver, "navigationbar_use_theme_default"))
+                .apply()
         val color = Color.argb(0xff, 0x00, 0x00, 0x00)
         if (!IntroActivity.needsToRun(context) && shouldUseOverscanMethod(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             Settings.Global.putInt(context.contentResolver, "navigationbar_color", color)
@@ -550,10 +556,11 @@ object Utils {
      * @param context a context object
      */
     fun clearBlackNav(context: Context) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         if (!IntroActivity.needsToRun(context) && shouldUseOverscanMethod(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            Settings.Global.putString(context.contentResolver, "navigationbar_color", null)
-            Settings.Global.putString(context.contentResolver, "navigationbar_current_color", null)
-            Settings.Global.putString(context.contentResolver, "navigation_bar_use_theme_default", null)
+            Settings.Global.putString(context.contentResolver, "navigationbar_color", prefs.getString("navigationbar_color", null))
+            Settings.Global.putString(context.contentResolver, "navigationbar_current_color", prefs.getString("navigationbar_current_color", null))
+            Settings.Global.putString(context.contentResolver, "navigationbar_use_theme_default", prefs.getString("navigationbar_use_theme_default", null))
         }
     }
 
