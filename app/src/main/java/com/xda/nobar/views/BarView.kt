@@ -506,16 +506,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param key one of app.action*
      */
     private fun sendAction(key: String) {
-        var which = actionMap[key] ?: return
+        val which = actionMap[key] ?: return
 
-        if (which == app.typeNoAction) {
-            which = when (key) {
-                app.actionUpHold -> actionMap[app.actionUp] ?: return
-                app.actionLeftHold -> actionMap[app.actionLeft] ?: return
-                app.actionRightHold -> actionMap[app.actionRight] ?: return
-                else -> return
-            }
-        }
+        if (which == app.typeNoAction) return
 
         vibrate(getVibrationDuration().toLong())
 
@@ -872,6 +865,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var leftHoldHandle: ScheduledFuture<*>? = null
         private var rightHoldHandle: ScheduledFuture<*>? = null
 
+        private var isRunningLongUp = false
+        private var isRunningLongLeft = false
+        private var isRunningLongRight = false
+
         private var oldEvent: MotionEvent? = null
         private var oldY = 0F
         private var oldX = 0F
@@ -903,19 +900,19 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 isSwipeUp = false
                             }
 
-                            if (isSwipeUp) {
+                            if (isSwipeUp || (isRunningLongUp && actionMap[app.actionUpHold] == app.typeNoAction)) {
                                 upHoldHandle?.cancel(true)
                                 upHoldHandle = null
                                 sendAction(app.actionUp)
                             }
 
-                            if (isSwipeLeft) {
+                            if (isSwipeLeft || (isRunningLongLeft && actionMap[app.actionLeftHold] == app.typeNoAction)) {
                                 leftHoldHandle?.cancel(true)
                                 leftHoldHandle = null
                                 sendAction(app.actionLeft)
                             }
 
-                            if (isSwipeRight) {
+                            if (isSwipeRight || (isRunningLongRight && actionMap[app.actionRightHold] == app.typeNoAction)) {
                                 rightHoldHandle?.cancel(true)
                                 rightHoldHandle = null
                                 sendAction(app.actionRight)
@@ -1001,6 +998,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 }
                             }
 
+                            isRunningLongRight = false
+                            isRunningLongLeft = false
+                            isRunningLongUp = false
+
                             wasHidden = isHidden
                         }
                         MotionEvent.ACTION_MOVE -> {
@@ -1020,6 +1021,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 if (upHoldHandle == null) {
                                     upHoldHandle = pool.schedule({
                                         handler?.post {
+                                            isRunningLongUp
                                             sendAction(app.actionUpHold)
                                             isSwipeUp = false
                                             upHoldHandle = null
@@ -1051,6 +1053,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     if (leftHoldHandle == null) {
                                         leftHoldHandle = pool.schedule({
                                             handler?.post {
+                                                isRunningLongLeft = true
                                                 sendAction(app.actionLeftHold)
                                                 isSwipeLeft = false
                                                 leftHoldHandle = null
@@ -1063,6 +1066,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     if (rightHoldHandle == null) {
                                         rightHoldHandle = pool.schedule({
                                             handler?.post {
+                                                isRunningLongRight = true
                                                 sendAction(app.actionRightHold)
                                                 isSwipeRight = false
                                                 rightHoldHandle = null
@@ -1088,7 +1092,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             val distanceX = motionEvent.rawX - oldEvent.rawX
             val distanceY = motionEvent.rawY - oldEvent.rawY
             val xThresh = Utils.dpAsPx(context, 4)
-            val yThresh = Utils.dpAsPx(context, 4)
+            val yThresh = Utils.dpAsPx(context, 2)
 
             val ret = if (!isHidden && !isActing) {
                 when {
