@@ -18,6 +18,7 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.content.LocalBroadcastManager
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -336,7 +337,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     fun hidePill(auto: Boolean) {
         handler.post {
-            if (!isHidden && app.isPillShown()) {
+            if (app.isPillShown()) {
                 isCarryingOutTouchAction = true
                 isAutoHidden = auto
 
@@ -398,7 +399,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     fun showPill(forceNotAuto: Boolean) {
         handler.post {
-            if (isHidden && app.isPillShown()) {
+            if (app.isPillShown()) {
                 isCarryingOutTouchAction = true
                 synchronized(hideLock) {
                     if ((forceNotAuto || !isAutoHidden) && hideHandle != null) {
@@ -435,6 +436,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             val navHeight = getZeroY()
             val distance = (navHeight - params.y).absoluteValue
             val animator = ValueAnimator.ofInt(params.y, navHeight)
+
+            Log.e("NoBar", navHeight.toString())
 
             if (distance == 0) {
 //                jiggleUp()
