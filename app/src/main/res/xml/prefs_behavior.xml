@@ -20,6 +20,11 @@
         android:icon="@drawable/ic_swap_vert_black_24dp"
         android:key="static_pill" />
 
+    <SwitchPreference
+        android:title="@string/enable_in_car_mode"
+        android:icon="@drawable/ic_directions_car_black_24dp"
+        android:key="enable_in_car_mode" />
+
     <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/hold_time"
         android:key="hold_time"

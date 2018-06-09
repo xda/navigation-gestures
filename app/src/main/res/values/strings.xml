@@ -68,6 +68,7 @@
     <string name="apps">Apps</string>
     <string name="loading">Loading…</string>
     <string name="orig_nav_in_immersive">Keep Original NavBar in Fullscreen</string>
+    <string name="enable_in_car_mode">Keep Pill Enabled in Car Mode</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>

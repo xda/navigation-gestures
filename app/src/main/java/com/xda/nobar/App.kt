@@ -230,6 +230,18 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             "tablet_mode" -> {
                 if (Utils.useTabletMode(this)) uiHandler.handleRot()
             }
+            "use_car_mode" -> {
+                val enabled = Utils.enableInCarMode(this)
+                if (um.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
+                    if (enabled) {
+                        hideNav()
+                        addBar()
+                    } else {
+                        showNav()
+                        removeBar()
+                    }
+                }
+            }
         }
     }
 
@@ -513,11 +525,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (areGesturesActivated()) {
                 when (intent?.action) {
                     UiModeManager.ACTION_ENTER_CAR_MODE -> {
-                        params.height = Utils.getCustomHeight(this@App) * 2
+                        if (Utils.enableInCarMode(this@App)) params.height = Utils.getCustomHeight(this@App) * 2
+                        else {
+                            removeBar()
+                            showNav()
+                        }
                     }
 
                     UiModeManager.ACTION_EXIT_CAR_MODE -> {
-                        params.height = Utils.getCustomHeight(this@App)
+                        if (Utils.enableInCarMode(this@App)) params.height = Utils.getCustomHeight(this@App)
+                        else {
+                            addBar()
+                            hideNav()
+                        }
                     }
                 }
 
@@ -525,7 +545,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             }
 
             if (Utils.shouldUseOverscanMethod(this@App)) {
-                hideNav()
+                if (Utils.enableInCarMode(this@App)) hideNav()
             }
         }
     }

@@ -106,7 +106,7 @@ object Utils {
      */
     fun getNavBarHeight(context: Context): Int {
         val uim = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        return if (uim.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
+        return if (uim.currentModeType == Configuration.UI_MODE_TYPE_CAR && enableInCarMode(context)) {
             context.resources.getDimensionPixelSize(context.resources.getIdentifier("navigation_bar_height_car_mode", "dimen", "android"))
         } else context.resources.getDimensionPixelSize(context.resources.getIdentifier("navigation_bar_height", "dimen", "android"))
     }
@@ -574,5 +574,9 @@ object Utils {
 
     fun origBarInFullscreen(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("orig_nav_in_immersive", false)
+    }
+
+    fun enableInCarMode(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("enable_in_car_mode", false)
     }
 }
