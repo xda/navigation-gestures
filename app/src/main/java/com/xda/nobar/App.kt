@@ -234,11 +234,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 val enabled = Utils.enableInCarMode(this)
                 if (um.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
                     if (enabled) {
-                        hideNav()
-                        addBar()
+                        if (Utils.shouldUseOverscanMethod(this)) hideNav()
+                        if (areGesturesActivated()) addBar()
                     } else {
-                        showNav()
-                        removeBar()
+                        if (Utils.shouldUseOverscanMethod(this)) showNav()
+                        if (areGesturesActivated()) removeBar()
                     }
                 }
             }
@@ -528,7 +528,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         if (Utils.enableInCarMode(this@App)) params.height = Utils.getCustomHeight(this@App) * 2
                         else {
                             removeBar()
-                            showNav()
+                            if (Utils.shouldUseOverscanMethod(this@App)) showNav()
                         }
                     }
 
@@ -536,7 +536,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         if (Utils.enableInCarMode(this@App)) params.height = Utils.getCustomHeight(this@App)
                         else {
                             addBar()
-                            hideNav()
+                            if (Utils.shouldUseOverscanMethod(this@App)) hideNav()
                         }
                     }
                 }
