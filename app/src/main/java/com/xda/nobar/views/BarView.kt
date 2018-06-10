@@ -181,22 +181,27 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (actionMap.keys.contains(key)) {
             loadActionMap()
         }
-        if (key == "custom_width_percent") {
-            layoutParams.width = getCustomWidth(context)
-            layoutParams = layoutParams
+        if (key != null && key.contains("use_pixels")) {
+            params.width = getCustomWidth(context)
+            params.height = getCustomHeight(context)
             params.x = getHomeX(context)
-            updateLayout(params)
-        }
-        if (key == "custom_height_percent") {
-            layoutParams.height = getCustomHeight(context)
-            layoutParams = layoutParams
-            updateLayout(params)
-        }
-        if (key == "custom_y_percent") {
             params.y = getAdjustedHomeY()
             updateLayout(params)
         }
-        if (key == "custom_x_percent") {
+        if (key == "custom_width_percent" || key == "custom_width") {
+            params.width = getCustomWidth(context)
+            params.x = getHomeX(context)
+            updateLayout(params)
+        }
+        if (key == "custom_height_percent" || key == "custom_height") {
+            params.height = getCustomHeight(context)
+            updateLayout(params)
+        }
+        if (key == "custom_y_percent" || key == "custom_y") {
+            params.y = getAdjustedHomeY()
+            updateLayout(params)
+        }
+        if (key == "custom_x_percent" || key == "custom_x") {
             params.x = getHomeX(context)
             updateLayout(params)
         }

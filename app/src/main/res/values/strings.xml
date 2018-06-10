@@ -69,6 +69,7 @@
     <string name="loading">Loading…</string>
     <string name="orig_nav_in_immersive">Keep Original NavBar in Fullscreen</string>
     <string name="enable_in_car_mode">Keep Pill Enabled in Car Mode</string>
+    <string name="use_pixels">Use Pixels</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -90,6 +91,7 @@
     <string name="larger_hitbox_desc">Enable this to make the pill easier to swipe.</string>
     <string name="hide_nav_summary">Only use this if your device has a software navigation bar.</string>
     <string name="orig_nav_in_immersive_desc">When enabled, the original navigation bar will be accessible with a swipe in fullscreen apps.</string>
+    <string name="use_pixels_desc">Enable this to use pixel dimensions instead of percentages.</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>

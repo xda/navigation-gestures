@@ -269,20 +269,88 @@ class SettingsActivity : AppCompatActivity() {
 
             activity.title = resources.getText(R.string.appearance)
             setListeners()
+            setup()
         }
 
         private fun setListeners() {
-            val posY = findPreference("custom_y_percent") as SeekBarPreference
             val pillColor = findPreference("pill_bg") as ColorPreference
             val pillBorderColor = findPreference("pill_fg") as ColorPreference
-
-            posY.setDefaultValue((Utils.getDefaultYPercent(activity)))
 
             pillColor.setDefaultValue(Utils.getDefaultPillBGColor())
             pillBorderColor.setDefaultValue(Utils.getDefaultPillFGColor())
 
             pillColor.saveValue(Utils.getPillBGColor(activity))
             pillBorderColor.saveValue(Utils.getPillFGColor(activity))
+        }
+
+        private fun setup() {
+            val pixelsW = findPreference("use_pixels_width") as SwitchPreference
+            val pixelsH = findPreference("use_pixels_height") as SwitchPreference
+            val pixelsX = findPreference("use_pixels_x") as SwitchPreference
+            val pixelsY = findPreference("use_pixels_y") as SwitchPreference
+
+            val widthPercent = findPreference("custom_width_percent") as SeekBarPreference
+            val heightPercent = findPreference("custom_height_percent") as SeekBarPreference
+            val xPercent = findPreference("custom_x_percent") as SeekBarPreference
+            val yPercent = findPreference("custom_y_percent") as SeekBarPreference
+
+            val widthPixels = findPreference("custom_width") as SeekBarPreference
+            val heightPixels = findPreference("custom_height") as SeekBarPreference
+            val xPixels = findPreference("custom_x") as SeekBarPreference
+            val yPixels = findPreference("custom_y") as SeekBarPreference
+
+            widthPixels.minValue = Utils.dpAsPx(activity, 10)
+            heightPixels.minValue = Utils.dpAsPx(activity, 5)
+            xPixels.minValue = -(Utils.getRealScreenSize(activity).x.toFloat() / 2f - Utils.getCustomWidth(activity).toFloat() / 2f).toInt()
+            yPixels.minValue = 0
+
+            widthPixels.maxValue = Utils.getRealScreenSize(activity).x
+            heightPixels.maxValue = Utils.dpAsPx(activity, 50)
+            yPixels.maxValue = Utils.getRealScreenSize(activity).y
+            xPixels.maxValue = -xPixels.minValue
+
+            yPercent.setDefaultValue(Utils.getDefaultYPercent(activity))
+            yPixels.setDefaultValue(Utils.getDefaultY(activity))
+            widthPixels.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_width))
+            heightPixels.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_height))
+
+            val listener = Preference.OnPreferenceChangeListener { pref, newValue ->
+                val new = newValue.toString().toBoolean()
+
+                when (pref) {
+                    pixelsW -> {
+                        widthPercent.isEnabled = !new
+                        widthPixels.isEnabled = new
+                    }
+
+                    pixelsH -> {
+                        heightPercent.isEnabled = !new
+                        heightPixels.isEnabled = new
+                    }
+
+                    pixelsX -> {
+                        xPercent.isEnabled = !new
+                        xPixels.isEnabled = new
+                    }
+
+                    pixelsY -> {
+                        yPercent.isEnabled = !new
+                        yPixels.isEnabled = new
+                    }
+                }
+
+                true
+            }
+
+            listener.onPreferenceChange(pixelsW, pixelsW.isChecked)
+            listener.onPreferenceChange(pixelsH, pixelsH.isChecked)
+            listener.onPreferenceChange(pixelsX, pixelsX.isChecked)
+            listener.onPreferenceChange(pixelsY, pixelsY.isChecked)
+
+            pixelsW.onPreferenceChangeListener = listener
+            pixelsH.onPreferenceChangeListener = listener
+            pixelsX.onPreferenceChangeListener = listener
+            pixelsY.onPreferenceChangeListener = listener
         }
     }
 
