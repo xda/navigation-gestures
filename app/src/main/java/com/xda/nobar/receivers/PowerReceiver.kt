@@ -22,7 +22,7 @@ class PowerReceiver : BroadcastReceiver() {
             }
             Intent.ACTION_BOOT_COMPLETED -> {
                 val km = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-                if (km.isKeyguardLocked) app.showNav()
+                if (km.isKeyguardLocked && Utils.shouldUseOverscanMethod(context)) app.showNav()
             }
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 if (app.areGesturesActivated()) app.addBar()

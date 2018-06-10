@@ -335,7 +335,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Hide" the pill by moving it partially offscreen
      */
     fun hidePill(auto: Boolean) {
-        handler.post {
+        handler?.post {
             if (app.isPillShown()) {
                 isCarryingOutTouchAction = true
                 isAutoHidden = auto
@@ -397,7 +397,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Show" the pill by moving it back to its normal position
      */
     fun showPill(forceNotAuto: Boolean) {
-        handler.post {
+        handler?.post {
             if (app.isPillShown()) {
                 isCarryingOutTouchAction = true
                 synchronized(hideLock) {
@@ -429,7 +429,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private fun animateShow() {
-        handler.post {
+        handler?.post {
             val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
             val time = (getAnimationDurationMs() * animDurScale)
             val navHeight = getAdjustedHomeY()
