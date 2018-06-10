@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <accessibility-service
-    android:canRetrieveWindowContent="true"
     android:accessibilityEventTypes="typeWindowContentChanged|typeWindowStateChanged|typeWindowsChanged"
-    android:notificationTimeout="200"
-    android:accessibilityFeedbackType="feedbackHaptic"
+    android:notificationTimeout="50"
+    android:accessibilityFeedbackType="feedbackGeneric"
     android:accessibilityFlags="flagDefault"
     android:description="@string/accessibility_screen_text"
     xmlns:android="http://schemas.android.com/apk/res/android" />
