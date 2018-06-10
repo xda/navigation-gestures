@@ -272,19 +272,11 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun setListeners() {
-            val height = findPreference("custom_height") as SeekBarPreference
-            val posY = findPreference("custom_y") as SeekBarPreference
+            val posY = findPreference("custom_y_percent") as SeekBarPreference
             val pillColor = findPreference("pill_bg") as ColorPreference
             val pillBorderColor = findPreference("pill_fg") as ColorPreference
 
-            height.minValue = Utils.dpAsPx(activity, 5)
-            posY.minValue = 0
-
-            height.maxValue = Utils.dpAsPx(activity, 50)
-            posY.maxValue = Utils.dpAsPx(activity, 130)
-
-            height.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_height))
-            posY.setDefaultValue(Utils.getDefaultY(activity))
+            posY.setDefaultValue((Utils.getDefaultYPercent(activity)))
 
             pillColor.setDefaultValue(Utils.getDefaultPillBGColor())
             pillBorderColor.setDefaultValue(Utils.getDefaultPillFGColor())

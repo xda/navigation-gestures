@@ -27,6 +27,7 @@ import com.xda.nobar.services.RootService
 import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.util.PremiumHelper
 import com.xda.nobar.util.Utils
+import com.xda.nobar.util.Utils.getCustomHeight
 import com.xda.nobar.util.Utils.getCustomWidth
 import com.xda.nobar.util.Utils.getHomeX
 import com.xda.nobar.util.Utils.getHomeY
@@ -576,7 +577,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 val rot = wm.defaultDisplay.rotation
                 if (oldRot != rot) {
                     bar.params.x = getHomeX(this@App)
+                    bar.params.y = getHomeY(this@App)
                     bar.params.width = getCustomWidth(this@App)
+                    bar.params.height = getCustomHeight(this@App)
                     bar.updateLayout(bar.params)
                     oldRot = rot
                     handleRot()

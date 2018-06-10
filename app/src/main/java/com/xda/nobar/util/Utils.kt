@@ -273,7 +273,13 @@ object Utils {
      * @return the position, in pixels, from the bottom of the screen
      */
     fun getHomeY(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_y", getDefaultY(context))
+        val percent = (getHomeYPercent(context) / 100f)
+
+        return (percent * getRealScreenSize(context).y).toInt()
+    }
+
+    fun getHomeYPercent(context: Context): Float {
+        return (PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_y_percent", getDefaultYPercent(context)) * 0.05f)
     }
 
     /**
@@ -281,8 +287,8 @@ object Utils {
      * @param context a context object
      * @return the default position, in pixels, from the bottom of the screen
      */
-    fun getDefaultY(context: Context): Int {
-        return (getNavBarHeight(context) / 2 - context.resources.getDimensionPixelSize(R.dimen.pill_height) / 2)
+    fun getDefaultYPercent(context: Context): Int {
+        return ((getNavBarHeight(context) / 2f - getCustomHeight(context) / 2f) / getRealScreenSize(context).y * 2000f).toInt()
     }
 
     /**
@@ -297,8 +303,8 @@ object Utils {
         return (percent * screenWidthHalf).toInt()
     }
 
-    fun getHomeXPercent(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_x_percent", context.resources.getInteger(R.integer.pill_x_pos_percent))
+    fun getHomeXPercent(context: Context): Float {
+        return (PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_x_percent", context.resources.getInteger(R.integer.pill_x_pos_percent)) / 10f)
     }
 
     /**
@@ -313,8 +319,8 @@ object Utils {
         return (percent * screenWidth).toInt()
     }
 
-    fun getCustomWidthPercent(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_width_percent", context.resources.getInteger(R.integer.pill_width_percent))
+    fun getCustomWidthPercent(context: Context): Float {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_width_percent", context.resources.getInteger(R.integer.pill_width_percent)) / 10f
     }
 
     /**
@@ -330,7 +336,13 @@ object Utils {
     }
 
     fun getCustomHeightWithoutHitbox(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height", context.resources.getDimensionPixelSize(R.dimen.pill_height))
+        val percent = (getCustomHeightPercent(context) / 100f)
+
+        return (percent * getRealScreenSize(context).y).toInt()
+    }
+
+    fun getCustomHeightPercent(context: Context): Float {
+        return (PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height_percent", context.resources.getInteger(R.integer.pill_height_percent)) / 10f)
     }
 
     /**
