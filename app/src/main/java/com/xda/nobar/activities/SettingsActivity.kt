@@ -161,7 +161,12 @@ class SettingsActivity : AppCompatActivity() {
                     Activity.RESULT_CANCELED -> {
                         listPrefs.forEach {
                             if (it.key == key) {
-                                it.saveValue(app.typeNoAction.toString())
+                                val pack = preferenceManager.sharedPreferences.getString("${key}_package", null)
+                                if (pack == null) {
+                                    it.saveValue(app.typeNoAction.toString())
+                                } else {
+                                    it.saveValueWithoutListener(app.premTypeLaunchApp.toString())
+                                }
                             }
                         }
                     }
@@ -186,7 +191,7 @@ class SettingsActivity : AppCompatActivity() {
                     val packageInfo = preferenceManager.sharedPreferences.getString("${it.key}_package", null) ?: return
 
                     it.summary = String.format(Locale.getDefault(),
-                            it.summary.toString(),
+                            resources.getString(R.string.prem_launch_app),
                             activity.packageManager.getApplicationLabel(
                                             activity.packageManager.getApplicationInfo(packageInfo.split("/")[0], 0)))
                 }
@@ -213,7 +218,7 @@ class SettingsActivity : AppCompatActivity() {
 
         private fun setListeners() {
             listPrefs.forEach {
-                it.setOnPreferenceChangeListener { preference, newValue ->
+                it.setOnPreferenceChangeListener { _, newValue ->
                     if (newValue?.toString() == app.premTypeLaunchApp.toString()) {
                         val intent = Intent(activity, AppLaunchSelectActivity::class.java)
                         intent.putExtra(AppLaunchSelectActivity.EXTRA_KEY, it.key)

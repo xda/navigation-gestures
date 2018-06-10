@@ -1,5 +1,6 @@
 package com.xda.nobar.prefs
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
@@ -85,17 +86,23 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     fun saveValue(value: String?) {
+        saveValueWithoutListener(value)
+        callChangeListener(value)
+    }
+
+    fun saveValueWithoutListener(value: String?) {
         persistString(value)
         notifyChanged()
-        callChangeListener(value)
         updateSummary(value)
     }
 
     fun updateSummary(value: String?) {
-        val map = HashMap<String, Int>()
-        Utils.getActionList(context, map)
-
-        summary = Utils.actionToName(context, value?.toInt() ?: return)
+        sections.forEach {
+            val index = it.entryValues.indexOf(value)
+            if (index != -1) {
+                summary = it.entryNames[index]
+            }
+        }
     }
 
     fun getSavedValue(): String {
@@ -152,6 +159,12 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         tempValue = value
         dialog?.dismiss()
         saveValue(tempValue)
+    }
+
+    override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
+        builder.setPositiveButton(android.R.string.ok, { _, _ ->
+            callChangeListener(getPersistedString(tempValue))
+        })
     }
 
     override fun onCreateDialogView(): View {
@@ -262,6 +275,16 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
                     }
                 }
             }
+        }
+
+        fun getSelectedValue(): String? {
+            for (i in 0 until childCount) {
+                val child = getChildAt(i)
+
+                if (child is ItemView && child.isChecked) return child.value
+            }
+
+            return null
         }
 
         private fun setAllOthersUnchecked(toKeep: String?) {
