@@ -24,6 +24,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.github.lzyzsd.circleprogress.ArcProgress
+import com.rey.material.widget.CheckedImageView
 import com.xda.nobar.App
 import com.xda.nobar.R
 import io.reactivex.Observable
@@ -35,6 +36,7 @@ class AppLaunchSelectActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_KEY = "key"
         const val EXTRA_RESULT_DISPLAY_NAME = "name"
+        const val CHECKED_PACKAGE = "checked"
     }
 
     private lateinit var app: App
@@ -86,7 +88,7 @@ class AppLaunchSelectActivity : AppCompatActivity() {
                         apps.add(AppInfo(info.activityInfo.packageName,
                                 info.activityInfo.name,
                                 info.loadLabel(packageManager).toString(),
-                                info.loadIcon(packageManager)))
+                                info.loadIcon(packageManager), info.activityInfo.packageName == intent.getStringExtra(CHECKED_PACKAGE)))
 
                         val index = it.indexOf(info)
                         val percent = (index.toFloat() / it.size.toFloat() * 100).toInt()
@@ -130,7 +132,7 @@ class AppLaunchSelectActivity : AppCompatActivity() {
         return ArrayList(list)
     }
 
-    class AppInfo(val packageName: String, val activity: String, val displayName: String, val icon: Drawable)
+    class AppInfo(val packageName: String, val activity: String, val displayName: String, val icon: Drawable, val isChecked: Boolean)
 
     class Adapter(private val apps: ArrayList<AppInfo>, private val listener: AppSelectedListener) : RecyclerView.Adapter<Adapter.VH>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -143,6 +145,7 @@ class AppLaunchSelectActivity : AppCompatActivity() {
 
             val title = view.findViewById<TextView>(R.id.title)
             val icon = view.findViewById<ImageView>(R.id.icon)
+            val check = view.findViewById<CheckedImageView>(R.id.checkmark)
 
             title.text = app.displayName
 
@@ -151,6 +154,8 @@ class AppLaunchSelectActivity : AppCompatActivity() {
             view.setOnClickListener {
                 listener.onAppSelected(app)
             }
+
+            check.isChecked = app.isChecked
         }
 
         /**

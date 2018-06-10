@@ -266,11 +266,9 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
 
                     itemView.setOnClickListener {
                         if (it is ItemView) {
-                            if (!it.isChecked) {
-                                it.isChecked = true
-                                setAllOthersUnchecked(it.value)
-                                listener.onItemChosen(it.value)
-                            }
+                            it.isChecked = true
+                            setAllOthersUnchecked(it.value)
+                            listener.onItemChosen(it.value)
                         }
                     }
                 }

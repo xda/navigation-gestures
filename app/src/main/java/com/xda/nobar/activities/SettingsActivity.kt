@@ -221,7 +221,12 @@ class SettingsActivity : AppCompatActivity() {
                 it.setOnPreferenceChangeListener { _, newValue ->
                     if (newValue?.toString() == app.premTypeLaunchApp.toString()) {
                         val intent = Intent(activity, AppLaunchSelectActivity::class.java)
+
+                        var pack = preferenceManager.sharedPreferences.getString("${it.key}_package", null)
+                        if (pack != null) pack = pack.split("/")[0]
+
                         intent.putExtra(AppLaunchSelectActivity.EXTRA_KEY, it.key)
+                        intent.putExtra(AppLaunchSelectActivity.CHECKED_PACKAGE, pack)
 
                         startActivityForResult(intent, 10)
                     }
