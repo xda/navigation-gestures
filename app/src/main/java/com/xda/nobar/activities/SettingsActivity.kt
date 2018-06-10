@@ -276,7 +276,7 @@ class SettingsActivity : AppCompatActivity() {
             posY.minValue = 0
 
             height.maxValue = Utils.dpAsPx(activity, 50)
-            posY.maxValue = Utils.dpAsPx(activity, 70)
+            posY.maxValue = Utils.dpAsPx(activity, 130)
 
             height.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_height))
             posY.setDefaultValue(Utils.getDefaultY(activity))
