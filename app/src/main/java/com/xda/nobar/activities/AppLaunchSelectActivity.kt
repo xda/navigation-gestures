@@ -3,9 +3,13 @@ package com.xda.nobar.activities
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.ResolveInfo
-import android.graphics.drawable.AdaptiveIconDrawable
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PaintFlagsDrawFilter
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
@@ -142,24 +146,30 @@ class AppLaunchSelectActivity : AppCompatActivity() {
 
             title.text = app.displayName
 
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-                val iconDrawable = app.icon
-                if (iconDrawable is AdaptiveIconDrawable) {
-                    try {
-                        icon.background = iconDrawable
-                    } catch (e: Exception) {
-                        icon.background = iconDrawable.foreground
-                    }
-                } else {
-                    icon.background = iconDrawable
-                }
-            } else {
-                icon.background = app.icon
-            }
+            icon.background = getBitmapDrawable(apps[position].icon, holder.view.context.resources)
 
             view.setOnClickListener {
                 listener.onAppSelected(app)
             }
+        }
+
+        /**
+         * Stolen from HalogenOS
+         * https://github.com/halogenOS/android_frameworks_base/blob/XOS-8.1/packages/SystemUI/src/com/android/systemui/tuner/LockscreenFragment.java
+         */
+        private fun getBitmapDrawable(drawable: Drawable, resources: Resources): BitmapDrawable {
+            if (drawable is BitmapDrawable) return drawable
+
+            val canvas = Canvas()
+            canvas.drawFilter = PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG, Paint.FILTER_BITMAP_FLAG)
+
+            val bmp = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+            canvas.setBitmap(bmp)
+
+            drawable.setBounds(0, 0, canvas.width, canvas.height)
+            drawable.draw(canvas)
+
+            return BitmapDrawable(resources, bmp)
         }
 
         override fun getItemCount(): Int {
