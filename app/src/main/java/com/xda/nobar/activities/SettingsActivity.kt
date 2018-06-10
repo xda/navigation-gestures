@@ -15,6 +15,7 @@ import com.jaredrummler.android.colorpicker.ColorPreference
 import com.pavelsikun.seekbarpreference.SeekBarPreference
 import com.xda.nobar.App
 import com.xda.nobar.R
+import com.xda.nobar.prefs.CustomPreferenceCategory
 import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.util.Utils
 import java.util.*
@@ -284,20 +285,27 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun setup() {
+            val screen = preferenceManager.inflateFromResource(activity, R.xml.prefs_appearance_dimens, null)
+
             val pixelsW = findPreference("use_pixels_width") as SwitchPreference
             val pixelsH = findPreference("use_pixels_height") as SwitchPreference
             val pixelsX = findPreference("use_pixels_x") as SwitchPreference
             val pixelsY = findPreference("use_pixels_y") as SwitchPreference
 
-            val widthPercent = findPreference("custom_width_percent") as SeekBarPreference
-            val heightPercent = findPreference("custom_height_percent") as SeekBarPreference
-            val xPercent = findPreference("custom_x_percent") as SeekBarPreference
-            val yPercent = findPreference("custom_y_percent") as SeekBarPreference
+            val catW = findPreference("cat_width") as CustomPreferenceCategory
+            val catH = findPreference("cat_height") as CustomPreferenceCategory
+            val catX = findPreference("cat_x") as CustomPreferenceCategory
+            val catY = findPreference("cat_y") as CustomPreferenceCategory
 
-            val widthPixels = findPreference("custom_width") as SeekBarPreference
-            val heightPixels = findPreference("custom_height") as SeekBarPreference
-            val xPixels = findPreference("custom_x") as SeekBarPreference
-            val yPixels = findPreference("custom_y") as SeekBarPreference
+            val widthPercent = screen.findPreference("custom_width_percent") as SeekBarPreference
+            val heightPercent = screen.findPreference("custom_height_percent") as SeekBarPreference
+            val xPercent = screen.findPreference("custom_x_percent") as SeekBarPreference
+            val yPercent = screen.findPreference("custom_y_percent") as SeekBarPreference
+
+            val widthPixels = screen.findPreference("custom_width") as SeekBarPreference
+            val heightPixels = screen.findPreference("custom_height") as SeekBarPreference
+            val xPixels = screen.findPreference("custom_x") as SeekBarPreference
+            val yPixels = screen.findPreference("custom_y") as SeekBarPreference
 
             widthPixels.minValue = Utils.dpAsPx(activity, 10)
             heightPixels.minValue = Utils.dpAsPx(activity, 5)
@@ -314,28 +322,33 @@ class SettingsActivity : AppCompatActivity() {
             widthPixels.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_width))
             heightPixels.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_height))
 
+//            category.addPreference(category.preferenceList.indexOf(pixelsW) + 1, if (pixelsW.isChecked) widthPixels else widthPercent)
+//            category.addPreference(category.preferenceList.indexOf(pixelsH) + 1, if (pixelsH.isChecked) heightPixels else heightPercent)
+//            category.addPreference(category.preferenceList.indexOf(pixelsX) + 1, if (pixelsX.isChecked) xPixels else xPercent)
+//            category.addPreference(category.preferenceList.indexOf(pixelsY) + 1, if (pixelsY.isChecked) yPixels else yPercent)
+
             val listener = Preference.OnPreferenceChangeListener { pref, newValue ->
                 val new = newValue.toString().toBoolean()
 
                 when (pref) {
                     pixelsW -> {
-                        widthPercent.isEnabled = !new
-                        widthPixels.isEnabled = new
+                        catW.removeAll()
+                        catW.addPreference(if (new) widthPixels else widthPercent)
                     }
 
                     pixelsH -> {
-                        heightPercent.isEnabled = !new
-                        heightPixels.isEnabled = new
+                        catH.removeAll()
+                        catH.addPreference(if (new) heightPixels else heightPercent)
                     }
 
                     pixelsX -> {
-                        xPercent.isEnabled = !new
-                        xPixels.isEnabled = new
+                        catX.removeAll()
+                        catX.addPreference(if (new) xPixels else xPercent)
                     }
 
                     pixelsY -> {
-                        yPercent.isEnabled = !new
-                        yPixels.isEnabled = new
+                        catY.removeAll()
+                        catY.addPreference(if (new) yPixels else yPercent)
                     }
                 }
 

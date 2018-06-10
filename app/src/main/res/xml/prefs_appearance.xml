@@ -28,7 +28,8 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/dimension_prefs">
+        android:title="@string/dimension_prefs"
+        android:key="dimens">
 
         <com.pavelsikun.seekbarpreference.SeekBarPreference
             app:msbp_measurementUnit="dp"
@@ -45,23 +46,8 @@
             android:summary="@string/use_pixels_desc"
             android:key="use_pixels_width" />
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
-            app:msbp_minValue="1"
-            app:msbp_maxValue="1000"
-            app:msbp_scale="0.1"
-            app:msbp_measurementUnit="%"
-            android:defaultValue="@integer/pill_width_percent"
-            android:title="@string/width"
-            android:icon="@drawable/ic_arrow_expanded_horizontal_black_24dp"
-            android:key="custom_width_percent" />
-
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
-            app:msbp_measurementUnit="px"
-            app:msbp_minValue="-10000"
-            app:msbp_maxValue="10000"
-            android:title="@string/width"
-            android:icon="@drawable/ic_arrow_expanded_horizontal_black_24dp"
-            android:key="custom_width" />
+        <com.xda.nobar.prefs.CustomPreferenceCategory
+            android:key="cat_width" />
 
         <SwitchPreference
             android:defaultValue="true"
@@ -69,23 +55,8 @@
             android:summary="@string/use_pixels_desc"
             android:key="use_pixels_height" />
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
-            app:msbp_measurementUnit="%"
-            app:msbp_minValue="1"
-            app:msbp_maxValue="200"
-            app:msbp_scale="0.1"
-            android:defaultValue="@integer/pill_height_percent"
-            android:title="@string/height"
-            android:icon="@drawable/ic_arrow_expanded_vertical_black_24dp"
-            android:key="custom_height_percent" />
-
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
-            app:msbp_measurementUnit="px"
-            app:msbp_minValue="-10000"
-            app:msbp_maxValue="10000"
-            android:title="@string/height"
-            android:icon="@drawable/ic_arrow_expanded_vertical_black_24dp"
-            android:key="custom_height" />
+        <com.xda.nobar.prefs.CustomPreferenceCategory
+            android:key="cat_height" />
 
         <SwitchPreference
             android:defaultValue="true"
@@ -93,24 +64,8 @@
             android:summary="@string/use_pixels_desc"
             android:key="use_pixels_x" />
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
-            app:msbp_minValue="-1000"
-            app:msbp_maxValue="1000"
-            app:msbp_scale="0.1"
-            app:msbp_measurementUnit="%"
-            android:defaultValue="@integer/pill_x_pos_percent"
-            android:title="@string/position_x"
-            android:icon="@drawable/ic_swap_horiz_black_24dp"
-            android:key="custom_x_percent" />
-
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
-            app:msbp_measurementUnit="px"
-            app:msbp_minValue="-10000"
-            app:msbp_maxValue="10000"
-            android:defaultValue="0"
-            android:title="@string/position_x"
-            android:icon="@drawable/ic_swap_horiz_black_24dp"
-            android:key="custom_x" />
+        <com.xda.nobar.prefs.CustomPreferenceCategory
+            android:key="cat_x" />
 
         <SwitchPreference
             android:defaultValue="true"
@@ -118,22 +73,8 @@
             android:summary="@string/use_pixels_desc"
             android:key="use_pixels_y" />
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
-            app:msbp_measurementUnit="%"
-            app:msbp_minValue="0"
-            app:msbp_maxValue="2000"
-            app:msbp_scale="0.05"
-            android:title="@string/position_y"
-            android:icon="@drawable/ic_swap_vert_black_24dp"
-            android:key="custom_y_percent" />
-
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
-            app:msbp_measurementUnit="px"
-            app:msbp_minValue="-10000"
-            app:msbp_maxValue="10000"
-            android:title="@string/position_y"
-            android:icon="@drawable/ic_swap_vert_black_24dp"
-            android:key="custom_y" />
+        <com.xda.nobar.prefs.CustomPreferenceCategory
+            android:key="cat_y" />
 
     </PreferenceCategory>
 
