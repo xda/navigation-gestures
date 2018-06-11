@@ -47,7 +47,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
-    implementation 'com.heinrichreimersoftware:material-intro:7221502f1f'
+//    implementation 'com.heinrichreimersoftware:material-intro:7221502f1f'
+    implementation 'com.github.zacharee:material-intro:c792c66102'
     implementation 'com.google.firebase:firebase-core:16.0.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.3'
     implementation 'com.github.zacharee:colorpicker:6428d93c3b'
