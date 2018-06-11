@@ -8,8 +8,8 @@ apply plugin: 'io.fabric'
 
 apply plugin: 'base'
 
-project.version = 33
-def name = "1.1.6"
+project.version = 34
+def name = "1.2.0"
 
 preBuild {
     delete "${rootDir}/app/release/"
@@ -45,7 +45,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:support-v4:27.1.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
 //    implementation 'com.heinrichreimersoftware:material-intro:7221502f1f'
     implementation 'com.github.zacharee:material-intro:c792c66102'

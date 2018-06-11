@@ -283,7 +283,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         params.width = Utils.getCustomWidth(this)
         params.height = Utils.getCustomHeight(this)
         params.gravity = Gravity.CENTER or Gravity.BOTTOM
-        params.y = if (bar.isHidden) bar.getAdjustedHomeY() else getHomeY(this)
+        params.y = bar.getAdjustedHomeY()
         params.x = getHomeX(this)
         params.type =
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
@@ -608,11 +608,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         else -> height.y.absoluteValue == totalOverscan.absoluteValue
                     }
 
-                    if (hidden) {
-                        onSystemUiVisibilityChange(View.SYSTEM_UI_FLAG_FULLSCREEN)
-                    } else {
-                        onSystemUiVisibilityChange(0)
-                    }
+                    handleImmersiveChange(hidden)
                     isActing = false
                 }, 50)
             }
