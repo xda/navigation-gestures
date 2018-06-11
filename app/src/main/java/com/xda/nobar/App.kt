@@ -624,10 +624,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         override fun onChange(selfChange: Boolean, uri: Uri?) {
             if (uri == Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL)) {
-                val current = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)
+                val current = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL) ?: ""
 
-                bar.immersiveNav = current != null && current.contains("nav")
-                handleImmersiveChange(current != null && (current.contains("full")))
+                bar.immersiveNav = current.contains("nav")
+                handleImmersiveChange(current.contains("full"))
             }
             if (uri == Settings.Global.getUriFor("navigationbar_hide_bar_enabled")) {
                 if (Utils.shouldUseOverscanMethod(this@App)) {
