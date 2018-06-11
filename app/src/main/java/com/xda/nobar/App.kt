@@ -418,7 +418,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      */
     fun hideNav() {
         Utils.saveBackupImmersive(this)
-        if (Utils.isInImmersive(this)) {
+        if (Utils.isInImmersive(this) && Utils.origBarInFullscreen(this)) {
             Utils.disableNavImmersive(this)
         }
 
@@ -440,7 +440,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Show the navbar
      */
     fun showNav() {
-        Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
+        if (!Utils.isInImmersive(this) && Utils.origBarInFullscreen(this))
+            Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
 
         navbarListeners.forEach { it.onNavChange(false) }
 
@@ -629,7 +630,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (uri == Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL)) {
                 val current = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)
 
-                handleImmersiveChange(current != null && (current.contains("full") || current.contains("nav")))
+                bar.immersiveNav = current != null && current.contains("nav")
+                handleImmersiveChange(current != null && (current.contains("full")))
             }
             if (uri == Settings.Global.getUriFor("navigationbar_hide_bar_enabled")) {
                 if (Utils.shouldUseOverscanMethod(this@App)) {

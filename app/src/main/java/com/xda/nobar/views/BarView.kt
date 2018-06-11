@@ -92,7 +92,24 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var isImmersive = false
         set(value) {
             field = value
-            if (Utils.shouldUseOverscanMethod(context) && !Utils.hideInFullscreen(context)) {
+            if (Utils.shouldUseOverscanMethod(context)) {
+                queuedLayoutUpdate = {
+                    if (params.y != getAdjustedHomeY()) {
+                        params.y = getAdjustedHomeY()
+                        updateLayout(params)
+                    }
+                }
+
+                if (!isCarryingOutTouchAction) {
+                    queuedLayoutUpdate?.invoke()
+                    queuedLayoutUpdate = null
+                }
+            }
+        }
+    var immersiveNav = false
+        set(value) {
+            field = value
+            if (Utils.shouldUseOverscanMethod(context)) {
                 queuedLayoutUpdate = {
                     if (params.y != getAdjustedHomeY()) {
                         params.y = getAdjustedHomeY()
@@ -491,7 +508,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun getAdjustedHomeY(): Int {
-        return if (isImmersive && Utils.shouldUseOverscanMethod(context)) {
+        return if ((isImmersive || immersiveNav) && Utils.shouldUseOverscanMethod(context)) {
             if ((wm.defaultDisplay.rotation == Surface.ROTATION_90
                             || wm.defaultDisplay.rotation == Surface.ROTATION_270)
                     && !Utils.useTabletMode(context)) if (Utils.hideInFullscreen(context)) 0 else getHomeY(context)
@@ -500,7 +517,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun getZeroY(): Int {
-        return if (isImmersive && Utils.shouldUseOverscanMethod(context)) {
+        return if ((isImmersive || immersiveNav) && Utils.shouldUseOverscanMethod(context)) {
             if ((wm.defaultDisplay.rotation == Surface.ROTATION_270
                             || wm.defaultDisplay.rotation == Surface.ROTATION_90)
                     && !Utils.useTabletMode(context)) 0
