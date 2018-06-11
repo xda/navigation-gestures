@@ -108,8 +108,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     var immersiveNav: Boolean
         get() {
-            val imm = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)
-            return imm != null && imm.contains("navigation")
+            val imm = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL) ?: return false
+            return imm.contains("navigation")
         }
         set(value) {
             if (Utils.shouldUseOverscanMethod(context)) {
