@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
-        android:shortcutId="toggle"
+        android:shortcutId="toggle_gestures"
         android:enabled="true"
         android:icon="@mipmap/ic_launcher"
-        android:shortcutShortLabel="@string/toggle">
+        android:shortcutShortLabel="@string/toggle_gestures">
         <intent
-            android:action="com.xda.nobar.action.TOGGLE"
+            android:action="android.intent.action.VIEW"
             android:targetPackage="com.xda.nobar"
-            android:targetClass="com.xda.nobar.activities.ToggleActivity" />
+            android:targetClass="com.xda.nobar.activities.ToggleGesturesActivity" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="toggle_nav"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/toggle_nav">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.xda.nobar"
+            android:targetClass="com.xda.nobar.activities.ToggleNavActivity" />
     </shortcut>
 
     <shortcut
         android:shortcutId="settings"
         android:enabled="true"
-        android:icon="@drawable/ic_settings_black_24dp"
+        android:icon="@mipmap/ic_launcher"
         android:shortcutShortLabel="@string/settings">
         <intent
-            android:action="com.xda.nobar.action.TOGGLE"
+            android:action="android.intent.action.VIEW"
             android:targetPackage="com.xda.nobar"
             android:targetClass="com.xda.nobar.activities.SettingsActivity" />
     </shortcut>

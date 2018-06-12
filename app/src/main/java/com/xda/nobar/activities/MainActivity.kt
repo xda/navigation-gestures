@@ -64,9 +64,14 @@ class MainActivity : AppCompatActivity(), App.GestureActivationListener, App.Nav
         handler.addNavBarHideListener(this)
 
         gestureSwitch.isChecked = handler.areGesturesActivated()
-        gestureSwitch.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
-            if (isChecked) handler.addBar() else handler.removeBar()
-            handler.setGestureState(isChecked)
+        gestureSwitch.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { button, isChecked ->
+            if (!IntroActivity.needsToRun(this)) {
+                if (isChecked) handler.addBar() else handler.removeBar()
+                handler.setGestureState(isChecked)
+            } else {
+                button.isChecked = false
+                startActivity(Intent(this, IntroActivity::class.java))
+            }
         }
 
         hideNavSwitch.isChecked = Utils.shouldUseOverscanMethod(this) && handler.isNavBarHidden()

@@ -71,6 +71,8 @@
     <string name="enable_in_car_mode">Keep Pill Enabled in Car Mode</string>
     <string name="use_pixels">Use Pixels</string>
     <string name="sectioned_pill">Sectioned Pill</string>
+    <string name="toggle_gestures">Toggle Gestures</string>
+    <string name="toggle_nav">Toggle NavBar</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>

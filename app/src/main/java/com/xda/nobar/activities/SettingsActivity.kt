@@ -193,8 +193,12 @@ class SettingsActivity : AppCompatActivity() {
 
                     it.summary = String.format(Locale.getDefault(),
                             resources.getString(R.string.prem_launch_app),
-                            activity.packageManager.getApplicationLabel(
-                                            activity.packageManager.getApplicationInfo(packageInfo.split("/")[0], 0)))
+                            try {
+                                activity.packageManager.getApplicationLabel(
+                                        activity.packageManager.getApplicationInfo(packageInfo.split("/")[0], 0))
+                            } catch (e: Exception) {
+                                packageInfo.split("/")[0]
+                            })
                 }
             }
         }
