@@ -37,12 +37,14 @@ class LockScreenActivity : AppCompatActivity() {
         val currentBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, -1)
         val currentBrightnessMode = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, -1)
         val currentTimeout = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, -1)
+        val keepScreenOn = Settings.Global.getInt(contentResolver, Settings.Global.STAY_ON_WHILE_PLUGGED_IN, -1)
 
         previousSettings.brightness = currentBrightness
         previousSettings.brightnessMode = currentBrightnessMode
         previousSettings.timeout = currentTimeout
+        previousSettings.keepScreenOn = keepScreenOn
 
-        saveSettings(LockSettings(0, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL, 1000))
+        saveSettings(LockSettings(0, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL, 1000, 0))
     }
 
     private fun performDestroy() {
@@ -66,7 +68,14 @@ class LockScreenActivity : AppCompatActivity() {
         } catch (e: SecurityException) {
             performDestroy()
         }
+
+        try {
+            if (settings.keepScreenOn != -1) Settings.Global.putInt(contentResolver, Settings.Global.STAY_ON_WHILE_PLUGGED_IN, settings.keepScreenOn)
+            else Settings.Global.putString(contentResolver, Settings.Global.STAY_ON_WHILE_PLUGGED_IN, null)
+        } catch (e: SecurityException) {
+
+        }
     }
 
-    private class LockSettings(var brightness: Int = -1, var brightnessMode: Int = -1, var timeout: Int = -1)
+    private class LockSettings(var brightness: Int = -1, var brightnessMode: Int = -1, var timeout: Int = -1, var keepScreenOn: Int = -1)
 }
