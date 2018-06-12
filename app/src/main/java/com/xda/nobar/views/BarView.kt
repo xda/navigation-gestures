@@ -532,7 +532,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * Load the user's custom gesture/action pairings; default values if a pairing doesn't exist
      */
     private fun loadActionMap() {
-        Utils.getActionList(context, actionMap)
+        Utils.getCenterActionList(context, actionMap)
     }
 
     /**

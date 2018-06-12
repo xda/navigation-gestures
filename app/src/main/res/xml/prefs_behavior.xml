@@ -16,14 +16,21 @@
 
     <SwitchPreference
         android:title="@string/static_pill"
-        android:summary="@string/static_pill_desc"
         android:icon="@drawable/ic_swap_vert_black_24dp"
+        android:summary="@string/static_pill_desc"
         android:key="static_pill" />
 
     <SwitchPreference
         android:title="@string/enable_in_car_mode"
         android:icon="@drawable/ic_directions_car_black_24dp"
+        android:summary="@string/enable_in_car_mode_desc"
         android:key="enable_in_car_mode" />
+
+    <SwitchPreference
+        android:title="@string/sectioned_pill"
+        android:summary="@string/sectioned_pill_desc"
+        android:icon="@drawable/pill_div"
+        android:key="sectioned_pill" />
 
     <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/hold_time"

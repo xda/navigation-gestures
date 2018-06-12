@@ -30,7 +30,6 @@ import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.getCustomHeight
 import com.xda.nobar.util.Utils.getCustomWidth
 import com.xda.nobar.util.Utils.getHomeX
-import com.xda.nobar.util.Utils.getHomeY
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.ImmersiveHelperView
 import kotlin.math.absoluteValue
@@ -98,6 +97,23 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         get() = resources.getString(R.string.action_left_hold)
     val actionRightHold: String
         get() = resources.getString(R.string.action_right_hold)
+
+    val actionLeftLeft: String
+        get() = resources.getString(R.string.action_left_left)
+    val actionRightLeft: String
+        get() = resources.getString(R.string.action_right_left)
+    val actionUpLeft: String
+        get() = resources.getString(R.string.action_up_left)
+    val actionDownLeft: String
+        get() = resources.getString(R.string.action_down_left)
+    val actionDoubleLeft: String
+        get() = resources.getString(R.string.action_double_left)
+    val actionHoldLeft: String
+        get() = resources.getString(R.string.action_hold_left)
+    val actionLeftHoldLeft: String
+        get() = resources.getString(R.string.action_left_hold_left)
+    val actionRightHoldLeft: String
+        get() = resources.getString(R.string.action_right_hold_left)
 
     val typeNoAction: Int
         get() = resources.getString(R.string.type_no_action).toInt()
@@ -578,7 +594,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 val rot = wm.defaultDisplay.rotation
                 if (oldRot != rot) {
                     bar.params.x = getHomeX(this@App)
-                    bar.params.y = getHomeY(this@App)
+                    bar.params.y = bar.getAdjustedHomeY()
                     bar.params.width = getCustomWidth(this@App)
                     bar.params.height = getCustomHeight(this@App)
                     bar.updateLayout(bar.params)
@@ -615,7 +631,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         override fun onSystemUiVisibilityChange(visibility: Int) {
-//            Log.e("NoBar", visibility.toString())
             handleImmersiveChange(visibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0
                     || visibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
                     || visibility and View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN != 0

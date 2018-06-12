@@ -157,7 +157,7 @@ object Utils {
      * @param context a context object
      * @param map the HashMap to fill/update
      */
-    fun getActionList(context: Context, map: HashMap<String, Int>) {
+    fun getCenterActionList(context: Context, map: HashMap<String, Int>) {
         try {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
             val app = getHandler(context)
@@ -622,5 +622,9 @@ object Utils {
 
     fun usePixelsY(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_pixels_y", true)
+    }
+
+    fun sectionedPill(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("sectioned_pill", false)
     }
 }

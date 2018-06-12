@@ -70,6 +70,7 @@
     <string name="orig_nav_in_immersive">Keep Original NavBar in Fullscreen</string>
     <string name="enable_in_car_mode">Keep Pill Enabled in Car Mode</string>
     <string name="use_pixels">Use Pixels</string>
+    <string name="sectioned_pill">Sectioned Pill</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -92,6 +93,8 @@
     <string name="hide_nav_summary">Only use this if your device has a software navigation bar.</string>
     <string name="orig_nav_in_immersive_desc">When enabled, the original navigation bar will be accessible with a swipe in fullscreen apps.</string>
     <string name="use_pixels_desc">Enable this to use pixel dimensions instead of percentages.</string>
+    <string name="sectioned_pill_desc">When enabled, the pill will be divided horizontally into a maximum of three sections, each with their own set of assigned actions.</string>
+    <string name="enable_in_car_mode_desc">When enabled, Navigation Gestures will not disable in Car Mode. Don\'t enable this on TouchWiz devices if you have a software navigation bar.</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
@@ -192,7 +195,7 @@
     <string name="prem_type_switch_ime">24</string>
     <string name="prem_type_launch_app">25</string>
 
-    <!--Action Keys-->
+    <!--Center Action Keys-->
     <string name="action_left">left</string>
     <string name="action_right">right</string>
     <string name="action_up">up</string>
@@ -203,5 +206,28 @@
     <string name="action_up_hold">up_hold</string>
     <string name="action_left_hold">left_hold</string>
     <string name="action_right_hold">right_hold</string>
+
+    <!--Left Action Keys-->
+    <string name="action_left_left">left_left</string>
+    <string name="action_right_left">right_left</string>
+    <string name="action_up_left">up_left</string>
+    <string name="action_down_left">down_left</string>
+    <string name="action_double_left">double_tap_left</string>
+    <string name="action_hold_left">hold_left</string>
+    <string name="action_tap_left">tap_left</string>
+    <string name="action_up_hold_left">up_hold_left</string>
+    <string name="action_left_hold_left">left_hold_left</string>
+    <string name="action_right_hold_left">right_hold_left</string>
+
+    <!--Right Action Keys-->
+    <string name="action_left_right">left_right</string>
+    <string name="action_right_right">right_right</string>
+    <string name="action_up_right">up_right</string>
+    <string name="action_down_right">down_right</string>
+    <string name="action_double_right">double_tap_right</string>
+    <string name="action_hold_right">hold_right</string>
+    <string name="action_up_hold_right">up_hold_right</string>
+    <string name="action_left_hold_right">left_hold_right</string>
+    <string name="action_right_hold_right">right_hold_right</string>
 
 </resources>

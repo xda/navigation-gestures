@@ -139,7 +139,7 @@ class SettingsActivity : AppCompatActivity() {
 
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
             val map = HashMap<String, Int>()
-            Utils.getActionList(activity, map)
+            Utils.getCenterActionList(activity, map)
 
             if (map.keys.contains(key)) updateSummaries()
         }
