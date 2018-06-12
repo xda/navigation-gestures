@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
+import com.xda.nobar.App
 
 class LockScreenActivity : AppCompatActivity() {
     private val screenOffReceiver = object : BroadcastReceiver() {
@@ -45,6 +46,9 @@ class LockScreenActivity : AppCompatActivity() {
         previousSettings.keepScreenOn = keepScreenOn
 
         saveSettings(LockSettings(0, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL, 1000, 0))
+
+        val app = application as App
+        if (app.areGesturesActivated()) app.removeBar()
     }
 
     private fun performDestroy() {
