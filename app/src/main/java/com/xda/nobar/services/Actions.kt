@@ -5,10 +5,12 @@ import android.app.ActivityManager
 import android.app.SearchManager
 import android.content.*
 import android.media.AudioManager
+import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.UserHandle
+import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.support.v4.content.LocalBroadcastManager
 import android.view.KeyEvent
@@ -19,12 +21,15 @@ import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
 import com.xda.nobar.activities.IntroActivity
+import com.xda.nobar.activities.LockScreenActivity
 import com.xda.nobar.util.Utils
+import java.io.Serializable
+
 
 /**
  * Where most of the magic happens
  */
-class Actions : AccessibilityService() {
+class Actions : AccessibilityService(), Serializable {
     companion object {
         const val BASE = "com.xda.nobar.action"
         const val ACTION = "$BASE.ACTION"
@@ -83,7 +88,7 @@ class Actions : AccessibilityService() {
     /**
      * Special BroadcastReceiver to handle actions sent to this service by {@link com.xda.nobar.views.BarView}
      */
-    inner class ActionHandler : BroadcastReceiver() {
+    inner class ActionHandler : BroadcastReceiver(), Serializable {
         init {
             val filter = IntentFilter()
             filter.addAction(ACTION)
@@ -187,6 +192,7 @@ class Actions : AccessibilityService() {
                             } catch (e: Exception) {}
                         }
                     }
+                    app.premTypeLockScreen -> runPremiumAction { runSystemSettingsAction { startActivity(Intent(this@Actions, LockScreenActivity::class.java)) } }
                     app.premTypeVibe -> {
                         //TODO: Implement
                     }
@@ -216,9 +222,12 @@ class Actions : AccessibilityService() {
                 DialogActivity.Builder(this@Actions).apply {
                     title = R.string.premium_required
                     message = R.string.premium_required_desc
-                    showYes = true
-                    showNo = true
-                    yesUrl = "https://play.google.com/store/apps/details?id=com.xda.nobar.premium"
+                    yesAction = {
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                    }
                     start()
                 }
             }
@@ -235,8 +244,29 @@ class Actions : AccessibilityService() {
                 DialogActivity.Builder(this@Actions).apply {
                     title = R.string.nougat_required
                     message = R.string.nougat_required_desc
-                    showYes = true
                     yesRes = android.R.string.ok
+                    start()
+                }
+            }
+        }
+
+        private fun runSystemSettingsAction(action: () -> Unit) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(this@Actions)) {
+                action.invoke()
+            } else {
+                DialogActivity.Builder(this@Actions).apply {
+                    title = R.string.grant_write_settings
+                    message = R.string.grant_write_settings_desc
+                    yesRes = android.R.string.ok
+                    noRes = android.R.string.cancel
+
+                    yesAction = {
+                        val intent = Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS)
+                        intent.data = Uri.parse("package:$packageName")
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                    }
+
                     start()
                 }
             }

@@ -27,6 +27,15 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="AppTheme.Black" parent="AppTheme.Null">
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowContentOverlay">@android:color/black</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="AppTheme.Intro" parent="AppTheme.NoBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>

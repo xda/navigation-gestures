@@ -186,40 +186,6 @@ object Utils {
         } catch (e: Exception) {}
     }
 
-    fun actionToName(context: Context, action: Int): String {
-        val app = context.applicationContext as App
-        return context.resources.getString(when (action) {
-            app.typeNoAction -> R.string.nothing
-            app.typeBack -> R.string.back
-            app.typeOhm -> R.string.ohm
-            app.typeRecents -> R.string.recents
-            app.typeHide -> R.string.hide
-            app.typeSwitch -> R.string.switch_apps
-            app.typeAssist -> R.string.assist
-            app.typeHome -> R.string.home
-            app.premTypeNotif -> R.string.prem_notif
-            app.premTypeQs -> R.string.prem_qs
-            app.premTypePower -> R.string.prem_power
-            app.typeSplit -> R.string.split
-            app.premTypeVibe -> android.R.string.untitled
-            app.premTypeSilent -> android.R.string.untitled
-            app.premTypeMute -> android.R.string.untitled
-            app.premTypePlayPause -> R.string.prem_play_pause
-            app.premTypeNext -> R.string.prem_next
-            app.premTypePrev -> R.string.prem_prev
-            app.typeRootHoldBack -> R.string.hold_back
-            app.typeRootForward -> R.string.forward
-            app.typeRootMenu -> R.string.menu
-            app.typeRootSleep -> R.string.sleep
-            app.premTypeRootVolUp -> R.string.prem_vol_up
-            app.premTypeRootVolDown -> R.string.prem_vol_down
-            app.premTypeRootScreenshot -> R.string.prem_type_screenshot
-            app.premTypeSwitchIme -> R.string.prem_switch_ime
-            app.premTypeLaunchApp -> R.string.prem_launch_app
-            else -> android.R.string.untitled
-        })
-    }
-
     /**
      * Check to see if overscan should be used
      * @param context a context object

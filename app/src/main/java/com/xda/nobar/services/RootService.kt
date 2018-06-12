@@ -2,7 +2,9 @@ package com.xda.nobar.services
 
 import android.app.Service
 import android.content.Intent
+import android.net.Uri
 import android.os.*
+import android.support.v4.content.ContextCompat.startActivity
 import android.view.KeyEvent
 import com.xda.nobar.App
 import com.xda.nobar.R
@@ -101,9 +103,10 @@ class RootService : Service() {
                 DialogActivity.Builder(service).apply {
                     title = R.string.premium_required
                     message = R.string.premium_required_desc
-                    showYes = true
-                    showNo = true
-                    yesUrl = "https://play.google.com/store/apps/details?id=com.xda.nobar.premium"
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    service.startActivity(intent)
                     start()
                 }
             }
@@ -116,7 +119,6 @@ class RootService : Service() {
                 DialogActivity.Builder(service).apply {
                     title = R.string.nougat_required
                     message = R.string.nougat_required_desc
-                    showYes = true
                     yesRes = android.R.string.ok
                     start()
                 }

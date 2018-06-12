@@ -56,12 +56,18 @@
             android:theme="@style/AppTheme.Null" />
         <activity android:name=".activities.LibraryActivity" />
         <activity android:name=".activities.AppLaunchSelectActivity" />
-        <activity android:name=".activities.ToggleNavActivity"
+        <activity
+            android:name=".activities.ToggleNavActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.Null"/>
-        <activity android:name=".activities.ToggleGesturesActivity"
+            android:theme="@style/AppTheme.Null" />
+        <activity
+            android:name=".activities.ToggleGesturesActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.Null"/>
+            android:theme="@style/AppTheme.Null" />
+        <activity android:name=".activities.LockScreenActivity"
+            android:configChanges="screenSize|orientation|layoutDirection|screenLayout"
+            android:excludeFromRecents="true"
+            android:theme="@style/AppTheme.Black" />
 
         <service
             android:name=".tiles.GestureToggle"

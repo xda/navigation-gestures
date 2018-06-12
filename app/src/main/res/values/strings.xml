@@ -73,6 +73,7 @@
     <string name="sectioned_pill">Sectioned Pill</string>
     <string name="toggle_gestures">Toggle Gestures</string>
     <string name="toggle_nav">Toggle NavBar</string>
+    <string name="grant_write_settings">Write Settings Permission Required!</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -97,6 +98,7 @@
     <string name="use_pixels_desc">Enable this to use pixel dimensions instead of percentages.</string>
     <string name="sectioned_pill_desc">When enabled, the pill will be divided horizontally into a maximum of three sections, each with their own set of assigned actions.</string>
     <string name="enable_in_car_mode_desc">When enabled, Navigation Gestures will not disable in Car Mode. Don\'t enable this on TouchWiz devices if you have a software navigation bar.</string>
+    <string name="grant_write_settings_desc">Tap OK to allow Navigation Gestures to write to system settings.</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
@@ -156,6 +158,7 @@
     <string name="prem_switch_ime">Switch Keyboard (Premium)</string>
     <string name="prem_launch_app">Launch App (Premium) (%s)</string>
     <string name="prem_launch_app_no_format">Launch App (Premium)</string>
+    <string name="prem_lock_screen">Lock Screen (Premium)</string>
 
     <!--Messages-->
     <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
@@ -196,6 +199,7 @@
     <string name="prem_type_screenshot">23</string>
     <string name="prem_type_switch_ime">24</string>
     <string name="prem_type_launch_app">25</string>
+    <string name="prem_type_lock_screen">26</string>
 
     <!--Center Action Keys-->
     <string name="action_left">left</string>

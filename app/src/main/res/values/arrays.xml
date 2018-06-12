@@ -1,67 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="action_names">
-        <item>@string/nothing</item>
-        <item>@string/home</item>
-        <item>@string/back</item>
-        <item>@string/recents</item>
-        <item>@string/hide</item>
-        <item>@string/assist</item>
-    </string-array>
-
-    <string-array name="action_values">
-        <item>@string/type_no_action</item>
-        <item>@string/type_home</item>
-        <item>@string/type_back</item>
-        <item>@string/type_recents</item>
-        <item>@string/type_hide</item>
-        <item>@string/type_assist</item>
-    </string-array>
-
-    <string-array name="nougat_action_names">
-        <item>@string/switch_apps</item>
-        <item>@string/split</item>
-    </string-array>
-
     <string-array name="nougat_action_values">
         <item>@string/type_switch</item>
         <item>@string/type_split</item>
-    </string-array>
-
-    <string-array name="premium_action_names">
-        <item>@string/prem_notif</item>
-        <item>@string/prem_qs</item>
-        <item>@string/prem_power</item>
-        <item>@string/prem_prev</item>
-        <item>@string/prem_next</item>
-        <item>@string/prem_play_pause</item>
-    </string-array>
-
-    <string-array name="premium_action_values">
-        <item>@string/prem_type_notif</item>
-        <item>@string/prem_type_qs</item>
-        <item>@string/prem_type_power</item>
-        <item>@string/prem_type_prev</item>
-        <item>@string/prem_type_next</item>
-        <item>@string/prem_type_play_pause</item>
-    </string-array>
-
-    <string-array name="ohm_action_names">
-        <item>@string/ohm</item>
-    </string-array>
-
-    <string-array name="ohm_action_values">
-        <item>@string/type_ohm</item>
-    </string-array>
-
-    <string-array name="root_action_names">
-        <item>@string/hold_back</item>
-        <item>@string/forward</item>
-        <item>@string/menu</item>
-        <item>@string/sleep</item>
-        <item>@string/prem_vol_up</item>
-        <item>@string/prem_vol_down</item>
-        <item>@string/prem_screenshot</item>
     </string-array>
 
     <string-array name="root_action_values">
@@ -105,6 +46,7 @@
         <item>@string/prem_qs</item>
         <item>@string/prem_power</item>
         <item>@string/prem_switch_ime</item>
+        <item>@string/prem_lock_screen</item>
     </string-array>
 
     <string-array name="system_action_values">
@@ -114,6 +56,7 @@
         <item>@string/prem_type_qs</item>
         <item>@string/prem_type_power</item>
         <item>@string/prem_type_switch_ime</item>
+        <item>@string/prem_type_lock_screen</item>
     </string-array>
 
     <string-array name="media_action_names">
