@@ -4,6 +4,7 @@ import android.app.KeyguardManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.util.Utils
 
 /**
@@ -25,7 +26,7 @@ class PowerReceiver : BroadcastReceiver() {
                 if (km.isKeyguardLocked && Utils.shouldUseOverscanMethod(context)) app.showNav()
             }
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
-                if (app.areGesturesActivated()) app.addBar()
+                if (app.areGesturesActivated() && !IntroActivity.needsToRun(context)) app.addBar()
             }
         }
     }

@@ -66,8 +66,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         val EXIT_INTERPOLATOR = AccelerateInterpolator()
     }
 
-    val params: WindowManager.LayoutParams
-        get() = layoutParams as WindowManager.LayoutParams
+    val params: WindowManager.LayoutParams = WindowManager.LayoutParams()
 
     private val app = context.applicationContext as App
     private val gestureDetector = GestureManager()

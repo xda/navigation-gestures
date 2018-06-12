@@ -72,7 +72,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
     }
 
-    val params = WindowManager.LayoutParams()
     /**
      * Actions and Types
      * *********************************************************
@@ -296,27 +295,27 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         pillShown = true
         gestureListeners.forEach { it.onChange(true) }
 
-        params.width = Utils.getCustomWidth(this)
-        params.height = Utils.getCustomHeight(this)
-        params.gravity = Gravity.CENTER or Gravity.BOTTOM
-        params.y = bar.getAdjustedHomeY()
-        params.x = getHomeX(this)
-        params.type =
+        bar.params.width = Utils.getCustomWidth(this)
+        bar.params.height = Utils.getCustomHeight(this)
+        bar.params.gravity = Gravity.CENTER or Gravity.BOTTOM
+        bar.params.y = bar.getAdjustedHomeY()
+        bar.params.x = getHomeX(this)
+        bar.params.type =
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
                 else
                     WindowManager.LayoutParams.TYPE_PHONE
-        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+        bar.params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
                 WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
-        params.format = PixelFormat.TRANSLUCENT
-        params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+        bar.params.format = PixelFormat.TRANSLUCENT
+        bar.params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 
         if (Utils.dontMoveForKeyboard(this)) {
-            params.flags = params.flags or
+            bar.params.flags = bar.params.flags or
                     WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
                     WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-            params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+            bar.params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
         }
 
         if (Utils.largerHitbox(this)) {
@@ -333,7 +332,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             wm.removeView(bar)
         } catch (e: Exception) {}
 
-        wm.addView(bar, params)
+        wm.addView(bar, bar.params)
         ContextCompat.startForegroundService(this, Intent(this, ForegroundService::class.java))
 
         if (Utils.shouldUseRootCommands(this)) {
@@ -543,7 +542,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (areGesturesActivated()) {
                 when (intent?.action) {
                     UiModeManager.ACTION_ENTER_CAR_MODE -> {
-                        if (Utils.enableInCarMode(this@App)) params.height = Utils.getCustomHeight(this@App) * 2
+                        if (Utils.enableInCarMode(this@App)) bar.params.height = Utils.getCustomHeight(this@App) * 2
                         else {
                             removeBar()
                             if (Utils.shouldUseOverscanMethod(this@App)) showNav()
@@ -551,7 +550,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     }
 
                     UiModeManager.ACTION_EXIT_CAR_MODE -> {
-                        if (Utils.enableInCarMode(this@App)) params.height = Utils.getCustomHeight(this@App)
+                        if (Utils.enableInCarMode(this@App)) bar.params.height = Utils.getCustomHeight(this@App)
                         else {
                             addBar()
                             if (Utils.shouldUseOverscanMethod(this@App)) hideNav()
@@ -559,7 +558,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     }
                 }
 
-                bar.updateLayout(params)
+                bar.updateLayout(bar.params)
             }
 
             if (Utils.shouldUseOverscanMethod(this@App)) {
