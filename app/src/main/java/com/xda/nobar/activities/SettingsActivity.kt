@@ -247,6 +247,8 @@ class SettingsActivity : AppCompatActivity() {
                 remove(app.actionUp)
                 remove(app.actionUpHold)
             }.apply()
+
+            updateSummaries()
         }
 
         private fun updateAppLaunchSummary(key: String, appName: String) {
