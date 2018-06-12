@@ -244,4 +244,7 @@
     <string name="action_up_right">up_right</string>
     <string name="action_up_hold_right">up_hold_right</string>
 
+    <!--Buttons-->
+    <string name="no">No</string>
+
 </resources>
