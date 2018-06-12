@@ -8,6 +8,9 @@
         android:icon="@drawable/pill_div"
         android:key="sectioned_pill" />
 
+    <com.xda.nobar.prefs.CustomPreferenceCategory
+        android:key="sectioned_pill_cat" />
+
     <PreferenceCategory
         android:title="@string/taps"
         android:key="taps">

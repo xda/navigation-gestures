@@ -70,7 +70,7 @@
     <string name="orig_nav_in_immersive">Keep Original NavBar in Fullscreen</string>
     <string name="enable_in_car_mode">Keep Pill Enabled in Car Mode</string>
     <string name="use_pixels">Use Pixels</string>
-    <string name="sectioned_pill">Sectioned Pill</string>
+    <string name="sectioned_pill">Split Pill</string>
     <string name="toggle_gestures">Toggle Gestures</string>
     <string name="toggle_nav">Toggle NavBar</string>
     <string name="grant_write_settings">Write Settings Permission Required!</string>
@@ -81,6 +81,7 @@
     <string name="swipe_up_hold_center">Swipe Up and Hold from Center</string>
     <string name="swipe_up_right">Swipe Up from Right</string>
     <string name="swipe_up_hold_right">Swipe Up and Hold from Right</string>
+    <string name="use_recommended_settings">Use Recommended Settings?</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -106,6 +107,17 @@
     <string name="sectioned_pill_desc">When enabled, the pill will be divided horizontally into a maximum of three sections, each with their own set of assigned actions.</string>
     <string name="enable_in_car_mode_desc">When enabled, Navigation Gestures will not disable in Car Mode. Don\'t enable this on TouchWiz devices if you have a software navigation bar.</string>
     <string name="grant_write_settings_desc">Tap OK to allow Navigation Gestures to write to system settings.</string>
+    <string name="use_recommended_settings_desc">Split Pill enabled! Do you want to try our recommended settings for this mode?</string>
+    <string name="rec_disable_shadow">\u2022 Disable the pill shadow</string>
+    <string name="rec_set_transparent">\u2022 Set pill and border color completely transparent</string>
+    <string name="rec_set_radius">\u2022 Set pill corner radius to 0dp</string>
+    <string name="rec_set_width">\u2022 Set pill width to 100%</string>
+    <string name="rec_set_height">\u2022 Set pill height to 1.5%</string>
+    <string name="rec_set_y">\u2022 Set vertical (Y) position to 0</string>
+    <string name="rec_disable_hide_in_fullscren">\u2022 Don\'t hide pill in fullscreen apps</string>
+    <string name="rec_dont_move_pill">\u2022 Prevent pill from moving above the keyboard</string>
+    <string name="rec_no_large_hitbox">\u2022 Disable the larger hitbox</string>
+    <string name="rec_disable_default_gestures">\u2022 Set other gestures to \"No Action\"</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>

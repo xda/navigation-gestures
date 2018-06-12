@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillViewport="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="8dp"
+    android:paddingEnd="24dp"
+    android:paddingStart="24dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="@string/use_recommended_settings_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            style="@android:style/TextAppearance.Material.Subhead" />
+
+        <TextView
+            android:text="@string/rec_disable_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="?android:textColorSecondary"
+            style="@android:style/TextAppearance.Material.Body2" />
+
+        <TextView
+            android:text="@string/rec_set_transparent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="?android:textColorSecondary"
+            style="@android:style/TextAppearance.Material.Body2" />
+
+        <TextView
+            android:text="@string/rec_set_radius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="?android:textColorSecondary"
+            style="@android:style/TextAppearance.Material.Body2" />
+
+        <TextView
+            android:text="@string/rec_set_width"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="?android:textColorSecondary"
+            style="@android:style/TextAppearance.Material.Body2" />
+
+        <TextView
+            android:text="@string/rec_set_height"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="?android:textColorSecondary"
+            style="@android:style/TextAppearance.Material.Body2" />
+
+        <TextView
+            android:text="@string/rec_set_y"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="?android:textColorSecondary"
+            style="@android:style/TextAppearance.Material.Body2" />
+
+        <TextView
+            android:text="@string/rec_disable_hide_in_fullscren"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="?android:textColorSecondary"
+            style="@android:style/TextAppearance.Material.Body2" />
+
+        <TextView
+            android:text="@string/rec_dont_move_pill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="?android:textColorSecondary"
+            style="@android:style/TextAppearance.Material.Body2" />
+
+        <TextView
+            android:text="@string/rec_no_large_hitbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="?android:textColorSecondary"
+            style="@android:style/TextAppearance.Material.Body2" />
+
+        <TextView
+            android:text="@string/rec_disable_default_gestures"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="?android:textColorSecondary"
+            style="@android:style/TextAppearance.Material.Body2" />
+
+    </LinearLayout>
+
+</ScrollView>

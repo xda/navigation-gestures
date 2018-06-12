@@ -1,8 +1,10 @@
 package com.xda.nobar.activities
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.preference.*
@@ -111,6 +113,7 @@ class SettingsActivity : AppCompatActivity() {
         private lateinit var app: App
         private lateinit var sectionedScreen: PreferenceScreen
         private lateinit var sectionedCategory: PreferenceCategory
+        private lateinit var sectionedCategoryHolder: CustomPreferenceCategory
         private lateinit var swipeUpCategory: CustomPreferenceCategory
         private lateinit var swipeUpHoldCategory: CustomPreferenceCategory
 
@@ -125,16 +128,25 @@ class SettingsActivity : AppCompatActivity() {
 
             swipeUpCategory = findPreference("swipe_up_cat") as CustomPreferenceCategory
             swipeUpHoldCategory = findPreference("swipe_up_hold_cat") as CustomPreferenceCategory
+            sectionedCategoryHolder = findPreference("sectioned_pill_cat") as CustomPreferenceCategory
 
             val sectionedPill = findPreference("sectioned_pill") as SwitchPreference
             sectionedPill.setOnPreferenceChangeListener { _, newValue ->
                 if (newValue.toString().toBoolean()) {
-                    preferenceScreen.addPreference(sectionedCategory)
+                    sectionedCategoryHolder.addPreference(sectionedCategory)
                     swipeUpCategory.removeAll()
                     swipeUpHoldCategory.removeAll()
+                    setListeners()
+
+                    AlertDialog.Builder(activity)
+                            .setTitle(R.string.use_recommended_settings)
+                            .setView(R.layout.use_recommended_settings_dialog_message_view)
+                            .setPositiveButton(android.R.string.yes, { _, _ -> setSectionedSettings() })
+                            .setNegativeButton(android.R.string.no, null)
+                            .show()
                 }
                 else {
-                    preferenceScreen.removePreference(sectionedCategory)
+                    sectionedCategoryHolder.removePreference(sectionedCategory)
                     swipeUpCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up)))
                     swipeUpHoldCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up_hold)))
                 }
@@ -157,11 +169,12 @@ class SettingsActivity : AppCompatActivity() {
 
             val sectionedPill = findPreference("sectioned_pill") as SwitchPreference
             if (sectionedPill.isChecked) {
-                preferenceScreen.addPreference(sectionedCategory)
+                sectionedCategoryHolder.addPreference(sectionedCategory)
                 swipeUpCategory.removeAll()
                 swipeUpHoldCategory.removeAll()
+                setListeners()
             } else {
-                preferenceScreen.removePreference(sectionedCategory)
+                sectionedCategoryHolder.removePreference(sectionedCategory)
                 swipeUpCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up)))
                 swipeUpHoldCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up_hold)))
             }
@@ -205,6 +218,35 @@ class SettingsActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+
+        private fun setSectionedSettings() {
+            preferenceManager.sharedPreferences.edit().apply {
+                putBoolean("use_pixels_width", false)
+                putBoolean("use_pixels_height", false)
+                putBoolean("use_pixels_y", false)
+                putBoolean("larger_hitbox", false)
+                putBoolean("hide_in_fullscreen", false)
+                putBoolean("static_pill", true)
+
+                putInt("custom_width_percent", 1000)
+                putInt("custom_height_percent", 150)
+                putInt("custom_y_percent", 0)
+                putInt("pill_corner_radius", 0)
+                putInt("pill_bg", Color.TRANSPARENT)
+                putInt("pill_fg", Color.TRANSPARENT)
+
+                remove(app.actionTap)
+                remove(app.actionDouble)
+                remove(app.actionHold)
+                remove(app.actionDown)
+                remove(app.actionLeft)
+                remove(app.actionLeftHold)
+                remove(app.actionRight)
+                remove(app.actionRightHold)
+                remove(app.actionUp)
+                remove(app.actionUpHold)
+            }.apply()
         }
 
         private fun updateAppLaunchSummary(key: String, appName: String) {

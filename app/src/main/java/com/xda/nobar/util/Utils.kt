@@ -112,47 +112,6 @@ object Utils {
     }
 
     /**
-     * A special "off" state for NoBar. When active, NoBar will automatically re-enable when the device is unlocked or finishes rebooting
-     * @param context context object
-     * @param off if true, this mode is active
-     */
-    fun setOffForRebootOrScreenLock(context: Context, off: Boolean) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("special_off", off).apply()
-    }
-
-    /**
-     * Check if the special "off" state is currently active
-     * @param context context object
-     * @return true if this mode is active
-     */
-    fun isOffForRebootOrScreenLock(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("special_off", false)
-    }
-
-    /**
-     * Check to see if user has "compatibility mode" enabled; ie, use Immersive Mode instead of overscans
-     * @param context context object
-     * @return true if Immersive Mode should be used
-     */
-    fun shouldUseImmersiveInsteadOfOverscan(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_immersive", false)
-    }
-
-    /**
-     * For use during the set-up process; save the chosen action pack
-     * @param context context object
-     * @param map the chosen action pack: Strings are keys, Ints are actions
-     * See {@link com.xda.nobar.views.BarView#TYPE_*} for action values
-     */
-    fun saveActionSet(context: Context, map: HashMap<String, Int>) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        prefs.edit().let {
-            map.forEach { t, u ->  it.putString(t, u.toString())}
-            it.apply()
-        }
-    }
-
-    /**
      * Load the actions corresponding to each gesture
      * @param context a context object
      * @param map the HashMap to fill/update
