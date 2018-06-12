@@ -97,43 +97,20 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     val actionRightHold: String
         get() = resources.getString(R.string.action_right_hold)
 
-    val actionLeftLeft: String
-        get() = resources.getString(R.string.action_left_left)
-    val actionRightLeft: String
-        get() = resources.getString(R.string.action_right_left)
-    val actionUpLeft: String
-        get() = resources.getString(R.string.action_up_left)
-    val actionDownLeft: String
-        get() = resources.getString(R.string.action_down_left)
-    val actionDoubleLeft: String
-        get() = resources.getString(R.string.action_double_left)
-    val actionHoldLeft: String
-        get() = resources.getString(R.string.action_hold_left)
     val actionUpHoldLeft: String
         get() = resources.getString(R.string.action_up_hold_left)
-    val actionLeftHoldLeft: String
-        get() = resources.getString(R.string.action_left_hold_left)
-    val actionRightHoldLeft: String
-        get() = resources.getString(R.string.action_right_hold_left)
+    val actionUpLeft: String
+        get() = resources.getString(R.string.action_up_left)
 
-    val actionLeftRight: String
-        get() = resources.getString(R.string.action_left_right)
-    val actionRightRight: String
-        get() = resources.getString(R.string.action_right_right)
+    val actionUpCenter: String
+        get() = resources.getString(R.string.action_up_center)
+    val actionUpHoldCenter: String
+        get() = resources.getString(R.string.action_up_hold_center)
+
     val actionUpRight: String
         get() = resources.getString(R.string.action_up_right)
-    val actionDownRight: String
-        get() = resources.getString(R.string.action_down_right)
-    val actionDoubleRight: String
-        get() = resources.getString(R.string.action_double_right)
-    val actionHoldRight: String
-        get() = resources.getString(R.string.action_hold_right)
     val actionUpHoldRight: String
         get() = resources.getString(R.string.action_up_hold_right)
-    val actionLeftHoldRight: String
-        get() = resources.getString(R.string.action_left_hold_right)
-    val actionRightHoldRight: String
-        get() = resources.getString(R.string.action_right_hold_right)
 
     val typeNoAction: Int
         get() = resources.getString(R.string.type_no_action).toInt()

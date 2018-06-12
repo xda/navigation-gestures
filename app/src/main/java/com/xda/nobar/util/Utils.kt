@@ -157,7 +157,7 @@ object Utils {
      * @param context a context object
      * @param map the HashMap to fill/update
      */
-    fun getCenterActionList(context: Context, map: HashMap<String, Int>) {
+    fun getActionsList(context: Context, map: HashMap<String, Int>) {
         try {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
             val app = getHandler(context)
@@ -173,6 +173,13 @@ object Utils {
             val holdLeft = prefs.getString(app.actionLeftHold, app.typeNoAction.toString()).toInt()
             val holdRight = prefs.getString(app.actionRightHold, app.typeNoAction.toString()).toInt()
 
+            val upLeft = prefs.getString(app.actionUpLeft, app.typeBack.toString()).toInt()
+            val upHoldLeft = prefs.getString(app.actionUpHoldLeft, app.typeNoAction.toString()).toInt()
+            val upCenter = prefs.getString(app.actionUpCenter, app.typeHome.toString()).toInt()
+            val upHoldCenter = prefs.getString(app.actionUpHoldCenter, app.typeRecents.toString()).toInt()
+            val upRight = prefs.getString(app.actionUpRight, app.typeBack.toString()).toInt()
+            val upHoldRight = prefs.getString(app.actionUpHoldRight, app.typeNoAction.toString()).toInt()
+
             map[app.actionLeft] = left
             map[app.actionRight] = right
             map[app.actionTap] = tap
@@ -183,6 +190,13 @@ object Utils {
             map[app.actionUpHold] = holdUp
             map[app.actionLeftHold] = holdLeft
             map[app.actionRightHold] = holdRight
+
+            map[app.actionUpLeft] = upLeft
+            map[app.actionUpHoldLeft] = upHoldLeft
+            map[app.actionUpCenter] = upCenter
+            map[app.actionUpHoldCenter] = upHoldCenter
+            map[app.actionUpRight] = upRight
+            map[app.actionUpHoldRight] = upHoldRight
         } catch (e: Exception) {}
     }
 

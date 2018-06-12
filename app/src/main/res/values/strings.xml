@@ -74,6 +74,13 @@
     <string name="toggle_gestures">Toggle Gestures</string>
     <string name="toggle_nav">Toggle NavBar</string>
     <string name="grant_write_settings">Write Settings Permission Required!</string>
+    <string name="sections">Sections</string>
+    <string name="swipe_up_left">Swipe Up from Left</string>
+    <string name="swipe_up_hold_left">Swipe Up and Hold from Left</string>
+    <string name="swipe_up_center">Swipe Up from Center</string>
+    <string name="swipe_up_hold_center">Swipe Up and Hold from Center</string>
+    <string name="swipe_up_right">Swipe Up from Right</string>
+    <string name="swipe_up_hold_right">Swipe Up and Hold from Right</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -201,7 +208,7 @@
     <string name="prem_type_launch_app">25</string>
     <string name="prem_type_lock_screen">26</string>
 
-    <!--Center Action Keys-->
+    <!--Main Action Keys-->
     <string name="action_left">left</string>
     <string name="action_right">right</string>
     <string name="action_up">up</string>
@@ -213,27 +220,16 @@
     <string name="action_left_hold">left_hold</string>
     <string name="action_right_hold">right_hold</string>
 
+    <!--Center Action Keys-->
+    <string name="action_up_center">up_center</string>
+    <string name="action_up_hold_center">up_hold_center</string>
+
     <!--Left Action Keys-->
-    <string name="action_left_left">left_left</string>
-    <string name="action_right_left">right_left</string>
     <string name="action_up_left">up_left</string>
-    <string name="action_down_left">down_left</string>
-    <string name="action_double_left">double_tap_left</string>
-    <string name="action_hold_left">hold_left</string>
-    <string name="action_tap_left">tap_left</string>
     <string name="action_up_hold_left">up_hold_left</string>
-    <string name="action_left_hold_left">left_hold_left</string>
-    <string name="action_right_hold_left">right_hold_left</string>
 
     <!--Right Action Keys-->
-    <string name="action_left_right">left_right</string>
-    <string name="action_right_right">right_right</string>
     <string name="action_up_right">up_right</string>
-    <string name="action_down_right">down_right</string>
-    <string name="action_double_right">double_tap_right</string>
-    <string name="action_hold_right">hold_right</string>
     <string name="action_up_hold_right">up_hold_right</string>
-    <string name="action_left_hold_right">left_hold_right</string>
-    <string name="action_right_hold_right">right_hold_right</string>
 
 </resources>

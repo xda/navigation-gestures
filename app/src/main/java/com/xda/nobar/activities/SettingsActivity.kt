@@ -5,10 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.preference.Preference
-import android.preference.PreferenceCategory
-import android.preference.PreferenceFragment
-import android.preference.SwitchPreference
+import android.preference.*
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.jaredrummler.android.colorpicker.ColorPreference
@@ -112,13 +109,37 @@ class SettingsActivity : AppCompatActivity() {
         private val listPrefs = ArrayList<SectionableListPreference>()
 
         private lateinit var app: App
+        private lateinit var sectionedScreen: PreferenceScreen
+        private lateinit var sectionedCategory: PreferenceCategory
+        private lateinit var swipeUpCategory: CustomPreferenceCategory
+        private lateinit var swipeUpHoldCategory: CustomPreferenceCategory
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
 
             app = activity.application as App
+            sectionedScreen = preferenceManager.inflateFromResource(activity, R.xml.prefs_sectioned, null)
+            sectionedCategory = sectionedScreen.findPreference("section_gestures") as PreferenceCategory
 
             addPreferencesFromResource(R.xml.prefs_gestures)
+
+            swipeUpCategory = findPreference("swipe_up_cat") as CustomPreferenceCategory
+            swipeUpHoldCategory = findPreference("swipe_up_hold_cat") as CustomPreferenceCategory
+
+            val sectionedPill = findPreference("sectioned_pill") as SwitchPreference
+            sectionedPill.setOnPreferenceChangeListener { _, newValue ->
+                if (newValue.toString().toBoolean()) {
+                    preferenceScreen.addPreference(sectionedCategory)
+                    swipeUpCategory.removeAll()
+                    swipeUpHoldCategory.removeAll()
+                }
+                else {
+                    preferenceScreen.removePreference(sectionedCategory)
+                    swipeUpCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up)))
+                    swipeUpHoldCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up_hold)))
+                }
+                true
+            }
 
             listPrefs.addAll(getAllListPrefs())
 
@@ -134,12 +155,23 @@ class SettingsActivity : AppCompatActivity() {
 
             activity.title = resources.getText(R.string.gestures)
 
+            val sectionedPill = findPreference("sectioned_pill") as SwitchPreference
+            if (sectionedPill.isChecked) {
+                preferenceScreen.addPreference(sectionedCategory)
+                swipeUpCategory.removeAll()
+                swipeUpHoldCategory.removeAll()
+            } else {
+                preferenceScreen.removePreference(sectionedCategory)
+                swipeUpCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up)))
+                swipeUpHoldCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up_hold)))
+            }
+
             updateSummaries()
         }
 
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
             val map = HashMap<String, Int>()
-            Utils.getCenterActionList(activity, map)
+            Utils.getActionsList(activity, map)
 
             if (map.keys.contains(key)) updateSummaries()
         }

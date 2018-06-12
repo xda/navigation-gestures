@@ -26,12 +26,6 @@
         android:summary="@string/enable_in_car_mode_desc"
         android:key="enable_in_car_mode" />
 
-    <SwitchPreference
-        android:title="@string/sectioned_pill"
-        android:summary="@string/sectioned_pill_desc"
-        android:icon="@drawable/pill_div"
-        android:key="sectioned_pill" />
-
     <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/hold_time"
         android:key="hold_time"

@@ -75,6 +75,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private val actionMap = HashMap<String, Int>()
     private val pool = Executors.newScheduledThreadPool(1)
+    private val sectionedActionManager = SectionedActionManager()
 
     var isHidden = false
     var beingTouched = false
@@ -531,54 +532,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * Load the user's custom gesture/action pairings; default values if a pairing doesn't exist
      */
     private fun loadActionMap() {
-        Utils.getCenterActionList(context, actionMap)
-    }
-
-    /**
-     * Parse the action index and broadcast to {@link com.xda.nobar.services.Actions}
-     * @param key one of app.action*
-     */
-    private fun sendAction(key: String) {
-        val which = actionMap[key] ?: return
-
-        if (which == app.typeNoAction) return
-
-        vibrate(getVibrationDuration().toLong())
-
-        if (key == app.actionDouble) handler?.postDelayed({ vibrate(getVibrationDuration().toLong()) }, getVibrationDuration().toLong())
-
-        if (which == app.typeHide) {
-            if (key == app.actionUp || key == app.actionUpHold) {
-                yDownAnimator?.cancel()
-                yDownAnimator = null
-            }
-            hidePill(false)
-            return
-        }
-
-        when (key) {
-            app.actionDouble -> jiggleDoubleTap()
-            app.actionHold -> jiggleHold()
-//            app.actionDown -> jiggleDown()
-            app.actionTap -> jiggleTap()
-            app.actionUpHold -> jiggleHoldUp()
-            app.actionLeftHold -> jiggleLeftHold()
-            app.actionRightHold -> jiggleRightHold()
-        }
-
-        if (key == app.actionUp || key == app.actionLeft || key == app.actionRight) {
-            animate(null, ALPHA_ACTIVE)
-        }
-
-        val intent = Intent(Actions.ACTION)
-        intent.putExtra(Actions.EXTRA_ACTION, which)
-        intent.putExtra(Actions.EXTRA_GESTURE, key)
-
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-
-        if (Utils.shouldUseRootCommands(context)) {
-            app.rootBinder?.handle(which)
-        }
+        Utils.getActionsList(context, actionMap)
     }
 
     /**
@@ -936,19 +890,19 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             if (isSwipeUp || (isRunningLongUp && actionMap[app.actionUpHold] == app.typeNoAction)) {
                                 upHoldHandle?.cancel(true)
                                 upHoldHandle = null
-                                sendAction(app.actionUp)
+                                sectionedActionManager.sendAction(app.actionUp, ev.rawX)
                             }
 
                             if (isSwipeLeft || (isRunningLongLeft && actionMap[app.actionLeftHold] == app.typeNoAction)) {
                                 leftHoldHandle?.cancel(true)
                                 leftHoldHandle = null
-                                sendAction(app.actionLeft)
+                                sectionedActionManager.sendAction(app.actionLeft, ev.rawX)
                             }
 
                             if (isSwipeRight || (isRunningLongRight && actionMap[app.actionRightHold] == app.typeNoAction)) {
                                 rightHoldHandle?.cancel(true)
                                 rightHoldHandle = null
-                                sendAction(app.actionRight)
+                                sectionedActionManager.sendAction(app.actionRight, ev.rawX)
                             }
 
                             if (pill.translationX != 0f) {
@@ -1055,7 +1009,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     upHoldHandle = pool.schedule({
                                         handler?.post {
                                             isRunningLongUp = true
-                                            sendAction(app.actionUpHold)
+                                            sectionedActionManager.sendAction(app.actionUpHold, ev.rawX)
                                             isSwipeUp = false
                                             upHoldHandle = null
                                         }
@@ -1087,7 +1041,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                         leftHoldHandle = pool.schedule({
                                             handler?.post {
                                                 isRunningLongLeft = true
-                                                sendAction(app.actionLeftHold)
+                                                sectionedActionManager.sendAction(app.actionLeftHold, ev.rawX)
                                                 isSwipeLeft = false
                                                 leftHoldHandle = null
                                             }
@@ -1100,7 +1054,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                         rightHoldHandle = pool.schedule({
                                             handler?.post {
                                                 isRunningLongRight = true
-                                                sendAction(app.actionRightHold)
+                                                sectionedActionManager.sendAction(app.actionRightHold, ev.rawX)
                                                 isSwipeRight = false
                                                 rightHoldHandle = null
                                             }
@@ -1139,7 +1093,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     }
                     distanceY > yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
                         isActing = true
-                        sendAction(app.actionDown)
+                        sectionedActionManager.sendAction(app.actionDown, oldEvent.rawX)
                         true
                     }
                     distanceY < -yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
@@ -1169,11 +1123,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 //
 //            }
 
-            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            override fun onSingleTapUp(e: MotionEvent): Boolean {
                 return if (actionMap[app.actionDouble] == app.typeNoAction && !isActing && !wasHidden) {
                     synchronized(tapLock) {
                         isOverrideTap = true
-                        sendAction(app.actionTap)
+                        sectionedActionManager.sendAction(app.actionTap, e.rawX)
                     }
                     isActing = false
                     true
@@ -1183,20 +1137,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             /**
              * Handle the long-press
              */
-            override fun onLongPress(e: MotionEvent?) {
+            override fun onLongPress(e: MotionEvent) {
                 if (!isHidden && !isActing) {
                     isActing = true
-                    sendAction(app.actionHold)
+                    sectionedActionManager.sendAction(app.actionHold, e.rawX)
                 }
             }
 
             /**
              * Handle the double-tap
              */
-            override fun onDoubleTap(e: MotionEvent?): Boolean {
+            override fun onDoubleTap(e: MotionEvent): Boolean {
                 return if (!isHidden &&!isActing) {
                     isActing = true
-                    sendAction(app.actionDouble)
+                    sectionedActionManager.sendAction(app.actionDouble, e.rawX)
                     true
                 } else false
             }
@@ -1204,13 +1158,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             /**
              * Handle the single tap
              */
-            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 synchronized(tapLock) {
                     synchronized(hideLock) {
                         return if (!isOverrideTap && !isHidden) {
                             isActing = false
 
-                            sendAction(app.actionTap)
+                            sectionedActionManager.sendAction(app.actionTap, e.rawX)
                             true
                         } else if (isHidden) {
                             isOverrideTap = false
@@ -1223,6 +1177,74 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }
                     }
                 }
+            }
+        }
+    }
+
+    inner class SectionedActionManager {
+        private fun String.isEligible() = arrayListOf(
+                app.actionUp,
+                app.actionUpHold
+        ).contains(this) && Utils.sectionedPill(context)
+
+        fun sendAction(action: String, lastX: Float) {
+            if (action.isEligible()) {
+                val third = params.width / 3f
+
+                when {
+                    lastX < third -> sendAction("${action}_left")
+                    lastX >= third && lastX <= (2f * third) -> sendAction("${action}_center")
+                    lastX > (2f * third) -> sendAction("${action}_right")
+                }
+            } else {
+                sendAction(action)
+            }
+        }
+
+        /**
+         * Parse the action index and broadcast to {@link com.xda.nobar.services.Actions}
+         * @param key one of app.action*
+         */
+        private fun sendAction(key: String) {
+            val which = actionMap[key] ?: return
+
+            if (which == app.typeNoAction) return
+
+            vibrate(getVibrationDuration().toLong())
+
+            if (key == app.actionDouble) handler?.postDelayed({ vibrate(getVibrationDuration().toLong()) }, getVibrationDuration().toLong())
+
+            if (which == app.typeHide) {
+                if (key == app.actionUp || key == app.actionUpHold) {
+                    yDownAnimator?.cancel()
+                    yDownAnimator = null
+                }
+                hidePill(false)
+                return
+            }
+
+            when (key) {
+                app.actionDouble -> jiggleDoubleTap()
+                app.actionHold -> jiggleHold()
+//            app.actionDown -> jiggleDown()
+                app.actionTap -> jiggleTap()
+                app.actionUpHold -> jiggleHoldUp()
+                app.actionLeftHold -> jiggleLeftHold()
+                app.actionRightHold -> jiggleRightHold()
+            }
+
+            if (key == app.actionUp || key == app.actionLeft || key == app.actionRight) {
+                animate(null, ALPHA_ACTIVE)
+            }
+
+            val intent = Intent(Actions.ACTION)
+            intent.putExtra(Actions.EXTRA_ACTION, which)
+            intent.putExtra(Actions.EXTRA_GESTURE, key)
+
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+
+            if (Utils.shouldUseRootCommands(context)) {
+                app.rootBinder?.handle(which)
             }
         }
     }
