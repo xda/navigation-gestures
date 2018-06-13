@@ -230,11 +230,12 @@ class SettingsActivity : AppCompatActivity() {
                 putBoolean("static_pill", true)
 
                 putInt("custom_width_percent", 1000)
-                putInt("custom_height_percent", 150)
+                putInt("custom_height_percent", 15)
                 putInt("custom_y_percent", 0)
                 putInt("pill_corner_radius", 0)
                 putInt("pill_bg", Color.TRANSPARENT)
                 putInt("pill_fg", Color.TRANSPARENT)
+                putInt("anim_duration", 0)
 
                 putString(app.actionTap, app.typeNoAction.toString())
                 putString(app.actionDouble, app.typeNoAction.toString())
