@@ -192,7 +192,11 @@ class Actions : AccessibilityService(), Serializable {
                             } catch (e: Exception) {}
                         }
                     }
-                    app.premTypeLockScreen -> runPremiumAction { runSystemSettingsAction { startActivity(Intent(this@Actions, LockScreenActivity::class.java)) } }
+                    app.premTypeLockScreen -> runPremiumAction { runSystemSettingsAction {
+                        val lock = Intent(this@Actions, LockScreenActivity::class.java)
+                        lock.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(lock)
+                    } }
                     app.premTypeVibe -> {
                         //TODO: Implement
                     }

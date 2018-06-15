@@ -39,6 +39,7 @@ class NavBarToggle : TileService(), App.NavBarHideListener {
             if (!IntroActivity.hasWss(this)) {
                 val activity = Intent(this, IntroActivity::class.java)
                 activity.putExtra(IntroActivity.EXTRA_WSS_ONLY, true)
+                activity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(activity)
                 handler.prefs.edit().putBoolean("hide_nav", false).apply()
             } else {

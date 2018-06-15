@@ -508,7 +508,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     when (intent?.action) {
                         Intent.ACTION_SCREEN_ON -> {
                             if (Utils.shouldUseOverscanMethod(this@App)) {
-                                if (kgm.inKeyguardRestrictedInputMode()) {
+                                if (kgm.inKeyguardRestrictedInputMode()
+                                        || kgm.isKeyguardLocked
+                                        || (if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) kgm.isDeviceLocked else false)) {
                                     showNav()
                                 } else {
                                     hideNav()
