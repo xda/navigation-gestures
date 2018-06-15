@@ -2,6 +2,7 @@ package com.xda.nobar.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -9,6 +10,7 @@ import android.os.Build
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import com.xda.nobar.R
+import com.xda.nobar.activities.MainActivity
 
 /**
  * Used to prevent the device from killing NoBar
@@ -31,8 +33,9 @@ class ForegroundService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val builder = NotificationCompat.Builder(this, "nobar")
 //                .setContentTitle(resources.getString(R.string.app_name))
-                .setSmallIcon(R.drawable.ic_border_bottom_black_24dp)
+                .setSmallIcon(R.drawable.ic_navgest)
                 .setPriority(if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) NotificationCompat.PRIORITY_MIN else NotificationCompat.PRIORITY_LOW)
+                .setContentIntent(PendingIntent.getActivity(this, 10, Intent(this, MainActivity::class.java), 0))
                 .setStyle(NotificationCompat.BigTextStyle()
                         .bigText(resources.getText(R.string.foreground_desc))
                         .setBigContentTitle(resources.getText(R.string.foreground)))
