@@ -19,4 +19,6 @@
     <color name="slide_5_dark">#1b5e20</color>
     <color name="slide_6_dark">#1a237e</color>
     <color name="slide_7_dark">#311b92</color>
+
+    <color name="ic_launcher_background">@color/colorPrimary</color>
 </resources>

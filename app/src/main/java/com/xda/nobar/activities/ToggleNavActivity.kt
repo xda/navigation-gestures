@@ -16,5 +16,7 @@ class ToggleNavActivity : AppCompatActivity() {
             handler.prefs.edit().putBoolean("hide_nav", !hidden).apply()
             if (!handler.isNavBarHidden()) handler.hideNav() else handler.showNav()
         }
+
+        finish()
     }
 }
