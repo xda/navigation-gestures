@@ -5,12 +5,18 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.support.v4.content.LocalBroadcastManager
 import android.util.AttributeSet
 import android.view.*
 import android.view.animation.AccelerateInterpolator
@@ -20,11 +26,13 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import com.xda.nobar.App
 import com.xda.nobar.R
+import com.xda.nobar.services.Actions
 import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.getCustomHeight
 import com.xda.nobar.util.Utils.getCustomWidth
 import com.xda.nobar.util.Utils.getHomeX
 import com.xda.nobar.util.Utils.getHomeY
+import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -56,6 +64,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         val ENTER_INTERPOLATOR = DecelerateInterpolator()
         val EXIT_INTERPOLATOR = AccelerateInterpolator()
+
+        private const val FIRST_SECTION = 0
+        private const val SECOND_SECTION = 1
+        private const val THIRD_SECTION = 2
     }
 
     val params: WindowManager.LayoutParams = WindowManager.LayoutParams()
@@ -66,9 +78,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val pool = Executors.newScheduledThreadPool(1)
-
-    val gestureManager = com.xda.nobar.util.GestureManager(this)
-
+    
     var isHidden = false
     var isCarryingOutTouchAction = false
         set(value) {
@@ -138,7 +148,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         pill = view.findViewById(R.id.pill)
         pillFlash = pill.findViewById(R.id.pill_tap_flash)
 
-        gestureManager.loadActionMap()
+        gestureDetector.loadActionMap()
     }
 
     /**
@@ -181,15 +191,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        return gestureDetector.gestureDetector.onTouchEvent(event)
+        return gestureDetector.onTouchEvent(event)
     }
 
     /**
      * Listen for relevant changes in the SharedPreferences
      */
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (gestureManager.actionMap.keys.contains(key)) {
-            gestureManager.loadActionMap()
+        if (gestureDetector.actionMap.keys.contains(key)) {
+            gestureDetector.loadActionMap()
         }
         if (key != null && key.contains("use_pixels")) {
             params.width = getCustomWidth(context)
@@ -504,14 +514,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             prefs.edit().putBoolean("show_hidden_toast", false).apply()
         }
     }
-
-    /**
-     * Get the user-defined or default duration of the pill animations
-     * @return the duration, in ms
-     */
-    private fun getAnimationDurationMs(): Long {
-        return prefs.getInt("anim_duration", BarView.DEFAULT_ANIM_DURATION.toInt()).toLong()
-    }
     
     fun updateLayout(params: WindowManager.LayoutParams) {
         handler?.post {
@@ -522,44 +524,621 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     /**
-     * Manage all the gestures on the pill
+     * Get the user-defined or default time the user must hold a swipe to perform the swipe and hold action
+     * @return the time, in ms
      */
-    inner class GestureManager {
-        val gestureDetector = GD()
+    private fun getHoldTime(): Int {
+        return prefs.getInt("hold_time", 1000)
+    }
 
-        /**
-         * The main gesture detection
-         */
-        inner class GD : GestureDetector(context, GestureListener()) {
-            override fun onTouchEvent(ev: MotionEvent?): Boolean {
-                return gestureManager.handleTouchEvent(ev) || super.onTouchEvent(ev)
+    /**
+     * Get the user-defined or default duration of the feedback vibration
+     * @return the duration, in ms
+     */
+    private fun getVibrationDuration(): Int {
+        return prefs.getInt("vibration_duration", VIB_SHORT.toInt())
+    }
+
+    /**
+     * Get the user-defined or default duration of the pill animations
+     * @return the duration, in ms
+     */
+    private fun getAnimationDurationMs(): Long {
+        return prefs.getInt("anim_duration", DEFAULT_ANIM_DURATION.toInt()).toLong()
+    }
+
+    /**
+     * The animation for a single tap on the pill
+     */
+    private fun jiggleTap() {
+        animate()
+                .scaleX(SCALE_MID)
+                .setInterpolator(ENTER_INTERPOLATOR)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    animate()
+                            .scaleX(SCALE_NORMAL)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
+                }
+                .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
+    }
+
+    /**
+     * The animation for a swipe-left and hold on the pill
+     */
+    private fun jiggleLeftHold() {
+        animate()
+                .scaleX(SCALE_SMALL)
+//                .alpha(ALPHA_ACTIVE)
+                .x(-width * (1 - SCALE_SMALL) / 2)
+                .setInterpolator(ENTER_INTERPOLATOR)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    animate()
+                            .scaleX(SCALE_NORMAL)
+                            .x(0f)
+//                            .alpha(ALPHA_INACTIVE)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
+                }
+        animateActiveLayer(BRIGHTEN_ACTIVE)
+    }
+
+    /**
+     * The animation for a swipe-right and hold on the pill
+     */
+    private fun jiggleRightHold() {
+        animate()
+                .scaleX(SCALE_SMALL)
+//                .alpha(ALPHA_ACTIVE)
+                .x(width * (1 - SCALE_SMALL) / 2)
+                .setInterpolator(ENTER_INTERPOLATOR)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    animate()
+                            .scaleX(SCALE_NORMAL)
+                            .x(0f)
+//                            .alpha(ALPHA_INACTIVE)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
+                }
+        animateActiveLayer(BRIGHTEN_ACTIVE)
+    }
+
+    /**
+     * The animation for a long-press on the pill
+     */
+    private fun jiggleHold() {
+        animate()
+                .scaleX(SCALE_SMALL)
+//                .alpha(ALPHA_ACTIVE)
+                .setInterpolator(ENTER_INTERPOLATOR)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    animate()
+                            .scaleX(SCALE_NORMAL)
+//                            .alpha(ALPHA_INACTIVE)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
+                }
+                .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
+    }
+
+    /**
+     * The animation for an up-swipe and hold on the pill
+     */
+    private fun jiggleHoldUp() {
+        animate()
+                .scaleY(SCALE_SMALL)
+                .y(-height * (1 - SCALE_SMALL) / 2)
+//                .alpha(ALPHA_ACTIVE)
+                .setInterpolator(ENTER_INTERPOLATOR)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    animate()
+                            .scaleY(SCALE_NORMAL)
+                            .y(0f)
+//                            .alpha(ALPHA_INACTIVE)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
+                }
+                .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
+    }
+
+    /**
+     * The animation for a double-tap on the pill
+     */
+    private fun jiggleDoubleTap() {
+        animate()
+                .scaleX(SCALE_MID)
+//                .alpha(ALPHA_ACTIVE)
+                .setInterpolator(AccelerateInterpolator())
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    animate()
+                            .scaleX(SCALE_SMALL)
+                            .setInterpolator(ENTER_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .withEndAction {
+                                animate()
+                                        .scaleX(SCALE_NORMAL)
+//                                        .alpha(ALPHA_INACTIVE)
+                                        .setInterpolator(EXIT_INTERPOLATOR)
+                                        .setDuration(getAnimationDurationMs())
+                                        .start()
+                                animateActiveLayer(BRIGHTEN_INACTIVE)
+                            }
+                            .start()
+                }
+                .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
+    }
+
+    /**
+     * This is called twice to "flash" the pill when an action is performed
+     */
+    fun animateActiveLayer(alpha: Float) {
+        handler?.post {
+            pillFlash.apply {
+                val alphaRatio = Color.alpha(Utils.getPillBGColor(context)).toFloat() / 255f
+                animate()
+                        .setDuration(getAnimationDurationMs())
+                        .alpha(alpha * alphaRatio)
+                        .start()
+            }
+        }
+    }
+
+    /**
+     * Vibrate for the specified duration
+     * @param duration the desired duration
+     */
+    fun vibrate(duration: Long) {
+        if (duration > 0) {
+            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+                vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                vibrator.vibrate(duration)
             }
         }
 
-        inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapUp(e: MotionEvent): Boolean {
-                return gestureManager.onSingleTapUp(e)
+        if (isSoundEffectsEnabled) {
+            playSoundEffect(SoundEffectConstants.CLICK)
+        }
+    }
+
+    /**
+     * Manage all the gestures on the pill
+     */
+    inner class GestureManager {
+        val actionMap = HashMap<String, Int>()
+        private val tapLock = Any()
+
+        private var isSwipeUp = false
+        private var isSwipeLeft = false
+        private var isSwipeRight = false
+        private var isOverrideTap = false
+        private var wasHidden = false
+
+        var beingTouched = false
+        var isActing = false
+
+        private var upHoldHandle: ScheduledFuture<*>? = null
+        private var leftHoldHandle: ScheduledFuture<*>? = null
+        private var rightHoldHandle: ScheduledFuture<*>? = null
+
+        private var isRunningLongUp = false
+        private var isRunningLongLeft = false
+        private var isRunningLongRight = false
+
+        private var oldEvent: MotionEvent? = null
+        private var oldY = 0F
+        private var oldX = 0F
+
+        private val manager = GestureDetector(context, Detector())
+
+        fun onTouchEvent(ev: MotionEvent?): Boolean {
+            return handleTouchEvent(ev) || manager.onTouchEvent(ev)
+        }
+
+        private fun handleTouchEvent(ev: MotionEvent?): Boolean {
+            val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+            val time = (getAnimationDurationMs() * animDurScale)
+            var ultimateReturn = false
+
+            when (ev?.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    wasHidden = isHidden
+                    app.uiHandler.onGlobalLayout()
+                    oldY = ev.rawY
+                    oldX = ev.rawX
+                    beingTouched = true
+                    isCarryingOutTouchAction = true
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    beingTouched = false
+
+                    if (wasHidden) {
+                        isSwipeUp = false
+                    }
+
+                    if (isSwipeUp || (isRunningLongUp &&  getSectionedUpHoldAction(oldX) == app.typeNoAction)) {
+                        upHoldHandle?.cancel(true)
+                        upHoldHandle = null
+                        sendAction(app.actionUp, ev.rawX)
+                    }
+
+                    if (isSwipeLeft || (isRunningLongLeft && actionMap[app.actionLeftHold] == app.typeNoAction)) {
+                        leftHoldHandle?.cancel(true)
+                        leftHoldHandle = null
+                        sendAction(app.actionLeft, ev.rawX)
+                    }
+
+                    if (isSwipeRight || (isRunningLongRight && actionMap[app.actionRightHold] == app.typeNoAction)) {
+                        rightHoldHandle?.cancel(true)
+                        rightHoldHandle = null
+                        sendAction(app.actionRight, ev.rawX)
+                    }
+
+                    if (pill.translationX != 0f) {
+                        pill.animate()
+                                .translationX(0f)
+                                .setDuration(getAnimationDurationMs())
+                                .withEndAction {
+                                    if (params.x == Utils.getHomeX(context)) {
+                                        isActing = false
+                                        isSwipeLeft = false
+                                        isSwipeRight = false
+                                    }
+                                }
+                                .start()
+                    }
+
+                    when {
+                        params.y > getAdjustedHomeY() -> {
+                            val distance = (params.y - getAdjustedHomeY()).absoluteValue
+                            if (yDownAnimator != null) {
+                                yDownAnimator?.cancel()
+                                yDownAnimator = null
+                            }
+                            yDownAnimator = ValueAnimator.ofInt(params.y, getAdjustedHomeY())
+                            yDownAnimator?.interpolator = DecelerateInterpolator()
+                            yDownAnimator?.addUpdateListener {
+                                params.y = it.animatedValue.toString().toInt()
+                                updateLayout(params)
+                            }
+                            yDownAnimator?.addListener(object : AnimatorListenerAdapter() {
+                                override fun onAnimationEnd(animation: Animator?) {
+//                                            if (isSwipeUp) jiggleDown()
+//
+                                    isActing = false
+                                    isSwipeUp = false
+                                    isCarryingOutTouchAction = false
+
+                                    yDownAnimator = null
+                                }
+
+                                override fun onAnimationCancel(animation: Animator?) {
+                                    onAnimationEnd(animation)
+                                }
+                            })
+                            yDownAnimator?.duration = (time * distance / 100f).toLong()
+                            yDownAnimator?.start()
+                        }
+                        params.x < Utils.getHomeX(context) || params.x > Utils.getHomeX(context) -> {
+                            val distance = (params.x - Utils.getHomeX(context)).absoluteValue
+                            val animator = ValueAnimator.ofInt(params.x, Utils.getHomeX(context))
+                            animator.interpolator = DecelerateInterpolator()
+                            animator.addUpdateListener {
+                                params.x = it.animatedValue.toString().toInt()
+                                updateLayout(params)
+                            }
+                            animator.addListener(object : AnimatorListenerAdapter() {
+                                override fun onAnimationEnd(animation: Animator?) {
+//                                            if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
+//                                            if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
+
+                                    isActing = false
+                                    isSwipeLeft = false
+                                    isSwipeRight = false
+                                    isCarryingOutTouchAction = false
+                                }
+                            })
+                            animator.duration = (time * distance / 100f).toLong()
+                            animator.start()
+                        }
+                        else -> {
+//                                    if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
+//                                    if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
+//                                    if (isSwipeUp) jiggleDown()
+
+                            isActing = false
+                            isSwipeUp = false
+                            isSwipeLeft = false
+                            isSwipeRight = false
+                            isCarryingOutTouchAction = false
+                        }
+                    }
+
+                    isRunningLongRight = false
+                    isRunningLongLeft = false
+                    isRunningLongUp = false
+
+                    wasHidden = isHidden
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    ultimateReturn = ultimateReturn || handlePotentialSwipe(ev)
+
+                    if (isSwipeUp && !isSwipeLeft && !isSwipeRight) {
+                        if (!isActing) isActing = true
+
+                        val velocity = (oldY - ev.rawY)
+                        oldY = ev.rawY
+
+                        if (params.y < Utils.getRealScreenSize(context).y / 6 + getAdjustedHomeY() && getAnimationDurationMs() > 0) {
+                            params.y = params.y + (velocity / 2).toInt()
+                            updateLayout(params)
+                        }
+
+                        if (upHoldHandle == null) {
+                            upHoldHandle = pool.schedule({
+                                handler?.post {
+                                    isRunningLongUp = true
+                                    sendAction(app.actionUpHold, ev.rawX)
+                                    isSwipeUp = false
+                                    upHoldHandle = null
+                                }
+                            }, getHoldTime().toLong(), TimeUnit.MILLISECONDS)
+                        }
+                    }
+
+                    if ((isSwipeLeft || isSwipeRight) && !isSwipeUp) {
+                        if (!isActing) isActing = true
+
+                        val velocity = ev.rawX - oldX
+                        oldX = ev.rawX
+
+                        val half = (Utils.getRealScreenSize(context).x.toFloat() / 2f - Utils.getCustomWidth(context).toFloat() / 2f).toInt()
+
+                        if (getAnimationDurationMs() > 0) {
+                            when {
+                                params.x <= -half && !isSwipeRight -> pill.translationX -= velocity
+                                params.x >= half && !isSwipeLeft -> pill.translationX += velocity
+                                else -> {
+                                    params.x = params.x + (velocity / 2).toInt()
+                                    updateLayout(params)
+                                }
+                            }
+                        }
+
+                        if (isSwipeLeft) {
+                            if (leftHoldHandle == null) {
+                                leftHoldHandle = pool.schedule({
+                                    handler?.post {
+                                        isRunningLongLeft = true
+                                        sendAction(app.actionLeftHold, ev.rawX)
+                                        isSwipeLeft = false
+                                        leftHoldHandle = null
+                                    }
+                                }, getHoldTime().toLong(), TimeUnit.MILLISECONDS)
+                            }
+                        }
+
+                        if (isSwipeRight) {
+                            if (rightHoldHandle == null) {
+                                rightHoldHandle = pool.schedule({
+                                    handler?.post {
+                                        isRunningLongRight = true
+                                        sendAction(app.actionRightHold, ev.rawX)
+                                        isSwipeRight = false
+                                        rightHoldHandle = null
+                                    }
+                                }, getHoldTime().toLong(), TimeUnit.MILLISECONDS)
+                            }
+                        }
+                    }
+                }
             }
 
-            /**
-             * Handle the long-press
-             */
-            override fun onLongPress(e: MotionEvent) {
-                gestureManager.onLongPress(e)
+            oldEvent = MotionEvent.obtain(ev)
+
+            return ultimateReturn
+        }
+
+        private fun handlePotentialSwipe(motionEvent: MotionEvent?): Boolean {
+            if (oldEvent == null || motionEvent == null) return false
+
+            val oldEvent = MotionEvent.obtain(this.oldEvent)
+            val distanceX = motionEvent.rawX - oldEvent.rawX
+            val distanceY = motionEvent.rawY - oldEvent.rawY
+            val xThresh = Utils.dpAsPx(context, 4)
+            val yThresh = Utils.dpAsPx(context, 2)
+
+            val ret = if (!isHidden && !isActing) {
+                when {
+                    distanceX < -xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //left swipe
+                        isSwipeLeft = true
+                        true
+                    }
+                    distanceX > xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //right swipe
+                        isSwipeRight = true
+                        true
+                    }
+                    distanceY > yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
+                        isActing = true
+                        sendAction(app.actionDown, oldEvent.rawX)
+                        true
+                    }
+                    distanceY < -yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
+                        isSwipeUp = true
+                        true
+                    }
+                    else -> false
+                }
+            } else if (isHidden
+                    && !isActing
+                    && distanceY < -yThresh
+                    && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
+                showPill(false)
+                true
+            } else false
+
+            oldEvent.recycle()
+
+            return ret
+        }
+
+        private fun getSectionedUpHoldAction(x: Float): Int? {
+            return if (!Utils.sectionedPill(context)) actionMap[app.actionUpHold]
+            else when (getSection(x)) {
+                FIRST_SECTION -> actionMap[app.actionUpHoldLeft]
+                SECOND_SECTION -> actionMap[app.actionUpHoldCenter]
+                else -> actionMap[app.actionUpHoldRight]
+            }
+        }
+
+        private fun String.isEligible() = arrayListOf(
+                app.actionUp,
+                app.actionUpHold
+        ).contains(this) && Utils.sectionedPill(context)
+
+        private fun getSection(x: Float): Int {
+            val third = params.width / 3f
+
+            return when {
+                x < third -> FIRST_SECTION
+                x <= (2f * third) -> SECOND_SECTION
+                else -> SECOND_SECTION
+            }
+        }
+
+        private fun sendAction(action: String, lastX: Float) {
+            if (action.isEligible()) {
+                when(getSection(lastX)) {
+                    FIRST_SECTION -> sendAction("${action}_left")
+                    SECOND_SECTION -> sendAction("${action}_center")
+                    THIRD_SECTION -> sendAction("${action}_right")
+                }
+            } else {
+                sendAction(action)
+            }
+        }
+
+        /**
+         * Parse the action index and broadcast to {@link com.xda.nobar.services.Actions}
+         * @param key one of app.action*
+         */
+        private fun sendAction(key: String) {
+            val which = actionMap[key] ?: return
+
+            if (which == app.typeNoAction) return
+
+            vibrate(getVibrationDuration().toLong())
+
+            if (key == app.actionDouble) handler?.postDelayed({ vibrate(getVibrationDuration().toLong()) }, getVibrationDuration().toLong())
+
+            if (which == app.typeHide) {
+                if (key == app.actionUp || key == app.actionUpHold) {
+                    yDownAnimator?.cancel()
+                    yDownAnimator = null
+                }
+                hidePill(false)
+                return
             }
 
-            /**
-             * Handle the double-tap
-             */
-            override fun onDoubleTap(e: MotionEvent): Boolean {
-                return gestureManager.onDoubleTap(e)
+            when (key) {
+                app.actionDouble -> jiggleDoubleTap()
+                app.actionHold -> jiggleHold()
+//            app.actionDown -> jiggleDown()
+                app.actionTap -> jiggleTap()
+                app.actionUpHold -> jiggleHoldUp()
+                app.actionLeftHold -> jiggleLeftHold()
+                app.actionRightHold -> jiggleRightHold()
             }
 
-            /**
-             * Handle the single tap
-             */
-            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                return gestureManager.onSingleTapConfirmed(e)
+            if (key == app.actionUp || key == app.actionLeft || key == app.actionRight) {
+                animate(null, ALPHA_ACTIVE)
+            }
+
+            val intent = Intent(Actions.ACTION)
+            intent.putExtra(Actions.EXTRA_ACTION, which)
+            intent.putExtra(Actions.EXTRA_GESTURE, key)
+
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+
+            if (Utils.shouldUseRootCommands(context)) {
+                app.rootBinder?.handle(which)
+            }
+        }
+
+        /**
+         * Load the user's custom gesture/action pairings; default values if a pairing doesn't exist
+         */
+        fun loadActionMap() {
+            Utils.getActionsList(context, actionMap)
+        }
+
+        inner class Detector : GestureDetector.SimpleOnGestureListener() {
+            override fun onSingleTapUp(ev: MotionEvent): Boolean {
+                return if (actionMap[app.actionDouble] == app.typeNoAction && !isActing && !wasHidden) {
+                    synchronized(tapLock) {
+                        isOverrideTap = true
+                        sendAction(app.actionTap, ev.rawX)
+                    }
+                    isActing = false
+                    true
+                } else false
+            }
+
+            override fun onLongPress(ev: MotionEvent) {
+                if (!isHidden && !isActing) {
+                    isActing = true
+                    sendAction(app.actionHold, ev.rawX)
+                }
+            }
+
+            override fun onDoubleTap(ev: MotionEvent): Boolean {
+                return if (!isHidden &&!isActing) {
+                    isActing = true
+                    sendAction(app.actionDouble, ev.rawX)
+                    true
+                } else false
+            }
+
+            override fun onSingleTapConfirmed(ev: MotionEvent): Boolean {
+                synchronized(tapLock) {
+                    return if (!isOverrideTap && !isHidden) {
+                        isActing = false
+
+                        sendAction(app.actionTap, ev.rawX)
+                        true
+                    } else if (isHidden) {
+                        isOverrideTap = false
+                        vibrate(getVibrationDuration().toLong())
+                        showPill(false)
+                        true
+                    } else {
+                        isOverrideTap = false
+                        false
+                    }
+                }
             }
         }
     }

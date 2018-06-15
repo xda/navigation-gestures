@@ -348,8 +348,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Remove the pill from the screen
      */
     fun removeBar() {
-        pillShown = false
         gestureListeners.forEach { it.onChange(false) }
+        removeBarInternal()
+
+    }
+
+    fun removeBarInternal() {
+        pillShown = false
         bar.hide(object : Animator.AnimatorListener {
             override fun onAnimationCancel(animation: Animator?) {}
 
@@ -507,14 +512,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 handler.postDelayed({
                     when (intent?.action) {
                         Intent.ACTION_SCREEN_ON -> {
-                            if (Utils.shouldUseOverscanMethod(this@App)) {
-                                if (kgm.inKeyguardRestrictedInputMode()
-                                        || kgm.isKeyguardLocked
-                                        || (if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) kgm.isDeviceLocked else false)) {
-                                    showNav()
-                                } else {
-                                    hideNav()
-                                }
+                            if (kgm.inKeyguardRestrictedInputMode()
+                                    || kgm.isKeyguardLocked
+                                    || (if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) kgm.isDeviceLocked else false)) {
+                                if (Utils.shouldUseOverscanMethod(this@App)) showNav()
+                            } else {
+                                if (Utils.shouldUseOverscanMethod(this@App)) hideNav()
+                                if (areGesturesActivated()) addBar()
                             }
                         }
                         Intent.ACTION_USER_PRESENT -> {
