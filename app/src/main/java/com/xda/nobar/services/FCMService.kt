@@ -22,7 +22,7 @@ class FCMService : FirebaseMessagingService() {
         }
 
         val builder = NotificationCompat.Builder(this, "nobar_notification")
-                .setSmallIcon(R.drawable.launcher_vector)
+                .setSmallIcon(R.drawable.ic_navgest)
                 .setContentTitle(msg?.notification?.title)
                 .setContentText(msg?.notification?.body)
                 .setStyle(NotificationCompat.BigTextStyle()
