@@ -228,6 +228,7 @@ class SettingsActivity : AppCompatActivity() {
                 putBoolean("larger_hitbox", false)
                 putBoolean("hide_in_fullscreen", false)
                 putBoolean("static_pill", true)
+                putBoolean("hide_pill_on_keyboard", false)
 
                 putInt("custom_width_percent", 1000)
                 putInt("custom_height_percent", 15)

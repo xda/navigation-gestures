@@ -75,7 +75,7 @@ class Actions : AccessibilityService(), Serializable {
                     app.addBar()
                 }
             }
-            app.uiHandler.onGlobalLayout()
+            app.uiHandler.setNodeInfoAndUpdate(event.source)
         }
     }
 

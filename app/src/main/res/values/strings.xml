@@ -82,6 +82,8 @@
     <string name="swipe_up_right">Swipe Up from Right</string>
     <string name="swipe_up_hold_right">Swipe Up and Hold from Right</string>
     <string name="use_recommended_settings">Use Recommended Settings?</string>
+    <string name="hide_pill_on_keyboard">Hide Pill when Keyboard is Active</string>
+    <string name="use_immersive_mode_when_nav_hidden">Use Navigation Immersive</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -119,6 +121,7 @@
     <string name="rec_no_large_hitbox">\u2022 Disable the larger hitbox</string>
     <string name="rec_disable_default_gestures">\u2022 Set other gestures to \"No Action\"</string>
     <string name="rec_disable_anim">\u2022 Disable animations</string>
+    <string name="use_immersive_mode_when_nav_hidden_desc">When enabled, this will activate Android\'s immersive navigation feature when the Hide Navigation Bar toggle is enabled. This is mostly useful for Samsung devices, as it will allow Force Touch to work.</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>

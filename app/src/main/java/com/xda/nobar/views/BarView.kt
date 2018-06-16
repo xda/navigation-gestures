@@ -106,12 +106,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
             }
         }
-    var immersiveNav: Boolean
-        get() {
-            val imm = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL) ?: return false
-            return imm.contains("navigation")
-        }
+    var immersiveNav: Boolean = false
         set(value) {
+            field = value
             if (Utils.shouldUseOverscanMethod(context)) {
                 queuedLayoutUpdate = {
                     if (params.y != getAdjustedHomeY()) {

@@ -20,6 +20,7 @@ import android.provider.Settings
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.*
+import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.services.ForegroundService
@@ -246,7 +247,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             "tablet_mode" -> {
                 if (Utils.useTabletMode(this)) uiHandler.handleRot()
             }
-            "use_car_mode" -> {
+            "enable_in_car_mode" -> {
                 val enabled = Utils.enableInCarMode(this)
                 if (um.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
                     if (enabled) {
@@ -255,6 +256,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     } else {
                         if (Utils.shouldUseOverscanMethod(this)) showNav()
                         if (areGesturesActivated()) removeBar()
+                    }
+                }
+            }
+            "use_immersive_mode_when_nav_hidden" -> {
+                if (Utils.shouldUseOverscanMethod(this)) {
+                    if (Utils.useImmersiveWhenNavHidden(this)) {
+                        Utils.saveBackupImmersive(this)
+                        Utils.setNavImmersive(this)
+                    } else {
+                        Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
                     }
                 }
             }
@@ -437,12 +448,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Hide the navbar
      */
     fun hideNav() {
-        Utils.saveBackupImmersive(this)
-        if (Utils.isInImmersive(this) && Utils.origBarInFullscreen(this)) {
-            Utils.disableNavImmersive(this)
-        }
-
         if (Utils.shouldUseOverscanMethod(this)) {
+            Utils.saveBackupImmersive(this)
+            if (Utils.useImmersiveWhenNavHidden(this)) Utils.setNavImmersive(this)
+
             if (!Utils.useRot270Fix(this) && !Utils.useTabletMode(this)) IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this) + 1)
             else {
                 uiHandler.handleRot()
@@ -460,8 +469,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Show the navbar
      */
     fun showNav() {
-        if (!Utils.isInImmersive(this) && Utils.origBarInFullscreen(this))
-            Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
+        Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
 
         navbarListeners.forEach { it.onNavChange(false) }
 
@@ -581,8 +589,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * //TODO: More work may be needed on immersive detection
      */
     inner class UIHandler : ContentObserver(handler), View.OnSystemUiVisibilityChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
-        private var isDisabledForContent = false
         private var oldRot = Surface.ROTATION_0
+        private var previousNodeInfo: AccessibilityNodeInfo? = null
 
         private var isActing = false
 
@@ -592,6 +600,26 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_color"), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_current_color"), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_use_theme_default"), true, this)
+        }
+
+        fun setNodeInfoAndUpdate(info: AccessibilityNodeInfo?) {
+            previousNodeInfo = info
+
+            val rect = Rect()
+            immersiveHelperView.getWindowVisibleDisplayFrame(rect)
+
+            val screenHeight = Utils.getRealScreenSize(this@App).y
+
+            val isKeyboardProbablyShown = rect.bottom < if (IWindowManager.hasNavigationBar()) screenHeight - Utils.getNavBarHeight(this@App) else screenHeight
+
+            bar.immersiveNav = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)?.contains("navigation") ?: false && !isKeyboardProbablyShown
+
+            onGlobalLayout()
+
+            if (Utils.hidePillWhenKeyboardShown(this@App)) {
+                if (isKeyboardProbablyShown) bar.hidePill(true)
+                else bar.showPill(true)
+            }
         }
 
         override fun onGlobalLayout() {
@@ -673,19 +701,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (!IntroActivity.needsToRun(this@App)) {
                 bar.isImmersive = isImmersive
                 val hideInFullScreen = Utils.hideInFullscreen(this@App)
+                Log.e("NoBar", "$isImmersive, $hideInFullScreen")
                 if (isImmersive) {
-                    if (!isDisabledForContent) {
-                        if (Utils.shouldUseOverscanMethod(this@App) && Utils.origBarInFullscreen(this@App)) showNav()
-                        if (hideInFullScreen) bar.hidePill(true)
-                        isDisabledForContent = true
-                    }
-                } else if (isDisabledForContent) {
+                    if (Utils.shouldUseOverscanMethod(this@App) && Utils.origBarInFullscreen(this@App)) showNav()
+                    if (hideInFullScreen) bar.hidePill(true)
+                } else {
                     if (Utils.shouldUseOverscanMethod(this@App)) hideNav()
                     if (hideInFullScreen && bar.isAutoHidden) {
                         bar.isAutoHidden = false
                         bar.showPill(true)
                     }
-                    isDisabledForContent = false
                 }
             }
         }

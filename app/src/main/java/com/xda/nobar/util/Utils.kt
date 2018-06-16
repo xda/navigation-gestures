@@ -428,11 +428,15 @@ object Utils {
      */
     fun saveBackupImmersive(context: Context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putString("def_imm",
-                Settings.Global.getString(context.contentResolver, "policy_control")).apply()
+                Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)).apply()
     }
 
     fun resetBackupImmersive(context: Context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().remove("def_imm").apply()
+    }
+
+    fun setNavImmersive(context: Context) {
+        Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation=*")
     }
 
     /**
@@ -565,5 +569,13 @@ object Utils {
 
     fun sectionedPill(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("sectioned_pill", false)
+    }
+
+    fun hidePillWhenKeyboardShown(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_pill_on_keyboard", false)
+    }
+
+    fun useImmersiveWhenNavHidden(context: Context): Boolean {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_immersive_mode_when_nav_hidden", false)
     }
 }

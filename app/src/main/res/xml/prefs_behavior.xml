@@ -9,6 +9,12 @@
         android:icon="@drawable/ic_visibility_off_black_24dp"
         android:defaultValue="true" />
 
+    <SwitchPreference
+        android:title="@string/hide_pill_on_keyboard"
+        android:key="hide_pill_on_keyboard"
+        android:icon="@drawable/ic_keyboard_hide_black_24dp"
+        android:defaultValue="false" />
+
     <!--<SwitchPreference-->
         <!--android:title="@string/hide_on_launcher"-->
         <!--android:summary="@string/hide_on_launcher_desc"-->
@@ -25,6 +31,12 @@
         android:icon="@drawable/ic_directions_car_black_24dp"
         android:summary="@string/enable_in_car_mode_desc"
         android:key="enable_in_car_mode" />
+
+    <SwitchPreference
+        android:title="@string/use_immersive_mode_when_nav_hidden"
+        android:summary="@string/use_immersive_mode_when_nav_hidden_desc"
+        android:icon="@drawable/ic_fullscreen_black_24dp"
+        android:key="use_immersive_mode_when_nav_hidden" />
 
     <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/hold_time"

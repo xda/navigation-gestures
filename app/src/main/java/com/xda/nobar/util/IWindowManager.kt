@@ -69,4 +69,14 @@ object IWindowManager {
             false
         }
     }
+
+    fun hasNavigationBar(): Boolean {
+        return try {
+            iWindowManagerClass
+                    ?.getMethod("hasNavigationBar")
+                    ?.invoke(iWindowManager) as Boolean
+        } catch (e: Exception) {
+            false
+        }
+    }
 }
