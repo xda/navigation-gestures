@@ -50,7 +50,7 @@ dependencies {
 //    implementation 'com.heinrichreimersoftware:material-intro:7221502f1f'
     implementation 'com.github.zacharee:material-intro:c792c66102'
     implementation 'com.google.firebase:firebase-core:16.0.0'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.3'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.4'
     implementation 'com.github.zacharee:colorpicker:6428d93c3b'
 //    implementation project(':SliderPref')
 //    implementation project(':SeekBar')
@@ -66,6 +66,7 @@ dependencies {
     implementation ('com.github.rey5137:material:1.2.4') {
         exclude group: 'com.android.support'
     }
+    implementation 'com.joaomgcd:taskerpluginlibrary:0.0.3'
 }
 
 apply plugin: 'com.google.gms.google-services'

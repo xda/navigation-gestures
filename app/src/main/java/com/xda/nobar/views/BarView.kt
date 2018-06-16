@@ -1025,7 +1025,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             return when {
                 x < third -> FIRST_SECTION
                 x <= (2f * third) -> SECOND_SECTION
-                else -> SECOND_SECTION
+                else -> THIRD_SECTION
             }
         }
 

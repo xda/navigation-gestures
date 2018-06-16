@@ -66,10 +66,12 @@
             android:name=".activities.ToggleGesturesActivity"
             android:exported="true"
             android:theme="@style/AppTheme.Null" />
-        <activity android:name=".activities.LockScreenActivity"
+        <activity
+            android:name=".activities.LockScreenActivity"
             android:configChanges="screenSize|orientation|layoutDirection|screenLayout"
             android:excludeFromRecents="true"
             android:theme="@style/AppTheme.Black" />
+        <activity android:name=".activities.TaskerConfig" />
 
         <service
             android:name=".tiles.GestureToggle"
