@@ -578,4 +578,13 @@ object Utils {
     fun useImmersiveWhenNavHidden(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_immersive_mode_when_nav_hidden", false)
     }
+
+    fun loadBlacklistedNavPackages(context: Context, packages: ArrayList<String>) {
+        val array = PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_apps", HashSet<String>())
+        array.add("com.samsung.android.app.appsedge")
+        array.add("com.samsung.android.app.cocktailbarservice")
+        array.add("com.samsung.android.service.peoplestripe")
+
+        packages.addAll(array)
+    }
 }

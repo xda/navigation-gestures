@@ -32,12 +32,6 @@
         android:summary="@string/enable_in_car_mode_desc"
         android:key="enable_in_car_mode" />
 
-    <SwitchPreference
-        android:title="@string/use_immersive_mode_when_nav_hidden"
-        android:summary="@string/use_immersive_mode_when_nav_hidden_desc"
-        android:icon="@drawable/ic_fullscreen_black_24dp"
-        android:key="use_immersive_mode_when_nav_hidden" />
-
     <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/hold_time"
         android:key="hold_time"

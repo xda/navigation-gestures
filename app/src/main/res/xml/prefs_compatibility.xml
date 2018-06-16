@@ -27,6 +27,12 @@
         android:key="orig_nav_in_immersive"
         android:defaultValue="false" />
 
+    <SwitchPreference
+        android:title="@string/use_immersive_mode_when_nav_hidden"
+        android:summary="@string/use_immersive_mode_when_nav_hidden_desc"
+        android:icon="@drawable/ic_fullscreen_black_24dp"
+        android:key="use_immersive_mode_when_nav_hidden" />
+
     <!--<SwitchPreference-->
         <!--android:title="@string/use_root"-->
         <!--android:summary="@string/use_root_desc"-->
