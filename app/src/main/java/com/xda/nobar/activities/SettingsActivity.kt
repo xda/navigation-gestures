@@ -336,7 +336,7 @@ class SettingsActivity : AppCompatActivity() {
             for (i in 0 until preferenceScreen.preferenceCount) {
                 val pref = preferenceScreen.getPreference(i)
 
-                if (pref is PreferenceCategory) {
+                if (pref is PreferenceGroup) {
                     for (j in 0 until pref.preferenceCount) {
                         val child = pref.getPreference(j)
 
