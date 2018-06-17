@@ -71,9 +71,13 @@
             android:name=".activities.LockScreenActivity"
             android:configChanges="screenSize|orientation|layoutDirection|screenLayout"
             android:excludeFromRecents="true"
+            android:process="com.xda.nobar.lockprocess"
             android:theme="@style/AppTheme.Black" />
         <activity android:name=".activities.TaskerConfig" />
         <activity android:name=".ScreenshotActivity"
+            android:configChanges="screenSize|orientation|layoutDirection|screenLayout"
+            android:excludeFromRecents="true"
+            android:process="com.xda.nobar.screenshotprocess"
             android:theme="@style/AppTheme.Null" />
 
         <service

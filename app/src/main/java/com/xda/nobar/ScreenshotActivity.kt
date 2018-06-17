@@ -1,11 +1,14 @@
 package com.xda.nobar
 
 import android.Manifest
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.hardware.display.DisplayManager
@@ -15,14 +18,16 @@ import android.media.ImageReader
 import android.media.MediaScannerConnection
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
-import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
-import android.os.HandlerThread
+import android.os.*
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
 import android.view.Display
+import android.view.WindowManager
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
+import android.widget.LinearLayout
+import com.xda.nobar.util.Utils
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -130,6 +135,66 @@ class ScreenshotActivity : AppCompatActivity() {
 
             try {
                 if (count < 1) {
+                    runOnUiThread {
+                        val flasher = LinearLayout(this@ScreenshotActivity).apply {
+                            setBackgroundColor(Color.WHITE)
+                        }
+
+                        val params = WindowManager.LayoutParams().apply {
+                            type = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_PHONE
+                            else WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+
+                            width = WindowManager.LayoutParams.MATCH_PARENT
+                            height = WindowManager.LayoutParams.MATCH_PARENT
+
+                            flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
+                                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_OVERSCAN or
+                                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+
+                            alpha = 0f
+                        }
+
+                        windowManager.addView(flasher, params)
+
+                        val listener = ValueAnimator.AnimatorUpdateListener {
+                            params.alpha = it.animatedValue.toString().toFloat()
+                            runOnUiThread { windowManager.updateViewLayout(flasher, params) }
+                        }
+
+                        val exit = ValueAnimator.ofFloat(1f, 0f)
+                        exit.addListener(object : Animator.AnimatorListener {
+                            override fun onAnimationRepeat(animation: Animator?) {}
+                            override fun onAnimationStart(animation: Animator?) {}
+                            override fun onAnimationCancel(animation: Animator?) {
+                                onAnimationEnd(animation)
+                            }
+
+                            override fun onAnimationEnd(animation: Animator?) {
+                                runOnUiThread { windowManager.removeView(flasher) }
+                            }
+                        })
+                        exit.addUpdateListener(listener)
+                        exit.interpolator = DecelerateInterpolator()
+                        exit.duration = Utils.getAnimationDurationMs(this@ScreenshotActivity)
+
+                        val enter = ValueAnimator.ofFloat(0f, 1f)
+                        enter.addListener(object : Animator.AnimatorListener {
+                            override fun onAnimationRepeat(animation: Animator?) {}
+                            override fun onAnimationStart(animation: Animator?) {}
+                            override fun onAnimationCancel(animation: Animator?) {
+                                onAnimationEnd(animation)
+                            }
+                            override fun onAnimationEnd(animation: Animator?) {
+                                exit.start()
+                            }
+                        })
+                        enter.addUpdateListener(listener)
+                        enter.interpolator = AccelerateInterpolator()
+                        enter.duration = Utils.getAnimationDurationMs(this@ScreenshotActivity)
+                        enter.start()
+                    }
+
                     image = reader.acquireLatestImage()
                     if (image != null) {
                         val planes = image.planes
@@ -154,11 +219,11 @@ class ScreenshotActivity : AppCompatActivity() {
                         fos = FileOutputStream(screenshot)
                         bitmap.compress(CompressFormat.JPEG, 100, fos)
 
-                        MediaScannerConnection.scanFile(this@ScreenshotActivity, arrayOf(screenshot.toString()), null, null)
+                        MediaScannerConnection.scanFile(applicationContext, arrayOf(screenshot.toString()), null, null)
 
                         count++
                     }
-                }
+                } else return
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {

@@ -15,6 +15,7 @@ import android.view.WindowManager
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.IntroActivity
+import com.xda.nobar.views.BarView
 
 
 /**
@@ -589,5 +590,9 @@ object Utils {
         val array = PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_bar_apps", HashSet<String>())
 
         packages.addAll(array)
+    }
+
+    fun getAnimationDurationMs(context: Context): Long {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("anim_duration", BarView.DEFAULT_ANIM_DURATION.toInt()).toLong()
     }
 }

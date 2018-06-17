@@ -541,7 +541,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @return the duration, in ms
      */
     private fun getAnimationDurationMs(): Long {
-        return prefs.getInt("anim_duration", DEFAULT_ANIM_DURATION.toInt()).toLong()
+        return Utils.getAnimationDurationMs(context)
     }
 
     /**
