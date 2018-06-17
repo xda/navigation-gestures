@@ -136,12 +136,16 @@ class SettingsActivity : AppCompatActivity() {
                     sectionedCategoryHolder.addPreference(sectionedCategory)
                     swipeUpCategory.removeAll()
                     swipeUpHoldCategory.removeAll()
+
+                    refreshListPrefs()
+
+                    updateSummaries()
                     setListeners()
 
                     AlertDialog.Builder(activity)
                             .setTitle(R.string.use_recommended_settings)
                             .setView(R.layout.use_recommended_settings_dialog_message_view)
-                            .setPositiveButton(android.R.string.yes, { _, _ -> setSectionedSettings() })
+                            .setPositiveButton(android.R.string.yes) { _, _ -> setSectionedSettings() }
                             .setNegativeButton(R.string.no, null)
                             .show()
                 }
@@ -149,11 +153,13 @@ class SettingsActivity : AppCompatActivity() {
                     sectionedCategoryHolder.removePreference(sectionedCategory)
                     swipeUpCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up)))
                     swipeUpHoldCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up_hold)))
+
+                    refreshListPrefs()
                 }
                 true
             }
 
-            listPrefs.addAll(getAllListPrefs())
+            refreshListPrefs()
 
             removeNougatActionsIfNeeded()
             removeRootActionsIfNeeded()
@@ -220,6 +226,11 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+        private fun refreshListPrefs() {
+            listPrefs.clear()
+            listPrefs.addAll(getAllListPrefs())
+        }
+
         private fun setSectionedSettings() {
             preferenceManager.sharedPreferences.edit().apply {
                 putBoolean("use_pixels_width", false)
@@ -251,6 +262,7 @@ class SettingsActivity : AppCompatActivity() {
             }.apply()
 
             updateSummaries()
+            setListeners()
         }
 
         private fun updateAppLaunchSummary(key: String, appName: String) {
