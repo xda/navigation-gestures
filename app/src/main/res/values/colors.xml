@@ -5,6 +5,7 @@
     <color name="colorAccent">#ff9338</color>
 
     <color name="pill_color">#cccccc</color>
+    <color name="color_disabled">#555555</color>
 
     <color name="slide_1">#c62828</color>
     <color name="slide_2">#d84315</color>

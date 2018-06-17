@@ -6,7 +6,6 @@ import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import com.xda.nobar.App
 import com.xda.nobar.R
-import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.util.Utils
 
 /**
@@ -31,7 +30,7 @@ class GestureToggle : TileService(), App.GestureActivationListener {
     }
 
     override fun onClick() {
-        if (!IntroActivity.needsToRun(this)) handler.toggleGestureBar()
+        handler.toggleGestureBar()
         updateState()
     }
 
@@ -45,7 +44,7 @@ class GestureToggle : TileService(), App.GestureActivationListener {
 
         qsTile?.apply {
             state = if (active) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
-            label = resources.getText(if (active) R.string.hidden else R.string.shown)
+            label = resources.getText(if (active) R.string.gestures_on else R.string.gestures_off)
             updateTile()
         }
     }

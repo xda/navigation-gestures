@@ -23,18 +23,7 @@ class MainActivity : AppCompatActivity(), App.GestureActivationListener, App.Nav
     private lateinit var prefs: SharedPreferences
 
     private val navListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
-        prefs.edit().putBoolean("hide_nav", isChecked).apply()
-        if (isChecked) {
-            if (!IntroActivity.hasWss(this)) {
-                val activity = Intent(this, IntroActivity::class.java)
-                activity.putExtra(IntroActivity.EXTRA_WSS_ONLY, true)
-                startActivity(activity)
-                hideNavSwitch.isChecked = false
-                prefs.edit().putBoolean("hide_nav", false).apply()
-            } else {
-                handler.hideNav()
-            }
-        } else handler.showNav()
+        handler.toggleNavState(!isChecked)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

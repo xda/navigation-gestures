@@ -581,9 +581,6 @@ object Utils {
 
     fun loadBlacklistedNavPackages(context: Context, packages: ArrayList<String>) {
         val array = PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_nav_apps", HashSet<String>())
-        array.add("com.samsung.android.app.appsedge")
-        array.add("com.samsung.android.app.cocktailbarservice")
-        array.add("com.samsung.android.service.peoplestripe")
 
         packages.addAll(array)
     }

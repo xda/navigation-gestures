@@ -76,7 +76,7 @@
         <service
             android:name=".tiles.GestureToggle"
             android:icon="@drawable/ic_gesture_black_24dp"
-            android:label="@string/shown"
+            android:label="@string/gestures_off"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
@@ -142,6 +142,27 @@
         <meta-data
             android:name="android.max_aspect"
             android:value="2.5" />
+
+        <receiver
+            android:name=".receivers.CocktailReceiver"
+            android:enabled="true"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="com.samsung.android.cocktail.action.COCKTAIL_VISIBILITY_CHANGED" />
+                <action android:name="com.samsung.android.cocktail.action.COCKTAIL_ENABLED" />
+                <action android:name="com.samsung.android.cocktail.v2.action.COCKTAIL_UPDATE" />
+                <action android:name="com.samsung.android.cocktail.action.COCKTAIL_DISABLED" />
+
+                <action android:name="com.xda.nobar.action.REFRESH_STATE" />
+                <action android:name="com.xda.nobar.action.PERFORM_TOGGLE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.samsung.android.cocktail.provider"
+                android:resource="@xml/cocktail" />
+
+        </receiver>
     </application>
 
 </manifest>

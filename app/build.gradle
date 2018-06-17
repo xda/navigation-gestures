@@ -67,6 +67,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation 'com.joaomgcd:taskerpluginlibrary:0.0.3'
+    implementation project(':sdk-v1.0.0')
+    implementation project(':slook_v1.4.0')
 }
 
 apply plugin: 'com.google.gms.google-services'
