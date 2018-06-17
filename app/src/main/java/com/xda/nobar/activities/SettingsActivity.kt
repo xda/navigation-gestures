@@ -178,13 +178,14 @@ class SettingsActivity : AppCompatActivity() {
                 sectionedCategoryHolder.addPreference(sectionedCategory)
                 swipeUpCategory.removeAll()
                 swipeUpHoldCategory.removeAll()
-                setListeners()
             } else {
                 sectionedCategoryHolder.removePreference(sectionedCategory)
                 swipeUpCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up)))
                 swipeUpHoldCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up_hold)))
             }
 
+            refreshListPrefs()
+            setListeners()
             updateSummaries()
         }
 
@@ -341,6 +342,13 @@ class SettingsActivity : AppCompatActivity() {
                         val child = pref.getPreference(j)
 
                         if (child is SectionableListPreference) ret.add(child)
+                        else if (child is PreferenceGroup) {
+                            for (k in 0 until child.preferenceCount) {
+                                val c = child.getPreference(k)
+
+                                if (c is SectionableListPreference) ret.add(c)
+                            }
+                        }
                     }
                 }
             }
