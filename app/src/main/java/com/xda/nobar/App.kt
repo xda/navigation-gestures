@@ -53,8 +53,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     var isValidPremium: Boolean = false
     var rootBinder: RootService.RootBinder? = null
 
-    private var navHidden = false
-    private var pillShown = false
+    var navHidden = false
+    var pillShown = false
 
     lateinit var uiHandler: UIHandler
     lateinit var bar: BarView
@@ -258,13 +258,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         if (Utils.shouldUseOverscanMethod(this)) {
                             disabledNavReasonManager.remove(DisabledNavReasonManager.CAR_MODE)
                         }
-                        if (areGesturesActivated()) addBar()
+                        if (areGesturesActivated() && !pillShown) addBar()
                     } else {
                         if (Utils.shouldUseOverscanMethod(this)) {
                             showNav()
                             disabledNavReasonManager.add(DisabledNavReasonManager.CAR_MODE)
                         }
-                        if (areGesturesActivated()) removeBar()
+                        if (areGesturesActivated() && !pillShown) removeBar()
                     }
                 }
             }
@@ -316,39 +316,41 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      */
     fun addBar(callListeners: Boolean = true) {
         if (disabledBarReasonManager.isEmpty()) {
-            pillShown = true
-            if (callListeners) gestureListeners.forEach { it.onChange(true) }
+            handler.post {
+                pillShown = true
+                if (callListeners) gestureListeners.forEach { it.onChange(true) }
 
-            bar.params.width = Utils.getCustomWidth(this)
-            bar.params.height = Utils.getCustomHeight(this)
-            bar.params.gravity = Gravity.CENTER or Gravity.BOTTOM
-            bar.params.y = bar.getAdjustedHomeY()
-            bar.params.x = getHomeX(this)
-            bar.params.type =
-                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
-                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                    else
-                        WindowManager.LayoutParams.TYPE_PHONE
-            bar.params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
-                    WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
-            bar.params.format = PixelFormat.TRANSLUCENT
-            bar.params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                bar.params.width = Utils.getCustomWidth(this)
+                bar.params.height = Utils.getCustomHeight(this)
+                bar.params.gravity = Gravity.CENTER or Gravity.BOTTOM
+                bar.params.y = bar.getAdjustedHomeY()
+                bar.params.x = getHomeX(this)
+                bar.params.type =
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
+                            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                        else
+                            WindowManager.LayoutParams.TYPE_PHONE
+                bar.params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
+                        WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
+                bar.params.format = PixelFormat.TRANSLUCENT
+                bar.params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 
-            if (Utils.dontMoveForKeyboard(this)) {
-                bar.params.flags = bar.params.flags or
-                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
-                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                bar.params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+                if (Utils.dontMoveForKeyboard(this)) {
+                    bar.params.flags = bar.params.flags or
+                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
+                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+                    bar.params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+                }
+
+                if (Utils.largerHitbox(this)) {
+                    val margins = bar.getPillMargins()
+                    margins.top = resources.getDimensionPixelSize(R.dimen.pill_margin_top_large_hitbox)
+                    bar.changePillMargins(margins)
+                }
+
+                addBarInternal()
             }
-
-            if (Utils.largerHitbox(this)) {
-                val margins = bar.getPillMargins()
-                margins.top = resources.getDimensionPixelSize(R.dimen.pill_margin_top_large_hitbox)
-                bar.changePillMargins(margins)
-            }
-
-            addBarInternal()
         }
     }
 
@@ -539,11 +541,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                                 if (Utils.shouldUseOverscanMethod(this@App)) {
                                     disabledNavReasonManager.remove(DisabledNavReasonManager.KEYGUARD)
                                 }
-                                if (areGesturesActivated()) addBar()
+                                if (areGesturesActivated() && !pillShown) addBar()
                             }
                         }
                         Intent.ACTION_USER_PRESENT -> {
-                            if (areGesturesActivated()) addBar()
+                            if (areGesturesActivated() && !pillShown) addBar()
                             if (Utils.shouldUseOverscanMethod(this@App)) {
                                 disabledNavReasonManager.remove(DisabledNavReasonManager.KEYGUARD)
                             }
@@ -584,7 +586,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     UiModeManager.ACTION_EXIT_CAR_MODE -> {
                         if (Utils.enableInCarMode(this@App)) bar.params.height = Utils.getCustomHeight(this@App)
                         else {
-                            addBar()
+                            if (!pillShown) addBar()
                             if (Utils.shouldUseOverscanMethod(this@App)) {
                                 disabledNavReasonManager.remove(DisabledNavReasonManager.CAR_MODE)
                             }
@@ -666,7 +668,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             } else {
                 if (areGesturesActivated() && disabledBarReasonManager.contains(DisabledBarReasonManager.BLACKLIST)) {
                     disabledBarReasonManager.remove(DisabledBarReasonManager.BLACKLIST)
-                    addBar(false)
+                    if (!pillShown) addBar(false)
                 }
             }
         }

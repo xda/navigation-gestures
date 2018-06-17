@@ -61,7 +61,7 @@ class LockScreenActivity : AppCompatActivity() {
             destroying = true
 
             val app = application as App
-            if (app.areGesturesActivated()) app.addBar(false)
+            if (app.areGesturesActivated() && !app.pillShown) app.addBar(false)
 
             unregisterReceiver(screenOffReceiver)
             saveSettings(previousSettings)
