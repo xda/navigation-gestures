@@ -177,7 +177,7 @@
     <string name="sleep">Sleep (Root)</string>
     <string name="prem_vol_up">Volume Up (Root) (Premium)</string>
     <string name="prem_vol_down">Volume Down (Root) (Premium)</string>
-    <string name="prem_screenshot">Screenshot (Root) (Premium)</string>
+    <string name="prem_screenshot">Screenshot (Premium)</string>
     <string name="prem_switch_ime">Switch Keyboard (Premium)</string>
     <string name="prem_launch_app">Launch App (Premium) (%s)</string>
     <string name="prem_launch_app_no_format">Launch App (Premium)</string>

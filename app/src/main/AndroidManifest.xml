@@ -19,6 +19,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="com.xda.nobar.permission.VERIFY_LICENSE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".App"
@@ -72,6 +73,8 @@
             android:excludeFromRecents="true"
             android:theme="@style/AppTheme.Black" />
         <activity android:name=".activities.TaskerConfig" />
+        <activity android:name=".ScreenshotActivity"
+            android:theme="@style/AppTheme.Null" />
 
         <service
             android:name=".tiles.GestureToggle"
@@ -147,13 +150,11 @@
             android:name=".receivers.CocktailReceiver"
             android:enabled="true"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="com.samsung.android.cocktail.action.COCKTAIL_VISIBILITY_CHANGED" />
                 <action android:name="com.samsung.android.cocktail.action.COCKTAIL_ENABLED" />
                 <action android:name="com.samsung.android.cocktail.v2.action.COCKTAIL_UPDATE" />
                 <action android:name="com.samsung.android.cocktail.action.COCKTAIL_DISABLED" />
-
                 <action android:name="com.xda.nobar.action.REFRESH_STATE" />
                 <action android:name="com.xda.nobar.action.PERFORM_TOGGLE" />
             </intent-filter>
@@ -161,7 +162,6 @@
             <meta-data
                 android:name="com.samsung.android.cocktail.provider"
                 android:resource="@xml/cocktail" />
-
         </receiver>
     </application>
 

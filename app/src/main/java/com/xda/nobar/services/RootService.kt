@@ -4,7 +4,6 @@ import android.app.Service
 import android.content.Intent
 import android.net.Uri
 import android.os.*
-import android.support.v4.content.ContextCompat.startActivity
 import android.view.KeyEvent
 import com.xda.nobar.App
 import com.xda.nobar.R
@@ -46,7 +45,6 @@ class RootService : Service() {
                 app.typeRootForward -> goForward()
                 app.typeRootMenu -> goMenu()
                 app.typeRootSleep -> goScreenOff()
-                app.premTypeRootScreenshot -> goPremiumScreenshot()
                 app.premTypeRootVolDown -> goPremiumVolDown()
                 app.premTypeRootVolUp -> goPremiumVolUp()
             }
@@ -66,10 +64,6 @@ class RootService : Service() {
 
         private fun goScreenOff() {
             keyEvent(KeyEvent.KEYCODE_POWER)
-        }
-
-        private fun goPremiumScreenshot() {
-            runPremiumAction { keyEvent(KeyEvent.KEYCODE_SYSRQ) }
         }
 
         private fun goPremiumVolDown() {

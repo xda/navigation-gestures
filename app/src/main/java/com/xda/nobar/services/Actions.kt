@@ -19,6 +19,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
 import com.xda.nobar.App
 import com.xda.nobar.R
+import com.xda.nobar.ScreenshotActivity
 import com.xda.nobar.activities.DialogActivity
 import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.activities.LockScreenActivity
@@ -197,6 +198,11 @@ class Actions : AccessibilityService(), Serializable {
                         lock.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(lock)
                     } }
+                    app.premTypeScreenshot -> runPremiumAction {
+                        val screenshot = Intent(this@Actions, ScreenshotActivity::class.java)
+                        screenshot.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(screenshot)
+                    }
                     app.premTypeVibe -> {
                         //TODO: Implement
                     }
