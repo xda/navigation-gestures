@@ -728,7 +728,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
                         if (Utils.hidePillWhenKeyboardShown(this@App)) {
                             if (isKeyboardProbablyShown) bar.hidePill(true)
-                            else {
+                            else if (bar.isHidden) {
                                 bar.isAutoHidden = false
                                 bar.showPill(true)
                             }
@@ -804,7 +804,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     if (Utils.shouldUseOverscanMethod(this@App)) {
                         disabledNavReasonManager.remove(DisabledNavReasonManager.IMMERSIVE)
                     }
-                    if (hideInFullScreen && bar.isAutoHidden) {
+                    if (hideInFullScreen && bar.isAutoHidden && bar.isHidden) {
                         bar.isAutoHidden = false
                         bar.showPill(true)
                     }
