@@ -32,11 +32,6 @@ class LockScreenActivity : AppCompatActivity() {
         performDestroy()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        performDestroy()
-    }
-
     private fun setup() {
         registerReceiver(screenOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
 
