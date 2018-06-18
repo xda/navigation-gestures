@@ -525,7 +525,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @return the time, in ms
      */
     private fun getHoldTime(): Int {
-        return prefs.getInt("hold_time", 1000)
+        return prefs.getInt("hold_time", 700)
     }
 
     /**

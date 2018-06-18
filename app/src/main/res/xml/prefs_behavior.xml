@@ -39,7 +39,7 @@
         app:msbp_minValue="100"
         app:msbp_maxValue="2000"
         app:msbp_measurementUnit="ms"
-        android:defaultValue="1000" />
+        android:defaultValue="700" />
 
     <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/vibration_duration"
