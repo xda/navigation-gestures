@@ -540,6 +540,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                             } else {
                                 if (Utils.shouldUseOverscanMethod(this@App)) {
                                     disabledNavReasonManager.remove(DisabledNavReasonManager.KEYGUARD)
+                                    uiHandler.onGlobalLayout()
                                 }
                                 if (areGesturesActivated() && !pillShown) addBar()
                             }
@@ -548,7 +549,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                             if (areGesturesActivated() && !pillShown) addBar()
                             if (Utils.shouldUseOverscanMethod(this@App)) {
                                 disabledNavReasonManager.remove(DisabledNavReasonManager.KEYGUARD)
+                                uiHandler.onGlobalLayout()
                             }
+                            if (areGesturesActivated() && !pillShown) addBar()
                         }
                     }
                 }, 50)
