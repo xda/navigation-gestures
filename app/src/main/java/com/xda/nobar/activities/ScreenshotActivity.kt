@@ -1,4 +1,4 @@
-package com.xda.nobar
+package com.xda.nobar.activities
 
 import android.Manifest
 import android.animation.Animator
@@ -126,6 +126,7 @@ class ScreenshotActivity : AppCompatActivity() {
         imageReader.setOnImageAvailableListener(ImageAvailableListener(), handler)
     }
 
+    @Suppress("DEPRECATION")
     private inner class ImageAvailableListener : ImageReader.OnImageAvailableListener {
         override fun onImageAvailable(reader: ImageReader) {
             var image: Image? = null

@@ -19,10 +19,10 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
 import com.xda.nobar.App
 import com.xda.nobar.R
-import com.xda.nobar.ScreenshotActivity
 import com.xda.nobar.activities.DialogActivity
 import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.activities.LockScreenActivity
+import com.xda.nobar.activities.ScreenshotActivity
 import com.xda.nobar.util.Utils
 import java.io.Serializable
 
