@@ -1,14 +1,14 @@
 package com.xda.nobar.util
 
 abstract class DisabledReasonManagerAbs {
-    abstract val currentlyDisabled: ArrayList<String>
+    internal abstract val currentlyDisabled: ArrayList<String>
 
     fun add(value: String) {
-        currentlyDisabled.add(value)
+        if (!contains(value)) currentlyDisabled.add(value)
     }
 
     fun remove(value: String) {
-        currentlyDisabled.remove(value)
+        while (contains(value)) currentlyDisabled.remove(value)
     }
 
     fun contains(value: String): Boolean {

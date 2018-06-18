@@ -3,7 +3,6 @@ package com.xda.nobar
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Application
-import android.app.KeyguardManager
 import android.app.UiModeManager
 import android.content.*
 import android.content.res.Configuration
@@ -45,7 +44,6 @@ import kotlin.math.absoluteValue
 class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var wm: WindowManager
     private lateinit var um: UiModeManager
-    private lateinit var kgm: KeyguardManager
     private lateinit var stateHandler: ScreenStateHandler
     private lateinit var carModeHandler: CarModeHandler
     private lateinit var premiumHelper: PremiumHelper
@@ -196,7 +194,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         um = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        kgm = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         bar = BarView(this)
         immersiveHelperView = ImmersiveHelperView(this)
         stateHandler = ScreenStateHandler()
@@ -521,6 +518,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     inner class ScreenStateHandler : BroadcastReceiver() {
         init {
             val filter = IntentFilter()
+            filter.addAction(Intent.ACTION_BOOT_COMPLETED)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                filter.addAction(Intent.ACTION_LOCKED_BOOT_COMPLETED)
+            }
             filter.addAction(Intent.ACTION_SCREEN_ON)
             filter.addAction(Intent.ACTION_USER_PRESENT)
 
@@ -530,11 +531,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (!IntroActivity.needsToRun(this@App)) {
                 handler.postDelayed({
-                    when (intent?.action) {
-                        Intent.ACTION_SCREEN_ON -> {
-                            if (kgm.inKeyguardRestrictedInputMode()
-                                    || kgm.isKeyguardLocked
-                                    || (if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) kgm.isDeviceLocked else false)) {
+                    val action = intent?.action
+                    when (action) {
+                        Intent.ACTION_SCREEN_ON,
+                        Intent.ACTION_BOOT_COMPLETED,
+                        Intent.ACTION_LOCKED_BOOT_COMPLETED -> {
+                            if (Utils.isOnKeyguard(this@App)) {
                                 if (Utils.shouldUseOverscanMethod(this@App)) {
                                     showNav()
                                     disabledNavReasonManager.add(DisabledNavReasonManager.KEYGUARD)
@@ -542,16 +544,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                             } else {
                                 if (Utils.shouldUseOverscanMethod(this@App)) {
                                     disabledNavReasonManager.remove(DisabledNavReasonManager.KEYGUARD)
-                                    uiHandler.onGlobalLayout()
                                 }
                                 if (areGesturesActivated() && !pillShown) addBar()
                             }
                         }
                         Intent.ACTION_USER_PRESENT -> {
-                            if (areGesturesActivated() && !pillShown) addBar()
                             if (Utils.shouldUseOverscanMethod(this@App)) {
                                 disabledNavReasonManager.remove(DisabledNavReasonManager.KEYGUARD)
-                                uiHandler.onGlobalLayout()
                             }
                             if (areGesturesActivated() && !pillShown) addBar()
                         }
@@ -703,7 +702,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 } catch (e: Exception) {}
             }
 
-            if (!isNavBarHidden()) hideNav()
+            if (!navHidden) hideNav()
 
             if (isPillShown()) {
                 val rot = wm.defaultDisplay.rotation

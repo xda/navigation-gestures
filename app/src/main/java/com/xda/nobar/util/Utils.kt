@@ -1,5 +1,6 @@
 package com.xda.nobar.util
 
+import android.app.KeyguardManager
 import android.app.UiModeManager
 import android.content.Context
 import android.content.Intent
@@ -26,35 +27,6 @@ import java.io.InputStreamReader
  * General utility functions for OHM
  */
 object Utils {
-    fun disableNavImmersive(context: Context) {
-        val currentImmersive = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)
-
-        currentImmersive?.apply {
-            when {
-                currentImmersive.contains("immersive.navigation") -> {
-                    saveBackupImmersive(context)
-                    Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, null)
-                }
-
-                currentImmersive.contains("immersive.full") -> {
-                    val split = currentImmersive.split("=")
-                    val insert = try { split[1] } catch (e: Exception) { "*" }
-
-                    saveBackupImmersive(context)
-                    Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.status=$insert")
-                }
-
-                else -> {
-                    resetBackupImmersive(context)
-                }
-            }
-
-            return
-        }
-
-        resetBackupImmersive(context)
-    }
-
     fun isInImmersive(context: Context): Boolean {
         val policy = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL) ?: ""
         return policy.contains("immersive.navigation") || policy.contains("immersive.full")
@@ -172,32 +144,6 @@ object Utils {
     fun shouldUseOverscanMethod(context: Context): Boolean {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_nav", false)
     }
-
-    fun setShouldUseOverscanMethod(context: Context, use: Boolean) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("hide_nav", use).apply()
-    }
-
-//    /**
-//     * Check to see if device has a software navigation bar
-//     * @param context a context object
-//     * @return true if the device has a soft navbar
-//     */
-//    fun hasNavBar(context: Context): Boolean {
-//        val id = context.resources.getIdentifier("config_showNavigationBar", "bool", "android")
-//        return context.resources.getBoolean(id)
-//                || Build.MODEL.contains("Android SDK built for x86")
-//
-////        return context.resources.getBoolean(com.android.internal.R.bool.config_showNavigationBar) || Build.MODEL.contains("Android SDK")
-//    }
-
-//    /**
-//     * Special function for TouchWiz devices, some of which can hide the navigation bar
-//     * @param context a context object
-//     * @return true if the navigation bar is currently hidden by TouchWiz
-//     */
-//    fun touchWizHideNavEnabled(context: Context): Boolean {
-//        return Settings.Global.getInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0) == 0
-//    }
 
     /**
      * Make sure the TouchWiz navbar is not hidden
@@ -436,10 +382,6 @@ object Utils {
                 Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)).apply()
     }
 
-    fun resetBackupImmersive(context: Context) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().remove("def_imm").apply()
-    }
-
     fun setNavImmersive(context: Context) {
         Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation=*")
     }
@@ -600,6 +542,14 @@ object Utils {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("anim_duration", BarView.DEFAULT_ANIM_DURATION.toInt()).toLong()
     }
 
+    fun isOnKeyguard(context: Context): Boolean {
+        val kgm = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+
+        return kgm.inKeyguardRestrictedInputMode()
+                || kgm.isKeyguardLocked
+                || (if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) kgm.isDeviceLocked else false)
+    }
+
     fun runCommand(vararg strings: String): String? {
         try {
             val comm = Runtime.getRuntime().exec("sh")
@@ -644,6 +594,5 @@ object Utils {
             e.printStackTrace()
             return null
         }
-
     }
 }
