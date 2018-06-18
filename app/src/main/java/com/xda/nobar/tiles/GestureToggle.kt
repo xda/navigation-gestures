@@ -8,6 +8,7 @@ import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.util.Utils
+import com.xda.nobar.views.BarView
 
 /**
  * QS Tile to toggle NoBar gestures
@@ -35,7 +36,7 @@ class GestureToggle : TileService(), OnGestureStateChangeListener {
         updateState()
     }
 
-    override fun onGestureStateChange(activated: Boolean) {
+    override fun invoke(barView: BarView, activated: Boolean) {
         updateState()
     }
 

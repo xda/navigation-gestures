@@ -1,5 +1,5 @@
 package com.xda.nobar.interfaces
 
-interface OnGestureStateChangeListener {
-    fun onGestureStateChange(activated: Boolean)
-}
+import com.xda.nobar.views.BarView
+
+typealias OnGestureStateChangeListener = (barView: BarView, activated: Boolean) -> Unit

@@ -65,21 +65,6 @@ class AppLaunchSelectActivity : AppCompatActivity() {
         list.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         list.addItemDecoration(DividerItemDecoration(list.context, (list.layoutManager as LinearLayoutManager).orientation))
 
-        val selectionListener = object : OnAppSelectedListener {
-            override fun onAppSelected(info: AppInfo) {
-                PreferenceManager.getDefaultSharedPreferences(this@AppLaunchSelectActivity)
-                        .edit()
-                        .putString("${intent.getStringExtra(EXTRA_KEY)}_package", "${info.packageName}/${info.activity}")
-                        .apply()
-
-                val resultIntent = Intent()
-                resultIntent.putExtra(EXTRA_KEY, intent.getStringExtra(EXTRA_KEY))
-                resultIntent.putExtra(EXTRA_RESULT_DISPLAY_NAME, info.displayName)
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish()
-            }
-        }
-
         Observable.fromCallable { getLauncherPackagesAsync() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -99,7 +84,18 @@ class AppLaunchSelectActivity : AppCompatActivity() {
                         }
                     }
 
-                    val adapter = Adapter(apps, selectionListener)
+                    val adapter = Adapter(apps) { info ->
+                        PreferenceManager.getDefaultSharedPreferences(this@AppLaunchSelectActivity)
+                                .edit()
+                                .putString("${intent.getStringExtra(EXTRA_KEY)}_package", "${info.packageName}/${info.activity}")
+                                .apply()
+
+                        val resultIntent = Intent()
+                        resultIntent.putExtra(EXTRA_KEY, intent.getStringExtra(EXTRA_KEY))
+                        resultIntent.putExtra(EXTRA_RESULT_DISPLAY_NAME, info.displayName)
+                        setResult(Activity.RESULT_OK, resultIntent)
+                        finish()
+                    }
 
                     runOnUiThread {
                         list.adapter = adapter
@@ -153,7 +149,7 @@ class AppLaunchSelectActivity : AppCompatActivity() {
             icon.background = getBitmapDrawable(apps[position].icon, holder.view.context.resources)
 
             view.setOnClickListener {
-                listener.onAppSelected(app)
+                listener.invoke(app)
             }
 
             check.isChecked = app.isChecked

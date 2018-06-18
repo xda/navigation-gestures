@@ -13,6 +13,7 @@ import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.util.Utils
+import com.xda.nobar.views.BarView
 import com.xda.nobar.views.TextSwitch
 
 /**
@@ -75,11 +76,11 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         handler.refreshPremium()
     }
 
-    override fun onGestureStateChange(activated: Boolean) {
+    override fun invoke(barView: BarView, activated: Boolean) {
         gestureSwitch.isChecked = activated
     }
 
-    override fun onNavBarHideStateChange(hidden: Boolean) {
+    override fun invoke(hidden: Boolean) {
         hideNavSwitch.onCheckedChangeListener = null
         hideNavSwitch.isChecked = hidden
         hideNavSwitch.onCheckedChangeListener = navListener

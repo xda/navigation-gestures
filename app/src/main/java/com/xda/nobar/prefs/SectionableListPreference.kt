@@ -155,7 +155,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         saveValue(if (restorePersistedValue) getPersistedString(defaultValue.toString()) else defaultValue.toString())
     }
 
-    override fun onItemChosen(value: String?) {
+    override fun invoke(value: String?) {
         tempValue = value
         dialog?.dismiss()
         saveValue(tempValue)
@@ -268,7 +268,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
                         if (it is ItemView) {
                             it.isChecked = true
                             setAllOthersUnchecked(it.value)
-                            listener.onItemChosen(it.value)
+                            listener.invoke(it.value)
                         }
                     }
                 }
