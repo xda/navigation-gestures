@@ -61,10 +61,10 @@ class LockScreenActivity : AppCompatActivity() {
 
     private fun saveSettings(settings: LockSettings) {
         try {
-            if (settings.brightness != -1) Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, settings.brightness)
-            else Settings.System.putString(contentResolver, Settings.System.SCREEN_BRIGHTNESS, null)
             if (settings.brightnessMode != -1) Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, settings.brightnessMode)
             else Settings.System.putString(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, null)
+            if (settings.brightness != -1) Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, settings.brightness)
+            else Settings.System.putString(contentResolver, Settings.System.SCREEN_BRIGHTNESS, null)
             if (settings.timeout != -1) Settings.System.putInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, settings.timeout)
             else Settings.System.putString(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, null)
         } catch (e: SecurityException) {
