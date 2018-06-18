@@ -75,8 +75,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
     }
 
-    val disabledNavReasonManager = DisabledNavReasonManager()
-    val disabledBarReasonManager = DisabledBarReasonManager()
+    val disabledNavReasonManager = DisabledReasonManager()
+    val disabledBarReasonManager = DisabledReasonManager()
 
     /**
      * Actions and Types
@@ -255,13 +255,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 if (um.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
                     if (enabled) {
                         if (Utils.shouldUseOverscanMethod(this)) {
-                            disabledNavReasonManager.remove(DisabledNavReasonManager.CAR_MODE)
+                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         }
                         if (areGesturesActivated() && !pillShown) addBar()
                     } else {
                         if (Utils.shouldUseOverscanMethod(this)) {
                             showNav()
-                            disabledNavReasonManager.add(DisabledNavReasonManager.CAR_MODE)
+                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         }
                         if (areGesturesActivated() && !pillShown) removeBar()
                     }
@@ -539,18 +539,18 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                             if (Utils.isOnKeyguard(this@App)) {
                                 if (Utils.shouldUseOverscanMethod(this@App)) {
                                     showNav()
-                                    disabledNavReasonManager.add(DisabledNavReasonManager.KEYGUARD)
+                                    disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
                                 }
                             } else {
                                 if (Utils.shouldUseOverscanMethod(this@App)) {
-                                    disabledNavReasonManager.remove(DisabledNavReasonManager.KEYGUARD)
+                                    disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
                                 }
                                 if (areGesturesActivated() && !pillShown) addBar()
                             }
                         }
                         Intent.ACTION_USER_PRESENT -> {
                             if (Utils.shouldUseOverscanMethod(this@App)) {
-                                disabledNavReasonManager.remove(DisabledNavReasonManager.KEYGUARD)
+                                disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             }
                             if (areGesturesActivated() && !pillShown) addBar()
                         }
@@ -582,7 +582,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                             removeBar()
                             if (Utils.shouldUseOverscanMethod(this@App)) {
                                 showNav()
-                                disabledNavReasonManager.add(DisabledNavReasonManager.CAR_MODE)
+                                disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
                             }
                         }
                     }
@@ -592,7 +592,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         else {
                             if (!pillShown) addBar()
                             if (Utils.shouldUseOverscanMethod(this@App)) {
-                                disabledNavReasonManager.remove(DisabledNavReasonManager.CAR_MODE)
+                                disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
                             }
                         }
                     }
@@ -644,16 +644,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             Utils.loadBlacklistedNavPackages(this@App, navArray)
 
             if (navArray.contains(pName)) {
-                if (!disabledNavReasonManager.contains(DisabledNavReasonManager.NAV_BLACKLIST)) {
+                if (!disabledNavReasonManager.contains(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)) {
                     if (Utils.shouldUseOverscanMethod(this@App)) {
                         showNav(false)
-                        disabledNavReasonManager.add(DisabledNavReasonManager.NAV_BLACKLIST)
+                        disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
                     }
                     onGlobalLayout()
                 }
             } else {
                 if (Utils.shouldUseOverscanMethod(this@App)) {
-                    disabledNavReasonManager.remove(DisabledNavReasonManager.NAV_BLACKLIST)
+                    disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
 
                 }
                 onGlobalLayout()
@@ -663,15 +663,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             Utils.loadBlacklistedBarPackages(this@App, barArray)
 
             if (barArray.contains(pName)) {
-                if (!disabledBarReasonManager.contains(DisabledBarReasonManager.BLACKLIST)) {
+                if (!disabledBarReasonManager.contains(DisabledReasonManager.PillReasons.BLACKLIST)) {
                     if (areGesturesActivated()) {
                         removeBar(false)
-                        disabledBarReasonManager.add(DisabledBarReasonManager.BLACKLIST)
+                        disabledBarReasonManager.add(DisabledReasonManager.PillReasons.BLACKLIST)
                     }
                 }
             } else {
-                if (areGesturesActivated() && disabledBarReasonManager.contains(DisabledBarReasonManager.BLACKLIST)) {
-                    disabledBarReasonManager.remove(DisabledBarReasonManager.BLACKLIST)
+                if (areGesturesActivated() && disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.BLACKLIST)) {
                     if (!pillShown) addBar(false)
                 }
             }
@@ -688,15 +687,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     val edgeType = getCocktailBarWindowType.invoke(manager).toString().toInt()
 
                     if (edgeType == 2) {
-                        if (!disabledNavReasonManager.contains(DisabledNavReasonManager.EDGE_SCREEN)) {
+                        if (!disabledNavReasonManager.contains(DisabledReasonManager.NavBarReasons.EDGE_SCREEN)) {
                             if (Utils.shouldUseOverscanMethod(this@App)) {
                                 showNav(false)
-                                disabledNavReasonManager.add(DisabledNavReasonManager.EDGE_SCREEN)
+                                disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.EDGE_SCREEN)
                             }
                         }
                     } else {
                         if (Utils.shouldUseOverscanMethod(this@App)) {
-                            disabledNavReasonManager.remove(DisabledNavReasonManager.EDGE_SCREEN)
+                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.EDGE_SCREEN)
                         }
                     }
                 } catch (e: Exception) {}
@@ -803,12 +802,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 if (isImmersive) {
                     if (Utils.shouldUseOverscanMethod(this@App) && Utils.origBarInFullscreen(this@App)) {
                         showNav()
-                        disabledNavReasonManager.add(DisabledNavReasonManager.IMMERSIVE)
+                        disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.IMMERSIVE)
                     }
                     if (hideInFullScreen) bar.hidePill(true)
                 } else {
                     if (Utils.shouldUseOverscanMethod(this@App)) {
-                        disabledNavReasonManager.remove(DisabledNavReasonManager.IMMERSIVE)
+                        disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.IMMERSIVE)
                     }
                     if (hideInFullScreen && bar.isAutoHidden && bar.isHidden) {
                         bar.isAutoHidden = false
