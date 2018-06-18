@@ -27,7 +27,6 @@ import android.view.WindowManager
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
-import com.xda.nobar.util.Utils
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -176,7 +175,7 @@ class ScreenshotActivity : AppCompatActivity() {
                         })
                         exit.addUpdateListener(listener)
                         exit.interpolator = DecelerateInterpolator()
-                        exit.duration = Utils.getAnimationDurationMs(this@ScreenshotActivity)
+                        exit.duration = 150
 
                         val enter = ValueAnimator.ofFloat(0f, 1f)
                         enter.addListener(object : Animator.AnimatorListener {
@@ -191,7 +190,7 @@ class ScreenshotActivity : AppCompatActivity() {
                         })
                         enter.addUpdateListener(listener)
                         enter.interpolator = AccelerateInterpolator()
-                        enter.duration = Utils.getAnimationDurationMs(this@ScreenshotActivity)
+                        enter.duration = 150
                         enter.start()
                     }
 

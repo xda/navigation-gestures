@@ -3,7 +3,6 @@
     label="@string/app_name"
     previewImage="@drawable/ic_gesture_black_24dp"
     updatePeriodMills="4800000"
-    cocktailWidth="500"
+    cocktailWidth="550"
     configure="com.xda.nobar.activities.MainActivity"
-    permitVisibilityChanged="true">
-</cocktail-provider>
+    permitVisibilityChanged="true" />
