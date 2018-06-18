@@ -698,7 +698,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 } catch (e: Exception) {}
             }
 
-            if (!isNavBarHidden()) hideNav(false)
+            if (!isNavBarHidden()) hideNav()
 
             if (isPillShown()) {
                 val rot = wm.defaultDisplay.rotation

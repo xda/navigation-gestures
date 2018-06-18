@@ -9,6 +9,7 @@ import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailProvider
 import com.xda.nobar.App
 import com.xda.nobar.R
+import com.xda.nobar.activities.MainActivity
 
 class CocktailReceiver : SlookCocktailProvider() {
     companion object {
@@ -61,8 +62,10 @@ class CocktailReceiver : SlookCocktailProvider() {
         val views = RemoteViews(context.packageName, R.layout.widget_layout)
         views.setTextViewText(R.id.gesture_status, context.resources.getText(if (app.areGesturesActivated()) R.string.gestures_on else R.string.gestures_off))
         views.setTextViewText(R.id.nav_status, context.resources.getText(if (app.prefs.getBoolean("hide_nav", false)) R.string.nav_hidden else R.string.nav_shown))
-        views.setInt(R.id.toggle_gestures, "setColorFilter", context.resources.getColor(if (app.areGesturesActivated()) R.color.colorAccent else R.color.color_disabled))
-        views.setInt(R.id.toggle_nav, "setColorFilter", context.resources.getColor(if (app.prefs.getBoolean("hide_nav", false)) R.color.colorAccent else R.color.color_disabled))
+        views.setInt(R.id.toggle_gestures, "setColorFilter",
+                context.resources.getColor(if (app.areGesturesActivated()) R.color.colorAccent else R.color.color_disabled))
+        views.setInt(R.id.toggle_nav, "setColorFilter",
+                context.resources.getColor(if (app.prefs.getBoolean("hide_nav", false)) R.color.colorAccent else R.color.color_disabled))
 
         val toggleGestureIntent = Intent(context, javaClass)
         toggleGestureIntent.action = ACTION_PERFORM_TOGGLE
@@ -74,6 +77,14 @@ class CocktailReceiver : SlookCocktailProvider() {
 
         views.setOnClickPendingIntent(R.id.toggle_gestures, PendingIntent.getBroadcast(context, GEST, toggleGestureIntent, 0))
         views.setOnClickPendingIntent(R.id.toggle_nav, PendingIntent.getBroadcast(context, NAV, toggleNavIntent, 0))
+
+        val longClickIntent = Intent(context, MainActivity::class.java)
+        longClickIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        val longClickPendingIntent = PendingIntent.getActivity(context, 400, longClickIntent, 0)
+
+        cocktailManager.setOnLongClickPendingIntent(views, R.id.toggle_gestures, longClickPendingIntent)
+        cocktailManager.setOnLongClickPendingIntent(views, R.id.toggle_nav, longClickPendingIntent)
 
         for (id in cocktailIds) {
             cocktailManager.updateCocktail(id, views)
