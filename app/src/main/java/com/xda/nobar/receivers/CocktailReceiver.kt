@@ -10,6 +10,7 @@ import com.samsung.android.sdk.look.cocktailbar.SlookCocktailProvider
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
+import com.xda.nobar.activities.SettingsActivity
 
 class CocktailReceiver : SlookCocktailProvider() {
     companion object {
@@ -75,8 +76,12 @@ class CocktailReceiver : SlookCocktailProvider() {
         toggleNavIntent.action = ACTION_PERFORM_TOGGLE
         toggleNavIntent.putExtra(EXTRA_WHICH, NAV)
 
+        val settingsIntent = Intent(context, SettingsActivity::class.java)
+        settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
         views.setOnClickPendingIntent(R.id.toggle_gestures, PendingIntent.getBroadcast(context, GEST, toggleGestureIntent, 0))
         views.setOnClickPendingIntent(R.id.toggle_nav, PendingIntent.getBroadcast(context, NAV, toggleNavIntent, 0))
+        views.setOnClickPendingIntent(R.id.settings, PendingIntent.getActivity(context, 401, settingsIntent, 0))
 
         val longClickIntent = Intent(context, MainActivity::class.java)
         longClickIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

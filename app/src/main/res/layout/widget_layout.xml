@@ -61,4 +61,13 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/settings"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/circle"
+        android:src="@drawable/ic_settings_black_24dp" />
+
 </LinearLayout>
