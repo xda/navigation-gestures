@@ -16,6 +16,10 @@ import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.views.BarView
+import java.io.BufferedReader
+import java.io.DataOutputStream
+import java.io.IOException
+import java.io.InputStreamReader
 
 
 /**
@@ -594,5 +598,52 @@ object Utils {
 
     fun getAnimationDurationMs(context: Context): Long {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt("anim_duration", BarView.DEFAULT_ANIM_DURATION.toInt()).toLong()
+    }
+
+    fun runCommand(vararg strings: String): String? {
+        try {
+            val comm = Runtime.getRuntime().exec("sh")
+            val outputStream = DataOutputStream(comm.outputStream)
+
+            for (s in strings) {
+                outputStream.writeBytes(s + "\n")
+                outputStream.flush()
+            }
+
+            outputStream.writeBytes("exit\n")
+            outputStream.flush()
+
+            val inputReader = BufferedReader(InputStreamReader(comm.inputStream))
+            val errorReader = BufferedReader(InputStreamReader(comm.errorStream))
+
+            var ret = ""
+            var line: String?
+
+            do {
+                line = inputReader.readLine()
+                if (line == null) break
+                ret = ret + line + "\n"
+            } while (true)
+
+            do {
+                line = errorReader.readLine()
+                if (line == null) break
+                ret = ret + line + "\n"
+            } while (true)
+
+            try {
+                comm.waitFor()
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+            }
+
+            outputStream.close()
+
+            return ret
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return null
+        }
+
     }
 }

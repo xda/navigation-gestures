@@ -62,6 +62,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     lateinit var bar: BarView
     lateinit var immersiveHelperView: ImmersiveHelperView
     lateinit var prefs: SharedPreferences
+    lateinit var immersiveHelper: ImmersiveHelper
 
     private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
     private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()
@@ -184,6 +185,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     override fun onCreate() {
         super.onCreate()
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        immersiveHelper = ImmersiveHelper(this)
 
         if (!Utils.canRunHiddenCommands(this)) {
             val intent = Intent(this, IntroActivity::class.java)
