@@ -28,22 +28,32 @@ class ImmersiveHelper(private val app: App) {
     private fun parseStatusBarState() {
         val pattern = Pattern.compile("(.*?)mStatusBarWindowState=(.*?)\b")
         val matcher = pattern.matcher(completeOutput)
+        var tmpState: String? = null
 
         while (!matcher.hitEnd()) {
-            if (matcher.find()) statusBarWindowState = matcher.group()
+            if (matcher.find()) tmpState = matcher.group()
         }
 
-        Log.e("NoBar", statusBarWindowState)
+        if (tmpState != null) {
+            statusBarWindowState = tmpState.split("=")[1].trim()
+
+            Log.e("NoBar", statusBarWindowState)
+        }
     }
 
     private fun parseNavBarState() {
         val pattern = Pattern.compile("(.*?)mNavigationBarWindowState=(.*?)\b")
         val matcher = pattern.matcher(completeOutput)
+        var tmpState: String? = null
 
         while (!matcher.hitEnd()) {
-            if (matcher.find()) navigationBarWindowState = matcher.group()
+            if (matcher.find()) tmpState = matcher.group()
         }
 
-        Log.e("NoBar", navigationBarWindowState)
+        if (tmpState != null) {
+            navigationBarWindowState = tmpState.split("=")[1].trim()
+
+            Log.e("NoBar", navigationBarWindowState)
+        }
     }
 }
