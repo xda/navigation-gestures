@@ -27,6 +27,7 @@ import com.github.lzyzsd.circleprogress.ArcProgress
 import com.rey.material.widget.CheckedImageView
 import com.xda.nobar.App
 import com.xda.nobar.R
+import com.xda.nobar.interfaces.OnAppSelectedListener
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -64,7 +65,7 @@ class AppLaunchSelectActivity : AppCompatActivity() {
         list.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         list.addItemDecoration(DividerItemDecoration(list.context, (list.layoutManager as LinearLayoutManager).orientation))
 
-        val selectionListener = object : AppSelectedListener {
+        val selectionListener = object : OnAppSelectedListener {
             override fun onAppSelected(info: AppInfo) {
                 PreferenceManager.getDefaultSharedPreferences(this@AppLaunchSelectActivity)
                         .edit()
@@ -134,7 +135,7 @@ class AppLaunchSelectActivity : AppCompatActivity() {
 
     class AppInfo(val packageName: String, val activity: String, val displayName: String, val icon: Drawable, val isChecked: Boolean)
 
-    class Adapter(private val apps: ArrayList<AppInfo>, private val listener: AppSelectedListener) : RecyclerView.Adapter<Adapter.VH>() {
+    class Adapter(private val apps: ArrayList<AppInfo>, private val listener: OnAppSelectedListener) : RecyclerView.Adapter<Adapter.VH>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
             return VH(LayoutInflater.from(parent.context).inflate(R.layout.app_info, parent, false))
         }
@@ -182,9 +183,5 @@ class AppLaunchSelectActivity : AppCompatActivity() {
         }
 
         class VH(val view: View) : RecyclerView.ViewHolder(view)
-    }
-
-    interface AppSelectedListener {
-        fun onAppSelected(info: AppInfo)
     }
 }

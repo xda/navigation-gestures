@@ -7,13 +7,14 @@ import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import com.xda.nobar.App
 import com.xda.nobar.R
+import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.util.Utils
 
 /**
  * QS Tile to toggle navbar
  */
 @TargetApi(24)
-class NavBarToggle : TileService(), App.NavBarHideListener {
+class NavBarToggle : TileService(), OnNavBarHideStateChangeListener {
     private lateinit var handler: App
 
     override fun onCreate() {
@@ -35,7 +36,7 @@ class NavBarToggle : TileService(), App.NavBarHideListener {
         updateState()
     }
 
-    override fun onNavChange(hidden: Boolean) {
+    override fun onNavBarHideStateChange(hidden: Boolean) {
         updateState()
     }
 

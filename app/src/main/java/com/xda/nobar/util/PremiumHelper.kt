@@ -2,12 +2,12 @@ package com.xda.nobar.util
 
 import android.content.*
 import android.content.pm.PackageManager
-import com.xda.nobar.App
+import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 
 /**
  * Helper class for managing premium detection
  */
-class PremiumHelper(private val context: Context, private val listener: App.LicenseCheckListener) {
+class PremiumHelper(private val context: Context, private val listener: OnLicenseCheckResultListener) {
     companion object {
         const val COMPANION_PACKAGE = "com.xda.nobar.premium"
     }
@@ -25,13 +25,13 @@ class PremiumHelper(private val context: Context, private val listener: App.Lice
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "com.xda.nobar.action.PREMIUM_RESULT") {
-                listener.onResult(intent.getBooleanExtra("valid", false), intent.getStringExtra("msg"))
+                listener.onLicenseCheckResult(intent.getBooleanExtra("valid", false), intent.getStringExtra("msg"))
             }
         }
     }
 
     fun checkPremium() {
-        if (!isCompanionInstalled) listener.onResult(false, "Premium Add-On not installed")
+        if (!isCompanionInstalled) listener.onLicenseCheckResult(false, "Premium Add-On not installed")
         else {
             val intent = Intent("com.xda.nobar.action.PREMIUM_CHECK")
             intent.component = ComponentName("com.xda.nobar.premium", "com.xda.nobar.premium.Receiver")
@@ -42,9 +42,5 @@ class PremiumHelper(private val context: Context, private val listener: App.Lice
     init {
         val filter = IntentFilter("com.xda.nobar.action.PREMIUM_RESULT")
         context.registerReceiver(receiver, filter, "com.xda.nobar.permission.VERIFY_LICENSE", null)
-    }
-
-    fun destroy() {
-        context.unregisterReceiver(receiver)
     }
 }

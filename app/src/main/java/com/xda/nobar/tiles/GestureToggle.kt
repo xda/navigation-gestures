@@ -6,13 +6,14 @@ import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import com.xda.nobar.App
 import com.xda.nobar.R
+import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.util.Utils
 
 /**
  * QS Tile to toggle NoBar gestures
  */
 @TargetApi(24)
-class GestureToggle : TileService(), App.GestureActivationListener {
+class GestureToggle : TileService(), OnGestureStateChangeListener {
     private lateinit var handler: App
 
     override fun onCreate() {
@@ -34,7 +35,7 @@ class GestureToggle : TileService(), App.GestureActivationListener {
         updateState()
     }
 
-    override fun onChange(activated: Boolean) {
+    override fun onGestureStateChange(activated: Boolean) {
         updateState()
     }
 

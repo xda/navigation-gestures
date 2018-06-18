@@ -10,13 +10,15 @@ import android.view.LayoutInflater
 import android.widget.CompoundButton
 import com.xda.nobar.App
 import com.xda.nobar.R
+import com.xda.nobar.interfaces.OnGestureStateChangeListener
+import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.util.Utils
 import com.xda.nobar.views.TextSwitch
 
 /**
  * The main app activity
  */
-class MainActivity : AppCompatActivity(), App.GestureActivationListener, App.NavBarHideListener {
+class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBarHideStateChangeListener {
     private lateinit var gestureSwitch: TextSwitch
     private lateinit var hideNavSwitch: TextSwitch
     private lateinit var handler: App
@@ -73,14 +75,11 @@ class MainActivity : AppCompatActivity(), App.GestureActivationListener, App.Nav
         handler.refreshPremium()
     }
 
-    /**
-     * Make sure the toggle switch updates for the current activation state
-     */
-    override fun onChange(activated: Boolean) {
+    override fun onGestureStateChange(activated: Boolean) {
         gestureSwitch.isChecked = activated
     }
 
-    override fun onNavChange(hidden: Boolean) {
+    override fun onNavBarHideStateChange(hidden: Boolean) {
         hideNavSwitch.onCheckedChangeListener = null
         hideNavSwitch.isChecked = hidden
         hideNavSwitch.onCheckedChangeListener = navListener

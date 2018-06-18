@@ -17,11 +17,11 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.xda.nobar.App
 import com.xda.nobar.R
-import com.xda.nobar.interfaces.Interfaces
+import com.xda.nobar.interfaces.OnItemChosenListener
 import com.xda.nobar.util.Utils
 import com.xda.nobar.views.ItemView
 
-class SectionableListPreference(context: Context, attributeSet: AttributeSet) : DialogPreference(context, attributeSet), Interfaces.ItemChosenListener {
+class SectionableListPreference(context: Context, attributeSet: AttributeSet) : DialogPreference(context, attributeSet), OnItemChosenListener {
     val defaultValue: Any?
         get() {
             val mDefaultProgress = Preference::class.java.getDeclaredField("mDefaultValue")
@@ -162,9 +162,9 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
-        builder.setPositiveButton(android.R.string.ok, { _, _ ->
+        builder.setPositiveButton(android.R.string.ok) { _, _ ->
             callChangeListener(getPersistedString(tempValue))
-        })
+        }
     }
 
     override fun onCreateDialogView(): View {
@@ -244,7 +244,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
             orientation = LinearLayout.VERTICAL
         }
 
-        fun setup(listener: Interfaces.ItemChosenListener, sections: ArrayList<Section>, scrollView: ScrollView) {
+        fun setup(listener: OnItemChosenListener, sections: ArrayList<Section>, scrollView: ScrollView) {
             sections.forEach {
                 val sectionView = SectionTitleView(context)
                 sectionView.name = it.title
@@ -293,56 +293,4 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
             }
         }
     }
-
-//    class SectionsAdapter(private val context: Context,
-//                          private val sections: ArrayList<Section>,
-//                          private val listener: Interfaces.ItemChosenListener) : RecyclerView.Adapter<SectionsAdapter.VH>() {
-//        val titles = ArrayList<SectionView>()
-//        val sectionItems = ArrayList<ItemView>()
-//        val orderedItems = ArrayList<View>()
-//
-//        init {
-//            sections.forEach {
-//                val sectionView = SectionView(context)
-//                sectionView.name = it.title
-//                titles.add(sectionView)
-//
-//                orderedItems.add(sectionView)
-//
-//                for (i in 0 until it.entryNames.size) {
-//                    val itemView = ItemView(context)
-//                    itemView.name = it.entryNames[i]
-//                    itemView.value = it.entryValues[i]
-//                    sectionItems.add(itemView)
-//
-//                    orderedItems.add(itemView)
-//                }
-//            }
-//        }
-//
-//        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-//            return VH(ItemView(parent.context))
-//        }
-//
-//        override fun onBindViewHolder(holder: VH, position: Int) {
-//            holder.view.
-//        }
-//
-//        override fun getItemCount(): Int {
-//            return orderedItems.size
-//        }
-//
-//        inner class VH(val view: View) : RecyclerView.ViewHolder(view) {
-//            init {
-//                if (view is ItemView) {
-//                    view.setOnCheckedChangeListener { buttonView, isChecked ->
-//                        sectionItems.forEach {
-//                            if (it != view) it.isChecked = false
-//                        }
-//
-//                    }
-//                }
-//            }
-//        }
-//    }
 }

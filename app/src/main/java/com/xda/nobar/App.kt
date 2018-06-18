@@ -24,6 +24,9 @@ import android.view.*
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.xda.nobar.activities.IntroActivity
+import com.xda.nobar.interfaces.OnGestureStateChangeListener
+import com.xda.nobar.interfaces.OnLicenseCheckResultListener
+import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.receivers.CocktailReceiver
 import com.xda.nobar.services.ForegroundService
 import com.xda.nobar.services.RootService
@@ -61,8 +64,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     lateinit var immersiveHelperView: ImmersiveHelperView
     lateinit var prefs: SharedPreferences
 
-    private val gestureListeners = ArrayList<GestureActivationListener>()
-    private val navbarListeners = ArrayList<NavBarHideListener>()
+    private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
+    private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()
     private val handler = Handler(Looper.getMainLooper())
     private val rootConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -201,8 +204,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         premiumInstallListener = PremiumInstallListener()
         rootServiceIntent = Intent(this, RootService::class.java)
 
-        premiumHelper = PremiumHelper(this, object : LicenseCheckListener {
-            override fun onResult(valid: Boolean, reason: String) {
+        premiumHelper = PremiumHelper(this, object : OnLicenseCheckResultListener {
+            override fun onLicenseCheckResult(valid: Boolean, reason: String) {
                 Log.e("NoBar", reason)
                 isValidPremium = valid
                 prefs.edit().putBoolean("valid_prem", valid).apply()
@@ -232,10 +235,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
             "is_active" -> {
-                gestureListeners.forEach { it.onChange(sharedPreferences.getBoolean(key, false)) }
+                gestureListeners.forEach { it.onGestureStateChange(sharedPreferences.getBoolean(key, false)) }
             }
             "hide_nav" -> {
-                navbarListeners.forEach { it.onNavChange(sharedPreferences.getBoolean(key, false)) }
+                navbarListeners.forEach { it.onNavBarHideStateChange(sharedPreferences.getBoolean(key, false)) }
             }
             "use_root" -> {
                 if (Utils.shouldUseRootCommands(this)) {
@@ -292,22 +295,22 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Add an activation listener
      * Notifies caller when a change in activation occurs
      */
-    fun addGestureActivationListener(listener: GestureActivationListener) {
+    fun addGestureActivationListener(listener: OnGestureStateChangeListener) {
         gestureListeners.add(listener)
     }
 
     /**
      * Remove an activation listener
      */
-    fun removeGestureActivationListener(listener: GestureActivationListener) {
+    fun removeGestureActivationListener(listener: OnGestureStateChangeListener) {
         gestureListeners.remove(listener)
     }
 
-    fun addNavBarHideListener(listener: NavBarHideListener) {
+    fun addNavBarHideListener(listener: OnNavBarHideStateChangeListener) {
         navbarListeners.add(listener)
     }
 
-    fun removeNavbarHideListener(listener: NavBarHideListener) {
+    fun removeNavbarHideListener(listener: OnNavBarHideStateChangeListener) {
         navbarListeners.remove(listener)
     }
 
@@ -318,7 +321,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         if (disabledBarReasonManager.isEmpty()) {
             handler.post {
                 pillShown = true
-                if (callListeners) gestureListeners.forEach { it.onChange(true) }
+                if (callListeners) gestureListeners.forEach { it.onGestureStateChange(true) }
 
                 bar.params.width = Utils.getCustomWidth(this)
                 bar.params.height = Utils.getCustomHeight(this)
@@ -375,7 +378,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Remove the pill from the screen
      */
     fun removeBar(callListeners: Boolean = true) {
-        if (callListeners) gestureListeners.forEach { it.onChange(false) }
+        if (callListeners) gestureListeners.forEach { it.onGestureStateChange(false) }
         removeBarInternal()
 
     }
@@ -461,7 +464,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             Utils.forceNavBlack(this)
             Utils.forceTouchWizNavEnabled(this)
 
-            if (callListeners) navbarListeners.forEach { it.onNavChange(true) }
+            if (callListeners) navbarListeners.forEach { it.onNavBarHideStateChange(true) }
             navHidden = true
         }
 
@@ -473,7 +476,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     fun showNav(callListeners: Boolean = true) {
         Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
 
-        if (callListeners) navbarListeners.forEach { it.onNavChange(false) }
+        if (callListeners) navbarListeners.forEach { it.onNavBarHideStateChange(false) }
 
         IWindowManager.setOverscan(0, 0, 0, 0)
         Utils.clearBlackNav(this)
@@ -875,23 +878,5 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 }
             }
         }
-    }
-
-    /**
-     * Used to listen for changes in activation
-     */
-    interface GestureActivationListener {
-        fun onChange(activated: Boolean)
-    }
-
-    interface NavBarHideListener {
-        fun onNavChange(hidden: Boolean)
-    }
-
-    /**
-     * Used to listen for changes in premium state
-     */
-    interface LicenseCheckListener {
-        fun onResult(valid: Boolean, reason: String)
     }
 }
