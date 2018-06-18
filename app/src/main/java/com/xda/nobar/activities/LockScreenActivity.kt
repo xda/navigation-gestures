@@ -35,15 +35,10 @@ class LockScreenActivity : AppCompatActivity() {
     private fun setup() {
         registerReceiver(screenOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
 
-        val currentBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, -1)
-        val currentBrightnessMode = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, -1)
-        val currentTimeout = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, -1)
-        val keepScreenOn = Settings.Global.getInt(contentResolver, Settings.Global.STAY_ON_WHILE_PLUGGED_IN, -1)
-
-        previousSettings.brightness = currentBrightness
-        previousSettings.brightnessMode = currentBrightnessMode
-        previousSettings.timeout = currentTimeout
-        previousSettings.keepScreenOn = keepScreenOn
+        previousSettings.brightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, -1)
+        previousSettings.brightnessMode = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, -1)
+        previousSettings.timeout = Settings.System.getInt(contentResolver, Settings.System.SCREEN_OFF_TIMEOUT, -1)
+        previousSettings.keepScreenOn = Settings.Global.getInt(contentResolver, Settings.Global.STAY_ON_WHILE_PLUGGED_IN, -1)
 
         saveSettings(LockSettings(0, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL, 1000, 0))
 
@@ -54,12 +49,12 @@ class LockScreenActivity : AppCompatActivity() {
     private fun performDestroy() {
         if (!destroying) {
             destroying = true
+            saveSettings(previousSettings)
 
             val app = application as App
             if (app.areGesturesActivated() && !app.pillShown) app.addBar(false)
 
             unregisterReceiver(screenOffReceiver)
-            saveSettings(previousSettings)
             finish()
         }
     }
