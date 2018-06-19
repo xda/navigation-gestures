@@ -19,7 +19,7 @@ class AppLaunchSelectActivity : BaseAppSelectActivity() {
         const val CHECKED_PACKAGE = "checked"
     }
 
-    override val adapter = AppSelectAdapter(true) { info ->
+    override val adapter = AppSelectAdapter(true, true) { info ->
         PreferenceManager.getDefaultSharedPreferences(this@AppLaunchSelectActivity)
                 .edit()
                 .putString("${intent.getStringExtra(EXTRA_KEY)}_package", "${info.packageName}/${info.activity}")

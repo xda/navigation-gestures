@@ -124,8 +124,9 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
         val filteredList = ArrayList<AppInfo>()
 
         origAppSet.forEach {
-            val text = it.displayName.toLowerCase()
-            if (text.contains(lowercase)) {
+            val title = it.displayName.toLowerCase()
+            val summary = it.packageName.toLowerCase()
+            if (title.contains(lowercase) || summary.contains(lowercase)) {
                 filteredList.add(it)
             }
         }

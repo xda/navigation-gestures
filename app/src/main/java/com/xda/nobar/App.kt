@@ -652,10 +652,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             Utils.loadBlacklistedBarPackages(this@App, barArray)
 
             if (barArray.contains(pName)) {
-                if (!disabledBarReasonManager.contains(DisabledReasonManager.PillReasons.BLACKLIST)) {
+                if (disabledBarReasonManager.add(DisabledReasonManager.PillReasons.BLACKLIST)) {
                     if (areGesturesActivated()) {
                         removeBar(false)
-                        disabledBarReasonManager.add(DisabledReasonManager.PillReasons.BLACKLIST)
                     }
                 }
             } else {
