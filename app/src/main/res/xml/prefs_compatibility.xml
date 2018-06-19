@@ -35,6 +35,12 @@
         android:key="use_immersive_mode_when_nav_hidden"
         android:defaultValue="@bool/immersive_nav_default" />
 
+    <Preference
+        android:title="@string/imm_blacklist"
+        android:summary="@string/imm_blacklist_desc"
+        android:dependency="use_immersive_mode_when_nav_hidden"
+        android:key="immersive_blacklist" />
+
     <!--<SwitchPreference-->
         <!--android:title="@string/use_root"-->
         <!--android:summary="@string/use_root_desc"-->

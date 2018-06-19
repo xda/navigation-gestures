@@ -15,6 +15,10 @@ open class DisabledReasonManager : TreeSet<String>() {
         const val BLACKLIST = "bar_blacklist"
     }
 
+    object ImmReasons {
+        const val BLACKLIST = "imm_blacklist"
+    }
+
     override fun add(element: String): Boolean {
         return if (!contains(element)) super.add(element)
         else false

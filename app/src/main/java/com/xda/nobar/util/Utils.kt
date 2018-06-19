@@ -30,11 +30,6 @@ import kotlin.collections.HashSet
  * General utility functions for OHM
  */
 object Utils {
-    fun isInImmersive(context: Context): Boolean {
-        val policy = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL) ?: ""
-        return policy.contains("immersive.navigation") || policy.contains("immersive.full")
-    }
-
     /**
      * Get the device's screen size
      * @param context context object
@@ -517,6 +512,9 @@ object Utils {
     fun loadBlacklistedBarPackages(context: Context, packages: ArrayList<String>) =
             packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_bar_apps", HashSet<String>()))
 
+    fun loadBlacklistedImmPackages(context: Context, packages: ArrayList<String>) =
+            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_imm_apps", HashSet<String>()))
+
     fun saveBlacklistedNavPackageList(context: Context, packages: ArrayList<String>) =
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putStringSet("blacklisted_nav_apps", HashSet<String>(packages))
@@ -525,6 +523,11 @@ object Utils {
     fun saveBlacklistedBarPackages(context: Context, packages: ArrayList<String>) =
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putStringSet("blacklisted_bar_apps", HashSet<String>(packages))
+                    .apply()
+
+    fun saveBlacklistedImmPackages(context: Context, packages: ArrayList<String>) =
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    .putStringSet("blacklisted_imm_apps", HashSet<String>(packages))
                     .apply()
 
     fun getAnimationDurationMs(context: Context) =

@@ -77,6 +77,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     val disabledNavReasonManager = DisabledReasonManager()
     val disabledBarReasonManager = DisabledReasonManager()
+    val disabledImmReasonManager = DisabledReasonManager()
 
     /**
      * Actions and Types
@@ -270,8 +271,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             "use_immersive_mode_when_nav_hidden" -> {
                 if (Utils.shouldUseOverscanMethod(this) && disabledNavReasonManager.isEmpty()) {
                     if (Utils.useImmersiveWhenNavHidden(this)) {
-                        Utils.saveBackupImmersive(this)
-                        Utils.setNavImmersive(this)
+                        if (disabledImmReasonManager.isEmpty()) {
+                            Utils.saveBackupImmersive(this)
+                            Utils.setNavImmersive(this)
+                        }
                     } else {
                         Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
                     }
@@ -662,6 +665,23 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     if (!pillShown) addBar(false)
                 }
             }
+
+            val immArray = ArrayList<String>()
+            Utils.loadBlacklistedImmPackages(this@App, immArray)
+
+            if (immArray.contains(pName)) {
+                if (Utils.shouldUseOverscanMethod(this@App)
+                        && Utils.useImmersiveWhenNavHidden(this@App)
+                        && disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.BLACKLIST)) {
+                    Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
+                }
+            } else {
+                if (Utils.shouldUseOverscanMethod(this@App)
+                        && Utils.useImmersiveWhenNavHidden(this@App)
+                        && disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.BLACKLIST)) {
+                    Utils.setNavImmersive(this@App)
+                }
+            }
         }
 
         @SuppressLint("WrongConstant")
@@ -821,7 +841,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         private fun handleTablet() {
-            if (Utils.shouldUseOverscanMethod(this@App) && !Utils.isInImmersive(this@App)) {
+            if (Utils.shouldUseOverscanMethod(this@App)) {
                 when (wm.defaultDisplay.rotation) {
                     Surface.ROTATION_0 -> {
                         IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this@App) + 1)

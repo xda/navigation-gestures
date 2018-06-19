@@ -17,6 +17,7 @@ class BlacklistSelectorActivity : BaseAppSelectActivity() {
 
         const val FOR_BAR = "bar"
         const val FOR_NAV = "nav"
+        const val FOR_IMM = "imm"
     }
 
     private val currentlyBlacklisted = ArrayList<String>()
@@ -41,6 +42,10 @@ class BlacklistSelectorActivity : BaseAppSelectActivity() {
             FOR_NAV -> {
                 title = resources.getText(R.string.nav_blacklist)
                 Utils.loadBlacklistedNavPackages(this, currentlyBlacklisted)
+            }
+            FOR_IMM -> {
+                title = resources.getText(R.string.imm_blacklist)
+                Utils.loadBlacklistedImmPackages(this, currentlyBlacklisted)
             }
             else -> {
                 setResult(Activity.RESULT_CANCELED)
@@ -73,8 +78,9 @@ class BlacklistSelectorActivity : BaseAppSelectActivity() {
         super.onDestroy()
 
         when (which) {
-            BlacklistSelectorActivity.FOR_NAV -> Utils.saveBlacklistedNavPackageList(this, currentlyBlacklisted)
-            BlacklistSelectorActivity.FOR_BAR -> Utils.saveBlacklistedBarPackages(this, currentlyBlacklisted)
+            FOR_NAV -> Utils.saveBlacklistedNavPackageList(this, currentlyBlacklisted)
+            FOR_BAR -> Utils.saveBlacklistedBarPackages(this, currentlyBlacklisted)
+            FOR_IMM -> Utils.saveBlacklistedImmPackages(this, currentlyBlacklisted)
         }
     }
 }

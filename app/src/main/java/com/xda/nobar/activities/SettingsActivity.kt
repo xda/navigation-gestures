@@ -560,6 +560,7 @@ class SettingsActivity : AppCompatActivity() {
         private fun setUpImmersiveListeners() {
             val origNav = findPreference("orig_nav_in_immersive") as SwitchPreference
             val immNav = findPreference("use_immersive_mode_when_nav_hidden") as SwitchPreference
+            val immBL = findPreference("immersive_blacklist")
 
             if (origNav.isChecked) {
                 immNav.isChecked = false
@@ -586,6 +587,13 @@ class SettingsActivity : AppCompatActivity() {
                 origNav.isEnabled = !enabled
                 origNav.isChecked = if (enabled) false else origNav.isChecked
 
+                true
+            }
+
+            immBL.setOnPreferenceClickListener {
+                val selector = Intent(activity, BlacklistSelectorActivity::class.java)
+                selector.putExtra(BlacklistSelectorActivity.EXTRA_WHICH, BlacklistSelectorActivity.FOR_IMM)
+                startActivity(selector)
                 true
             }
         }

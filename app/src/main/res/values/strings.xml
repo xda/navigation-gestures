@@ -88,6 +88,7 @@
     <string name="nav_imm_disabled">Immersive Navigation Disabled</string>
     <string name="nav_blacklist">Hide Navigation Bar Blacklist</string>
     <string name="bar_blacklist">Pill Blacklist</string>
+    <string name="imm_blacklist">Immersive Blacklist</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -128,6 +129,7 @@
     <string name="use_immersive_mode_when_nav_hidden_desc">When enabled, this will activate Android\'s immersive navigation feature when the Hide Navigation Bar toggle is enabled. This is mostly useful for Samsung devices, as it will allow Force Touch to work.</string>
     <string name="nav_blacklist_desc">Choose which apps should keep the original navigation bar shown.</string>
     <string name="bar_blacklist_desc">Choose which apps should not have the pill shown.</string>
+    <string name="imm_blacklist_desc">Choose which apps should not use immersive mode.</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
