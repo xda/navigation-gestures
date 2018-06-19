@@ -4,11 +4,11 @@
 
     <!--Width-->
     <com.pavelsikun.seekbarpreference.SeekBarPreference
-        app:msbp_minValue="1"
-        app:msbp_maxValue="1000"
+        app:msbp_minValue="@integer/min_pill_width_percent"
+        app:msbp_maxValue="@integer/max_pill_width_percent"
         app:msbp_scale="0.1"
         app:msbp_measurementUnit="%"
-        android:defaultValue="@integer/pill_width_percent"
+        android:defaultValue="@integer/default_pill_width_percent"
         android:title="@string/width"
         android:icon="@drawable/ic_arrow_expanded_horizontal_black_24dp"
         android:key="custom_width_percent" />
@@ -24,10 +24,10 @@
     <!--Height-->
     <com.pavelsikun.seekbarpreference.SeekBarPreference
         app:msbp_measurementUnit="%"
-        app:msbp_minValue="1"
-        app:msbp_maxValue="200"
+        app:msbp_minValue="@integer/min_pill_height_percent"
+        app:msbp_maxValue="@integer/max_pill_height_percent"
         app:msbp_scale="0.1"
-        android:defaultValue="@integer/pill_height_percent"
+        android:defaultValue="@integer/default_pill_height_percent"
         android:title="@string/height"
         android:icon="@drawable/ic_arrow_expanded_vertical_black_24dp"
         android:key="custom_height_percent" />
@@ -42,11 +42,11 @@
 
     <!--X-->
     <com.pavelsikun.seekbarpreference.SeekBarPreference
-        app:msbp_minValue="-1000"
-        app:msbp_maxValue="1000"
+        app:msbp_minValue="@integer/min_pill_x_percent"
+        app:msbp_maxValue="@integer/max_pill_x_percent"
         app:msbp_scale="0.1"
         app:msbp_measurementUnit="%"
-        android:defaultValue="@integer/pill_x_pos_percent"
+        android:defaultValue="@integer/default_pill_x_pos_percent"
         android:title="@string/position_x"
         android:icon="@drawable/ic_swap_horiz_black_24dp"
         android:key="custom_x_percent" />
@@ -63,8 +63,8 @@
     <!--Y-->
     <com.pavelsikun.seekbarpreference.SeekBarPreference
         app:msbp_measurementUnit="%"
-        app:msbp_minValue="0"
-        app:msbp_maxValue="2000"
+        app:msbp_minValue="@integer/min_pill_y_percent"
+        app:msbp_maxValue="@integer/max_pill_y_percent"
         app:msbp_scale="0.05"
         android:title="@string/position_y"
         android:icon="@drawable/ic_swap_vert_black_24dp"

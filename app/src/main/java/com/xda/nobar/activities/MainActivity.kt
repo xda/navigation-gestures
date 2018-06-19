@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             }
         }
 
-        hideNavSwitch.isChecked = Utils.shouldUseOverscanMethod(this) && handler.isNavBarHidden()
+        hideNavSwitch.isChecked = Utils.shouldUseOverscanMethod(this)
         hideNavSwitch.onCheckedChangeListener = navListener
     }
 

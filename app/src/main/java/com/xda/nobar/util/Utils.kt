@@ -16,7 +16,6 @@ import android.view.WindowManager
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.IntroActivity
-import com.xda.nobar.views.BarView
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.IOException
@@ -142,7 +141,8 @@ object Utils {
      * @return true if device has a navigation bar and is below P
      */
     fun shouldUseOverscanMethod(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_nav", false)
+        return PreferenceManager.getDefaultSharedPreferences(context).
+                getBoolean("hide_nav", false)
     }
 
     /**
@@ -204,7 +204,7 @@ object Utils {
     }
 
     fun getHomeXPercent(context: Context): Float {
-        return (PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_x_percent", context.resources.getInteger(R.integer.pill_x_pos_percent)) / 10f)
+        return (PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_x_percent", context.resources.getInteger(R.integer.default_pill_x_pos_percent)) / 10f)
     }
 
     /**
@@ -223,7 +223,7 @@ object Utils {
     }
 
     fun getCustomWidthPercent(context: Context): Float {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_width_percent", context.resources.getInteger(R.integer.pill_width_percent)) / 10f
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_width_percent", context.resources.getInteger(R.integer.default_pill_width_percent)) / 10f
     }
 
     /**
@@ -248,7 +248,7 @@ object Utils {
     }
 
     fun getCustomHeightPercent(context: Context): Float {
-        return (PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height_percent", context.resources.getInteger(R.integer.pill_height_percent)) / 10f)
+        return (PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height_percent", context.resources.getInteger(R.integer.default_pill_height_percent)) / 10f)
     }
 
     /**
@@ -258,11 +258,11 @@ object Utils {
      */
     @android.support.annotation.ColorInt
     fun getPillBGColor(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_bg", getDefaultPillBGColor())
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_bg", getDefaultPillBGColor(context))
     }
 
-    fun getDefaultPillBGColor(): Int {
-        return Color.argb(0xee, 0xcc, 0xcc, 0xcc)
+    fun getDefaultPillBGColor(context: Context): Int {
+        return context.resources.getColor(R.color.pill_color)
     }
 
     /**
@@ -272,11 +272,11 @@ object Utils {
      */
     @android.support.annotation.ColorInt
     fun getPillFGColor(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_fg", getDefaultPillFGColor())
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_fg", getDefaultPillFGColor(context))
     }
 
-    fun getDefaultPillFGColor(): Int {
-        return Color.argb(0x32, 0x22, 0x22, 0x22)
+    fun getDefaultPillFGColor(context: Context): Int {
+        return context.resources.getColor(R.color.pill_border_color)
     }
 
     /**
@@ -285,7 +285,8 @@ object Utils {
      * @return the corner radius, in dp
      */
     fun getPillCornerRadiusInDp(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_corner_radius", 8)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getInt("pill_corner_radius", context.resources.getInteger(R.integer.default_corner_radius_dp))
     }
 
     /**
@@ -303,7 +304,8 @@ object Utils {
      * @return true if the pill should be elevated
      */
     fun shouldShowShadow(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_shadow", true)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("show_shadow", context.resources.getBoolean(R.bool.show_shadow_default))
     }
 
     /**
@@ -312,7 +314,8 @@ object Utils {
      * @return true if the pill should NOT move (should stay at the bottom of the screen
      */
     fun dontMoveForKeyboard(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("static_pill", false)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("static_pill", context.resources.getBoolean(R.bool.static_pill_default))
     }
 
     /**
@@ -322,7 +325,8 @@ object Utils {
      * @return true to dynamically change the overscan
      */
     fun useRot270Fix(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("rot270_fix", false)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("rot270_fix", context.resources.getBoolean(R.bool.rot_fix_default))
     }
 
     /**
@@ -331,7 +335,8 @@ object Utils {
      * @return true to dynamically change the overscan to hide the navbar
      */
     fun useTabletMode(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("tablet_mode", false)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("tablet_mode", context.resources.getBoolean(R.bool.table_mode_default))
     }
 
     /**
@@ -341,7 +346,8 @@ object Utils {
      * //TODO: add a user-facing option for this
      */
     fun feedbackSound(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("audio_feedback", true)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("audio_feedback", context.resources.getBoolean(R.bool.feedback_sound_default))
     }
 
     /**
@@ -361,7 +367,8 @@ object Utils {
      * @return true if this is the first run
      */
     fun isFirstRun(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("first_run", true)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("first_run", true)
     }
 
     /**
@@ -483,47 +490,58 @@ object Utils {
     }
 
     fun hideInFullscreen(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_in_fullscreen", true)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("hide_in_fullscreen", context.resources.getBoolean(R.bool.hide_in_fullscreen_default))
     }
 
     fun largerHitbox(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("larger_hitbox", true)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("larger_hitbox", context.resources.getBoolean(R.bool.large_hitbox_default))
     }
 
     fun origBarInFullscreen(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("orig_nav_in_immersive", false)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("orig_nav_in_immersive", context.resources.getBoolean(R.bool.orig_nav_in_immersive_default))
     }
 
     fun enableInCarMode(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("enable_in_car_mode", false)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("enable_in_car_mode", context.resources.getBoolean(R.bool.car_mode_default))
     }
 
     fun usePixelsW(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_pixels_width", true)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("use_pixels_width", context.resources.getBoolean(R.bool.use_pixels_width_default))
     }
 
     fun usePixelsH(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_pixels_height", true)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("use_pixels_height", context.resources.getBoolean(R.bool.use_pixels_height_default))
     }
 
     fun usePixelsX(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_pixels_x", true)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("use_pixels_x", context.resources.getBoolean(R.bool.use_pixels_x_default))
     }
 
     fun usePixelsY(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_pixels_y", true)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("use_pixels_y", context.resources.getBoolean(R.bool.use_pixels_y_default))
     }
 
     fun sectionedPill(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("sectioned_pill", false)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("sectioned_pill", context.resources.getBoolean(R.bool.sectioned_pill_default))
     }
 
     fun hidePillWhenKeyboardShown(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_pill_on_keyboard", false)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("hide_pill_on_keyboard", context.resources.getBoolean(R.bool.hide_on_keyboard_default))
     }
 
     fun useImmersiveWhenNavHidden(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_immersive_mode_when_nav_hidden", false)
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("use_immersive_mode_when_nav_hidden", context.resources.getBoolean(R.bool.immersive_nav_default))
     }
 
     fun loadBlacklistedNavPackages(context: Context, packages: ArrayList<String>) {
@@ -539,7 +557,8 @@ object Utils {
     }
 
     fun getAnimationDurationMs(context: Context): Long {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("anim_duration", BarView.DEFAULT_ANIM_DURATION.toInt()).toLong()
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getInt("anim_duration", context.resources.getInteger(R.integer.default_anim_duration)).toLong()
     }
 
     fun isOnKeyguard(context: Context): Boolean {

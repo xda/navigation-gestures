@@ -424,7 +424,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     }
 
     fun toggleImmersiveWhenNavHidden() {
-        val enabled = prefs.getBoolean("use_immersive_mode_when_nav_hidden", false)
+        val enabled = Utils.useImmersiveWhenNavHidden(this)
         prefs.edit().putBoolean("use_immersive_mode_when_nav_hidden", !enabled).apply()
     }
 
@@ -432,13 +432,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Check if NoBar is currently active
      * @return true if active
      */
-    fun areGesturesActivated(): Boolean {
-        return prefs.getBoolean("is_active", false)
-    }
+    fun areGesturesActivated() = prefs.getBoolean("is_active", false)
 
-    fun isPillShown(): Boolean {
-        return areGesturesActivated() && pillShown
-    }
+    fun isPillShown() = areGesturesActivated() && pillShown
 
     /**
      * Check if the navbar is currently hidden
@@ -486,9 +482,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         navHidden = false
     }
 
-    fun ensureRootServiceBound(): Boolean {
-        return bindService(rootServiceIntent, rootConnection, 0)
-    }
+    fun ensureRootServiceBound() = bindService(rootServiceIntent, rootConnection, 0)
 
     /**
      * Get the current screen overscan
@@ -505,17 +499,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     /**
      * Save the current NoBar gesture state to preferences
      */
-    fun setGestureState(activated: Boolean) {
-        prefs.edit().putBoolean("is_active", activated).apply()
-    }
+    fun setGestureState(activated: Boolean) = prefs.edit().putBoolean("is_active", activated).apply()
 
-    fun setNavState(hidden: Boolean) {
-        prefs.edit().putBoolean("hide_nav", hidden).apply()
-    }
+    fun setNavState(hidden: Boolean) = prefs.edit().putBoolean("hide_nav", hidden).apply()
 
-    fun getNavState(): Boolean {
-        return prefs.getBoolean("hide_nav", false)
-    }
+    fun getNavState(): Boolean = Utils.shouldUseOverscanMethod(this)
 
     /**
      * Listen for changes in the screen state and handle appropriately

@@ -8,30 +8,32 @@
     <SwitchPreference
         android:title="@string/hide_navbar_in_landscape"
         android:summary="@string/hide_navbar_in_landscape_desc"
-        android:key="rot270_fix" />
+        android:key="rot270_fix"
+        android:defaultValue="@bool/rot_fix_default" />
 
     <SwitchPreference
         android:title="@string/tablet_mode"
         android:summary="@string/tablet_mode_desc"
-        android:key="tablet_mode" />
+        android:key="tablet_mode"
+        android:defaultValue="@bool/table_mode_default" />
 
     <SwitchPreference
         android:title="@string/larger_hitbox"
         android:summary="@string/larger_hitbox_desc"
         android:key="larger_hitbox"
-        android:defaultValue="true" />
+        android:defaultValue="@bool/large_hitbox_default" />
 
     <SwitchPreference
         android:title="@string/orig_nav_in_immersive"
         android:summary="@string/orig_nav_in_immersive_desc"
         android:key="orig_nav_in_immersive"
-        android:defaultValue="false" />
+        android:defaultValue="@bool/orig_nav_in_immersive_default" />
 
     <SwitchPreference
         android:title="@string/use_immersive_mode_when_nav_hidden"
         android:summary="@string/use_immersive_mode_when_nav_hidden_desc"
-        android:icon="@drawable/ic_fullscreen_black_24dp"
-        android:key="use_immersive_mode_when_nav_hidden" />
+        android:key="use_immersive_mode_when_nav_hidden"
+        android:defaultValue="@bool/immersive_nav_default" />
 
     <!--<SwitchPreference-->
         <!--android:title="@string/use_root"-->

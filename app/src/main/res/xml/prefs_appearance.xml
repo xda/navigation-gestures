@@ -9,7 +9,7 @@
             android:title="@string/show_pill_shadow"
             android:key="show_shadow"
             android:icon="@drawable/ic_shadow_black_24dp"
-            android:defaultValue="true" />
+            android:defaultValue="@bool/show_shadow_default" />
 
         <com.jaredrummler.android.colorpicker.ColorPreference
             android:title="@string/pill_color"
@@ -33,15 +33,15 @@
 
         <com.pavelsikun.seekbarpreference.SeekBarPreference
             app:msbp_measurementUnit="dp"
-            app:msbp_minValue="0"
-            app:msbp_maxValue="10"
-            android:defaultValue="8"
+            app:msbp_minValue="@integer/min_corner_radius_dp"
+            app:msbp_maxValue="@integer/max_corner_radius_dp"
+            android:defaultValue="@integer/default_corner_radius_dp"
             android:title="@string/pill_corner_radius"
             android:icon="@drawable/ic_rounded_corner_black_24dp"
             android:key="pill_corner_radius" />
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/use_pixels_width_default"
             android:title="@string/use_pixels"
             android:summary="@string/use_pixels_desc"
             android:key="use_pixels_width" />
@@ -50,7 +50,7 @@
             android:key="cat_width" />
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/use_pixels_height_default"
             android:title="@string/use_pixels"
             android:summary="@string/use_pixels_desc"
             android:key="use_pixels_height" />
@@ -59,7 +59,7 @@
             android:key="cat_height" />
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/use_pixels_x_default"
             android:title="@string/use_pixels"
             android:summary="@string/use_pixels_desc"
             android:key="use_pixels_x" />
@@ -68,7 +68,7 @@
             android:key="cat_x" />
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/use_pixels_y_default"
             android:title="@string/use_pixels"
             android:summary="@string/use_pixels_desc"
             android:key="use_pixels_y" />

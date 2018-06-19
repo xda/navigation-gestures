@@ -50,8 +50,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         const val BRIGHTEN_INACTIVE = 0.0f
         const val BRIGHTEN_ACTIVE = 0.5f
 
-        const val DEFAULT_ANIM_DURATION = 150L
-
         const val SCALE_NORMAL = 1.0f
         const val SCALE_MID = 0.7f
         const val SCALE_SMALL = 0.3f
@@ -525,7 +523,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @return the time, in ms
      */
     private fun getHoldTime(): Int {
-        return prefs.getInt("hold_time", 700)
+        return prefs.getInt("hold_time", context.resources.getInteger(R.integer.default_hold_time))
     }
 
     /**
@@ -533,7 +531,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @return the duration, in ms
      */
     private fun getVibrationDuration(): Int {
-        return prefs.getInt("vibration_duration", VIB_SHORT.toInt())
+        return prefs.getInt("vibration_duration", context.resources.getInteger(R.integer.default_vibe_time))
     }
 
     /**

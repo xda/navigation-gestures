@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="pill_width_percent">250</integer>
-    <integer name="pill_height_percent">25</integer>
-    <integer name="pill_x_pos_percent">0</integer>
+    <integer name="default_pill_width_percent">250</integer>
+    <integer name="default_pill_height_percent">25</integer>
+    <integer name="default_pill_x_pos_percent">0</integer>
+    <integer name="default_corner_radius_dp">8</integer>
+    <integer name="default_hold_time">700</integer>
+    <integer name="default_vibe_time">50</integer>
+    <integer name="default_anim_duration">150</integer>
+
+    <integer name="min_pill_width_percent">1</integer>
+    <integer name="min_pill_height_percent">1</integer>
+    <integer name="min_pill_x_percent">-1000</integer>
+    <integer name="min_pill_y_percent">0</integer>
+    <integer name="min_corner_radius_dp">0</integer>
+    <integer name="min_hold_time">100</integer>
+    <integer name="min_vibe_time">0</integer>
+    <integer name="min_anim_duration">0</integer>
+
+    <integer name="max_pill_width_percent">1000</integer>
+    <integer name="max_pill_height_percent">200</integer>
+    <integer name="max_pill_x_percent">1000</integer>
+    <integer name="max_pill_y_percent">2000</integer>
+    <integer name="max_corner_radius_dp">10</integer>
+    <integer name="max_hold_time">2000</integer>
+    <integer name="max_vibe_tme">500</integer>
+    <integer name="max_anim_duration">500</integer>
 </resources>

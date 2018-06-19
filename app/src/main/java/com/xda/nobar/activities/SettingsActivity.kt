@@ -379,8 +379,8 @@ class SettingsActivity : AppCompatActivity() {
             val pillColor = findPreference("pill_bg") as ColorPreference
             val pillBorderColor = findPreference("pill_fg") as ColorPreference
 
-            pillColor.setDefaultValue(Utils.getDefaultPillBGColor())
-            pillBorderColor.setDefaultValue(Utils.getDefaultPillFGColor())
+            pillColor.setDefaultValue(Utils.getDefaultPillBGColor(activity))
+            pillBorderColor.setDefaultValue(Utils.getDefaultPillFGColor(activity))
 
             pillColor.saveValue(Utils.getPillBGColor(activity))
             pillBorderColor.saveValue(Utils.getPillFGColor(activity))

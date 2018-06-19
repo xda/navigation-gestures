@@ -7,13 +7,13 @@
         android:summary="@string/hide_in_fullscreen_desc"
         android:key="hide_in_fullscreen"
         android:icon="@drawable/ic_visibility_off_black_24dp"
-        android:defaultValue="true" />
+        android:defaultValue="@bool/hide_in_fullscreen_default" />
 
     <SwitchPreference
         android:title="@string/hide_pill_on_keyboard"
         android:key="hide_pill_on_keyboard"
         android:icon="@drawable/ic_keyboard_hide_black_24dp"
-        android:defaultValue="false" />
+        android:defaultValue="@bool/hide_on_keyboard_default" />
 
     <!--<SwitchPreference-->
         <!--android:title="@string/hide_on_launcher"-->
@@ -24,38 +24,40 @@
         android:title="@string/static_pill"
         android:icon="@drawable/ic_swap_vert_black_24dp"
         android:summary="@string/static_pill_desc"
-        android:key="static_pill" />
+        android:key="static_pill"
+        android:defaultValue="@bool/static_pill_default" />
 
     <SwitchPreference
         android:title="@string/enable_in_car_mode"
         android:icon="@drawable/ic_directions_car_black_24dp"
         android:summary="@string/enable_in_car_mode_desc"
-        android:key="enable_in_car_mode" />
+        android:key="enable_in_car_mode"
+        android:defaultValue="@bool/car_mode_default" />
 
     <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/hold_time"
         android:key="hold_time"
         android:icon="@drawable/ic_timer_black_24dp"
-        app:msbp_minValue="100"
-        app:msbp_maxValue="2000"
+        app:msbp_minValue="@integer/min_hold_time"
+        app:msbp_maxValue="@integer/max_hold_time"
         app:msbp_measurementUnit="ms"
-        android:defaultValue="700" />
+        android:defaultValue="@integer/default_hold_time" />
 
     <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/vibration_duration"
         android:key="vibration_duration"
         android:icon="@drawable/ic_timer_black_24dp"
-        app:msbp_minValue="0"
-        app:msbp_maxValue="500"
+        app:msbp_minValue="@integer/min_vibe_time"
+        app:msbp_maxValue="@integer/max_vibe_tme"
         app:msbp_measurementUnit="ms"
-        android:defaultValue="50" />
+        android:defaultValue="@integer/default_vibe_time" />
 
     <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/anim_duration"
         android:key="anim_duration"
         android:icon="@drawable/ic_timer_black_24dp"
-        app:msbp_minValue="0"
-        app:msbp_maxValue="500"
-        android:defaultValue="150" />
+        app:msbp_minValue="@integer/min_anim_duration"
+        app:msbp_maxValue="@integer/max_anim_duration"
+        android:defaultValue="@integer/default_anim_duration" />
 
 </PreferenceScreen>

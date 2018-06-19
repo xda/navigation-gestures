@@ -64,17 +64,17 @@ class IntroActivity : IntroActivity() {
                         AlertDialog.Builder(this)
                                 .setTitle(R.string.root_found)
                                 .setMessage(R.string.root_found_desc)
-                                .setPositiveButton(R.string.use_root, { _, _ ->
+                                .setPositiveButton(R.string.use_root) { _, _ ->
                                     SuUtils.sudo("pm grant $packageName ${Manifest.permission.WRITE_SECURE_SETTINGS}")
-                                })
-                                .setNegativeButton(R.string.non_root, { _, _ ->
+                                }
+                                .setNegativeButton(R.string.non_root) { _, _ ->
                                     nonRootDialog()
-                                })
+                                }
                                 .show()
                     } else {
                         nonRootDialog()
                     }
-                }, { prefs.getBoolean("has_confirmed_skip_wss", false) || hasWss(this) })
+                }) { prefs.getBoolean("has_confirmed_skip_wss", false) || hasWss(this) }
 
         if (intent.hasExtra(EXTRA_WSS_ONLY)) {
             addSlide(wssSlide)
@@ -84,10 +84,10 @@ class IntroActivity : IntroActivity() {
                     AlertDialog.Builder(this)
                             .setTitle(R.string.are_you_sure)
                             .setMessage(R.string.skip_wss_message)
-                            .setPositiveButton(android.R.string.yes, { _, _ ->
+                            .setPositiveButton(android.R.string.yes) { _, _ ->
                                 prefs.edit().putBoolean("has_confirmed_skip_wss", true).apply()
                                 nextSlide()
-                            })
+                            }
                             .setNegativeButton(android.R.string.no, null)
                             .show()
                 }
@@ -128,8 +128,8 @@ class IntroActivity : IntroActivity() {
                                     intent.data = null
                                     startActivity(intent)
                                 }
-                            },
-                            {Settings.canDrawOverlays(this)}))
+                            }
+                    ) {Settings.canDrawOverlays(this)})
                 }
 
                 if (!Utils.isAccessibilityEnabled(this)) {
@@ -150,8 +150,8 @@ class IntroActivity : IntroActivity() {
                                     startActivity(intent)
                                     Toast.makeText(this, resources.getText(R.string.accessibility_msg), Toast.LENGTH_LONG).show()
                                 }
-                            },
-                            {Utils.isAccessibilityEnabled(this)}))
+                            }
+                    ) {Utils.isAccessibilityEnabled(this)})
                 }
 
                 if (checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
@@ -201,10 +201,10 @@ class IntroActivity : IntroActivity() {
                         AlertDialog.Builder(this)
                                 .setTitle(R.string.are_you_sure)
                                 .setMessage(R.string.skip_wss_message)
-                                .setPositiveButton(android.R.string.yes, { _, _ ->
+                                .setPositiveButton(android.R.string.yes) { _, _ ->
                                     prefs.edit().putBoolean("has_confirmed_skip_wss", true).apply()
                                     nextSlide()
-                                })
+                                }
                                 .setNegativeButton(android.R.string.no, null)
                                 .show()
                     } else if (dir == OnNavigationBlockedListener.DIRECTION_FORWARD) {
@@ -238,12 +238,12 @@ class IntroActivity : IntroActivity() {
                     .setTitle(R.string.run_command)
                     .setMessage(R.string.run_command_desc)
                     .setPositiveButton(R.string.got_it, null)
-                    .setNegativeButton(R.string.need_help, { _, _ ->
+                    .setNegativeButton(R.string.need_help) { _, _ ->
                         val intent = Intent(Intent.ACTION_VIEW)
                         intent.data = Uri.parse("https://youtu.be/Yg44Tu6oxnQ")
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)
-                    })
+                    }
                     .show()
         } catch (e: Exception) {}
     }

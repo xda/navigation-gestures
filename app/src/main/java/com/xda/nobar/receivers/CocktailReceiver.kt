@@ -11,6 +11,7 @@ import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
 import com.xda.nobar.activities.SettingsActivity
+import com.xda.nobar.util.Utils
 
 class CocktailReceiver : SlookCocktailProvider() {
     companion object {
@@ -67,7 +68,7 @@ class CocktailReceiver : SlookCocktailProvider() {
 
         val gestures = app.areGesturesActivated()
         val hideNav = app.prefs.getBoolean("hide_nav", false)
-        val useImm = app.prefs.getBoolean("use_immersive_mode_when_nav_hidden", false)
+        val useImm = Utils.useImmersiveWhenNavHidden(context)
 
         val views = RemoteViews(context.packageName, R.layout.widget_layout)
         views.setTextViewText(R.id.gesture_status, context.resources.getText(

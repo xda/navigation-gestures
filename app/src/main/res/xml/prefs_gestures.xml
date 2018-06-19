@@ -6,7 +6,8 @@
         android:title="@string/sectioned_pill"
         android:summary="@string/sectioned_pill_desc"
         android:icon="@drawable/pill_div"
-        android:key="sectioned_pill" />
+        android:key="sectioned_pill"
+        android:defaultValue="@bool/sectioned_pill_default" />
 
     <com.xda.nobar.prefs.CustomPreferenceCategory
         android:key="sectioned_pill_cat" />
