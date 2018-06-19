@@ -9,11 +9,6 @@
     android:id="@+id/root">
 
     <LinearLayout
-        android:background="@drawable/edge_line"
-        android:layout_width="1dp"
-        android:layout_height="match_parent" />
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#33000000"

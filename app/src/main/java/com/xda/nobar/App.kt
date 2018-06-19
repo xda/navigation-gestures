@@ -25,7 +25,7 @@ import android.widget.Toast
 import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
-import com.xda.nobar.receivers.CocktailReceiver
+import com.xda.nobar.providers.BaseProvider
 import com.xda.nobar.services.ForegroundService
 import com.xda.nobar.services.RootService
 import com.xda.nobar.util.*
@@ -64,7 +64,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
     private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()
-    private val handler = Handler(Looper.getMainLooper())
+    val handler = Handler(Looper.getMainLooper())
     private val rootConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             rootBinder = service as RootService.RootBinder
@@ -276,6 +276,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
                     }
                 }
+                BaseProvider.sendUpdate(this)
             }
             "hide_pill_on_keyboard" -> {
                 uiHandler.onGlobalLayout()
@@ -403,18 +404,18 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (shown) removeBar()
             else addBar()
 
-            CocktailReceiver.sendUpdate(this)
+            BaseProvider.sendUpdate(this)
         }
     }
 
-    fun toggleNavState(hidden: Boolean = getNavState()) {
+    fun toggleNavState(hidden: Boolean = Utils.shouldUseOverscanMethod(this)) {
         if (IntroActivity.hasWss(this)) {
             setNavState(!hidden)
 
             if (hidden) showNav()
             else hideNav()
 
-            CocktailReceiver.sendUpdate(this)
+            BaseProvider.sendUpdate(this)
         } else {
             val activity = Intent(this, IntroActivity::class.java)
             activity.putExtra(IntroActivity.EXTRA_WSS_ONLY, true)
@@ -502,8 +503,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     fun setGestureState(activated: Boolean) = prefs.edit().putBoolean("is_active", activated).apply()
 
     fun setNavState(hidden: Boolean) = prefs.edit().putBoolean("hide_nav", hidden).apply()
-
-    fun getNavState(): Boolean = Utils.shouldUseOverscanMethod(this)
 
     /**
      * Listen for changes in the screen state and handle appropriately
@@ -609,7 +608,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      */
     inner class UIHandler : ContentObserver(handler), View.OnSystemUiVisibilityChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
         private var oldRot = Surface.ROTATION_0
-        private var previousNodeInfo: AccessibilityNodeInfo? = null
         private var isActing = false
 
         init {
@@ -623,8 +621,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         fun setNodeInfoAndUpdate(info: AccessibilityNodeInfo?) {
-            previousNodeInfo = info
-
             onGlobalLayout()
             if (info != null) handleNewNodeInfo(info)
         }
@@ -694,7 +690,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 } catch (e: Exception) {}
             }
 
-            if (!navHidden) hideNav()
+            if (!isNavBarHidden() && Utils.shouldUseOverscanMethod(this@App)) hideNav()
 
             if (isPillShown()) {
                 val rot = wm.defaultDisplay.rotation
@@ -811,8 +807,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         fun handleRot() {
-            if (Utils.useRot270Fix(this@App)) handle270()
-            if (Utils.useTabletMode(this@App)) handleTablet()
+            if (Utils.shouldUseOverscanMethod(this@App)) {
+                if (Utils.useRot270Fix(this@App)) handle270()
+                if (Utils.useTabletMode(this@App)) handleTablet()
+            }
         }
 
         private fun handle270() {

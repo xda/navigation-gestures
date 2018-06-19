@@ -20,6 +20,8 @@ import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -66,10 +68,7 @@ object Utils {
      */
     fun getHandler(context: Context): App {
         val app = context.applicationContext
-        if (app is App) {
-            return app
-        }
-        throw IllegalStateException("Bad app context: ${app.javaClass.simpleName}")
+        return app as? App ?: throw IllegalStateException("Bad app context: ${app.javaClass.simpleName}")
     }
 
     /**

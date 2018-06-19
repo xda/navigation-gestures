@@ -1,4 +1,4 @@
-package com.xda.nobar.receivers
+package com.xda.nobar.providers
 
 import android.annotation.LayoutRes
 import android.app.PendingIntent
@@ -12,62 +12,50 @@ import android.widget.RemoteViews
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
 import com.xda.nobar.App
 import com.xda.nobar.R
-import com.xda.nobar.activities.MainActivity
 import com.xda.nobar.activities.SettingsActivity
 import com.xda.nobar.util.Utils
+import dalvik.system.DexFile
+import java.io.IOException
 
-class CocktailReceiver : AppWidgetProvider() {
+abstract class BaseProvider: AppWidgetProvider() {
     companion object {
         const val ACTION_REFRESH = "com.xda.nobar.action.REFRESH_STATE"
         const val ACTION_PERFORM_TOGGLE = "com.xda.nobar.action.PERFORM_TOGGLE"
-        
+
         const val EXTRA_WHICH = "which"
-        
+
         const val NAV = 0
         const val GEST = 1
         const val IMM = 2
 
         fun sendUpdate(context: Context) {
-            val intent = Intent(context, CocktailReceiver::class.java)
-            intent.action = ACTION_REFRESH
-            context.sendBroadcast(intent)
+            try {
+                val packageCodePath = context.packageCodePath
+                val df = DexFile(packageCodePath)
+                val iter = df.entries()
+                while (iter.hasMoreElements()) {
+                    val className = iter.nextElement()
+
+                    if (className.contains(context.applicationContext.packageName)) {
+                        val clazz = Class.forName(className)
+
+                        if (clazz.superclass == BaseProvider::class.java && clazz != BaseProvider::class.java) {
+                            val intent = Intent(context.applicationContext, clazz)
+                            intent.action = BaseProvider.ACTION_REFRESH
+                            context.applicationContext.sendBroadcast(intent)
+                        }
+                    }
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
 
-        val action = intent.action
-        val extras: Bundle?
-        if ("com.samsung.android.cocktail.action.COCKTAIL_UPDATE" != action && "com.samsung.android.cocktail.v2.action.COCKTAIL_UPDATE" != action) {
-            if ("com.samsung.android.cocktail.action.COCKTAIL_ENABLED" == action) {
-                this.onEnabled(context)
-            } else if ("com.samsung.android.cocktail.action.COCKTAIL_DISABLED" == action) {
-                this.onDisabled(context)
-            } else if ("com.samsung.android.cocktail.action.COCKTAIL_VISIBILITY_CHANGED" == action) {
-                extras = intent.extras
-                if (extras != null && extras.containsKey("cocktailId")) {
-                    val cocktailId = extras.getInt("cocktailId")
-                    if (extras.containsKey("cocktailVisibility")) {
-                        val visibility = extras.getInt("cocktailVisibility")
-                        this.onVisibilityChanged(context, cocktailId, visibility)
-                    }
-                }
-            }
-        } else {
-            extras = intent.extras
-            if (extras != null && extras.containsKey("cocktailIds")) {
-                val cocktailIds = extras.getIntArray("cocktailIds")
-                this.onUpdate(context, SlookCocktailManager.getInstance(context), cocktailIds)
-            }
-        }
-        
         when (intent.action) {
-            ACTION_REFRESH -> {
-                val manager = SlookCocktailManager.getInstance(context)
-                val ids = manager.getCocktailIds(ComponentName(context, javaClass))
-                onUpdate(context, manager, ids)
-            }
             ACTION_PERFORM_TOGGLE -> {
                 if (intent.hasExtra(EXTRA_WHICH)) {
                     val app = context.applicationContext as App
@@ -88,37 +76,39 @@ class CocktailReceiver : AppWidgetProvider() {
                     }
                 }
             }
+            ACTION_REFRESH -> {
+                val manager = AppWidgetManager.getInstance(context)
+                onUpdate(context, manager, manager.getAppWidgetIds(ComponentName(context, javaClass)))
+            }
+        }
+
+        val action = intent.action
+        val extras: Bundle?
+        if ("com.samsung.android.cocktail.action.COCKTAIL_UPDATE" != action && "com.samsung.android.cocktail.v2.action.COCKTAIL_UPDATE" != action) {
+            if ("com.samsung.android.cocktail.action.COCKTAIL_ENABLED" == action) {
+                this.onEnabled(context)
+            } else if ("com.samsung.android.cocktail.action.COCKTAIL_DISABLED" == action) {
+                this.onDisabled(context)
+            } else if ("com.samsung.android.cocktail.action.COCKTAIL_VISIBILITY_CHANGED" == action) {
+                extras = intent.extras
+                if (extras != null && extras.containsKey("cocktailId")) {
+                    val cocktailId = extras.getInt("cocktailId")
+                    if (extras.containsKey("cocktailVisibility")) {
+                        val visibility = extras.getInt("cocktailVisibility")
+                        onVisibilityChanged(context, cocktailId, visibility)
+                    }
+                }
+            }
+        } else {
+            extras = intent.extras
+            if (extras != null && extras.containsKey("cocktailIds")) {
+                val cocktailIds = extras.getIntArray("cocktailIds")
+                onUpdate(context, SlookCocktailManager.getInstance(context), cocktailIds)
+            }
         }
     }
 
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        val widgetViews = handleUpdate(context, R.layout.widget_layout_horiz)
-        val signBoardViews = handleUpdate(context, R.layout.widget_layout_signboard)
-
-        for (id in appWidgetIds) {
-            val category = appWidgetManager.getAppWidgetInfo(id).widgetCategory
-            appWidgetManager.updateAppWidget(id, if (category == 0x9000) signBoardViews else widgetViews)
-        }
-    }
-
-    private fun onUpdate(context: Context, cocktailManager: SlookCocktailManager, cocktailIds: IntArray) {
-        val views = handleUpdate(context, R.layout.widget_layout)
-
-        val longClickIntent = Intent(context, MainActivity::class.java)
-        longClickIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-        val longClickPendingIntent = PendingIntent.getActivity(context, 400, longClickIntent, 0)
-
-        cocktailManager.setOnLongClickPendingIntent(views, R.id.root, longClickPendingIntent)
-
-        for (id in cocktailIds) {
-            cocktailManager.updateCocktail(id, views)
-        }
-    }
-
-    fun onVisibilityChanged(context: Context, cocktailId: Int, visibility: Int) = null
-
-    private fun handleUpdate(context: Context, @LayoutRes layout: Int): RemoteViews {
+    internal fun handleUpdate(context: Context, @LayoutRes layout: Int): RemoteViews {
         val app = context.applicationContext as App
         val views = RemoteViews(context.packageName, layout)
 
@@ -162,4 +152,8 @@ class CocktailReceiver : AppWidgetProvider() {
 
         return views
     }
+
+    internal open fun onVisibilityChanged(context: Context, cocktailId: Int, visibility: Int) {}
+
+    internal open fun onUpdate(context: Context, manager: SlookCocktailManager, ids: IntArray) {}
 }
