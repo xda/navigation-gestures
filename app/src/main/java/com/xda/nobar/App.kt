@@ -268,7 +268,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 }
             }
             "use_immersive_mode_when_nav_hidden" -> {
-                if (Utils.shouldUseOverscanMethod(this)) {
+                if (Utils.shouldUseOverscanMethod(this) && disabledNavReasonManager.isEmpty()) {
                     if (Utils.useImmersiveWhenNavHidden(this)) {
                         Utils.saveBackupImmersive(this)
                         Utils.setNavImmersive(this)
