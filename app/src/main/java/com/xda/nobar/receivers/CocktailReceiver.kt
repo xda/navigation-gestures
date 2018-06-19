@@ -1,19 +1,22 @@
 package com.xda.nobar.receivers
 
+import android.annotation.LayoutRes
 import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.widget.RemoteViews
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
-import com.samsung.android.sdk.look.cocktailbar.SlookCocktailProvider
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
 import com.xda.nobar.activities.SettingsActivity
 import com.xda.nobar.util.Utils
 
-class CocktailReceiver : SlookCocktailProvider() {
+class CocktailReceiver : AppWidgetProvider() {
     companion object {
         const val ACTION_REFRESH = "com.xda.nobar.action.REFRESH_STATE"
         const val ACTION_PERFORM_TOGGLE = "com.xda.nobar.action.PERFORM_TOGGLE"
@@ -33,6 +36,31 @@ class CocktailReceiver : SlookCocktailProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
+
+        val action = intent.action
+        val extras: Bundle?
+        if ("com.samsung.android.cocktail.action.COCKTAIL_UPDATE" != action && "com.samsung.android.cocktail.v2.action.COCKTAIL_UPDATE" != action) {
+            if ("com.samsung.android.cocktail.action.COCKTAIL_ENABLED" == action) {
+                this.onEnabled(context)
+            } else if ("com.samsung.android.cocktail.action.COCKTAIL_DISABLED" == action) {
+                this.onDisabled(context)
+            } else if ("com.samsung.android.cocktail.action.COCKTAIL_VISIBILITY_CHANGED" == action) {
+                extras = intent.extras
+                if (extras != null && extras.containsKey("cocktailId")) {
+                    val cocktailId = extras.getInt("cocktailId")
+                    if (extras.containsKey("cocktailVisibility")) {
+                        val visibility = extras.getInt("cocktailVisibility")
+                        this.onVisibilityChanged(context, cocktailId, visibility)
+                    }
+                }
+            }
+        } else {
+            extras = intent.extras
+            if (extras != null && extras.containsKey("cocktailIds")) {
+                val cocktailIds = extras.getIntArray("cocktailIds")
+                this.onUpdate(context, SlookCocktailManager.getInstance(context), cocktailIds)
+            }
+        }
         
         when (intent.action) {
             ACTION_REFRESH -> {
@@ -63,14 +91,41 @@ class CocktailReceiver : SlookCocktailProvider() {
         }
     }
 
-    override fun onUpdate(context: Context, cocktailManager: SlookCocktailManager, cocktailIds: IntArray) {
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        val widgetViews = handleUpdate(context, R.layout.widget_layout_horiz)
+        val signBoardViews = handleUpdate(context, R.layout.widget_layout_signboard)
+
+        for (id in appWidgetIds) {
+            val category = appWidgetManager.getAppWidgetInfo(id).widgetCategory
+            appWidgetManager.updateAppWidget(id, if (category == 0x9000) signBoardViews else widgetViews)
+        }
+    }
+
+    private fun onUpdate(context: Context, cocktailManager: SlookCocktailManager, cocktailIds: IntArray) {
+        val views = handleUpdate(context, R.layout.widget_layout)
+
+        val longClickIntent = Intent(context, MainActivity::class.java)
+        longClickIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        val longClickPendingIntent = PendingIntent.getActivity(context, 400, longClickIntent, 0)
+
+        cocktailManager.setOnLongClickPendingIntent(views, R.id.root, longClickPendingIntent)
+
+        for (id in cocktailIds) {
+            cocktailManager.updateCocktail(id, views)
+        }
+    }
+
+    fun onVisibilityChanged(context: Context, cocktailId: Int, visibility: Int) = null
+
+    private fun handleUpdate(context: Context, @LayoutRes layout: Int): RemoteViews {
         val app = context.applicationContext as App
+        val views = RemoteViews(context.packageName, layout)
 
         val gestures = app.areGesturesActivated()
         val hideNav = app.prefs.getBoolean("hide_nav", false)
         val useImm = Utils.useImmersiveWhenNavHidden(context)
 
-        val views = RemoteViews(context.packageName, R.layout.widget_layout)
         views.setTextViewText(R.id.gesture_status, context.resources.getText(
                 if (gestures) R.string.gestures_on else R.string.gestures_off))
         views.setTextViewText(R.id.nav_status, context.resources.getText(
@@ -105,15 +160,6 @@ class CocktailReceiver : SlookCocktailProvider() {
         views.setOnClickPendingIntent(R.id.toggle_imm, PendingIntent.getBroadcast(context, IMM, useImmIntent, 0))
         views.setOnClickPendingIntent(R.id.settings, PendingIntent.getActivity(context, 401, settingsIntent, 0))
 
-        val longClickIntent = Intent(context, MainActivity::class.java)
-        longClickIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-        val longClickPendingIntent = PendingIntent.getActivity(context, 400, longClickIntent, 0)
-
-        cocktailManager.setOnLongClickPendingIntent(views, R.id.root, longClickPendingIntent)
-
-        for (id in cocktailIds) {
-            cocktailManager.updateCocktail(id, views)
-        }
+        return views
     }
 }

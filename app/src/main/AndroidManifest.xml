@@ -140,20 +140,6 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_border_bottom_black_24dp" />
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorAccent" />
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="nobar_notification" />
-        <meta-data
-            android:name="android.max_aspect"
-            android:value="2.5" />
-
         <receiver
             android:name=".receivers.CocktailReceiver"
             android:enabled="true"
@@ -167,10 +153,29 @@
                 <action android:name="com.xda.nobar.action.PERFORM_TOGGLE" />
             </intent-filter>
 
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
             <meta-data
                 android:name="com.samsung.android.cocktail.provider"
                 android:resource="@xml/cocktail" />
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/widget" />
         </receiver>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_border_bottom_black_24dp" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="nobar_notification" />
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.5" />
     </application>
 
 </manifest>
