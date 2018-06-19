@@ -424,11 +424,6 @@ class SettingsActivity : AppCompatActivity() {
             widthPixels.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_width))
             heightPixels.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_height))
 
-//            category.addPreference(category.preferenceList.indexOf(pixelsW) + 1, if (pixelsW.isChecked) widthPixels else widthPercent)
-//            category.addPreference(category.preferenceList.indexOf(pixelsH) + 1, if (pixelsH.isChecked) heightPixels else heightPercent)
-//            category.addPreference(category.preferenceList.indexOf(pixelsX) + 1, if (pixelsX.isChecked) xPixels else xPercent)
-//            category.addPreference(category.preferenceList.indexOf(pixelsY) + 1, if (pixelsY.isChecked) yPixels else yPercent)
-
             val listener = Preference.OnPreferenceChangeListener { pref, newValue ->
                 val new = newValue.toString().toBoolean()
 
@@ -501,10 +496,11 @@ class SettingsActivity : AppCompatActivity() {
 
             activity.title = resources.getText(R.string.compatibility)
 
-            setUpListeners()
+            setUpRotListeners()
+            setUpImmersiveListeners()
         }
         
-        private fun setUpListeners() {
+        private fun setUpRotListeners() {
             val rot270Fix = findPreference("rot270_fix") as SwitchPreference
             val tabletMode = findPreference("tablet_mode") as SwitchPreference
 
@@ -518,7 +514,7 @@ class SettingsActivity : AppCompatActivity() {
                 rot270Fix.isEnabled = false
             }
 
-            rot270Fix.setOnPreferenceChangeListener { _, newValue -> 
+            rot270Fix.setOnPreferenceChangeListener { _, newValue ->
                 val enabled = newValue.toString().toBoolean()
                 
                 tabletMode.isEnabled = !enabled
@@ -532,6 +528,39 @@ class SettingsActivity : AppCompatActivity() {
 
                 rot270Fix.isEnabled = !enabled
                 rot270Fix.isChecked = if (enabled) false else rot270Fix.isChecked
+
+                true
+            }
+        }
+
+        private fun setUpImmersiveListeners() {
+            val origNav = findPreference("orig_nav_in_immersive") as SwitchPreference
+            val immNav = findPreference("use_immersive_mode_when_nav_hidden") as SwitchPreference
+
+            if (origNav.isChecked) {
+                immNav.isChecked = false
+                immNav.isEnabled = false
+            }
+
+            if (immNav.isChecked) {
+                origNav.isChecked = false
+                origNav.isEnabled = false
+            }
+
+            origNav.setOnPreferenceChangeListener { _, newValue ->
+                val enabled = newValue.toString().toBoolean()
+
+                immNav.isEnabled = !enabled
+                immNav.isChecked = if (enabled) false else immNav.isChecked
+
+                true
+            }
+
+            immNav.setOnPreferenceChangeListener { _, newValue ->
+                val enabled = newValue.toString().toBoolean()
+
+                origNav.isEnabled = !enabled
+                origNav.isChecked = if (enabled) false else origNav.isChecked
 
                 true
             }

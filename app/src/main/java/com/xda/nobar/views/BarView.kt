@@ -78,6 +78,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private val pool = Executors.newScheduledThreadPool(1)
     
     var isHidden = false
+    var beingTouched = false
+        set(value) {
+            field = value
+            if (!value) {
+                if (needsScheduledHide) {
+                    scheduleHide()
+                    needsScheduledHide = false
+                }
+            }
+        }
     var isCarryingOutTouchAction = false
         set(value) {
             field = value
@@ -123,6 +133,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
     private var queuedLayoutUpdate: (() -> Unit)? = null
+    private var needsScheduledHide = false
 
     var view: View
     var pill: LinearLayout
@@ -130,7 +141,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var yDownAnimator: ValueAnimator? = null
 
     private val hideLock = Any()
-    private val tapLock = Any()
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet?) : super(context, attributeSet)
@@ -336,41 +346,49 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         .start()
     }
 
+    private var hideHandle: ScheduledFuture<*>? = null
+
     /**
      * "Hide" the pill by moving it partially offscreen
      */
     fun hidePill(auto: Boolean) {
-        handler?.post {
-            if (app.isPillShown()) {
-                isCarryingOutTouchAction = true
-                isAutoHidden = auto
+        if (!beingTouched) {
+            handler?.post {
+                if (app.isPillShown()) {
+                    isCarryingOutTouchAction = true
+                    isAutoHidden = auto
 
-                val navHeight = getZeroY()
+                    val navHeight = getZeroY()
 
-                val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-                val time = (getAnimationDurationMs() * animDurScale)
-                val distance = (params.y - navHeight).absoluteValue
+                    val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+                    val time = (getAnimationDurationMs() * animDurScale)
+                    val distance = (params.y - navHeight).absoluteValue
 
-                if (distance == 0) {
-                    animateHide()
-                } else {
-                    val animator = ValueAnimator.ofInt(params.y, navHeight)
-                    animator.interpolator = DecelerateInterpolator()
-                    animator.addUpdateListener {
-                        params.y = it.animatedValue.toString().toInt()
-                        updateLayout(params)
-                    }
-                    animator.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator?) {
-                            animateHide()
+                    if (distance == 0) {
+                        animateHide()
+                    } else {
+                        val animator = ValueAnimator.ofInt(params.y, navHeight)
+                        animator.interpolator = DecelerateInterpolator()
+                        animator.addUpdateListener {
+                            params.y = it.animatedValue.toString().toInt()
+                            updateLayout(params)
                         }
-                    })
-                    animator.duration = (time * distance / 100f).toLong()
-                    animator.start()
-                }
+                        animator.addListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator?) {
+                                animateHide()
+                            }
+                        })
+                        animator.duration = (time * distance / 100f).toLong()
+                        animator.start()
+                    }
 
-                showHiddenToast()
+                    showHiddenToast()
+                }
             }
+        } else {
+            needsScheduledHide = true
+            hideHandle?.cancel(true)
+            hideHandle = null
         }
     }
 
@@ -392,14 +410,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    private var hideHandle: ScheduledFuture<*>? = null
-
     /**
      * "Show" the pill by moving it back to its normal position
      */
     fun showPill(forceNotAuto: Boolean) {
         handler?.post {
             if (app.isPillShown()) {
+                if (forceNotAuto) isAutoHidden = false
                 isCarryingOutTouchAction = true
                 synchronized(hideLock) {
                     if ((forceNotAuto || !isAutoHidden) && hideHandle != null) {
@@ -408,9 +425,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     }
 
                     if (isAutoHidden && !forceNotAuto) {
-                        hideHandle = pool.schedule({
-                            if (isAutoHidden && !forceNotAuto) hidePill(true)
-                        }, 1500, TimeUnit.MILLISECONDS)
+                        scheduleHide()
                     }
 
                     pill.animate()
@@ -427,6 +442,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
             }
         }
+    }
+
+    private fun scheduleHide() {
+        hideHandle = pool.schedule({
+            if (isAutoHidden) hidePill(true)
+        }, 1500, TimeUnit.MILLISECONDS)
     }
 
     private fun animateShow() {
@@ -731,7 +752,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var isOverrideTap = false
         private var wasHidden = false
 
-        var beingTouched = false
         var isActing = false
 
         private var upHoldHandle: ScheduledFuture<*>? = null
