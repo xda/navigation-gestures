@@ -627,7 +627,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         @SuppressLint("WrongConstant")
         private fun handleNewNodeInfo(info: AccessibilityNodeInfo) {
-            val pName = info.packageName.toString()
+            val pName = info.packageName?.toString()
 
             val navArray = ArrayList<String>()
             Utils.loadBlacklistedNavPackages(this@App, navArray)
