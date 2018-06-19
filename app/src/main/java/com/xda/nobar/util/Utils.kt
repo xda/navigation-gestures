@@ -52,14 +52,11 @@ object Utils {
      * @param dpVal the chosen DP value
      * @return the DP value in terms of px
      */
-    fun dpAsPx(context: Context, dpVal: Int): Int {
-        return dpAsPx(context, dpVal.toFloat())
-    }
+    fun dpAsPx(context: Context, dpVal: Int) =
+            dpAsPx(context, dpVal.toFloat())
 
-    fun dpAsPx(context: Context, dpVal: Float): Int {
-        val r = context.resources
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal, r.displayMetrics))
-    }
+    fun dpAsPx(context: Context, dpVal: Float) =
+            Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal, context.resources.displayMetrics))
 
     /**
      * Retrieve the OHM handler
@@ -140,22 +137,19 @@ object Utils {
      * @param context a context object
      * @return true if device has a navigation bar and is below P
      */
-    fun shouldUseOverscanMethod(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context).
-                getBoolean("hide_nav", false)
-    }
+    fun shouldUseOverscanMethod(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context).
+                    getBoolean("hide_nav", false)
 
     /**
      * Make sure the TouchWiz navbar is not hidden
      * @param context a context object
      */
-    fun forceTouchWizNavEnabled(context: Context) {
-        Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0)
-    }
+    fun forceTouchWizNavEnabled(context: Context) =
+            Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0)
 
-    fun undoForceTouchWizNavEnabled(context: Context) {
-        Settings.Global.putString(context.contentResolver, "navigationbar_hide_bar_enabled", null)
-    }
+    fun undoForceTouchWizNavEnabled(context: Context) =
+            Settings.Global.putString(context.contentResolver, "navigationbar_hide_bar_enabled", null)
 
     /**
      * Get the user-defined or default vertical position of the pill
@@ -171,22 +165,20 @@ object Utils {
             (percent * getRealScreenSize(context).y).toInt()
     }
 
-    fun getHomeYPercent(context: Context): Float {
-        return (PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_y_percent", getDefaultYPercent(context)) * 0.05f)
-    }
+    fun getHomeYPercent(context: Context) =
+            (PreferenceManager.getDefaultSharedPreferences(context)
+                    .getInt("custom_y_percent", getDefaultYPercent(context)) * 0.05f)
 
     /**
      * Get the default vertical position
      * @param context a context object
      * @return the default position, in pixels, from the bottom of the screen
      */
-    fun getDefaultYPercent(context: Context): Int {
-        return ((getNavBarHeight(context) / 2f - getCustomHeight(context) / 2f) / getRealScreenSize(context).y * 2000f).toInt()
-    }
+    fun getDefaultYPercent(context: Context) =
+            ((getNavBarHeight(context) / 2f - getCustomHeight(context) / 2f) / getRealScreenSize(context).y * 2000f).toInt()
 
-    fun getDefaultY(context: Context): Int {
-        return ((getNavBarHeight(context) / 2f - getCustomHeight(context) / 2f)).toInt()
-    }
+    fun getDefaultY(context: Context) =
+            ((getNavBarHeight(context) / 2f - getCustomHeight(context) / 2f)).toInt()
 
     /**
      * Get the user-defined or default horizontal position of the pill
@@ -203,9 +195,9 @@ object Utils {
             (percent * screenWidthHalf).toInt()
     }
 
-    fun getHomeXPercent(context: Context): Float {
-        return (PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_x_percent", context.resources.getInteger(R.integer.default_pill_x_pos_percent)) / 10f)
-    }
+    fun getHomeXPercent(context: Context) =
+            (PreferenceManager.getDefaultSharedPreferences(context)
+                    .getInt("custom_x_percent", context.resources.getInteger(R.integer.default_pill_x_pos_percent)) / 10f)
 
     /**
      * Get the user-defined or default width of the pill
@@ -222,9 +214,9 @@ object Utils {
             (percent * screenWidth).toInt()
     }
 
-    fun getCustomWidthPercent(context: Context): Float {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_width_percent", context.resources.getInteger(R.integer.default_pill_width_percent)) / 10f
-    }
+    fun getCustomWidthPercent(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getInt("custom_width_percent", context.resources.getInteger(R.integer.default_pill_width_percent)) / 10f
 
     /**
      * Get the user-defined or default height of the pill
@@ -247,9 +239,9 @@ object Utils {
             (percent * getRealScreenSize(context).y).toInt()
     }
 
-    fun getCustomHeightPercent(context: Context): Float {
-        return (PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height_percent", context.resources.getInteger(R.integer.default_pill_height_percent)) / 10f)
-    }
+    fun getCustomHeightPercent(context: Context) =
+            (PreferenceManager.getDefaultSharedPreferences(context)
+                    .getInt("custom_height_percent", context.resources.getInteger(R.integer.default_pill_height_percent)) / 10f)
 
     /**
      * Get the user-defined or default pill color
@@ -257,13 +249,12 @@ object Utils {
      * @return the color, as a ColorInt
      */
     @android.support.annotation.ColorInt
-    fun getPillBGColor(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_bg", getDefaultPillBGColor(context))
-    }
+    fun getPillBGColor(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getInt("pill_bg", getDefaultPillBGColor(context))
 
-    fun getDefaultPillBGColor(context: Context): Int {
-        return context.resources.getColor(R.color.pill_color)
-    }
+    fun getDefaultPillBGColor(context: Context) =
+            context.resources.getColor(R.color.pill_color)
 
     /**
      * Get the user-defined or default pill border color
@@ -271,52 +262,46 @@ object Utils {
      * @return the color, as a ColorInt
      */
     @android.support.annotation.ColorInt
-    fun getPillFGColor(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_fg", getDefaultPillFGColor(context))
-    }
+    fun getPillFGColor(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_fg", getDefaultPillFGColor(context))
 
-    fun getDefaultPillFGColor(context: Context): Int {
-        return context.resources.getColor(R.color.pill_border_color)
-    }
+    fun getDefaultPillFGColor(context: Context) =
+            context.resources.getColor(R.color.pill_border_color)
 
     /**
      * Get the user-defined or default pill corner radius
      * @param context a context object
      * @return the corner radius, in dp
      */
-    fun getPillCornerRadiusInDp(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getInt("pill_corner_radius", context.resources.getInteger(R.integer.default_corner_radius_dp))
-    }
+    fun getPillCornerRadiusInDp(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getInt("pill_corner_radius", context.resources.getInteger(R.integer.default_corner_radius_dp))
 
     /**
      * Get the user-defined or default pill corner radius
      * @param context a context object
      * @return the corner radius, in px
      */
-    fun getPillCornerRadiusInPx(context: Context): Int {
-        return dpAsPx(context, getPillCornerRadiusInDp(context))
-    }
+    fun getPillCornerRadiusInPx(context: Context) =
+            dpAsPx(context, getPillCornerRadiusInDp(context))
 
     /**
      * Whether or not the pill should have a shadow
      * @param context a context object
      * @return true if the pill should be elevated
      */
-    fun shouldShowShadow(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("show_shadow", context.resources.getBoolean(R.bool.show_shadow_default))
-    }
+    fun shouldShowShadow(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("show_shadow", context.resources.getBoolean(R.bool.show_shadow_default))
 
     /**
      * Whether or not to move the pill with the input method
      * @param context a context object
      * @return true if the pill should NOT move (should stay at the bottom of the screen
      */
-    fun dontMoveForKeyboard(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("static_pill", context.resources.getBoolean(R.bool.static_pill_default))
-    }
+    fun dontMoveForKeyboard(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("static_pill", context.resources.getBoolean(R.bool.static_pill_default))
 
     /**
      * Whether or not to change the overscan to the top in rotation 270 (top of device on the right)
@@ -324,20 +309,18 @@ object Utils {
      * @param context a context object
      * @return true to dynamically change the overscan
      */
-    fun useRot270Fix(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("rot270_fix", context.resources.getBoolean(R.bool.rot_fix_default))
-    }
+    fun useRot270Fix(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("rot270_fix", context.resources.getBoolean(R.bool.rot_fix_default))
 
     /**
      * Tablets usually have the software nav on the bottom, which isn't always the physical bottom.
      * @param context a context object
      * @return true to dynamically change the overscan to hide the navbar
      */
-    fun useTabletMode(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("tablet_mode", context.resources.getBoolean(R.bool.table_mode_default))
-    }
+    fun useTabletMode(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("tablet_mode", context.resources.getBoolean(R.bool.table_mode_default))
 
     /**
      * Whether or not to provide audio feedback for taps
@@ -345,10 +328,9 @@ object Utils {
      * @return true if audio feedback is enabled
      * //TODO: add a user-facing option for this
      */
-    fun feedbackSound(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("audio_feedback", context.resources.getBoolean(R.bool.feedback_sound_default))
-    }
+    fun feedbackSound(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("audio_feedback", context.resources.getBoolean(R.bool.feedback_sound_default))
 
     /**
      * Check if the accessibility service is currently enabled
@@ -366,55 +348,49 @@ object Utils {
      * @param context a context object
      * @return true if this is the first run
      */
-    fun isFirstRun(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("first_run", true)
-    }
+    fun isFirstRun(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("first_run", true)
 
     /**
      * Set whether or not the next start should be counted as the first run
      * @param context a context object
      * @param isFirst true to "reset" app to first run
      */
-    fun setFirstRun(context: Context, isFirst: Boolean) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("first_run", isFirst).apply()
-    }
+    fun setFirstRun(context: Context, isFirst: Boolean) =
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("first_run", isFirst).apply()
 
     /**
      * Save the current immersive policy, to restore on deactivation
      * @param context a context object
      */
-    fun saveBackupImmersive(context: Context) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putString("def_imm",
-                Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)).apply()
-    }
+    fun saveBackupImmersive(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putString("def_imm",
+                    Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)).apply()
 
-    fun setNavImmersive(context: Context) {
-        Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation=*")
-    }
+    fun setNavImmersive(context: Context) =
+            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation=*")
 
     /**
      * Get the saved immersive policy for restoration
      * @param context a context object
      * @return the saved immersive policy
      */
-    fun getBackupImmersive(context: Context): String {
-        return PreferenceManager.getDefaultSharedPreferences(context).getString("def_imm", "immersive.none")
-    }
+    fun getBackupImmersive(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context).getString("def_imm", "immersive.none")
 
     /**
      * Check if the current device can use the necessary hidden APIs
      * @param context a context object
      * @return true if this app can be used
      */
-    fun canRunHiddenCommands(context: Context): Boolean {
-        return try {
-            (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(Rect())
-            true
-        } catch (e: Throwable) {
-            false
-        } && IWindowManager.canRunCommands()
-    }
+    fun canRunHiddenCommands(context: Context) =
+            try {
+                (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(Rect())
+                true
+            } catch (e: Throwable) {
+                false
+            } && IWindowManager.canRunCommands()
 
     /**
      * Get the package name of the default launcher
@@ -480,86 +456,69 @@ object Utils {
      * Used when showing the software nav
      * @param context a context object
      */
-    fun clearBlackNav(context: Context) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        if (!IntroActivity.needsToRun(context) && shouldUseOverscanMethod(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            Settings.Global.putString(context.contentResolver, "navigationbar_color", prefs.getString("navigationbar_color", null))
-            Settings.Global.putString(context.contentResolver, "navigationbar_current_color", prefs.getString("navigationbar_current_color", null))
-            Settings.Global.putString(context.contentResolver, "navigationbar_use_theme_default", prefs.getString("navigationbar_use_theme_default", null))
-        }
-    }
+    fun clearBlackNav(context: Context) =
+            if (!IntroActivity.needsToRun(context) && shouldUseOverscanMethod(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+                Settings.Global.putString(context.contentResolver, "navigationbar_color", prefs.getString("navigationbar_color", null)) ||
+                Settings.Global.putString(context.contentResolver, "navigationbar_current_color", prefs.getString("navigationbar_current_color", null)) ||
+                Settings.Global.putString(context.contentResolver, "navigationbar_use_theme_default", prefs.getString("navigationbar_use_theme_default", null))
+            } else {
+                false
+            }
 
-    fun hideInFullscreen(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("hide_in_fullscreen", context.resources.getBoolean(R.bool.hide_in_fullscreen_default))
-    }
+    fun hideInFullscreen(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("hide_in_fullscreen", context.resources.getBoolean(R.bool.hide_in_fullscreen_default))
 
-    fun largerHitbox(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("larger_hitbox", context.resources.getBoolean(R.bool.large_hitbox_default))
-    }
+    fun largerHitbox(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("larger_hitbox", context.resources.getBoolean(R.bool.large_hitbox_default))
 
-    fun origBarInFullscreen(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("orig_nav_in_immersive", context.resources.getBoolean(R.bool.orig_nav_in_immersive_default))
-    }
+    fun origBarInFullscreen(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("orig_nav_in_immersive", context.resources.getBoolean(R.bool.orig_nav_in_immersive_default))
 
-    fun enableInCarMode(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("enable_in_car_mode", context.resources.getBoolean(R.bool.car_mode_default))
-    }
+    fun enableInCarMode(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("enable_in_car_mode", context.resources.getBoolean(R.bool.car_mode_default))
 
-    fun usePixelsW(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("use_pixels_width", context.resources.getBoolean(R.bool.use_pixels_width_default))
-    }
+    fun usePixelsW(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("use_pixels_width", context.resources.getBoolean(R.bool.use_pixels_width_default))
 
-    fun usePixelsH(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("use_pixels_height", context.resources.getBoolean(R.bool.use_pixels_height_default))
-    }
+    fun usePixelsH(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("use_pixels_height", context.resources.getBoolean(R.bool.use_pixels_height_default))
 
-    fun usePixelsX(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("use_pixels_x", context.resources.getBoolean(R.bool.use_pixels_x_default))
-    }
+    fun usePixelsX(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("use_pixels_x", context.resources.getBoolean(R.bool.use_pixels_x_default))
 
-    fun usePixelsY(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("use_pixels_y", context.resources.getBoolean(R.bool.use_pixels_y_default))
-    }
+    fun usePixelsY(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("use_pixels_y", context.resources.getBoolean(R.bool.use_pixels_y_default))
 
-    fun sectionedPill(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("sectioned_pill", context.resources.getBoolean(R.bool.sectioned_pill_default))
-    }
+    fun sectionedPill(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("sectioned_pill", context.resources.getBoolean(R.bool.sectioned_pill_default))
 
-    fun hidePillWhenKeyboardShown(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("hide_pill_on_keyboard", context.resources.getBoolean(R.bool.hide_on_keyboard_default))
-    }
+    fun hidePillWhenKeyboardShown(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("hide_pill_on_keyboard", context.resources.getBoolean(R.bool.hide_on_keyboard_default))
 
-    fun useImmersiveWhenNavHidden(context: Context): Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean("use_immersive_mode_when_nav_hidden", context.resources.getBoolean(R.bool.immersive_nav_default))
-    }
+    fun useImmersiveWhenNavHidden(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("use_immersive_mode_when_nav_hidden", context.resources.getBoolean(R.bool.immersive_nav_default))
 
-    fun loadBlacklistedNavPackages(context: Context, packages: ArrayList<String>) {
-        val array = PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_nav_apps", HashSet<String>())
+    fun loadBlacklistedNavPackages(context: Context, packages: ArrayList<String>) =
+            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_nav_apps", HashSet<String>()))
 
-        packages.addAll(array)
-    }
+    fun loadBlacklistedBarPackages(context: Context, packages: ArrayList<String>) =
+            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_bar_apps", HashSet<String>()))
 
-    fun loadBlacklistedBarPackages(context: Context, packages: ArrayList<String>) {
-        val array = PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_bar_apps", HashSet<String>())
-
-        packages.addAll(array)
-    }
-
-    fun getAnimationDurationMs(context: Context): Long {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getInt("anim_duration", context.resources.getInteger(R.integer.default_anim_duration)).toLong()
-    }
+    fun getAnimationDurationMs(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getInt("anim_duration", context.resources.getInteger(R.integer.default_anim_duration)).toLong()
 
     fun isOnKeyguard(context: Context): Boolean {
         val kgm = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
