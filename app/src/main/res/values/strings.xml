@@ -83,7 +83,9 @@
     <string name="swipe_up_hold_right">Swipe Up and Hold from Right</string>
     <string name="use_recommended_settings">Use Recommended Settings?</string>
     <string name="hide_pill_on_keyboard">Hide Pill when Keyboard is Active</string>
-    <string name="use_immersive_mode_when_nav_hidden">Use Navigation Immersive</string>
+    <string name="use_immersive_mode_when_nav_hidden">Use Immersive Navigation</string>
+    <string name="nav_imm_enabled">Immersive Navigation Enabled</string>
+    <string name="nav_imm_disabled">Immersive Navigation Disabled</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>

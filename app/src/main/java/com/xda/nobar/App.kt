@@ -423,6 +423,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
     }
 
+    fun toggleImmersiveWhenNavHidden() {
+        val enabled = prefs.getBoolean("use_immersive_mode_when_nav_hidden", false)
+        prefs.edit().putBoolean("use_immersive_mode_when_nav_hidden", !enabled).apply()
+    }
+
     /**
      * Check if NoBar is currently active
      * @return true if active

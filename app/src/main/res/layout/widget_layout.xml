@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    android:gravity="center">
+    android:gravity="center"
+    android:id="@+id/root">
 
     <LinearLayout
         android:background="@drawable/edge_line"
@@ -40,8 +41,11 @@
                 android:id="@+id/gesture_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/gestures_off"
+                android:textAlignment="center"
                 android:textColor="#fff" />
 
         </LinearLayout>
@@ -67,8 +71,41 @@
                 android:id="@+id/nav_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/nav_shown"
+                android:textAlignment="center"
+                android:textColor="#fff" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/imm_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/toggle_imm"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@drawable/circle"
+                android:padding="8dp"
+                android:src="@drawable/ic_fullscreen_black_24dp"
+                android:tint="@color/color_disabled" />
+
+            <TextView
+                android:id="@+id/imm_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/nav_imm_disabled"
+                android:textAlignment="center"
                 android:textColor="#fff" />
 
         </LinearLayout>
