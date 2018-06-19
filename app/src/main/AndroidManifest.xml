@@ -14,7 +14,8 @@
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.DUMP"
+    <uses-permission
+        android:name="android.permission.DUMP"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -80,9 +81,11 @@
             android:configChanges="screenSize|orientation|layoutDirection|screenLayout"
             android:excludeFromRecents="true"
             android:theme="@style/AppTheme.Null" />
-        <activity android:name=".activities.RequestPermissionsActivity"
+        <activity
+            android:name=".activities.RequestPermissionsActivity"
             android:excludeFromRecents="true"
             android:theme="@style/AppTheme.Null" />
+        <activity android:name=".activities.BlacklistSelectorActivity" />
 
         <service
             android:name=".tiles.GestureToggle"
@@ -141,7 +144,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.xda.nobar.providers.HomeScreenProvider"
+            android:name=".providers.HomeScreenProvider"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -149,10 +152,12 @@
                 <action android:name="com.xda.nobar.action.REFRESH_STATE" />
             </intent-filter>
 
-            <meta-data android:name="android.appwidget.provider"
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/widget" />
         </receiver>
-        <receiver android:name="com.xda.nobar.providers.SignBoardProvider"
+        <receiver
+            android:name=".providers.SignBoardProvider"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -160,10 +165,12 @@
                 <action android:name="com.xda.nobar.action.REFRESH_STATE" />
             </intent-filter>
 
-            <meta-data android:name="android.appwidget.provider"
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/signboard" />
         </receiver>
-        <receiver android:name="com.xda.nobar.providers.CocktailProvider"
+        <receiver
+            android:name=".providers.CocktailProvider"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

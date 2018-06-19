@@ -5,9 +5,10 @@ import android.app.UiModeManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Color
-import android.graphics.Point
-import android.graphics.Rect
+import android.content.res.Resources
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.preference.PreferenceManager
 import android.provider.Settings
@@ -22,6 +23,7 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 
 /**
@@ -515,6 +517,16 @@ object Utils {
     fun loadBlacklistedBarPackages(context: Context, packages: ArrayList<String>) =
             packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_bar_apps", HashSet<String>()))
 
+    fun saveBlacklistedNavPackageList(context: Context, packages: ArrayList<String>) =
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    .putStringSet("blacklisted_nav_apps", HashSet<String>(packages))
+                    .apply()
+
+    fun saveBlacklistedBarPackages(context: Context, packages: ArrayList<String>) =
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    .putStringSet("blacklisted_bar_apps", HashSet<String>(packages))
+                    .apply()
+
     fun getAnimationDurationMs(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getInt("anim_duration", context.resources.getInteger(R.integer.default_anim_duration)).toLong()
@@ -571,5 +583,24 @@ object Utils {
             e.printStackTrace()
             return null
         }
+    }
+
+    /**
+     * Stolen from HalogenOS
+     * https://github.com/halogenOS/android_frameworks_base/blob/XOS-8.1/packages/SystemUI/src/com/android/systemui/tuner/LockscreenFragment.java
+     */
+    fun getBitmapDrawable(drawable: Drawable, resources: Resources): BitmapDrawable {
+        if (drawable is BitmapDrawable) return drawable
+
+        val canvas = Canvas()
+        canvas.drawFilter = PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG, Paint.FILTER_BITMAP_FLAG)
+
+        val bmp = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        canvas.setBitmap(bmp)
+
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+
+        return BitmapDrawable(resources, bmp)
     }
 }

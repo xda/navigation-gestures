@@ -2,9 +2,9 @@ package com.xda.nobar.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.ResolveInfo
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -22,54 +22,77 @@ import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.util.AppInfo
+import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.getBitmapDrawable
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AppLaunchSelectActivity : AppCompatActivity() {
+class BlacklistSelectorActivity : AppCompatActivity() {
     companion object {
-        const val EXTRA_KEY = "key"
-        const val EXTRA_RESULT_DISPLAY_NAME = "name"
-        const val CHECKED_PACKAGE = "checked"
+        const val EXTRA_WHICH = "which"
+
+        const val FOR_BAR = "bar"
+        const val FOR_NAV = "nav"
     }
 
-    private lateinit var app: App
-    private lateinit var loader: ArcProgress
-    private lateinit var list: RecyclerView
+    private val currentlyBlacklisted = ArrayList<String>()
+    private var which: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (intent == null || !intent.hasExtra(EXTRA_KEY)) {
+        if (intent == null || !intent.hasExtra(EXTRA_WHICH)) {
             setResult(Activity.RESULT_CANCELED)
             finish()
         }
 
-        app = application as App
+        val blacklist = ArrayList<String>()
+
+        which = intent.getStringExtra(EXTRA_WHICH)
+
+        when (which) {
+            FOR_BAR -> {
+                title = resources.getText(R.string.bar_blacklist)
+                Utils.loadBlacklistedBarPackages(this, blacklist)
+            }
+            FOR_NAV -> {
+                title = resources.getText(R.string.nav_blacklist)
+                Utils.loadBlacklistedNavPackages(this, blacklist)
+            }
+            else -> {
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+            }
+        }
+
+        currentlyBlacklisted.addAll(blacklist)
+
+        val app = application as App
         app.refreshPremium()
 
         setContentView(R.layout.activity_app_launch_select)
 
-        loader = findViewById(R.id.progress)
-        list = findViewById(R.id.list)
+        val loader = findViewById<ArcProgress>(R.id.progress)
+        val list = findViewById<RecyclerView>(R.id.list)
 
         list.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         list.addItemDecoration(DividerItemDecoration(list.context, (list.layoutManager as LinearLayoutManager).orientation))
 
-        Observable.fromCallable { getLauncherPackagesAsync() }
+        Observable.fromCallable { getAppsAsync() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe {
                     val apps = ArrayList<AppInfo>()
                     it.forEach { info ->
-                        apps.add(AppInfo(info.activityInfo.packageName,
-                                info.activityInfo.name,
+                        apps.add(AppInfo(info.packageName,
+                                "",
                                 info.loadLabel(packageManager).toString(),
-                                info.loadIcon(packageManager), info.activityInfo.packageName == intent.getStringExtra(CHECKED_PACKAGE)))
+                                info.loadIcon(packageManager), blacklist.contains(info.packageName)))
 
                         val index = it.indexOf(info)
                         val percent = (index.toFloat() / it.size.toFloat() * 100).toInt()
@@ -80,16 +103,8 @@ class AppLaunchSelectActivity : AppCompatActivity() {
                     }
 
                     val adapter = Adapter(apps) { info ->
-                        PreferenceManager.getDefaultSharedPreferences(this@AppLaunchSelectActivity)
-                                .edit()
-                                .putString("${intent.getStringExtra(EXTRA_KEY)}_package", "${info.packageName}/${info.activity}")
-                                .apply()
-
-                        val resultIntent = Intent()
-                        resultIntent.putExtra(EXTRA_KEY, intent.getStringExtra(EXTRA_KEY))
-                        resultIntent.putExtra(EXTRA_RESULT_DISPLAY_NAME, info.displayName)
-                        setResult(Activity.RESULT_OK, resultIntent)
-                        finish()
+                        if (info.isChecked) currentlyBlacklisted.add(info.packageName)
+                        else currentlyBlacklisted.removeAll(Collections.singleton(info.packageName))
                     }
 
                     runOnUiThread {
@@ -109,25 +124,34 @@ class AppLaunchSelectActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         val resultIntent = Intent()
-        resultIntent.putExtra(EXTRA_KEY, intent.getStringExtra(EXTRA_KEY))
+        resultIntent.putExtra(AppLaunchSelectActivity.EXTRA_KEY, intent.getStringExtra(AppLaunchSelectActivity.EXTRA_KEY))
         setResult(Activity.RESULT_CANCELED, resultIntent)
         finish()
     }
 
-    private fun getLauncherPackagesAsync(): ArrayList<ResolveInfo> {
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_LAUNCHER)
+    override fun onDestroy() {
+        super.onDestroy()
 
-        val list = packageManager.queryIntentActivities(intent, 0)
-        Collections.sort(list, ResolveInfo.DisplayNameComparator(packageManager))
+        when (which) {
+            FOR_NAV -> Utils.saveBlacklistedNavPackageList(this, currentlyBlacklisted)
+            FOR_BAR -> Utils.saveBlacklistedBarPackages(this, currentlyBlacklisted)
+        }
+    }
+
+    private fun getAppsAsync(): ArrayList<ApplicationInfo> {
+        val list = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+
+        Collections.sort(list, ApplicationInfo.DisplayNameComparator(packageManager))
 
         return ArrayList(list)
     }
 
-    class Adapter(private val apps: ArrayList<AppInfo>, private val listener: OnAppSelectedListener) : RecyclerView.Adapter<Adapter.VH>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-            return VH(LayoutInflater.from(parent.context).inflate(R.layout.app_info_single, parent, false))
-        }
+    class Adapter(private val apps: ArrayList<AppInfo>,
+                  private val checkListener: OnAppSelectedListener) : RecyclerView.Adapter<Adapter.VH>() {
+
+        override fun getItemCount() = apps.size
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+                VH(LayoutInflater.from(parent.context).inflate(R.layout.app_info_multi, parent, false))
 
         override fun onBindViewHolder(holder: VH, position: Int) {
             val app = apps[position]
@@ -142,15 +166,15 @@ class AppLaunchSelectActivity : AppCompatActivity() {
             icon.background = getBitmapDrawable(apps[position].icon, holder.view.context.resources)
 
             view.setOnClickListener {
-                listener.invoke(app)
+                check.isChecked = !check.isChecked
+                app.isChecked = check.isChecked
+
+                checkListener.invoke(app)
             }
 
             check.isChecked = app.isChecked
         }
 
-        override fun getItemCount(): Int {
-            return apps.size
-        }
 
         class VH(val view: View) : RecyclerView.ViewHolder(view)
     }

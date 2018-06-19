@@ -34,6 +34,18 @@
         android:key="enable_in_car_mode"
         android:defaultValue="@bool/car_mode_default" />
 
+    <Preference
+        android:title="@string/nav_blacklist"
+        android:summary="@string/nav_blacklist_desc"
+        android:icon="@drawable/ic_border_bottom_black_24dp"
+        android:key="nav_blacklist" />
+
+    <Preference
+        android:title="@string/bar_blacklist"
+        android:summary="@string/bar_blacklist_desc"
+        android:icon="@drawable/ic_gesture_outline_black_24dp"
+        android:key="bar_blacklist" />
+
     <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/hold_time"
         android:key="hold_time"

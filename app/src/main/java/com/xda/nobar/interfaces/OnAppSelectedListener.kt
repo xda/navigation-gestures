@@ -1,6 +1,6 @@
 package com.xda.nobar.interfaces
 
-import com.xda.nobar.activities.AppLaunchSelectActivity
+import com.xda.nobar.util.AppInfo
 
 
-typealias OnAppSelectedListener = (info: AppLaunchSelectActivity.AppInfo) -> Unit
+typealias OnAppSelectedListener = (info: AppInfo) -> Unit
