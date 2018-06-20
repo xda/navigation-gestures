@@ -36,7 +36,7 @@ abstract class BaseProvider: AppWidgetProvider() {
                 while (iter.hasMoreElements()) {
                     val className = iter.nextElement()
 
-                    if (className.contains(context.applicationContext.packageName)) {
+                    if (className.contains("${context.applicationContext.packageName}.providers")) {
                         val clazz = Class.forName(className)
 
                         if (clazz.superclass == BaseProvider::class.java && clazz != BaseProvider::class.java) {
