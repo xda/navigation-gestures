@@ -32,7 +32,6 @@ import com.xda.nobar.util.*
 import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.util.Utils.getCustomHeight
 import com.xda.nobar.util.Utils.getCustomWidth
-import com.xda.nobar.util.Utils.getHomeX
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.ImmersiveHelperView
 import kotlin.math.absoluteValue
@@ -327,7 +326,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 bar.params.height = Utils.getCustomHeight(this)
                 bar.params.gravity = Gravity.CENTER or Gravity.BOTTOM
                 bar.params.y = bar.getAdjustedHomeY()
-                bar.params.x = getHomeX(this)
+                bar.params.x = bar.getAdjustedHomeX()
                 bar.params.type =
                         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
                             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -714,7 +713,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (isPillShown()) {
                 val rot = wm.defaultDisplay.rotation
                 if (oldRot != rot) {
-                    bar.params.x = getHomeX(this@App)
+                    bar.params.x = bar.getAdjustedHomeX()
                     bar.params.y = bar.getAdjustedHomeY()
                     bar.params.width = getCustomWidth(this@App)
                     bar.params.height = getCustomHeight(this@App)

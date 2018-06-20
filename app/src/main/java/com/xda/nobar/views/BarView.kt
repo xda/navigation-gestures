@@ -27,6 +27,7 @@ import android.widget.Toast
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.services.Actions
+import com.xda.nobar.util.NavigationBarSideManager
 import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.getCustomHeight
 import com.xda.nobar.util.Utils.getCustomWidth
@@ -54,8 +55,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         const val SCALE_MID = 0.7f
         const val SCALE_SMALL = 0.3f
 
-        const val VIB_SHORT = 50L
-
         const val DEF_MARGIN_LEFT_DP = 2
         const val DEF_MARGIN_RIGHT_DP = 2
         const val DEF_MARGIN_BOTTOM_DP = 2
@@ -74,6 +73,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private val gestureDetector = GestureManager()
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private val navigationBarSideManager = NavigationBarSideManager(context)
 
     private val pool = Executors.newScheduledThreadPool(1)
     
@@ -209,13 +209,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (key != null && key.contains("use_pixels")) {
             params.width = getCustomWidth(context)
             params.height = getCustomHeight(context)
-            params.x = getHomeX(context)
+            params.x = getAdjustedHomeX()
             params.y = getAdjustedHomeY()
             updateLayout(params)
         }
         if (key == "custom_width_percent" || key == "custom_width") {
             params.width = getCustomWidth(context)
-            params.x = getHomeX(context)
+            params.x = getAdjustedHomeX()
             updateLayout(params)
         }
         if (key == "custom_height_percent" || key == "custom_height") {
@@ -227,7 +227,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             updateLayout(params)
         }
         if (key == "custom_x_percent" || key == "custom_x") {
-            params.x = getHomeX(context)
+            params.x = getAdjustedHomeX()
             updateLayout(params)
         }
         if (key == "pill_bg" || key == "pill_fg") {
@@ -519,6 +519,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     && !Utils.useTabletMode(context)) 0
             else if (Utils.origBarInFullscreen(context)) 0 else Utils.getNavBarHeight(context)
         } else 0
+    }
+
+    fun getAdjustedHomeX(): Int {
+        val screenSize = Utils.getRealScreenSize(context)
+        val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
+
+        val diff = (frame.left + frame.right) - screenSize.x
+
+        return getHomeX(context) - diff
     }
 
     /**
@@ -817,7 +826,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 .translationX(0f)
                                 .setDuration(getAnimationDurationMs())
                                 .withEndAction {
-                                    if (params.x == Utils.getHomeX(context)) {
+                                    if (params.x == getAdjustedHomeX()) {
                                         isActing = false
                                         isSwipeLeft = false
                                         isSwipeRight = false
@@ -857,9 +866,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             yDownAnimator?.duration = (time * distance / 100f).toLong()
                             yDownAnimator?.start()
                         }
-                        params.x < Utils.getHomeX(context) || params.x > Utils.getHomeX(context) -> {
-                            val distance = (params.x - Utils.getHomeX(context)).absoluteValue
-                            val animator = ValueAnimator.ofInt(params.x, Utils.getHomeX(context))
+                        params.x < getAdjustedHomeX() || params.x > getAdjustedHomeX() -> {
+                            val distance = (params.x - getAdjustedHomeX()).absoluteValue
+                            val animator = ValueAnimator.ofInt(params.x, getAdjustedHomeX())
                             animator.interpolator = DecelerateInterpolator()
                             animator.addUpdateListener {
                                 params.x = it.animatedValue.toString().toInt()
