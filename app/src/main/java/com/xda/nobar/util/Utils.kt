@@ -465,6 +465,7 @@ object Utils {
     fun hideInFullscreen(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("hide_in_fullscreen", context.resources.getBoolean(R.bool.hide_in_fullscreen_default))
+                    && !autoHide(context)
 
     fun largerHitbox(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
@@ -501,6 +502,7 @@ object Utils {
     fun hidePillWhenKeyboardShown(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("hide_pill_on_keyboard", context.resources.getBoolean(R.bool.hide_on_keyboard_default))
+                    && !autoHide(context)
 
     fun useImmersiveWhenNavHidden(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
@@ -618,4 +620,12 @@ object Utils {
     fun getXThresholdPx(context: Context) = dpAsPx(context, getXThresholdDp(context))
 
     fun getYThresholdPx(context: Context) = dpAsPx(context, getYThresholdDp(context))
+
+    fun autoHide(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("auto_hide_pill", context.resources.getBoolean(R.bool.auto_hide_default))
+
+    fun autoHideTime(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getInt("auto_hide_pill_progress", context.resources.getInteger(R.integer.default_auto_hide_time))
 }

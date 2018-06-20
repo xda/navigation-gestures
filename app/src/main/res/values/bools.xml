@@ -16,4 +16,5 @@
     <bool name="sectioned_pill_default">false</bool>
     <bool name="show_shadow_default">true</bool>
     <bool name="feedback_sound_default">true</bool>
+    <bool name="auto_hide_default">false</bool>
 </resources>

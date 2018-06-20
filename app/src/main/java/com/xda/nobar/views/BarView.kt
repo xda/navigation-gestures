@@ -192,6 +192,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         layoutParams = layoutParams
 
         isSoundEffectsEnabled = Utils.feedbackSound(context)
+
+        if (Utils.autoHide(context)) scheduleHide()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -288,6 +290,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             margins.top = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
             changePillMargins(margins)
             updateLayout(params)
+        }
+        if (key == "auto_hide_pill") {
+            if (Utils.autoHide(context)) scheduleHide()
+            else showPill(false)
         }
     }
 
@@ -446,8 +452,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private fun scheduleHide() {
         hideHandle = pool.schedule({
-            if (isAutoHidden) hidePill(true)
-        }, 1500, TimeUnit.MILLISECONDS)
+            if (isAutoHidden || Utils.autoHide(context)) hidePill(true)
+        }, if (Utils.autoHide(context)) Utils.autoHideTime(context).toLong() else 1500, TimeUnit.MILLISECONDS)
     }
 
     private fun animateShow() {

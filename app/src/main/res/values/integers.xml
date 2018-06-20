@@ -9,6 +9,7 @@
     <integer name="default_anim_duration">150</integer>
     <integer name="default_x_threshold_dp">40</integer>
     <integer name="default_y_threshold_dp">20</integer>
+    <integer name="default_auto_hide_time">1000</integer>
 
     <integer name="min_pill_width_percent">1</integer>
     <integer name="min_pill_height_percent">1</integer>
@@ -20,6 +21,7 @@
     <integer name="min_anim_duration">0</integer>
     <integer name="min_x_threshold_dp">5</integer>
     <integer name="min_y_threshold_dp">5</integer>
+    <integer name="min_auto_hide_time">100</integer>
 
     <integer name="max_pill_width_percent">1000</integer>
     <integer name="max_pill_height_percent">200</integer>
@@ -31,4 +33,5 @@
     <integer name="max_anim_duration">500</integer>
     <integer name="max_x_threshold_dp">100</integer>
     <integer name="max_y_threshold_dp">100</integer>
+    <integer name="max_auto_hide_time">3000</integer>
 </resources>

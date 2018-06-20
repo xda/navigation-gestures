@@ -2,7 +2,22 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.xda.nobar.prefs.SeekBarSwitchPreference
+        android:title="@string/hide_after_set_time"
+        android:summaryOff="@string/auto_hide_pill_desc_disabled"
+        android:summaryOn="@string/auto_hide_pill_desc_enabled"
+        android:key="auto_hide_pill"
+        android:icon="@drawable/ic_visibility_off_black_24dp"
+        android:disableDependentsState="true"
+        app:msbp_view_defaultValue="@integer/default_auto_hide_time"
+        app:msbp_minValue="@integer/min_auto_hide_time"
+        app:msbp_maxValue="@integer/max_auto_hide_time"
+        app:msbp_measurementUnit="ms"
+        android:defaultValue="false"
+        />
+
     <SwitchPreference
+        android:dependency="auto_hide_pill"
         android:title="@string/hide_in_fullscreen"
         android:summary="@string/hide_in_fullscreen_desc"
         android:key="hide_in_fullscreen"
@@ -10,6 +25,7 @@
         android:defaultValue="@bool/hide_in_fullscreen_default" />
 
     <SwitchPreference
+        android:dependency="auto_hide_pill"
         android:title="@string/hide_pill_on_keyboard"
         android:key="hide_pill_on_keyboard"
         android:icon="@drawable/ic_keyboard_hide_black_24dp"
