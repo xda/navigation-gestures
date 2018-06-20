@@ -518,6 +518,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             }
             filter.addAction(Intent.ACTION_SCREEN_ON)
             filter.addAction(Intent.ACTION_USER_PRESENT)
+            filter.addAction(Intent.ACTION_SCREEN_OFF)
+            filter.addAction(Intent.ACTION_REBOOT)
+            filter.addAction(Intent.ACTION_SHUTDOWN)
 
             registerReceiver(this, filter)
         }
@@ -527,6 +530,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 handler.postDelayed({
                     val action = intent?.action
                     when (action) {
+                        Intent.ACTION_REBOOT,
+                        Intent.ACTION_SHUTDOWN,
+                        Intent.ACTION_SCREEN_OFF -> {
+                            if (Utils.shouldUseOverscanMethod(this@App)) {
+                                showNav()
+                                disabledBarReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
+                            }
+                        }
                         Intent.ACTION_SCREEN_ON,
                         Intent.ACTION_BOOT_COMPLETED,
                         Intent.ACTION_LOCKED_BOOT_COMPLETED -> {
