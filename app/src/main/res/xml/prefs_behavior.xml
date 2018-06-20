@@ -47,6 +47,26 @@
         android:key="bar_blacklist" />
 
     <com.pavelsikun.seekbarpreference.SeekBarPreference
+        android:title="@string/x_threshold"
+        android:icon="@drawable/ic_swap_horiz_black_24dp"
+        android:defaultValue="@integer/default_x_threshold_dp"
+        app:msbp_minValue="@integer/min_x_threshold_dp"
+        app:msbp_maxValue="@integer/max_x_threshold_dp"
+        app:msbp_scale="0.1"
+        app:msbp_measurementUnit="dp"
+        android:key="x_threshold" />
+
+    <com.pavelsikun.seekbarpreference.SeekBarPreference
+        android:title="@string/y_threshold"
+        android:icon="@drawable/ic_swap_vert_black_24dp"
+        android:defaultValue="@integer/default_y_threshold_dp"
+        app:msbp_minValue="@integer/min_y_threshold_dp"
+        app:msbp_maxValue="@integer/max_y_threshold_dp"
+        app:msbp_scale="0.1"
+        app:msbp_measurementUnit="dp"
+        android:key="y_threshold" />
+
+    <com.pavelsikun.seekbarpreference.SeekBarPreference
         android:title="@string/hold_time"
         android:key="hold_time"
         android:icon="@drawable/ic_timer_black_24dp"

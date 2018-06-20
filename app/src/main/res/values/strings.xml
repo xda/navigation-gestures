@@ -89,6 +89,8 @@
     <string name="nav_blacklist">Hide Navigation Bar Blacklist</string>
     <string name="bar_blacklist">Pill Blacklist</string>
     <string name="imm_blacklist">Immersive Blacklist</string>
+    <string name="x_threshold">Horizontal (X) Swipe Threshold</string>
+    <string name="y_threshold">Vertical (Y) Swipe Threshold</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>

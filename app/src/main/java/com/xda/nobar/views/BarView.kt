@@ -996,8 +996,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             val oldEvent = MotionEvent.obtain(this.oldEvent)
             val distanceX = motionEvent.rawX - oldEvent.rawX
             val distanceY = motionEvent.rawY - oldEvent.rawY
-            val xThresh = Utils.dpAsPx(context, 4)
-            val yThresh = Utils.dpAsPx(context, 2)
+            val xThresh = Utils.getXThresholdPx(context)
+            val yThresh = Utils.getYThresholdPx(context)
 
             val ret = if (!isHidden && !isActing) {
                 when {
