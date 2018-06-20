@@ -24,11 +24,7 @@ open class DisabledReasonManager : TreeSet<String>() {
         else false
     }
 
-    override fun remove(element: String): Boolean {
+    fun removeAll(element: String): Boolean {
         return removeAll(Collections.singleton(element))
-    }
-
-    fun removeFirst(element: String): Boolean {
-        return super.remove(element)
     }
 }

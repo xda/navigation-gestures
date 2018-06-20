@@ -75,7 +75,7 @@ class ScreenshotActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQ) {
+        if (requestCode == REQ && data != null) {
             projection = projectionManager.getMediaProjection(resultCode, data)
 
             createVirtualDisplay()
