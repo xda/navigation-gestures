@@ -939,12 +939,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         val velocity = ev.rawX - oldX
                         oldX = ev.rawX
 
-                        val half = (Utils.getRealScreenSize(context).x.toFloat() / 2f - Utils.getCustomWidth(context).toFloat() / 2f).toInt()
+                        val halfScreen = Utils.getRealScreenSize(context).x / 2f
+                        val leftParam = params.x - Utils.getCustomWidth(context).toFloat() / 2f
+                        val rightParam = params.x + Utils.getCustomWidth(context).toFloat() / 2f
 
                         if (getAnimationDurationMs() > 0) {
                             when {
-                                params.x <= -half && !isSwipeRight -> pill.translationX -= velocity
-                                params.x >= half && !isSwipeLeft -> pill.translationX += velocity
+                                leftParam <= -halfScreen && !isSwipeRight -> {
+                                    pill.translationX += velocity
+                                }
+                                rightParam >= halfScreen && !isSwipeLeft -> pill.translationX += velocity
                                 else -> {
                                     params.x = params.x + (velocity / 2).toInt()
                                     updateLayout(params)
