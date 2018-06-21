@@ -259,9 +259,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         }
                         if (areGesturesActivated() && !pillShown) addBar()
                     } else {
-                        if (Utils.shouldUseOverscanMethod(this)) {
+                        if (Utils.shouldUseOverscanMethod(this)
+                                && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)) {
                             showNav()
-                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         }
                         if (areGesturesActivated() && !pillShown) removeBar()
                     }
@@ -533,18 +533,18 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         Intent.ACTION_REBOOT,
                         Intent.ACTION_SHUTDOWN,
                         Intent.ACTION_SCREEN_OFF -> {
-                            if (Utils.shouldUseOverscanMethod(this@App)) {
+                            if (Utils.shouldUseOverscanMethod(this@App)
+                                    && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)) {
                                 showNav()
-                                disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             }
                         }
                         Intent.ACTION_SCREEN_ON,
                         Intent.ACTION_BOOT_COMPLETED,
                         Intent.ACTION_LOCKED_BOOT_COMPLETED -> {
                             if (Utils.isOnKeyguard(this@App)) {
-                                if (Utils.shouldUseOverscanMethod(this@App)) {
+                                if (Utils.shouldUseOverscanMethod(this@App)
+                                        && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)) {
                                     showNav()
-                                    disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
                                 }
                             } else {
                                 if (Utils.shouldUseOverscanMethod(this@App)) {
@@ -585,9 +585,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         if (pillShown) bar.params.height = Utils.getCustomHeight(this@App) * 2
                     } else {
                         if (pillShown) removeBar()
-                        if (Utils.shouldUseOverscanMethod(this@App)) {
+                        if (Utils.shouldUseOverscanMethod(this@App)
+                                && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)) {
                             showNav()
-                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         }
                     }
                 }
@@ -650,9 +650,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
                 if (navArray.contains(pName)) {
                     if (!disabledNavReasonManager.contains(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)) {
-                        if (Utils.shouldUseOverscanMethod(this@App)) {
+                        if (Utils.shouldUseOverscanMethod(this@App)
+                                && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)) {
                             showNav(false)
-                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
                         }
                         onGlobalLayout()
                     }
@@ -709,15 +709,18 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     val edgeType = getCocktailBarWindowType.invoke(manager).toString().toInt()
 
                     if (edgeType == 2) {
-                        if (!disabledNavReasonManager.contains(DisabledReasonManager.NavBarReasons.EDGE_SCREEN)) {
-                            if (Utils.shouldUseOverscanMethod(this@App)) {
-                                showNav(false)
-                                disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.EDGE_SCREEN)
+                        if (!disabledImmReasonManager.contains(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
+                            if (Utils.shouldUseOverscanMethod(this@App)
+                                    && Utils.useImmersiveWhenNavHidden(this@App)
+                                    && disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
+                                Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
                             }
                         }
                     } else {
-                        if (Utils.shouldUseOverscanMethod(this@App)) {
-                            disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.EDGE_SCREEN)
+                        if (Utils.shouldUseOverscanMethod(this@App)
+                                && Utils.useImmersiveWhenNavHidden(this@App)
+                                && disabledImmReasonManager.removeAll(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
+                            Utils.setNavImmersive(this@App)
                         }
                     }
                 } catch (e: Exception) {}
@@ -823,9 +826,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 bar.isImmersive = isImmersive
                 val hideInFullScreen = Utils.hideInFullscreen(this@App)
                 if (isImmersive) {
-                    if (Utils.shouldUseOverscanMethod(this@App) && Utils.origBarInFullscreen(this@App)) {
+                    if (Utils.shouldUseOverscanMethod(this@App)
+                            && Utils.origBarInFullscreen(this@App)
+                            && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.IMMERSIVE)) {
                         showNav()
-                        disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.IMMERSIVE)
                     }
                     if (hideInFullScreen) bar.hidePill(true)
                 } else {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="pill_large_hitbox_height_increase">8dp</dimen>
+    <dimen name="pill_margin_top_large_hitbox">12dp</dimen>
+    <dimen name="pill_margin_top_normal">4dp</dimen>
+
+    <dimen name="pill_radius_default">8dp</dimen>
+    <dimen name="pill_height_default">22dp</dimen>
+    <dimen name="pill_width_default">112dp</dimen>
+</resources>

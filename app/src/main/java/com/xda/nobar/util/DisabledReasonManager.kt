@@ -8,7 +8,6 @@ open class DisabledReasonManager : TreeSet<String>() {
         const val CAR_MODE = "car_mode"
         const val KEYGUARD = "keyguard"
         const val IMMERSIVE = "immersive"
-        const val EDGE_SCREEN = "edge"
     }
 
     object PillReasons {
@@ -17,6 +16,7 @@ open class DisabledReasonManager : TreeSet<String>() {
 
     object ImmReasons {
         const val BLACKLIST = "imm_blacklist"
+        const val EDGE_SCREEN = "edge"
     }
 
     override fun add(element: String): Boolean {
