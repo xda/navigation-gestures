@@ -709,12 +709,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     val edgeType = getCocktailBarWindowType.invoke(manager).toString().toInt()
 
                     if (edgeType == 2) {
-                        if (!disabledImmReasonManager.contains(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
-                            if (Utils.shouldUseOverscanMethod(this@App)
-                                    && Utils.useImmersiveWhenNavHidden(this@App)
-                                    && disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
-                                Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
-                            }
+                        if (Utils.shouldUseOverscanMethod(this@App)
+                                && Utils.useImmersiveWhenNavHidden(this@App)
+                                && disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
+                            Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
                         }
                     } else {
                         if (Utils.shouldUseOverscanMethod(this@App)
