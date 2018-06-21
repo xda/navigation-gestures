@@ -122,17 +122,6 @@
     <string name="enable_in_car_mode_desc">When enabled, Navigation Gestures will not disable in Car Mode. Don\'t enable this on TouchWiz devices if you have a software navigation bar.</string>
     <string name="grant_write_settings_desc">Tap OK to allow Navigation Gestures to write to system settings.</string>
     <string name="use_recommended_settings_desc">Split Pill enabled! Do you want to try our recommended settings for this mode?</string>
-    <string name="rec_disable_shadow">\u2022 Disable the pill shadow</string>
-    <string name="rec_set_transparent">\u2022 Set pill and border color completely transparent</string>
-    <string name="rec_set_radius">\u2022 Set pill corner radius to 0dp</string>
-    <string name="rec_set_width">\u2022 Set pill width to 100%</string>
-    <string name="rec_set_height">\u2022 Set pill height to 1.5%</string>
-    <string name="rec_set_y">\u2022 Set vertical (Y) position to 0</string>
-    <string name="rec_disable_hide_in_fullscren">\u2022 Don\'t hide pill in fullscreen apps</string>
-    <string name="rec_dont_move_pill">\u2022 Prevent pill from moving above the keyboard</string>
-    <string name="rec_no_large_hitbox">\u2022 Disable the larger hitbox</string>
-    <string name="rec_disable_default_gestures">\u2022 Set other gestures to \"No Action\"</string>
-    <string name="rec_disable_anim">\u2022 Disable animations</string>
     <string name="use_immersive_mode_when_nav_hidden_desc">When enabled, this will activate Android\'s immersive navigation feature when the Hide Navigation Bar toggle is enabled. This is mostly useful for Samsung devices, as it will allow Force Touch to work.</string>
     <string name="nav_blacklist_desc">Choose which apps should keep the original navigation bar shown.</string>
     <string name="bar_blacklist_desc">Choose which apps should not have the pill shown.</string>
@@ -267,5 +256,18 @@
 
     <!--Buttons-->
     <string name="no">No</string>
-
+    
+    <!--Split Pill Recommendations-->
+    <string name="rec_disable_shadow">\u2022 Disable the pill shadow</string>
+    <string name="rec_set_transparent">\u2022 Set pill and border color completely transparent</string>
+    <string name="rec_set_radius">\u2022 Set pill corner radius to 0dp</string>
+    <string name="rec_set_width">\u2022 Set pill width to 100%</string>
+    <string name="rec_set_height">\u2022 Set pill height to the minimum</string>
+    <string name="rec_set_y">\u2022 Set vertical (Y) position to 0</string>
+    <string name="rec_disable_hide_in_fullscren">\u2022 Don\'t hide pill in fullscreen apps</string>
+    <string name="rec_dont_move_pill">\u2022 Prevent pill from moving above the keyboard</string>
+    <string name="rec_no_large_hitbox">\u2022 Disable the larger hitbox</string>
+    <string name="rec_disable_default_gestures">\u2022 Set other gestures to \"No Action\"</string>
+    <string name="rec_disable_anim">\u2022 Disable animations</string>
+    <string name="rec_no_hide_keyboard">\u2022 Disable hide on keyboard</string>
 </resources>

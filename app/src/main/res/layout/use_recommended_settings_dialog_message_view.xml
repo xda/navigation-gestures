@@ -109,6 +109,14 @@
             android:textColor="?android:textColorSecondary"
             style="@android:style/TextAppearance.Material.Body2" />
 
+        <TextView
+            android:text="@string/rec_no_hide_keyboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="?android:textColorSecondary"
+            style="@android:style/TextAppearance.Material.Body2" />
+
     </LinearLayout>
 
 </ScrollView>

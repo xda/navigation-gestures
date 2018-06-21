@@ -10,6 +10,9 @@
     <integer name="default_x_threshold_dp">40</integer>
     <integer name="default_y_threshold_dp">20</integer>
     <integer name="default_auto_hide_time">1000</integer>
+    <integer name="default_pill_width_dp">112</integer>
+    <integer name="default_pill_height_dp">22</integer>
+    <integer name="default_pill_radius_dp">8</integer>
 
     <integer name="min_pill_width_percent">1</integer>
     <integer name="min_pill_height_percent">1</integer>
@@ -22,6 +25,9 @@
     <integer name="min_x_threshold_dp">5</integer>
     <integer name="min_y_threshold_dp">5</integer>
     <integer name="min_auto_hide_time">100</integer>
+    <integer name="min_pill_width_dp">10</integer>
+    <integer name="min_pill_height_dp">5</integer>
+    <integer name="min_pill_y_dp">0</integer>
 
     <integer name="max_pill_width_percent">1000</integer>
     <integer name="max_pill_height_percent">200</integer>
@@ -34,4 +40,9 @@
     <integer name="max_x_threshold_dp">100</integer>
     <integer name="max_y_threshold_dp">100</integer>
     <integer name="max_auto_hide_time">3000</integer>
+    <integer name="max_pill_height_dp">50</integer>
+
+    <integer name="pill_margin_top_normal_dp">4</integer>
+    <integer name="pill_margin_top_large_hitbox_dp">12</integer>
+    <integer name="pill_large_hitbox_height_increase_dp">8</integer>
 </resources>

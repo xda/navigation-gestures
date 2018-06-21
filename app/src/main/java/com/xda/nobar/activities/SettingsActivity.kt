@@ -235,7 +235,7 @@ class SettingsActivity : AppCompatActivity() {
         private fun setSectionedSettings() {
             preferenceManager.sharedPreferences.edit().apply {
                 putBoolean("use_pixels_width", false)
-                putBoolean("use_pixels_height", false)
+                putBoolean("use_pixels_height", true)
                 putBoolean("use_pixels_y", false)
                 putBoolean("larger_hitbox", false)
                 putBoolean("hide_in_fullscreen", false)
@@ -243,7 +243,7 @@ class SettingsActivity : AppCompatActivity() {
                 putBoolean("hide_pill_on_keyboard", false)
 
                 putInt("custom_width_percent", 1000)
-                putInt("custom_height_percent", 15)
+                putInt("custom_height", Utils.minPillHeightPx(activity))
                 putInt("custom_y_percent", 0)
                 putInt("pill_corner_radius", 0)
                 putInt("pill_bg", Color.TRANSPARENT)
@@ -409,20 +409,20 @@ class SettingsActivity : AppCompatActivity() {
             val xPixels = screen.findPreference("custom_x") as SeekBarPreference
             val yPixels = screen.findPreference("custom_y") as SeekBarPreference
 
-            widthPixels.minValue = Utils.dpAsPx(activity, 10)
-            heightPixels.minValue = Utils.dpAsPx(activity, 5)
-            xPixels.minValue = -(Utils.getRealScreenSize(activity).x.toFloat() / 2f - Utils.getCustomWidth(activity).toFloat() / 2f).toInt()
-            yPixels.minValue = 0
+            widthPixels.minValue = Utils.minPillWidthPx(activity)
+            heightPixels.minValue = Utils.minPillHeightPx(activity)
+            xPixels.minValue = Utils.minPillXPx(activity)
+            yPixels.minValue = Utils.minPillYPx(activity)
 
-            widthPixels.maxValue = Utils.getRealScreenSize(activity).x
-            heightPixels.maxValue = Utils.dpAsPx(activity, 50)
-            yPixels.maxValue = Utils.getRealScreenSize(activity).y
-            xPixels.maxValue = -xPixels.minValue
+            widthPixels.maxValue = Utils.maxPillWidthPx(activity)
+            heightPixels.maxValue = Utils.maxPillHeightPx(activity)
+            yPixels.maxValue = Utils.maxPillYPx(activity)
+            xPixels.maxValue = Utils.minPillXPx(activity)
 
             yPercent.setDefaultValue(Utils.getDefaultYPercent(activity))
             yPixels.setDefaultValue(Utils.getDefaultY(activity))
-            widthPixels.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_width))
-            heightPixels.setDefaultValue(resources.getDimensionPixelSize(R.dimen.pill_height))
+            widthPixels.setDefaultValue(Utils.defPillWidthPx(activity))
+            heightPixels.setDefaultValue(Utils.defPillHeightPx(activity))
 
             val listener = Preference.OnPreferenceChangeListener { pref, newValue ->
                 val new = newValue.toString().toBoolean()

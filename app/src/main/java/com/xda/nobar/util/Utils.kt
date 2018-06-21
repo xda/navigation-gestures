@@ -205,7 +205,7 @@ object Utils {
         val screenWidth = getRealScreenSize(context).x
 
         return if (usePixelsW(context))
-            PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_width", context.resources.getDimensionPixelSize(R.dimen.pill_width))
+            PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_width", context.resources.getDimensionPixelSize(R.dimen.pill_width_default))
         else
             (percent * screenWidth).toInt()
     }
@@ -230,7 +230,7 @@ object Utils {
         val percent = (getCustomHeightPercent(context) / 100f)
 
         return if (usePixelsH(context))
-            PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height", context.resources.getDimensionPixelSize(R.dimen.pill_height))
+            PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height", context.resources.getDimensionPixelSize(R.dimen.pill_height_default))
         else
             (percent * getRealScreenSize(context).y).toInt()
     }
@@ -628,4 +628,52 @@ object Utils {
     fun autoHideTime(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getInt("auto_hide_pill_progress", context.resources.getInteger(R.integer.default_auto_hide_time))
+
+    fun minPillWidthPx(context: Context) =
+            dpAsPx(context, minPillWidthDp(context))
+
+    fun minPillWidthDp(context: Context) =
+            context.resources.getInteger(R.integer.min_pill_width_dp)
+
+    fun minPillHeightPx(context: Context) =
+            dpAsPx(context, minPillHeightDp(context))
+
+    fun minPillHeightDp(context: Context) =
+            context.resources.getInteger(R.integer.min_pill_height_dp)
+
+    fun minPillXPx(context: Context) =
+            -(getRealScreenSize(context).x.toFloat() / 2f - getCustomWidth(context).toFloat() / 2f).toInt()
+
+    fun minPillYPx(context: Context) =
+            dpAsPx(context, minPillYDp(context))
+
+    fun minPillYDp(context: Context) =
+            context.resources.getInteger(R.integer.min_pill_y_dp)
+
+    fun maxPillWidthPx(context: Context) =
+            getRealScreenSize(context).x
+
+    fun maxPillHeightPx(context: Context) =
+            dpAsPx(context, maxPillHeightDp(context))
+
+    fun maxPillHeightDp(context: Context) =
+            context.resources.getInteger(R.integer.max_pill_height_dp)
+
+    fun maxPillXPx(context: Context) =
+            -minPillXPx(context)
+
+    fun maxPillYPx(context: Context) =
+            getRealScreenSize(context).y
+
+    fun defPillWidthPx(context: Context) =
+            dpAsPx(context, defPillWidthDp(context))
+
+    fun defPillWidthDp(context: Context) =
+            context.resources.getInteger(R.integer.default_pill_width_dp)
+
+    fun defPillHeightPx(context: Context) =
+            dpAsPx(context, defPillHeightDp(context))
+
+    fun defPillHeightDp(context: Context) =
+            context.resources.getInteger(R.integer.default_pill_height_dp)
 }
