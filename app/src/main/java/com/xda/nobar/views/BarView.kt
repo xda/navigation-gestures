@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -1142,9 +1143,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
 
             override fun onLongPress(ev: MotionEvent) {
+                val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+                val isPinned = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 && am.lockTaskModeState != ActivityManager.LOCK_TASK_MODE_NONE
+
                 if (!isHidden && !isActing) {
-                    isActing = true
-                    sendAction(app.actionHold, ev.rawX)
+                    if (isPinned) {
+                       
+                    } else {
+                        isActing = true
+                        sendAction(app.actionHold, ev.rawX)
+                    }
                 }
             }
 

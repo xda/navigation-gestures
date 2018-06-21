@@ -579,30 +579,32 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (areGesturesActivated()) {
-                when (intent?.action) {
-                    UiModeManager.ACTION_ENTER_CAR_MODE -> {
-                        if (Utils.enableInCarMode(this@App)) bar.params.height = Utils.getCustomHeight(this@App) * 2
-                        else {
-                            removeBar()
-                            if (Utils.shouldUseOverscanMethod(this@App)) {
-                                showNav()
-                                disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                            }
-                        }
-                    }
-
-                    UiModeManager.ACTION_EXIT_CAR_MODE -> {
-                        if (Utils.enableInCarMode(this@App)) bar.params.height = Utils.getCustomHeight(this@App)
-                        else {
-                            if (!pillShown) addBar()
-                            if (Utils.shouldUseOverscanMethod(this@App)) {
-                                disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                            }
+            when (intent?.action) {
+                UiModeManager.ACTION_ENTER_CAR_MODE -> {
+                    if (Utils.enableInCarMode(this@App)) {
+                        if (pillShown) bar.params.height = Utils.getCustomHeight(this@App) * 2
+                    } else {
+                        if (pillShown) removeBar()
+                        if (Utils.shouldUseOverscanMethod(this@App)) {
+                            showNav()
+                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         }
                     }
                 }
 
+                UiModeManager.ACTION_EXIT_CAR_MODE -> {
+                    if (Utils.enableInCarMode(this@App)) {
+                        if (pillShown) bar.params.height = Utils.getCustomHeight(this@App)
+                    } else {
+                        if (areGesturesActivated() && !pillShown) addBar()
+                        if (Utils.shouldUseOverscanMethod(this@App)) {
+                            disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.CAR_MODE)
+                        }
+                    }
+                }
+            }
+
+            if (pillShown) {
                 bar.updateLayout(bar.params)
             }
 
