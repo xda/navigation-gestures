@@ -317,6 +317,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Add the pill to the screen
      */
     fun addBar(callListeners: Boolean = true) {
+        Log.e("NoBar", disabledBarReasonManager.toString())
         if (disabledBarReasonManager.isEmpty()) {
             handler.post {
                 pillShown = true
@@ -535,7 +536,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         Intent.ACTION_SCREEN_OFF -> {
                             if (Utils.shouldUseOverscanMethod(this@App)) {
                                 showNav()
-                                disabledBarReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
+                                disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             }
                         }
                         Intent.ACTION_SCREEN_ON,

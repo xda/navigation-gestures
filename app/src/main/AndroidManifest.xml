@@ -144,7 +144,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".providers.HomeScreenProvider"
+            android:name=".providers.HomeScreenProviderHoriz"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -155,6 +155,19 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget" />
+        </receiver>
+        <receiver
+            android:name=".providers.HomeScreenProviderVert"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.xda.nobar.action.REFRESH_STATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_vertical" />
         </receiver>
         <receiver
             android:name=".providers.SignBoardProvider"

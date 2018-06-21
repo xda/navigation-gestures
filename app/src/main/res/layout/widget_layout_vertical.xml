@@ -12,15 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/widget_background"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/gesture_wrapper"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -34,14 +32,24 @@
                 android:src="@drawable/ic_gesture_black_24dp"
                 android:tint="@color/color_disabled" />
 
+            <TextView
+                android:id="@+id/gesture_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/gestures_off"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:textColor="#fff" />
+
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/nav_wrapper"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -55,14 +63,24 @@
                 android:src="@drawable/ic_border_bottom_black_24dp"
                 android:tint="@color/color_disabled" />
 
+            <TextView
+                android:id="@+id/nav_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/nav_shown"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:textColor="#fff" />
+
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/imm_wrapper"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -76,12 +94,25 @@
                 android:src="@drawable/ic_fullscreen_black_24dp"
                 android:tint="@color/color_disabled" />
 
+            <TextView
+                android:id="@+id/imm_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/nav_imm_disabled"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:textColor="#fff" />
+
         </LinearLayout>
 
         <ImageView
             android:id="@+id/settings"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/circle"
             android:padding="12dp"
             android:src="@drawable/ic_settings_black_24dp" />
