@@ -2,110 +2,125 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.xda.nobar.prefs.SeekBarSwitchPreference
-        android:title="@string/hide_after_set_time"
-        android:summaryOff="@string/auto_hide_pill_desc_disabled"
-        android:summaryOn="@string/auto_hide_pill_desc_enabled"
-        android:key="auto_hide_pill"
-        android:icon="@drawable/ic_visibility_off_black_24dp"
-        android:disableDependentsState="true"
-        app:msbp_view_defaultValue="@integer/default_auto_hide_time"
-        app:msbp_minValue="@integer/min_auto_hide_time"
-        app:msbp_maxValue="@integer/max_auto_hide_time"
-        app:msbp_measurementUnit="ms"
-        android:defaultValue="false"
-        />
+    <PreferenceCategory
+        android:title="@string/blacklisting">
 
-    <SwitchPreference
-        android:dependency="auto_hide_pill"
-        android:title="@string/hide_in_fullscreen"
-        android:summary="@string/hide_in_fullscreen_desc"
-        android:key="hide_in_fullscreen"
-        android:icon="@drawable/ic_visibility_off_black_24dp"
-        android:defaultValue="@bool/hide_in_fullscreen_default" />
+        <Preference
+            android:title="@string/nav_blacklist"
+            android:summary="@string/nav_blacklist_desc"
+            android:icon="@drawable/ic_border_bottom_black_24dp"
+            android:key="nav_blacklist" />
 
-    <SwitchPreference
-        android:dependency="auto_hide_pill"
-        android:title="@string/hide_pill_on_keyboard"
-        android:key="hide_pill_on_keyboard"
-        android:icon="@drawable/ic_keyboard_hide_black_24dp"
-        android:defaultValue="@bool/hide_on_keyboard_default" />
+        <Preference
+            android:title="@string/bar_blacklist"
+            android:summary="@string/bar_blacklist_desc"
+            android:icon="@drawable/ic_gesture_outline_black_24dp"
+            android:key="bar_blacklist" />
 
-    <!--<SwitchPreference-->
-        <!--android:title="@string/hide_on_launcher"-->
-        <!--android:summary="@string/hide_on_launcher_desc"-->
-        <!--android:key="hide_on_launcher" />-->
+    </PreferenceCategory>
 
-    <SwitchPreference
-        android:title="@string/static_pill"
-        android:icon="@drawable/ic_swap_vert_black_24dp"
-        android:summary="@string/static_pill_desc"
-        android:key="static_pill"
-        android:defaultValue="@bool/static_pill_default" />
+    <PreferenceCategory
+        android:title="@string/look_feel">
 
-    <SwitchPreference
-        android:title="@string/enable_in_car_mode"
-        android:icon="@drawable/ic_directions_car_black_24dp"
-        android:summary="@string/enable_in_car_mode_desc"
-        android:key="enable_in_car_mode"
-        android:defaultValue="@bool/car_mode_default" />
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            android:title="@string/vibration_duration"
+            android:key="vibration_duration"
+            android:icon="@drawable/ic_timer_black_24dp"
+            app:msbp_minValue="@integer/min_vibe_time"
+            app:msbp_maxValue="@integer/max_vibe_tme"
+            app:msbp_measurementUnit="ms"
+            android:defaultValue="@integer/default_vibe_time" />
 
-    <Preference
-        android:title="@string/nav_blacklist"
-        android:summary="@string/nav_blacklist_desc"
-        android:icon="@drawable/ic_border_bottom_black_24dp"
-        android:key="nav_blacklist" />
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            android:title="@string/anim_duration"
+            android:key="anim_duration"
+            android:icon="@drawable/ic_timer_black_24dp"
+            app:msbp_minValue="@integer/min_anim_duration"
+            app:msbp_maxValue="@integer/max_anim_duration"
+            android:defaultValue="@integer/default_anim_duration" />
 
-    <Preference
-        android:title="@string/bar_blacklist"
-        android:summary="@string/bar_blacklist_desc"
-        android:icon="@drawable/ic_gesture_outline_black_24dp"
-        android:key="bar_blacklist" />
+    </PreferenceCategory>
 
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
-        android:title="@string/x_threshold"
-        android:icon="@drawable/ic_swap_horiz_black_24dp"
-        android:defaultValue="@integer/default_x_threshold_dp"
-        app:msbp_minValue="@integer/min_x_threshold_dp"
-        app:msbp_maxValue="@integer/max_x_threshold_dp"
-        app:msbp_scale="0.1"
-        app:msbp_measurementUnit="dp"
-        android:key="x_threshold" />
+    <PreferenceCategory
+        android:title="@string/pill_hiding">
 
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
-        android:title="@string/y_threshold"
-        android:icon="@drawable/ic_swap_vert_black_24dp"
-        android:defaultValue="@integer/default_y_threshold_dp"
-        app:msbp_minValue="@integer/min_y_threshold_dp"
-        app:msbp_maxValue="@integer/max_y_threshold_dp"
-        app:msbp_scale="0.1"
-        app:msbp_measurementUnit="dp"
-        android:key="y_threshold" />
+        <com.xda.nobar.prefs.SeekBarSwitchPreference
+            android:title="@string/hide_after_set_time"
+            android:summaryOff="@string/auto_hide_pill_desc_disabled"
+            android:summaryOn="@string/auto_hide_pill_desc_enabled"
+            android:key="auto_hide_pill"
+            android:icon="@drawable/ic_visibility_off_black_24dp"
+            android:disableDependentsState="true"
+            app:msbp_view_defaultValue="@integer/default_auto_hide_time"
+            app:msbp_minValue="@integer/min_auto_hide_time"
+            app:msbp_maxValue="@integer/max_auto_hide_time"
+            app:msbp_measurementUnit="ms"
+            android:defaultValue="false"
+            />
 
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
-        android:title="@string/hold_time"
-        android:key="hold_time"
-        android:icon="@drawable/ic_timer_black_24dp"
-        app:msbp_minValue="@integer/min_hold_time"
-        app:msbp_maxValue="@integer/max_hold_time"
-        app:msbp_measurementUnit="ms"
-        android:defaultValue="@integer/default_hold_time" />
+        <SwitchPreference
+            android:dependency="auto_hide_pill"
+            android:title="@string/hide_in_fullscreen"
+            android:summary="@string/hide_in_fullscreen_desc"
+            android:key="hide_in_fullscreen"
+            android:icon="@drawable/ic_visibility_off_black_24dp"
+            android:defaultValue="@bool/hide_in_fullscreen_default" />
 
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
-        android:title="@string/vibration_duration"
-        android:key="vibration_duration"
-        android:icon="@drawable/ic_timer_black_24dp"
-        app:msbp_minValue="@integer/min_vibe_time"
-        app:msbp_maxValue="@integer/max_vibe_tme"
-        app:msbp_measurementUnit="ms"
-        android:defaultValue="@integer/default_vibe_time" />
+        <SwitchPreference
+            android:dependency="auto_hide_pill"
+            android:title="@string/hide_pill_on_keyboard"
+            android:key="hide_pill_on_keyboard"
+            android:icon="@drawable/ic_keyboard_hide_black_24dp"
+            android:defaultValue="@bool/hide_on_keyboard_default" />
 
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
-        android:title="@string/anim_duration"
-        android:key="anim_duration"
-        android:icon="@drawable/ic_timer_black_24dp"
-        app:msbp_minValue="@integer/min_anim_duration"
-        app:msbp_maxValue="@integer/max_anim_duration"
-        android:defaultValue="@integer/default_anim_duration" />
+        <SwitchPreference
+            android:title="@string/static_pill"
+            android:icon="@drawable/ic_swap_vert_black_24dp"
+            android:summary="@string/static_pill_desc"
+            android:key="static_pill"
+            android:defaultValue="@bool/static_pill_default" />
+
+        <SwitchPreference
+            android:title="@string/enable_in_car_mode"
+            android:icon="@drawable/ic_directions_car_black_24dp"
+            android:summary="@string/enable_in_car_mode_desc"
+            android:key="enable_in_car_mode"
+            android:defaultValue="@bool/car_mode_default" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/sensitivity">
+
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            android:title="@string/x_threshold"
+            android:icon="@drawable/ic_swap_horiz_black_24dp"
+            android:defaultValue="@integer/default_x_threshold_dp"
+            app:msbp_minValue="@integer/min_x_threshold_dp"
+            app:msbp_maxValue="@integer/max_x_threshold_dp"
+            app:msbp_scale="0.1"
+            app:msbp_measurementUnit="dp"
+            android:key="x_threshold" />
+
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            android:title="@string/y_threshold"
+            android:icon="@drawable/ic_swap_vert_black_24dp"
+            android:defaultValue="@integer/default_y_threshold_dp"
+            app:msbp_minValue="@integer/min_y_threshold_dp"
+            app:msbp_maxValue="@integer/max_y_threshold_dp"
+            app:msbp_scale="0.1"
+            app:msbp_measurementUnit="dp"
+            android:key="y_threshold" />
+
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            android:title="@string/hold_time"
+            android:key="hold_time"
+            android:icon="@drawable/ic_timer_black_24dp"
+            app:msbp_minValue="@integer/min_hold_time"
+            app:msbp_maxValue="@integer/max_hold_time"
+            app:msbp_measurementUnit="ms"
+            android:defaultValue="@integer/default_hold_time" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

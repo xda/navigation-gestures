@@ -92,6 +92,10 @@
     <string name="x_threshold">Horizontal (X) Swipe Threshold</string>
     <string name="y_threshold">Vertical (Y) Swipe Threshold</string>
     <string name="hide_after_set_time">Hide Pill After Specified Delay</string>
+    <string name="blacklisting">Blacklisting</string>
+    <string name="look_feel">Look &amp; Feel</string>
+    <string name="pill_hiding">Pill Hiding</string>
+    <string name="sensitivity">Sensitivity</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
