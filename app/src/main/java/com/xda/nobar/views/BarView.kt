@@ -1148,7 +1148,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                 if (!isHidden && !isActing) {
                     if (isPinned) {
-                       
+                       app.showNav()
                     } else {
                         isActing = true
                         sendAction(app.actionHold, ev.rawX)
