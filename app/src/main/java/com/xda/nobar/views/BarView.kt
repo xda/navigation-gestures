@@ -118,18 +118,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var immersiveNav: Boolean = false
         set(value) {
             field = value
-            if (Utils.shouldUseOverscanMethod(context)) {
-                queuedLayoutUpdate = {
-                    if (params.y != getAdjustedHomeY()) {
-                        params.y = getAdjustedHomeY()
-                        updateLayout(params)
-                    }
+            queuedLayoutUpdate = {
+                if (params.y != getAdjustedHomeY()) {
+                    params.y = getAdjustedHomeY()
+                    updateLayout(params)
                 }
+            }
 
-                if (!isCarryingOutTouchAction) {
-                    queuedLayoutUpdate?.invoke()
-                    queuedLayoutUpdate = null
-                }
+            if (!isCarryingOutTouchAction) {
+                queuedLayoutUpdate?.invoke()
+                queuedLayoutUpdate = null
             }
         }
 

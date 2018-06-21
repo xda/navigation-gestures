@@ -317,7 +317,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Add the pill to the screen
      */
     fun addBar(callListeners: Boolean = true) {
-        Log.e("NoBar", disabledBarReasonManager.toString())
         if (disabledBarReasonManager.isEmpty()) {
             handler.post {
                 pillShown = true
@@ -752,7 +751,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         val isKeyboardProbablyShown = rect.bottom <
                                 if (IWindowManager.hasNavigationBar()) screenHeight - Utils.getNavBarHeight(this@App) else screenHeight
 
-                        bar.immersiveNav = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)?.contains("navigation") ?: false && !isKeyboardProbablyShown
+                        bar.immersiveNav = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)?.contains("navigation") ?: false
+                                && !isKeyboardProbablyShown
 
                         if (Utils.hidePillWhenKeyboardShown(this@App)) {
                             if (isKeyboardProbablyShown) bar.hidePill(true)
