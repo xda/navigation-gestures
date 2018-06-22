@@ -23,7 +23,6 @@ import com.xda.nobar.activities.DialogActivity
 import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.activities.LockScreenActivity
 import com.xda.nobar.activities.ScreenshotActivity
-import com.xda.nobar.util.Utils
 import java.io.Serializable
 
 
@@ -60,22 +59,7 @@ class Actions : AccessibilityService(), Serializable {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-//        Log.e("NoBar", event.toString())
-
-//        Log.e("NoBar", "${event.packageName} ${Utils.getLauncherPackage(this)}")
-
         if (!IntroActivity.needsToRun(this)) {
-            if (Utils.getLauncherPackage(this).contains(event.packageName)) {
-                if (Utils.hideOnLauncher(this)) {
-                    isBarHiddenForLauncher = true
-                    app.removeBar()
-                }
-            } else {
-                if (isBarHiddenForLauncher) {
-                    isBarHiddenForLauncher = false
-                    app.addBar()
-                }
-            }
             app.uiHandler.setNodeInfoAndUpdate(event.source)
         }
     }
