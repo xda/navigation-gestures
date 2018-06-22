@@ -103,7 +103,6 @@
             android:defaultValue="@integer/default_x_threshold_dp"
             app:msbp_minValue="@integer/min_x_threshold_dp"
             app:msbp_maxValue="@integer/max_x_threshold_dp"
-            app:msbp_scale="0.1"
             app:msbp_measurementUnit="dp"
             android:key="x_threshold" />
 
@@ -113,7 +112,6 @@
             android:defaultValue="@integer/default_y_threshold_dp"
             app:msbp_minValue="@integer/min_y_threshold_dp"
             app:msbp_maxValue="@integer/max_y_threshold_dp"
-            app:msbp_scale="0.1"
             app:msbp_measurementUnit="dp"
             android:key="y_threshold" />
 

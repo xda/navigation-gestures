@@ -1038,6 +1038,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             val xThresh = Utils.getXThresholdPx(context)
             val yThresh = Utils.getYThresholdPx(context)
 
+//            Log.e("NoBar", "$distanceX, $xThresh // $distanceY, $yThresh")
+
             return if (!isHidden && !isActing) {
                 when {
                     distanceX < -xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //left swipe

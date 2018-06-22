@@ -7,8 +7,8 @@
     <integer name="default_hold_time">700</integer>
     <integer name="default_vibe_time">50</integer>
     <integer name="default_anim_duration">150</integer>
-    <integer name="default_x_threshold_dp">40</integer>
-    <integer name="default_y_threshold_dp">20</integer>
+    <integer name="default_x_threshold_dp">4</integer>
+    <integer name="default_y_threshold_dp">2</integer>
     <integer name="default_auto_hide_time">1000</integer>
     <integer name="default_pill_width_dp">112</integer>
     <integer name="default_pill_height_dp">22</integer>
@@ -22,8 +22,8 @@
     <integer name="min_hold_time">100</integer>
     <integer name="min_vibe_time">0</integer>
     <integer name="min_anim_duration">0</integer>
-    <integer name="min_x_threshold_dp">5</integer>
-    <integer name="min_y_threshold_dp">5</integer>
+    <integer name="min_x_threshold_dp">0</integer>
+    <integer name="min_y_threshold_dp">0</integer>
     <integer name="min_auto_hide_time">100</integer>
     <integer name="min_pill_width_dp">10</integer>
     <integer name="min_pill_height_dp">5</integer>
