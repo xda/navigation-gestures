@@ -18,12 +18,6 @@
         android:defaultValue="@bool/table_mode_default" />
 
     <SwitchPreference
-        android:title="@string/larger_hitbox"
-        android:summary="@string/larger_hitbox_desc"
-        android:key="larger_hitbox"
-        android:defaultValue="@bool/large_hitbox_default" />
-
-    <SwitchPreference
         android:title="@string/orig_nav_in_immersive"
         android:summary="@string/orig_nav_in_immersive_desc"
         android:key="orig_nav_in_immersive"

@@ -104,6 +104,12 @@
     <PreferenceCategory
         android:title="@string/sensitivity">
 
+        <SwitchPreference
+            android:title="@string/larger_hitbox"
+            android:summary="@string/larger_hitbox_desc"
+            android:key="larger_hitbox"
+            android:defaultValue="@bool/large_hitbox_default" />
+
         <com.pavelsikun.seekbarpreference.SeekBarPreference
             android:title="@string/x_threshold"
             android:icon="@drawable/ic_swap_horiz_black_24dp"
