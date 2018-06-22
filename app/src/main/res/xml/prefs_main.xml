@@ -25,4 +25,9 @@
         android:icon="@drawable/ic_warning_black_24dp"
         android:key="compatibility" />
 
+    <Preference
+        android:title="@string/experimental_prefs"
+        android:icon="@drawable/ic_test_tube_24dp"
+        android:key="experimental" />
+
 </PreferenceScreen>

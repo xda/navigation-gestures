@@ -84,6 +84,7 @@ class SettingsActivity : AppCompatActivity() {
                     "appearance" -> AppearanceFragment()
                     "behavior" -> BehaviorFragment()
                     "compatibility" -> CompatibilityFragment()
+                    "experimental" -> ExperimentalFragment()
                     else -> null
                 }
 
@@ -95,6 +96,7 @@ class SettingsActivity : AppCompatActivity() {
             findPreference("appearance").onPreferenceClickListener = listener
             findPreference("behavior").onPreferenceClickListener = listener
             findPreference("compatibility").onPreferenceClickListener = listener
+            findPreference("experimental").onPreferenceClickListener = listener
         }
     }
 
@@ -633,6 +635,20 @@ class SettingsActivity : AppCompatActivity() {
                 startActivity(selector)
                 true
             }
+        }
+    }
+
+    class ExperimentalFragment : PreferenceFragment() {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+
+            addPreferencesFromResource(R.xml.prefs_experimental)
+        }
+
+        override fun onResume() {
+            super.onResume()
+
+            activity.title = resources.getText(R.string.experimental_prefs)
         }
     }
 }

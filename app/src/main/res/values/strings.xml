@@ -97,6 +97,7 @@
     <string name="pill_hiding">Pill Hiding</string>
     <string name="sensitivity">Sensitivity</string>
     <string name="back_to_default">Go back to default settings?</string>
+    <string name="experimental_prefs">Experimental Settings</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
