@@ -16,6 +16,7 @@ import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.prefs.CustomPreferenceCategory
 import com.xda.nobar.prefs.SectionableListPreference
+import com.xda.nobar.prefs.SeekBarSwitchPreference
 import com.xda.nobar.util.Utils
 import java.util.*
 
@@ -649,6 +650,13 @@ class SettingsActivity : AppCompatActivity() {
             super.onResume()
 
             activity.title = resources.getText(R.string.experimental_prefs)
+
+            setListeners()
+        }
+
+        private fun setListeners() {
+            val hideOnKb = findPreference("hide_pill_on_keyboard") as SeekBarSwitchPreference
+            hideOnKb.isEnabled = !preferenceManager.sharedPreferences.getBoolean("auto_hide_pill", false)
         }
     }
 }

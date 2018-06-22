@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.xda.nobar.prefs.SeekBarSwitchPreference
-        android:dependency="auto_hide_pill"
         android:title="@string/hide_pill_on_keyboard"
         android:summaryOn="@string/auto_hide_pill_desc_enabled"
         android:key="hide_pill_on_keyboard"
