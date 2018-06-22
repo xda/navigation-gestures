@@ -356,23 +356,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
     }
 
-    private fun addBarInternal() {
-        try {
-            wm.removeView(bar)
-        } catch (e: Exception) {}
-
-        wm.addView(bar, bar.params)
-        ContextCompat.startForegroundService(this, Intent(this, ForegroundService::class.java))
-
-        if (Utils.shouldUseRootCommands(this)) {
-            startService(rootServiceIntent)
-            ensureRootServiceBound()
-        }
-
-        bar.show(null)
-//        bar.setOnSystemUiVisibilityChangeListener(uiHandler)
-    }
-
     /**
      * Remove the pill from the screen
      */
@@ -506,8 +489,25 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     fun setNavState(hidden: Boolean) = prefs.edit().putBoolean("hide_nav", hidden).apply()
 
-    private fun getAdjustedNavBarHeight() =
+    fun getAdjustedNavBarHeight() =
             Utils.getNavBarHeight(this) - if (bar.isImmersive) 0 else 1
+
+    private fun addBarInternal() {
+        try {
+            wm.removeView(bar)
+        } catch (e: Exception) {}
+
+        wm.addView(bar, bar.params)
+        ContextCompat.startForegroundService(this, Intent(this, ForegroundService::class.java))
+
+        if (Utils.shouldUseRootCommands(this)) {
+            startService(rootServiceIntent)
+            ensureRootServiceBound()
+        }
+
+        bar.show(null)
+//        bar.setOnSystemUiVisibilityChangeListener(uiHandler)
+    }
 
     /**
      * Listen for changes in the screen state and handle appropriately

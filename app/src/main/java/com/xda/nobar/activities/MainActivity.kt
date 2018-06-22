@@ -104,6 +104,10 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
     override fun onDestroy() {
         super.onDestroy()
 
+        app.removeLicenseCheckListener(this)
+        app.removeGestureActivationListener(this)
+        app.removeNavbarHideListener(this)
+
         try {
             app.removeGestureActivationListener(this)
         } catch (e: Exception) {}
