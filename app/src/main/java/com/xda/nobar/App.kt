@@ -458,7 +458,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             Utils.saveBackupImmersive(this)
             if (Utils.useImmersiveWhenNavHidden(this)) Utils.setNavImmersive(this)
 
-            if (!Utils.useRot270Fix(this) && !Utils.useTabletMode(this)) IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this) + 1)
+            if (!Utils.useRot270Fix(this) && !Utils.useTabletMode(this)) 
+                IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this) 
+                    + if (bar.isImmersive) 0 else 1)
             else {
                 uiHandler.handleRot()
             }
@@ -824,10 +826,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 bar.isImmersive = isImmersive
                 val hideInFullScreen = Utils.hideInFullscreen(this@App)
                 if (isImmersive) {
-                    if (Utils.shouldUseOverscanMethod(this@App)
-                            && Utils.origBarInFullscreen(this@App)
-                            && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.IMMERSIVE)) {
-                        showNav()
+                    if (Utils.shouldUseOverscanMethod(this@App)) {
+                        if (Utils.origBarInFullscreen(this@App)
+                                && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.IMMERSIVE)) showNav()
+                        else hideNav()
                     }
                     if (hideInFullScreen) bar.hidePill(true, HiddenPillReasonManager.FULLSCREEN)
                 } else {
@@ -850,9 +852,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         private fun handle270() {
             if (wm.defaultDisplay.rotation == Surface.ROTATION_270 || wm.defaultDisplay.rotation == Surface.ROTATION_180) {
-                IWindowManager.setOverscan(0, -Utils.getNavBarHeight(this@App) + 1, 0, 0)
+                IWindowManager.setOverscan(0, -Utils.getNavBarHeight(this@App) + if (bar.isImmersive) 0 else 1, 0, 0)
             } else {
-                IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this@App) + 1)
+                IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this@App) + if (bar.isImmersive) 0 else 1)
             }
         }
 
@@ -860,19 +862,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (Utils.shouldUseOverscanMethod(this@App)) {
                 when (wm.defaultDisplay.rotation) {
                     Surface.ROTATION_0 -> {
-                        IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this@App) + 1)
+                        IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this@App) + if (bar.isImmersive) 0 else 1)
                     }
 
                     Surface.ROTATION_90 -> {
-                        IWindowManager.setOverscan(-Utils.getNavBarHeight(this@App) + 1, 0, 0, 0)
+                        IWindowManager.setOverscan(-Utils.getNavBarHeight(this@App) + if (bar.isImmersive) 0 else 1, 0, 0, 0)
                     }
 
                     Surface.ROTATION_180 -> {
-                        IWindowManager.setOverscan(0, -Utils.getNavBarHeight(this@App) + 1, 0 ,0)
+                        IWindowManager.setOverscan(0, -Utils.getNavBarHeight(this@App) + if (bar.isImmersive) 0 else 1, 0 ,0)
                     }
 
                     Surface.ROTATION_270 -> {
-                        IWindowManager.setOverscan(0, 0, -Utils.getNavBarHeight(this@App) + 1, 0)
+                        IWindowManager.setOverscan(0, 0, -Utils.getNavBarHeight(this@App) + if (bar.isImmersive) 0 else 1, 0)
                     }
                 }
             }
