@@ -242,6 +242,7 @@ class SettingsActivity : AppCompatActivity() {
                 putBoolean("hide_in_fullscreen", false)
                 putBoolean("static_pill", true)
                 putBoolean("hide_pill_on_keyboard", false)
+                putBoolean("auto_hide_pill", false)
 
                 putInt("custom_width_percent", 1000)
                 putInt("custom_height", Utils.minPillHeightPx(activity) + Utils.dpAsPx(activity, 3.8f))
@@ -276,6 +277,7 @@ class SettingsActivity : AppCompatActivity() {
                 remove("hide_in_fullscreen")
                 remove("static_pill")
                 remove("hide_pill_on_keyboard")
+                remove("auto_hide_pill")
 
                 remove("custom_width_percent")
                 remove("custom_height")

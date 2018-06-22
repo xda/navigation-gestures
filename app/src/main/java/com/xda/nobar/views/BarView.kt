@@ -301,9 +301,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (key == "auto_hide_pill") {
             if (Utils.autoHide(context)) {
                 hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
-                scheduleHide()
+                if (!isHidden) scheduleHide()
             } else {
-                showPill(false, HiddenPillReasonManager.AUTO)
+                if (isHidden) showPill(true, HiddenPillReasonManager.AUTO)
             }
         }
     }
@@ -439,12 +439,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if (app.isPillShown()) {
                 isCarryingOutTouchAction = true
                 synchronized(hideLock) {
-                    if ((forceNotAuto) && hideHandle != null) {
+                    val reallyForceNotAuto = forceNotAuto && hiddenPillReasons.isEmpty()
+
+                    if ((reallyForceNotAuto) && hideHandle != null) {
                         hideHandle?.cancel(true)
                         hideHandle = null
                     }
 
-                    if (!forceNotAuto) {
+                    if (!reallyForceNotAuto) {
                         scheduleHide()
                     }
 

@@ -9,7 +9,7 @@ class HiddenPillReasonManager() : ArrayList<String>() {
         const val KEYBOARD = "keyboard"
     }
     override fun add(element: String): Boolean {
-        return if (contains(element)){
+        return if (contains(element)) {
             if (getMostRecentReason() == element) false
             else moveToRecent(element)
         }
@@ -25,7 +25,6 @@ class HiddenPillReasonManager() : ArrayList<String>() {
         else {
             removeAll(element)
             add(element)
-            true
         }
     }
 
