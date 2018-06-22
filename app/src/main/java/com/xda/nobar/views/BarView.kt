@@ -1031,14 +1031,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         private fun handlePotentialSwipe(motionEvent: MotionEvent?): Boolean {
-            if (oldEvent == null || motionEvent == null) return false
+            if (motionEvent == null) return false
 
             val distanceX = motionEvent.rawX - origX
             val distanceY = motionEvent.rawY - origY
             val xThresh = Utils.getXThresholdPx(context)
             val yThresh = Utils.getYThresholdPx(context)
 
-            val ret = if (!isHidden && !isActing) {
+            return if (!isHidden && !isActing) {
                 when {
                     distanceX < -xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //left swipe
                         isSwipeLeft = true
@@ -1066,8 +1066,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 showPill(false, null)
                 true
             } else false
-
-            return ret
         }
 
         private fun getSectionedUpHoldAction(x: Float): Int? {
