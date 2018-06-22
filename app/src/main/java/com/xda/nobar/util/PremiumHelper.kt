@@ -25,13 +25,13 @@ class PremiumHelper(private val context: Context, private val listener: OnLicens
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == "com.xda.nobar.action.PREMIUM_RESULT") {
-                listener.invoke(intent.getBooleanExtra("valid", false), intent.getStringExtra("msg"))
+                listener.onResult(intent.getBooleanExtra("valid", false), intent.getStringExtra("msg"))
             }
         }
     }
 
     fun checkPremium() {
-        if (!isCompanionInstalled) listener.invoke(false, "Premium Add-On not installed")
+        if (!isCompanionInstalled) listener.onResult(false, "Premium Add-On not installed")
         else {
             val intent = Intent("com.xda.nobar.action.PREMIUM_CHECK")
             intent.component = ComponentName("com.xda.nobar.premium", "com.xda.nobar.premium.Receiver")

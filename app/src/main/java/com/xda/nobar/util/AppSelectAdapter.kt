@@ -11,7 +11,8 @@ import com.rey.material.widget.CheckedImageView
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnAppSelectedListener
 
-class AppSelectAdapter(private val isSingleSelect: Boolean, private val showSummary: Boolean, private val checkListener: OnAppSelectedListener) : RecyclerView.Adapter<AppSelectAdapter.VH>() {
+class AppSelectAdapter(private val isSingleSelect: Boolean, private val showSummary: Boolean, private val checkListener: OnAppSelectedListener)
+    : RecyclerView.Adapter<AppSelectAdapter.VH>() {
     val apps = SortedList<AppInfo>(AppInfo::class.java, AppInfoSorterCallback(this))
 
     override fun getItemCount() = apps.size()
@@ -38,12 +39,12 @@ class AppSelectAdapter(private val isSingleSelect: Boolean, private val showSumm
 
         view.setOnClickListener {
             if (isSingleSelect) {
-                checkListener.invoke(app)
+                checkListener.onAppSelected(app)
             } else {
                 check.isChecked = !check.isChecked
                 app.isChecked = check.isChecked
 
-                checkListener.invoke(app)
+                checkListener.onAppSelected(app)
             }
         }
 

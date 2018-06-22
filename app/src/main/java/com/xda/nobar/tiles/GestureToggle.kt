@@ -36,7 +36,7 @@ class GestureToggle : TileService(), OnGestureStateChangeListener {
         updateState()
     }
 
-    override fun invoke(barView: BarView, activated: Boolean) {
+    override fun onGestureStateChange(barView: BarView?, activated: Boolean) {
         updateState()
     }
 

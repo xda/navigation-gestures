@@ -42,7 +42,7 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
         syncSummary()
     }
 
-    override fun invoke(progress: Int) {
+    override fun onProgressSet(progress: Int) {
         preferenceManager.sharedPreferences.edit().putInt("$key$KEY_SUFFIX", progress).apply()
 
         syncSummary()
@@ -77,7 +77,7 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
 
         override fun onClick(dialog: DialogInterface?, which: Int) {
             when (which) {
-                DialogInterface.BUTTON_POSITIVE -> listener.invoke(seekBar.currentValue)
+                DialogInterface.BUTTON_POSITIVE -> listener.onProgressSet(seekBar.currentValue)
             }
         }
 

@@ -2,15 +2,19 @@ package com.xda.nobar.activities
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.widget.CompoundButton
+import android.widget.ImageView
+import android.widget.TextView
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
+import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.util.Utils
 import com.xda.nobar.views.BarView
@@ -19,14 +23,17 @@ import com.xda.nobar.views.TextSwitch
 /**
  * The main app activity
  */
-class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBarHideStateChangeListener {
+class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBarHideStateChangeListener, OnLicenseCheckResultListener {
     private lateinit var gestureSwitch: TextSwitch
     private lateinit var hideNavSwitch: TextSwitch
-    private lateinit var handler: App
+    private lateinit var app: App
     private lateinit var prefs: SharedPreferences
 
+    private lateinit var premStatus: TextView
+    private lateinit var refresh: ImageView
+
     private val navListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
-        handler.toggleNavState(!isChecked)
+        app.toggleNavState(!isChecked)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,18 +55,21 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
 
         gestureSwitch = findViewById(R.id.activate)
         hideNavSwitch = findViewById(R.id.hide_nav)
-        handler = application as App
+        premStatus = findViewById(R.id.prem_stat)
+        refresh = findViewById(R.id.refresh_prem)
+
+        app = application as App
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
-        handler.refreshPremium()
-        handler.addGestureActivationListener(this)
-        handler.addNavBarHideListener(this)
+        app.addLicenseCheckListener(this)
+        app.addGestureActivationListener(this)
+        app.addNavBarHideListener(this)
 
-        gestureSwitch.isChecked = handler.areGesturesActivated()
+        gestureSwitch.isChecked = app.areGesturesActivated()
         gestureSwitch.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { button, isChecked ->
             if (!IntroActivity.needsToRun(this)) {
-                if (isChecked) handler.addBar() else handler.removeBar()
-                handler.setGestureState(isChecked)
+                if (isChecked) app.addBar() else app.removeBar()
+                app.setGestureState(isChecked)
             } else {
                 button.isChecked = false
                 startActivity(Intent(this, IntroActivity::class.java))
@@ -68,30 +78,48 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
 
         hideNavSwitch.isChecked = Utils.shouldUseOverscanMethod(this)
         hideNavSwitch.onCheckedChangeListener = navListener
+
+        refresh.setOnClickListener {
+            refresh()
+        }
+
+        refresh()
     }
 
     override fun onResume() {
         super.onResume()
 
-        handler.refreshPremium()
+        refresh()
     }
 
-    override fun invoke(barView: BarView, activated: Boolean) {
+    override fun onGestureStateChange(barView: BarView?, activated: Boolean) {
         gestureSwitch.isChecked = activated
     }
 
-    override fun invoke(hidden: Boolean) {
+    override fun onNavStateChange(hidden: Boolean) {
         hideNavSwitch.onCheckedChangeListener = null
         hideNavSwitch.isChecked = hidden
         hideNavSwitch.onCheckedChangeListener = navListener
+    }
+
+    override fun onResult(valid: Boolean, reason: String?) {
+        premStatus.setTextColor(if (valid) Color.GREEN else Color.RED)
+        premStatus.text = resources.getText(if (valid) R.string.installed else R.string.not_found)
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         try {
-            handler.removeGestureActivationListener(this)
+            app.removeGestureActivationListener(this)
         } catch (e: Exception) {}
+    }
+
+    private fun refresh() {
+        premStatus.setTextColor(Color.YELLOW)
+        premStatus.text = resources.getText(R.string.checking)
+
+        app.refreshPremium()
     }
 
     /**

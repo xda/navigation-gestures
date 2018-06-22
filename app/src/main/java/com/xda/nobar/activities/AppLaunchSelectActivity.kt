@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.MenuItem
 import com.xda.nobar.R
+import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.util.AppInfo
 import com.xda.nobar.util.AppSelectAdapter
 import java.util.*
@@ -19,7 +20,7 @@ class AppLaunchSelectActivity : BaseAppSelectActivity() {
         const val CHECKED_PACKAGE = "checked"
     }
 
-    override val adapter = AppSelectAdapter(true, true) { info ->
+    override val adapter = AppSelectAdapter(true, true, OnAppSelectedListener { info ->
         PreferenceManager.getDefaultSharedPreferences(this@AppLaunchSelectActivity)
                 .edit()
                 .putString("${intent.getStringExtra(EXTRA_KEY)}_package", "${info.packageName}/${info.activity}")
@@ -30,7 +31,7 @@ class AppLaunchSelectActivity : BaseAppSelectActivity() {
         resultIntent.putExtra(EXTRA_RESULT_DISPLAY_NAME, info.displayName)
         setResult(Activity.RESULT_OK, resultIntent)
         finish()
-    }
+    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

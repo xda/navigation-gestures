@@ -36,7 +36,7 @@ class NavBarToggle : TileService(), OnNavBarHideStateChangeListener {
         updateState()
     }
 
-    override fun invoke(hidden: Boolean) {
+    override fun onNavStateChange(hidden: Boolean) {
         updateState()
     }
 

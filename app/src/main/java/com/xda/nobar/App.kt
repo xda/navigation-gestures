@@ -24,6 +24,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
+import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.providers.BaseProvider
 import com.xda.nobar.services.ForegroundService
@@ -63,6 +64,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
     private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()
+    private val licenseCheckListeners = ArrayList<OnLicenseCheckResultListener>()
+
     val handler = Handler(Looper.getMainLooper())
     private val rootConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -202,11 +205,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         premiumInstallListener = PremiumInstallListener()
         rootServiceIntent = Intent(this, RootService::class.java)
 
-        premiumHelper = PremiumHelper(this) { valid, reason ->
+        premiumHelper = PremiumHelper(this, OnLicenseCheckResultListener { valid, reason ->
             Log.e("NoBar", reason)
             isValidPremium = valid
             prefs.edit().putBoolean("valid_prem", valid).apply()
-        }
+
+            licenseCheckListeners.forEach { it.onResult(valid, reason) }
+        })
 
         isValidPremium = prefs.getBoolean("valid_prem", false)
 
@@ -231,10 +236,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
             "is_active" -> {
-                gestureListeners.forEach { it.invoke(bar, sharedPreferences.getBoolean(key, false)) }
+                gestureListeners.forEach { it.onGestureStateChange(bar, sharedPreferences.getBoolean(key, false)) }
             }
             "hide_nav" -> {
-                navbarListeners.forEach { it.invoke(sharedPreferences.getBoolean(key, false)) }
+                navbarListeners.forEach { it.onNavStateChange(sharedPreferences.getBoolean(key, false)) }
             }
             "use_root" -> {
                 if (Utils.shouldUseRootCommands(this)) {
@@ -294,24 +299,20 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Add an activation listener
      * Notifies caller when a change in activation occurs
      */
-    fun addGestureActivationListener(listener: OnGestureStateChangeListener) {
-        gestureListeners.add(listener)
-    }
+    fun addGestureActivationListener(listener: OnGestureStateChangeListener) = gestureListeners.add(listener)
 
     /**
      * Remove an activation listener
      */
-    fun removeGestureActivationListener(listener: OnGestureStateChangeListener) {
-        gestureListeners.remove(listener)
-    }
+    fun removeGestureActivationListener(listener: OnGestureStateChangeListener) = gestureListeners.remove(listener)
 
-    fun addNavBarHideListener(listener: OnNavBarHideStateChangeListener) {
-        navbarListeners.add(listener)
-    }
+    fun addNavBarHideListener(listener: OnNavBarHideStateChangeListener) = navbarListeners.add(listener)
 
-    fun removeNavbarHideListener(listener: OnNavBarHideStateChangeListener) {
-        navbarListeners.remove(listener)
-    }
+    fun removeNavbarHideListener(listener: OnNavBarHideStateChangeListener) = navbarListeners.remove(listener)
+
+    fun addLicenseCheckListener(listener: OnLicenseCheckResultListener) = licenseCheckListeners.add(listener)
+
+    fun removeLicenseCheckListener(listener: OnLicenseCheckResultListener) = licenseCheckListeners.remove(listener)
 
     /**
      * Add the pill to the screen
@@ -320,7 +321,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         if (disabledBarReasonManager.isEmpty()) {
             handler.post {
                 pillShown = true
-                if (callListeners) gestureListeners.forEach { it.invoke(bar, true) }
+                if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, true) }
 
                 bar.params.width = Utils.getCustomWidth(this)
                 bar.params.height = Utils.getCustomHeight(this)
@@ -377,7 +378,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Remove the pill from the screen
      */
     fun removeBar(callListeners: Boolean = true) {
-        if (callListeners) gestureListeners.forEach { it.invoke(bar, false) }
+        if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, false) }
         removeBarInternal()
 
     }
@@ -464,7 +465,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             Utils.forceNavBlack(this)
             Utils.forceTouchWizNavEnabled(this)
 
-            if (callListeners) navbarListeners.forEach { it.invoke(true) }
+            if (callListeners) navbarListeners.forEach { it.onNavStateChange(true) }
             navHidden = true
         }
 
@@ -476,7 +477,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     fun showNav(callListeners: Boolean = true) {
         Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
 
-        if (callListeners) navbarListeners.forEach { it.invoke(false) }
+        if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) }
 
         IWindowManager.setOverscan(0, 0, 0, 0)
         Utils.clearBlackNav(this)

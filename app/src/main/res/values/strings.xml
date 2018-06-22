@@ -270,4 +270,10 @@
     <string name="rec_disable_default_gestures">\u2022 Set other gestures to \"No Action\"</string>
     <string name="rec_disable_anim">\u2022 Disable animations</string>
     <string name="rec_no_hide_keyboard">\u2022 Disable hide on keyboard</string>
+
+    <!--Premium-->
+    <string name="prem_stat">Premium Status:</string>
+    <string name="checking">Checking…</string>
+    <string name="not_found">Not Found!</string>
+    <string name="installed">Installed!</string>
 </resources>

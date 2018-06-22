@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import com.xda.nobar.R
+import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.util.AppInfo
 import com.xda.nobar.util.AppSelectAdapter
 import com.xda.nobar.util.Utils
@@ -22,10 +23,10 @@ class BlacklistSelectorActivity : BaseAppSelectActivity() {
 
     private val currentlyBlacklisted = ArrayList<String>()
 
-    override val adapter = AppSelectAdapter(false, true) { info ->
+    override val adapter = AppSelectAdapter(false, true, OnAppSelectedListener { info ->
         if (info.isChecked) currentlyBlacklisted.add(info.packageName)
         else currentlyBlacklisted.removeAll(Collections.singleton(info.packageName))
-    }
+    })
 
     private var which: String? = null
 
