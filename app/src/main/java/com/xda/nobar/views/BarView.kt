@@ -28,6 +28,7 @@ import android.widget.Toast
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.services.Actions
+import com.xda.nobar.util.HiddenPillReasonManager
 import com.xda.nobar.util.NavigationBarSideManager
 import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.getCustomHeight
@@ -69,15 +70,18 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     val params: WindowManager.LayoutParams = WindowManager.LayoutParams()
+    val isAutoHidden: Boolean
+        get() = hiddenPillReasons.isEmpty()
 
     private val app = context.applicationContext as App
     private val gestureDetector = GestureManager()
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val navigationBarSideManager = NavigationBarSideManager(context)
+    private var hiddenPillReasons = HiddenPillReasonManager()
 
     private val pool = Executors.newScheduledThreadPool(1)
-    
+
     var isHidden = false
     var beingTouched = false
         set(value) {
@@ -97,7 +101,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 queuedLayoutUpdate = null
             }
         }
-    var isAutoHidden = false
     var isImmersive = false
         set(value) {
             field = value
@@ -192,7 +195,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         isSoundEffectsEnabled = Utils.feedbackSound(context)
 
-        if (Utils.autoHide(context)) scheduleHide()
+        if (Utils.autoHide(context)) {
+            hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
+            scheduleHide()
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -291,8 +297,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             updateLayout(params)
         }
         if (key == "auto_hide_pill") {
-            if (Utils.autoHide(context)) scheduleHide()
-            else showPill(false)
+            if (Utils.autoHide(context)) {
+                hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
+                scheduleHide()
+            } else {
+                showPill(false, HiddenPillReasonManager.AUTO)
+            }
         }
     }
 
@@ -356,12 +366,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     /**
      * "Hide" the pill by moving it partially offscreen
      */
-    fun hidePill(auto: Boolean) {
+    fun hidePill(auto: Boolean, autoReason: String?) {
+        if (auto && autoReason == null) throw IllegalArgumentException("autoReason must not be null when auto is true")
+        if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
+
         if (!beingTouched) {
             handler?.post {
                 if (app.isPillShown()) {
                     isCarryingOutTouchAction = true
-                    isAutoHidden = auto
 
                     val navHeight = getZeroY()
 
@@ -418,18 +430,19 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     /**
      * "Show" the pill by moving it back to its normal position
      */
-    fun showPill(forceNotAuto: Boolean) {
+    fun showPill(forceNotAuto: Boolean, autoReasonToRemove: String?) {
+        if (forceNotAuto && autoReasonToRemove == null) throw IllegalArgumentException("autoReasonToRemove must not be null when forceNotAuto is true")
+        if (forceNotAuto && autoReasonToRemove != null) hiddenPillReasons.removeAll(autoReasonToRemove)
         handler?.post {
             if (app.isPillShown()) {
-                if (forceNotAuto) isAutoHidden = false
                 isCarryingOutTouchAction = true
                 synchronized(hideLock) {
-                    if ((forceNotAuto || !isAutoHidden) && hideHandle != null) {
+                    if ((forceNotAuto) && hideHandle != null) {
                         hideHandle?.cancel(true)
                         hideHandle = null
                     }
 
-                    if (isAutoHidden && !forceNotAuto) {
+                    if (!forceNotAuto) {
                         scheduleHide()
                     }
 
@@ -449,11 +462,24 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    private fun scheduleHide() {
-        hideHandle = pool.schedule({
-            if (isAutoHidden || Utils.autoHide(context)) hidePill(true)
-        }, if (Utils.autoHide(context)) Utils.autoHideTime(context).toLong() else 1500, TimeUnit.MILLISECONDS)
+    private fun scheduleHide(time: Long? = parseHideTime()) {
+        if (time != null) {
+            hideHandle = pool.schedule({
+                if (hiddenPillReasons.isNotEmpty()) hidePill(true, hiddenPillReasons.getMostRecentReason())
+            }, time, TimeUnit.MILLISECONDS)
+        }
     }
+
+    private fun parseHideTime(): Long? {
+        val reason = hiddenPillReasons.getMostRecentReason()
+        return when (reason) {
+            HiddenPillReasonManager.AUTO -> Utils.autoHideTime(context)
+            HiddenPillReasonManager.FULLSCREEN -> Utils.hideInFullscreenTime(context)
+            HiddenPillReasonManager.KEYBOARD -> Utils.hideOnKeyboardTime(context)
+            else -> null
+        }
+    }
+
 
     private fun animateShow() {
         handler?.post {
@@ -1029,7 +1055,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     && !isActing
                     && distanceY < -yThresh
                     && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
-                showPill(false)
+                showPill(false, null)
                 true
             } else false
 
@@ -1092,7 +1118,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     yDownAnimator?.cancel()
                     yDownAnimator = null
                 }
-                hidePill(false)
+                hidePill(false, null)
                 return
             }
 
@@ -1172,7 +1198,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     } else if (isHidden) {
                         isOverrideTap = false
                         vibrate(getVibrationDuration().toLong())
-                        showPill(false)
+                        showPill(false, null)
                         true
                     } else {
                         isOverrideTap = false

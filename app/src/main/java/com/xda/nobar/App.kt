@@ -757,10 +757,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                                 && !isKeyboardProbablyShown
 
                         if (Utils.hidePillWhenKeyboardShown(this@App)) {
-                            if (isKeyboardProbablyShown) bar.hidePill(true)
+                            if (isKeyboardProbablyShown) bar.hidePill(true, HiddenPillReasonManager.KEYBOARD)
                             else if (bar.isHidden) {
-                                bar.isAutoHidden = false
-                                bar.showPill(true)
+                                bar.showPill(true, HiddenPillReasonManager.KEYBOARD)
                             }
                         }
 
@@ -830,14 +829,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                             && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.IMMERSIVE)) {
                         showNav()
                     }
-                    if (hideInFullScreen) bar.hidePill(true)
+                    if (hideInFullScreen) bar.hidePill(true, HiddenPillReasonManager.FULLSCREEN)
                 } else {
                     if (Utils.shouldUseOverscanMethod(this@App)) {
                         disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.IMMERSIVE)
                     }
                     if (hideInFullScreen && bar.isAutoHidden && bar.isHidden) {
-                        bar.isAutoHidden = false
-                        bar.showPill(true)
+                        bar.showPill(true, HiddenPillReasonManager.FULLSCREEN)
                     }
                 }
             }

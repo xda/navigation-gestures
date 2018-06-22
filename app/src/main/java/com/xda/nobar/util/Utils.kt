@@ -627,7 +627,15 @@ object Utils {
 
     fun autoHideTime(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("auto_hide_pill_progress", context.resources.getInteger(R.integer.default_auto_hide_time))
+                    .getInt("auto_hide_pill_progress", context.resources.getInteger(R.integer.default_auto_hide_time)).toLong()
+
+    fun hideInFullscreenTime(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getInt("hide_in_fullscreen_progress", context.resources.getInteger(R.integer.default_auto_hide_time)).toLong()
+
+    fun hideOnKeyboardTime(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getInt("hide_pill_on_keyboard_progress", context.resources.getInteger(R.integer.default_auto_hide_time)).toLong()
 
     fun minPillWidthPx(context: Context) =
             dpAsPx(context, minPillWidthDp(context))

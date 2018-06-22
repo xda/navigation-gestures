@@ -55,23 +55,35 @@
             app:msbp_minValue="@integer/min_auto_hide_time"
             app:msbp_maxValue="@integer/max_auto_hide_time"
             app:msbp_measurementUnit="ms"
-            android:defaultValue="false"
+            android:defaultValue="@bool/auto_hide_default"
             />
 
-        <SwitchPreference
+        <com.xda.nobar.prefs.SeekBarSwitchPreference
             android:dependency="auto_hide_pill"
             android:title="@string/hide_in_fullscreen"
-            android:summary="@string/hide_in_fullscreen_desc"
+            android:summaryOff="@string/hide_in_fullscreen_desc"
+            android:summaryOn="@string/auto_hide_pill_desc_enabled"
             android:key="hide_in_fullscreen"
             android:icon="@drawable/ic_visibility_off_black_24dp"
-            android:defaultValue="@bool/hide_in_fullscreen_default" />
+            android:defaultValue="@bool/hide_in_fullscreen_default"
+            app:msbp_view_defaultValue="@integer/default_auto_hide_time"
+            app:msbp_minValue="@integer/min_auto_hide_time"
+            app:msbp_maxValue="@integer/max_auto_hide_time"
+            app:msbp_measurementUnit="ms"
+            />
 
-        <SwitchPreference
+        <com.xda.nobar.prefs.SeekBarSwitchPreference
             android:dependency="auto_hide_pill"
             android:title="@string/hide_pill_on_keyboard"
+            android:summaryOn="@string/auto_hide_pill_desc_enabled"
             android:key="hide_pill_on_keyboard"
             android:icon="@drawable/ic_keyboard_hide_black_24dp"
-            android:defaultValue="@bool/hide_on_keyboard_default" />
+            android:defaultValue="@bool/hide_on_keyboard_default"
+            app:msbp_view_defaultValue="@integer/default_auto_hide_time"
+            app:msbp_minValue="@integer/min_auto_hide_time"
+            app:msbp_maxValue="@integer/max_auto_hide_time"
+            app:msbp_measurementUnit="ms"
+            />
 
         <SwitchPreference
             android:title="@string/static_pill"
