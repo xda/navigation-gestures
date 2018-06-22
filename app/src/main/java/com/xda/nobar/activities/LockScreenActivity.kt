@@ -43,7 +43,7 @@ class LockScreenActivity : AppCompatActivity() {
         saveSettings(LockSettings(0, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL, 1000, 0))
 
         val app = application as App
-        if (app.areGesturesActivated()) app.removeBarInternal()
+        if (app.areGesturesActivated()) app.removeBar(false)
     }
 
     private fun performDestroy() {

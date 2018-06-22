@@ -361,11 +361,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      */
     fun removeBar(callListeners: Boolean = true) {
         if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, false) }
-        removeBarInternal()
 
-    }
-
-    fun removeBarInternal() {
         pillShown = false
         bar.hide(object : Animator.AnimatorListener {
             override fun onAnimationCancel(animation: Animator?) {}
@@ -380,6 +376,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 } catch (e: Exception) {}
             }
         })
+
+        if (!navHidden) stopService(Intent(this, ForegroundService::class.java))
     }
 
     fun toggleGestureBar() {
@@ -449,23 +447,28 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
             if (callListeners) navbarListeners.forEach { it.onNavStateChange(true) }
             navHidden = true
-        }
 
+            ContextCompat.startForegroundService(this, Intent(this, ForegroundService::class.java))
+        }
     }
 
     /**
      * Show the navbar
      */
     fun showNav(callListeners: Boolean = true) {
-        Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
+        if (IntroActivity.hasWss(this)) {
+            Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
 
-        if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) }
+            if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) }
 
-        IWindowManager.setOverscan(0, 0, 0, 0)
-        Utils.clearBlackNav(this)
-        Utils.undoForceTouchWizNavEnabled(this)
+            IWindowManager.setOverscan(0, 0, 0, 0)
+            Utils.clearBlackNav(this)
+            Utils.undoForceTouchWizNavEnabled(this)
 
-        navHidden = false
+            navHidden = false
+
+            if (!areGesturesActivated()) stopService(Intent(this, ForegroundService::class.java))
+        }
     }
 
     fun ensureRootServiceBound() = bindService(rootServiceIntent, rootConnection, 0)
