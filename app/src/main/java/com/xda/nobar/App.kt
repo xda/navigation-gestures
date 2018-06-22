@@ -459,8 +459,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (Utils.useImmersiveWhenNavHidden(this)) Utils.setNavImmersive(this)
 
             if (!Utils.useRot270Fix(this) && !Utils.useTabletMode(this)) 
-                IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this) 
-                    + if (bar.isImmersive) 0 else 1)
+                IWindowManager.setOverscan(0, 0, 0, -getAdjustedNavBarHeight())
             else {
                 uiHandler.handleRot()
             }
@@ -508,6 +507,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     fun setGestureState(activated: Boolean) = prefs.edit().putBoolean("is_active", activated).apply()
 
     fun setNavState(hidden: Boolean) = prefs.edit().putBoolean("hide_nav", hidden).apply()
+
+    private fun getAdjustedNavBarHeight() =
+            Utils.getNavBarHeight(this) - if (bar.isImmersive) 0 else 1
 
     /**
      * Listen for changes in the screen state and handle appropriately
@@ -852,9 +854,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         private fun handle270() {
             if (wm.defaultDisplay.rotation == Surface.ROTATION_270 || wm.defaultDisplay.rotation == Surface.ROTATION_180) {
-                IWindowManager.setOverscan(0, -Utils.getNavBarHeight(this@App) + if (bar.isImmersive) 0 else 1, 0, 0)
+                IWindowManager.setOverscan(0, -getAdjustedNavBarHeight(), 0, 0)
             } else {
-                IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this@App) + if (bar.isImmersive) 0 else 1)
+                IWindowManager.setOverscan(0, 0, 0, -getAdjustedNavBarHeight())
             }
         }
 
@@ -862,19 +864,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (Utils.shouldUseOverscanMethod(this@App)) {
                 when (wm.defaultDisplay.rotation) {
                     Surface.ROTATION_0 -> {
-                        IWindowManager.setOverscan(0, 0, 0, -Utils.getNavBarHeight(this@App) + if (bar.isImmersive) 0 else 1)
+                        IWindowManager.setOverscan(0, 0, 0, -getAdjustedNavBarHeight())
                     }
 
                     Surface.ROTATION_90 -> {
-                        IWindowManager.setOverscan(-Utils.getNavBarHeight(this@App) + if (bar.isImmersive) 0 else 1, 0, 0, 0)
+                        IWindowManager.setOverscan(-getAdjustedNavBarHeight(), 0, 0, 0)
                     }
 
                     Surface.ROTATION_180 -> {
-                        IWindowManager.setOverscan(0, -Utils.getNavBarHeight(this@App) + if (bar.isImmersive) 0 else 1, 0 ,0)
+                        IWindowManager.setOverscan(0, -getAdjustedNavBarHeight(), 0 ,0)
                     }
 
                     Surface.ROTATION_270 -> {
-                        IWindowManager.setOverscan(0, 0, -Utils.getNavBarHeight(this@App) + if (bar.isImmersive) 0 else 1, 0)
+                        IWindowManager.setOverscan(0, 0, -getAdjustedNavBarHeight(), 0)
                     }
                 }
             }
