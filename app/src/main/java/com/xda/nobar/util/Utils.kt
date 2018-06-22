@@ -610,12 +610,12 @@ object Utils {
     }
 
     fun getXThresholdDp(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("x_threshold", context.resources.getInteger(R.integer.default_x_threshold_dp))
+            (PreferenceManager.getDefaultSharedPreferences(context)
+                    .getInt("x_threshold", context.resources.getInteger(R.integer.default_x_threshold_dp)) / 10f)
 
     fun getYThresholdDp(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("y_threshold", context.resources.getInteger(R.integer.default_y_threshold_dp))
+            (PreferenceManager.getDefaultSharedPreferences(context)
+                    .getInt("y_threshold", context.resources.getInteger(R.integer.default_y_threshold_dp)) / 10f)
 
     fun getXThresholdPx(context: Context) = dpAsPx(context, getXThresholdDp(context))
 

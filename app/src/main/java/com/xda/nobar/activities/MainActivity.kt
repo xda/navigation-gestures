@@ -86,12 +86,6 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         refresh()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        refresh()
-    }
-
     override fun onGestureStateChange(barView: BarView?, activated: Boolean) {
         gestureSwitch.isChecked = activated
     }

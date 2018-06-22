@@ -13,7 +13,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import com.github.lzyzsd.circleprogress.ArcProgress
-import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.util.AppInfo
 import com.xda.nobar.util.AppSelectAdapter
@@ -45,9 +44,6 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        val app = application as App
-        app.refreshPremium()
 
         setContentView(R.layout.activity_app_launch_select)
 

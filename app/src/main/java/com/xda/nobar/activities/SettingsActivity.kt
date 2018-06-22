@@ -33,12 +33,6 @@ class SettingsActivity : AppCompatActivity() {
         fragmentManager?.beginTransaction()?.replace(R.id.content, MainFragment())?.addToBackStack("main")?.commit()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        (application as App).refreshPremium()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> {
