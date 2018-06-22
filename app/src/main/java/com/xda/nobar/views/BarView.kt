@@ -811,6 +811,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var oldX = 0F
 
         private var origX = 0F
+        private var origY = 0F
 
         private val manager = GestureDetector(context, Detector())
 
@@ -830,6 +831,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     oldY = ev.rawY
                     oldX = ev.rawX
                     origX = ev.rawX
+                    origY = ev.rawY
                     beingTouched = true
                     isCarryingOutTouchAction = true
                 }
@@ -1031,9 +1033,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private fun handlePotentialSwipe(motionEvent: MotionEvent?): Boolean {
             if (oldEvent == null || motionEvent == null) return false
 
-            val oldEvent = MotionEvent.obtain(this.oldEvent)
-            val distanceX = motionEvent.rawX - oldEvent.rawX
-            val distanceY = motionEvent.rawY - oldEvent.rawY
+            val distanceX = motionEvent.rawX - origX
+            val distanceY = motionEvent.rawY - origY
             val xThresh = Utils.getXThresholdPx(context)
             val yThresh = Utils.getYThresholdPx(context)
 
@@ -1065,8 +1066,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 showPill(false, null)
                 true
             } else false
-
-            oldEvent.recycle()
 
             return ret
         }
