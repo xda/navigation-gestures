@@ -806,6 +806,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var oldY = 0F
         private var oldX = 0F
 
+        private var origX = 0F
+
         private val manager = GestureDetector(context, Detector())
 
         fun onTouchEvent(ev: MotionEvent?): Boolean {
@@ -823,6 +825,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     app.uiHandler.onGlobalLayout()
                     oldY = ev.rawY
                     oldX = ev.rawX
+                    origX = ev.rawX
                     beingTouched = true
                     isCarryingOutTouchAction = true
                 }
@@ -834,22 +837,22 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         isSwipeUp = false
                     }
 
-                    if (isSwipeUp || (isRunningLongUp &&  getSectionedUpHoldAction(oldX) == app.typeNoAction)) {
+                    if (isSwipeUp || (isRunningLongUp &&  getSectionedUpHoldAction(origX) == app.typeNoAction)) {
                         upHoldHandle?.cancel(true)
                         upHoldHandle = null
-                        sendAction(app.actionUp, ev.rawX)
+                        sendAction(app.actionUp)
                     }
 
                     if (isSwipeLeft || (isRunningLongLeft && actionMap[app.actionLeftHold] == app.typeNoAction)) {
                         leftHoldHandle?.cancel(true)
                         leftHoldHandle = null
-                        sendAction(app.actionLeft, ev.rawX)
+                        sendAction(app.actionLeft)
                     }
 
                     if (isSwipeRight || (isRunningLongRight && actionMap[app.actionRightHold] == app.typeNoAction)) {
                         rightHoldHandle?.cancel(true)
                         rightHoldHandle = null
-                        sendAction(app.actionRight, ev.rawX)
+                        sendAction(app.actionRight)
                     }
 
                     if (pill.translationX != 0f) {
@@ -956,7 +959,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             upHoldHandle = pool.schedule({
                                 handler?.post {
                                     isRunningLongUp = true
-                                    sendAction(app.actionUpHold, ev.rawX)
+                                    sendAction(app.actionUpHold)
                                     isSwipeUp = false
                                     upHoldHandle = null
                                 }
@@ -992,7 +995,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 leftHoldHandle = pool.schedule({
                                     handler?.post {
                                         isRunningLongLeft = true
-                                        sendAction(app.actionLeftHold, ev.rawX)
+                                        sendAction(app.actionLeftHold)
                                         isSwipeLeft = false
                                         leftHoldHandle = null
                                     }
@@ -1005,7 +1008,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 rightHoldHandle = pool.schedule({
                                     handler?.post {
                                         isRunningLongRight = true
-                                        sendAction(app.actionRightHold, ev.rawX)
+                                        sendAction(app.actionRightHold)
                                         isSwipeRight = false
                                         rightHoldHandle = null
                                     }
@@ -1042,7 +1045,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     }
                     distanceY > yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
                         isActing = true
-                        sendAction(app.actionDown, oldEvent.rawX)
+                        sendAction(app.actionDown)
                         true
                     }
                     distanceY < -yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
@@ -1088,15 +1091,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
 
-        private fun sendAction(action: String, lastX: Float) {
+        private fun sendAction(action: String) {
             if (action.isEligible()) {
-                when(getSection(lastX)) {
-                    FIRST_SECTION -> sendAction("${action}_left")
-                    SECOND_SECTION -> sendAction("${action}_center")
-                    THIRD_SECTION -> sendAction("${action}_right")
+                when(getSection(origX)) {
+                    FIRST_SECTION -> sendActionInternal("${action}_left")
+                    SECOND_SECTION -> sendActionInternal("${action}_center")
+                    THIRD_SECTION -> sendActionInternal("${action}_right")
                 }
             } else {
-                sendAction(action)
+                sendActionInternal(action)
             }
         }
 
@@ -1104,7 +1107,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
          * Parse the action index and broadcast to {@link com.xda.nobar.services.Actions}
          * @param key one of app.action*
          */
-        private fun sendAction(key: String) {
+        private fun sendActionInternal(key: String) {
             val which = actionMap[key] ?: return
 
             if (which == app.typeNoAction) return
@@ -1159,7 +1162,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 return if (actionMap[app.actionDouble] == app.typeNoAction && !isActing && !wasHidden) {
                     synchronized(tapLock) {
                         isOverrideTap = true
-                        sendAction(app.actionTap, ev.rawX)
+                        sendAction(app.actionTap)
                     }
                     isActing = false
                     true
@@ -1175,7 +1178,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                        if (Utils.shouldUseOverscanMethod(context)) app.showNav()
                     } else {
                         isActing = true
-                        sendAction(app.actionHold, ev.rawX)
+                        sendAction(app.actionHold)
                     }
                 }
             }
@@ -1183,7 +1186,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             override fun onDoubleTap(ev: MotionEvent): Boolean {
                 return if (!isHidden &&!isActing) {
                     isActing = true
-                    sendAction(app.actionDouble, ev.rawX)
+                    sendAction(app.actionDouble)
                     true
                 } else false
             }
@@ -1193,7 +1196,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     return if (!isOverrideTap && !isHidden) {
                         isActing = false
 
-                        sendAction(app.actionTap, ev.rawX)
+                        sendAction(app.actionTap)
                         true
                     } else if (isHidden) {
                         isOverrideTap = false
