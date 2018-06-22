@@ -25,6 +25,7 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
     private val origAppSet = ArrayList<AppInfo>()
 
     private lateinit var list: RecyclerView
+    private lateinit var searchItem: MenuItem
 
     internal abstract fun loadAppList(): ArrayList<*>
     internal abstract fun loadAppInfo(info: Any): AppInfo
@@ -75,6 +76,7 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
                         list.adapter = adapter
                         loader.visibility = View.GONE
                         list.visibility = View.VISIBLE
+                        searchItem.isVisible = true
                     }
                 }
     }
@@ -82,7 +84,8 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_search, menu)
 
-        val searchItem = menu.findItem(R.id.action_search)
+        searchItem = menu.findItem(R.id.action_search)
+        searchItem.isVisible = false
         val searchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(this)
 
