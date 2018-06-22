@@ -2,7 +2,7 @@ package com.xda.nobar.util
 
 import java.util.*
 
-class HiddenPillReasonManager() : ArrayList<String>() {
+class HiddenPillReasonManager : ArrayList<String>() {
     companion object {
         const val AUTO = "auto"
         const val FULLSCREEN = "fullscreen"

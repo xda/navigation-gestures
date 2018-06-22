@@ -761,7 +761,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         bar.immersiveNav = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)?.contains("navigation") ?: false
                                 && !isKeyboardProbablyShown
 
-                        if (Utils.hidePillWhenKeyboardShown(this@App)) {
+                        if (Utils.hidePillWhenKeyboardShown(this@App) && !bar.isCarryingOutTouchAction) {
                             if (isKeyboardProbablyShown) bar.hidePill(true, HiddenPillReasonManager.KEYBOARD)
                             else if (bar.isHidden) {
                                 bar.showPill(true, HiddenPillReasonManager.KEYBOARD)
@@ -839,7 +839,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     if (Utils.shouldUseOverscanMethod(this@App)) {
                         disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.IMMERSIVE)
                     }
-                    if (hideInFullScreen && bar.isAutoHidden && bar.isHidden) {
+                    if (hideInFullScreen) {
                         bar.showPill(true, HiddenPillReasonManager.FULLSCREEN)
                     }
                 }
