@@ -356,24 +356,8 @@ object Utils {
     fun setFirstRun(context: Context, isFirst: Boolean) =
             PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("first_run", isFirst).apply()
 
-    /**
-     * Save the current immersive policy, to restore on deactivation
-     * @param context a context object
-     */
-    fun saveBackupImmersive(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context).edit().putString("def_imm",
-                    Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)).apply()
-
     fun setNavImmersive(context: Context) =
             Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation=*")
-
-    /**
-     * Get the saved immersive policy for restoration
-     * @param context a context object
-     * @return the saved immersive policy
-     */
-    fun getBackupImmersive(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context).getString("def_imm", "immersive.none")
 
     /**
      * Check if the current device can use the necessary hidden APIs

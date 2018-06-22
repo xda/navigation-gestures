@@ -276,11 +276,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 if (Utils.shouldUseOverscanMethod(this) && disabledNavReasonManager.isEmpty()) {
                     if (Utils.useImmersiveWhenNavHidden(this)) {
                         if (disabledImmReasonManager.isEmpty()) {
-                            Utils.saveBackupImmersive(this)
                             Utils.setNavImmersive(this)
                         }
                     } else {
-                        Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
+                        Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
                     }
                 }
                 BaseProvider.sendUpdate(this)
@@ -455,7 +454,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      */
     fun hideNav(callListeners: Boolean = true) {
         if (Utils.shouldUseOverscanMethod(this) && disabledNavReasonManager.isEmpty()) {
-            Utils.saveBackupImmersive(this)
             if (Utils.useImmersiveWhenNavHidden(this)) Utils.setNavImmersive(this)
 
             if (!Utils.useRot270Fix(this) && !Utils.useTabletMode(this)) 
@@ -476,7 +474,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Show the navbar
      */
     fun showNav(callListeners: Boolean = true) {
-        Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, Utils.getBackupImmersive(this))
+        Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
 
         if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) }
 
