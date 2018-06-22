@@ -144,6 +144,13 @@ class SettingsActivity : AppCompatActivity() {
                             .show()
                 }
                 else {
+                    AlertDialog.Builder(activity)
+                            .setTitle(R.string.back_to_default)
+                            .setMessage(R.string.back_to_default_desc)
+                            .setPositiveButton(android.R.string.yes) { _, _ -> resetSectionedSettings() }
+                            .setNegativeButton(R.string.no, null)
+                            .show()
+
                     sectionedCategoryHolder.removePreference(sectionedCategory)
                     swipeUpCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up)))
                     swipeUpHoldCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up_hold)))
@@ -254,6 +261,40 @@ class SettingsActivity : AppCompatActivity() {
                 putString(app.actionRightHold, app.typeNoAction.toString())
                 putString(app.actionUp, app.typeNoAction.toString())
                 putString(app.actionUpHold, app.typeNoAction.toString())
+            }.apply()
+
+            updateSummaries()
+            setListeners()
+        }
+        
+        private fun resetSectionedSettings() {
+            preferenceManager.sharedPreferences.edit().apply {
+                remove("use_pixels_width")
+                remove("use_pixels_height")
+                remove("use_pixels_y")
+                remove("larger_hitbox")
+                remove("hide_in_fullscreen")
+                remove("static_pill")
+                remove("hide_pill_on_keyboard")
+
+                remove("custom_width_percent")
+                remove("custom_height")
+                remove("custom_y_percent")
+                remove("pill_corner_radius")
+                remove("pill_bg")
+                remove("pill_fg")
+                remove("anim_duration")
+
+                remove(app.actionTap)
+                remove(app.actionDouble)
+                remove(app.actionHold)
+                remove(app.actionDown)
+                remove(app.actionLeft)
+                remove(app.actionLeftHold)
+                remove(app.actionRight)
+                remove(app.actionRightHold)
+                remove(app.actionUp)
+                remove(app.actionUpHold)
             }.apply()
 
             updateSummaries()
