@@ -648,56 +648,54 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         private fun handleNewNodeInfo(info: AccessibilityNodeInfo) {
             val pName = info.packageName?.toString()
 
-            if (pName != packageName) {
-                val navArray = ArrayList<String>()
-                Utils.loadBlacklistedNavPackages(this@App, navArray)
+            val navArray = ArrayList<String>()
+            Utils.loadBlacklistedNavPackages(this@App, navArray)
 
-                if (navArray.contains(pName)) {
-                    if (!disabledNavReasonManager.contains(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)) {
-                        if (Utils.shouldUseOverscanMethod(this@App)
-                                && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)) {
-                            showNav(false)
-                        }
-                        onGlobalLayout()
-                    }
-                } else {
-                    if (Utils.shouldUseOverscanMethod(this@App)) {
-                        disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
-
+            if (navArray.contains(pName)) {
+                if (!disabledNavReasonManager.contains(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)) {
+                    if (Utils.shouldUseOverscanMethod(this@App)
+                            && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)) {
+                        showNav(false)
                     }
                     onGlobalLayout()
                 }
+            } else {
+                if (Utils.shouldUseOverscanMethod(this@App)) {
+                    disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
 
-                val barArray = ArrayList<String>()
-                Utils.loadBlacklistedBarPackages(this@App, barArray)
+                }
+                onGlobalLayout()
+            }
 
-                if (barArray.contains(pName)) {
-                    if (disabledBarReasonManager.add(DisabledReasonManager.PillReasons.BLACKLIST)) {
-                        if (areGesturesActivated()) {
-                            removeBar(false)
-                        }
-                    }
-                } else {
-                    if (areGesturesActivated() && disabledBarReasonManager.removeAll(DisabledReasonManager.PillReasons.BLACKLIST)) {
-                        if (!pillShown) addBar(false)
+            val barArray = ArrayList<String>()
+            Utils.loadBlacklistedBarPackages(this@App, barArray)
+
+            if (barArray.contains(pName)) {
+                if (disabledBarReasonManager.add(DisabledReasonManager.PillReasons.BLACKLIST)) {
+                    if (areGesturesActivated()) {
+                        removeBar(false)
                     }
                 }
+            } else {
+                if (areGesturesActivated() && disabledBarReasonManager.removeAll(DisabledReasonManager.PillReasons.BLACKLIST)) {
+                    if (!pillShown) addBar(false)
+                }
+            }
 
-                val immArray = ArrayList<String>()
-                Utils.loadBlacklistedImmPackages(this@App, immArray)
+            val immArray = ArrayList<String>()
+            Utils.loadBlacklistedImmPackages(this@App, immArray)
 
-                if (immArray.contains(pName)) {
-                    if (Utils.shouldUseOverscanMethod(this@App)
-                            && Utils.useImmersiveWhenNavHidden(this@App)
-                            && disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.BLACKLIST)) {
-                        Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
-                    }
-                } else {
-                    if (Utils.shouldUseOverscanMethod(this@App)
-                            && Utils.useImmersiveWhenNavHidden(this@App)
-                            && disabledImmReasonManager.removeAll(DisabledReasonManager.ImmReasons.BLACKLIST)) {
-                        Utils.setNavImmersive(this@App)
-                    }
+            if (immArray.contains(pName)) {
+                if (Utils.shouldUseOverscanMethod(this@App)
+                        && Utils.useImmersiveWhenNavHidden(this@App)
+                        && disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.BLACKLIST)) {
+                    Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
+                }
+            } else {
+                if (Utils.shouldUseOverscanMethod(this@App)
+                        && Utils.useImmersiveWhenNavHidden(this@App)
+                        && disabledImmReasonManager.removeAll(DisabledReasonManager.ImmReasons.BLACKLIST)) {
+                    Utils.setNavImmersive(this@App)
                 }
             }
         }
