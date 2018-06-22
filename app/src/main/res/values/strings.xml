@@ -264,7 +264,7 @@
     <string name="rec_set_transparent">\u2022 Set pill and border color completely transparent</string>
     <string name="rec_set_radius">\u2022 Set pill corner radius to 0dp</string>
     <string name="rec_set_width">\u2022 Set pill width to 100%</string>
-    <string name="rec_set_height">\u2022 Set pill height to the minimum</string>
+    <string name="rec_set_height">\u2022 Set pill height to near-minimum</string>
     <string name="rec_set_y">\u2022 Set vertical (Y) position to 0</string>
     <string name="rec_disable_hide_in_fullscren">\u2022 Don\'t hide pill in fullscreen apps</string>
     <string name="rec_dont_move_pill">\u2022 Prevent pill from moving above the keyboard</string>

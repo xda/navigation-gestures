@@ -244,7 +244,7 @@ class SettingsActivity : AppCompatActivity() {
                 putBoolean("hide_pill_on_keyboard", false)
 
                 putInt("custom_width_percent", 1000)
-                putInt("custom_height", Utils.minPillHeightPx(activity))
+                putInt("custom_height", Utils.minPillHeightPx(activity) + Utils.dpAsPx(activity, 3.8f))
                 putInt("custom_y_percent", 0)
                 putInt("pill_corner_radius", 0)
                 putInt("pill_bg", Color.TRANSPARENT)
