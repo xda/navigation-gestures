@@ -29,6 +29,11 @@ class HiddenPillReasonManager : ArrayList<String>() {
     }
 
     fun getMostRecentReason(): String {
-        return get(lastIndex)
+        return get(size - 1)
+    }
+
+    fun onlyContains(element: String): Boolean {
+        return if (!contains(element)) false
+        else size == 1
     }
 }

@@ -763,8 +763,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
                         if (Utils.hidePillWhenKeyboardShown(this@App) && !bar.isCarryingOutTouchAction) {
                             if (isKeyboardProbablyShown) bar.hidePill(true, HiddenPillReasonManager.KEYBOARD)
-                            else if (bar.isHidden) {
-                                bar.showPill(true, HiddenPillReasonManager.KEYBOARD)
+                            else if (bar.hiddenPillReasons.onlyContains(HiddenPillReasonManager.KEYBOARD)) {
+                                bar.showPill(HiddenPillReasonManager.KEYBOARD)
                             }
                         }
 
@@ -839,8 +839,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     if (Utils.shouldUseOverscanMethod(this@App)) {
                         disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.IMMERSIVE)
                     }
-                    if (hideInFullScreen) {
-                        bar.showPill(true, HiddenPillReasonManager.FULLSCREEN)
+                    if (hideInFullScreen && bar.hiddenPillReasons.onlyContains(HiddenPillReasonManager.FULLSCREEN)) {
+                        bar.showPill(HiddenPillReasonManager.FULLSCREEN)
                     }
                 }
             }
