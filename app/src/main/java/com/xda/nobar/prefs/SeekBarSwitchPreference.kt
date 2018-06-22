@@ -32,7 +32,12 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
     override fun onBindView(view: View) {
         super.onBindView(view)
 
-        view.findViewById<Switch>(com.android.internal.R.id.switch_widget).apply {
+        var switch = view.findViewById<Switch>(com.android.internal.R.id.switch_widget)
+        if (switch == null) {
+            switch = view.findViewById(context.resources.getIdentifier("switchWidget", "id", "android"))
+        }
+
+        switch.apply {
             setOnClickListener {  }
             setOnCheckedChangeListener { _, _ ->
                 super.onClick()
