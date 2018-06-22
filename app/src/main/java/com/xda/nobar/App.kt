@@ -31,8 +31,6 @@ import com.xda.nobar.services.ForegroundService
 import com.xda.nobar.services.RootService
 import com.xda.nobar.util.*
 import com.xda.nobar.util.IWindowManager
-import com.xda.nobar.util.Utils.getCustomHeight
-import com.xda.nobar.util.Utils.getCustomWidth
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.ImmersiveHelperView
 import kotlin.math.absoluteValue
@@ -735,13 +733,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (isPillShown()) {
                 val rot = wm.defaultDisplay.rotation
                 if (oldRot != rot) {
-                    bar.params.x = bar.getAdjustedHomeX()
-                    bar.params.y = bar.getAdjustedHomeY()
-                    bar.params.width = getCustomWidth(this@App)
-                    bar.params.height = getCustomHeight(this@App)
-                    bar.updateLayout(bar.params)
-                    oldRot = rot
                     handleRot()
+                    oldRot = rot
                 }
 
                 if (!isActing) {
@@ -847,6 +840,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
         fun handleRot() {
+            bar.params.x = bar.getAdjustedHomeX()
+            bar.params.y = bar.getAdjustedHomeY()
+            bar.params.width = Utils.getCustomWidth(this@App)
+            bar.params.height = Utils.getCustomHeight(this@App)
+            bar.updateLayout(bar.params)
+
             if (Utils.shouldUseOverscanMethod(this@App)) {
                 if (Utils.useRot270Fix(this@App)) handle270()
                 if (Utils.useTabletMode(this@App)) handleTablet()
