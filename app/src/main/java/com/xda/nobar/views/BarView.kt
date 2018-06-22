@@ -163,6 +163,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+
+        gestureDetector.loadActionMap()
         prefs.registerOnSharedPreferenceChangeListener(this)
 
         val layers = pill.background as LayerDrawable
