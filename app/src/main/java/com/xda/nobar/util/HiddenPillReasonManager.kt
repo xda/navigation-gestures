@@ -29,7 +29,21 @@ class HiddenPillReasonManager : ArrayList<String>() {
     }
 
     fun getMostRecentReason(): String {
-        return get(size - 1)
+        var ret = ""
+        while (ret.isEmpty()) {
+            val get = try {
+                get(size -1)
+            } catch (e: ArrayIndexOutOfBoundsException) {
+                null
+            }
+
+            if (get != null) {
+                ret = get
+                break
+            }
+        }
+
+        return ret
     }
 
     fun onlyContains(element: String): Boolean {
