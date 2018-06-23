@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
 import com.pavelsikun.seekbarpreference.SeekBarPreferenceView
+import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnProgressSetListener
 import java.util.*
 
@@ -18,7 +19,7 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
     }
 
     private val seekBar = SeekBarPreferenceView(context, attributeSet)
-    private val dialog = Dialog(context, seekBar, this)
+    private val dialog = Dialog(this, seekBar, this)
 
     init {
         dialog.setTitle(title)
@@ -68,15 +69,16 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
     fun getProgress() = preferenceManager.sharedPreferences.getInt("$key$KEY_SUFFIX", seekBar.currentValue)
 
     private fun syncSummary() {
-        if (isChecked && summaryOn != null) summaryOn = String.format(Locale.getDefault(), summaryOn.toString(), getProgress())
+        if (isChecked && summaryOn != null) summaryOn = String.format(Locale.getDefault(), context.resources.getString(R.string.auto_hide_pill_desc_enabled), getProgress())
     }
 
-    class Dialog(context: Context,
+    class Dialog(private val preference: SeekBarSwitchPreference,
                  private val seekBar: SeekBarPreferenceView,
-                 private val listener: OnProgressSetListener) : AlertDialog.Builder(context), DialogInterface.OnClickListener {
+                 private val listener: OnProgressSetListener) : AlertDialog.Builder(preference.context), DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
         init {
             setPositiveButton(android.R.string.ok, this)
             setNegativeButton(android.R.string.cancel, null)
+            setOnCancelListener(this)
             setView(seekBar)
         }
 
@@ -84,6 +86,10 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
             when (which) {
                 DialogInterface.BUTTON_POSITIVE -> listener.onProgressSet(seekBar.currentValue)
             }
+        }
+
+        override fun onCancel(dialog: DialogInterface?) {
+            seekBar.currentValue = preference.getProgress()
         }
 
         override fun show(): AlertDialog {
