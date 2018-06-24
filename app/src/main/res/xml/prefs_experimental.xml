@@ -18,4 +18,10 @@
         app:msbp_measurementUnit="ms"
         />
 
+    <Preference
+        android:title="@string/fix_for_other_windows"
+        android:summary="@string/fix_for_other_windows_desc"
+        android:icon="@drawable/ic_autorenew_black_24dp"
+        android:key="window_fix" />
+
 </PreferenceScreen>

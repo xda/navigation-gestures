@@ -525,13 +525,11 @@ class SettingsActivity : AppCompatActivity() {
         private fun setBlacklistListeners() {
             val barBL = findPreference("bar_blacklist")
             val navBL = findPreference("nav_blacklist")
-            val winFix = findPreference("window_fix")
 
             val listener = Preference.OnPreferenceClickListener {
                 val which = when (it.key) {
                     barBL.key -> BlacklistSelectorActivity.FOR_BAR
                     navBL.key -> BlacklistSelectorActivity.FOR_NAV
-                    winFix.key -> BlacklistSelectorActivity.FOR_WIN
                     else -> return@OnPreferenceClickListener false
                 }
 
@@ -544,7 +542,6 @@ class SettingsActivity : AppCompatActivity() {
 
             barBL.onPreferenceClickListener = listener
             navBL.onPreferenceClickListener = listener
-            winFix.onPreferenceClickListener = listener
         }
     }
 
@@ -663,6 +660,15 @@ class SettingsActivity : AppCompatActivity() {
         private fun setListeners() {
             val hideOnKb = findPreference("hide_pill_on_keyboard") as SeekBarSwitchPreference
             hideOnKb.isEnabled = !preferenceManager.sharedPreferences.getBoolean("auto_hide_pill", false)
+
+            val winFix = findPreference("window_fix")
+            winFix.setOnPreferenceClickListener {
+                val blIntent = Intent(activity, BlacklistSelectorActivity::class.java)
+                blIntent.putExtra(BlacklistSelectorActivity.EXTRA_WHICH, BlacklistSelectorActivity.FOR_WIN)
+                startActivity(blIntent)
+
+                true
+            }
         }
     }
 }
