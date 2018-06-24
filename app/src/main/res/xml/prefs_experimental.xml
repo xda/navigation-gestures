@@ -2,6 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <Preference
+        android:title="@string/warning"
+        android:summary="@string/experimental_warning" />
+
     <com.xda.nobar.prefs.SeekBarSwitchPreference
         android:title="@string/hide_pill_on_keyboard"
         android:summaryOn="@string/auto_hide_pill_desc_enabled"
