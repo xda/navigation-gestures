@@ -7,7 +7,7 @@ import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.util.Utils
 
 /**
- * Receive power-related broadcasts and act appropriately
+ * Make sure gestures stay activated when NoBar updates
  */
 class PackageReplaceReceiver : BroadcastReceiver() {
 

@@ -17,6 +17,10 @@ import com.xda.nobar.util.Utils
 import dalvik.system.DexFile
 import java.io.IOException
 
+/**
+ * Base provider for all the widgets
+ * Handles the basic logic: updating states, listening for touches, etc
+ */
 abstract class BaseProvider: AppWidgetProvider() {
     companion object {
         const val ACTION_REFRESH = "com.xda.nobar.action.REFRESH_STATE"

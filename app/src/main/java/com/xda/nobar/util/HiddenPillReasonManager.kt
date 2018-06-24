@@ -2,6 +2,9 @@ package com.xda.nobar.util
 
 import java.util.*
 
+/**
+ * Manager to handle the reasons why the pill is currently in its "hide" state
+ */
 class HiddenPillReasonManager : ArrayList<String>() {
     companion object {
         const val AUTO = "auto"

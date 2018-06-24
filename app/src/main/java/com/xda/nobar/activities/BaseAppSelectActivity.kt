@@ -19,6 +19,10 @@ import com.xda.nobar.util.AppSelectAdapter
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 
+/**
+ * Base activity for all app selection activities
+ * Manages the basic logic of each
+ */
 abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     internal abstract val adapter: AppSelectAdapter
 
@@ -30,6 +34,10 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
     internal abstract fun loadAppList(): ArrayList<*>
     internal abstract fun loadAppInfo(info: Any): AppInfo
 
+    /**
+     * Override this to define whether or not the activity should run
+     * Called from #onCreate()
+     */
     internal open fun canRun(): Boolean {
         return true
     }
@@ -81,6 +89,9 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
                 }
     }
 
+    /**
+     * Create and add search button to action bar
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_search, menu)
 
@@ -92,6 +103,9 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
         return super.onCreateOptionsMenu(menu)
     }
 
+    /**
+     * Make sure the back button in the action bar triggers onBackPressed()
+     */
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> onBackPressed()
@@ -99,13 +113,18 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
         return super.onOptionsItemSelected(item)
     }
 
+    /**
+     * Set the activity result to cancelled and finish
+     */
     override fun onBackPressed() {
         val resultIntent = Intent()
-        resultIntent.putExtra(AppLaunchSelectActivity.EXTRA_KEY, intent.getStringExtra(AppLaunchSelectActivity.EXTRA_KEY))
         setResult(Activity.RESULT_CANCELED, resultIntent)
         finish()
     }
 
+    /**
+     * Update the app list when the search text changes
+     */
     override fun onQueryTextChange(newText: String): Boolean {
         val list = filter(newText)
         adapter.replaceAll(list)
@@ -113,10 +132,17 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
         return true
     }
 
+    /**
+     * No-op
+     */
     override fun onQueryTextSubmit(query: String?): Boolean {
         return false
     }
 
+    /**
+     * Filter logic for the search function
+     * Matches both display names and package names
+     */
     private fun filter(query: String): ArrayList<AppInfo> {
         val lowercase = query.toLowerCase()
 

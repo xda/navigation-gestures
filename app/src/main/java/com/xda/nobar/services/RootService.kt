@@ -13,6 +13,7 @@ import java.io.DataOutputStream
 
 /**
  * Supplemental actions for rooted devices
+ * //TODO: properly implement
  */
 class RootService : Service() {
     val handler = Handler(Looper.getMainLooper())

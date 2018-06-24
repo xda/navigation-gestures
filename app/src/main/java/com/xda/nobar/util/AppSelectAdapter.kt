@@ -11,6 +11,11 @@ import com.rey.material.widget.CheckedImageView
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnAppSelectedListener
 
+/**
+ * For use by BaseAppSelectActivity
+ * This manages all the selection logic
+ * Parses available AppInfo and displays the information
+ */
 class AppSelectAdapter(private val isSingleSelect: Boolean, private val showSummary: Boolean, private val checkListener: OnAppSelectedListener)
     : RecyclerView.Adapter<AppSelectAdapter.VH>() {
     val apps = SortedList<AppInfo>(AppInfo::class.java, AppInfoSorterCallback(this))

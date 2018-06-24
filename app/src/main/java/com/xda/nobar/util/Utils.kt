@@ -3,7 +3,6 @@ package com.xda.nobar.util
 import android.app.KeyguardManager
 import android.app.UiModeManager
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.*
@@ -22,7 +21,6 @@ import java.io.DataOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 
@@ -373,24 +371,6 @@ object Utils {
             } && IWindowManager.canRunCommands()
 
     /**
-     * Get the package name of the default launcher
-     * @param context a context object
-     * @return the package name, eg com.android.launcher3
-     * //TODO: this doesn't seem to work properly
-     */
-    fun getLauncherPackage(context: Context): ArrayList<String> {
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_HOME)
-
-        val info = context.packageManager.queryIntentActivities(intent, 0)
-        val ret = ArrayList<String>()
-
-        info.forEach { ret.add(it.activityInfo.packageName) }
-
-        return ret
-    }
-
-    /**
      * Check if the supplemental root actions should be allowed
      * @param context a context object
      * @return true to show root actions
@@ -435,23 +415,42 @@ object Utils {
                 false
             }
 
+    /**
+     * Whether the pill should "hide" in fullscreen apps
+     */
     fun hideInFullscreen(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("hide_in_fullscreen", context.resources.getBoolean(R.bool.hide_in_fullscreen_default))
                     && !autoHide(context)
 
+    /**
+     * Whether the pill should have a larger hitbox
+     * (12dp above the visible pill vs 4dp)
+     */
     fun largerHitbox(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("larger_hitbox", context.resources.getBoolean(R.bool.large_hitbox_default))
 
+    /**
+     * Whether overscan should be removed in fullscreen apps
+     * If enabled, this allows the user to swipe the original navbar onscreen
+     */
     fun origBarInFullscreen(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("orig_nav_in_immersive", context.resources.getBoolean(R.bool.orig_nav_in_immersive_default))
 
+    /**
+     * Whether NoBar should stay enabled in Car Mode
+     * This is an option because TouchWiz devices ignore the Car Mode navbar height
+     */
     fun enableInCarMode(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("enable_in_car_mode", context.resources.getBoolean(R.bool.car_mode_default))
 
+    /**
+     * Whether the pill should use the pixel dimension value
+     * False for percentages
+     */
     fun usePixelsW(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("use_pixels_width", context.resources.getBoolean(R.bool.use_pixels_width_default))
@@ -468,47 +467,81 @@ object Utils {
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("use_pixels_y", context.resources.getBoolean(R.bool.use_pixels_y_default))
 
+    /**
+     * Whether the user has enabled Split Pill
+     */
     fun sectionedPill(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("sectioned_pill", context.resources.getBoolean(R.bool.sectioned_pill_default))
 
+    /**
+     * Whether the pill should enter "hide" mode when the keyboard is shown
+     */
     fun hidePillWhenKeyboardShown(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("hide_pill_on_keyboard", context.resources.getBoolean(R.bool.hide_on_keyboard_default))
                     && !autoHide(context)
 
+    /**
+     * Whether immersive navigation should be enabled when overscan is active
+     * Fixes alignment issues and Force Touch on TouchWiz
+     */
     fun useImmersiveWhenNavHidden(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("use_immersive_mode_when_nav_hidden", context.resources.getBoolean(R.bool.immersive_nav_default))
 
+    /**
+     * Load the list of apps that should keep the navbar shown
+     */
     fun loadBlacklistedNavPackages(context: Context, packages: ArrayList<String>) =
             packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_nav_apps", HashSet<String>()))
 
+    /**
+     * Load the list of apps where the pill shouldn't be shown
+     */
     fun loadBlacklistedBarPackages(context: Context, packages: ArrayList<String>) =
             packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_bar_apps", HashSet<String>()))
 
+    /**
+     * Load the list of apps where immersive navigation should be disabled
+     */
     fun loadBlacklistedImmPackages(context: Context, packages: ArrayList<String>) =
             packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_imm_apps", HashSet<String>()))
 
+    /**
+     * Save the list of apps that should keep the navbar shown
+     */
     fun saveBlacklistedNavPackageList(context: Context, packages: ArrayList<String>) =
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putStringSet("blacklisted_nav_apps", HashSet<String>(packages))
                     .apply()
 
+    /**
+     * Save the list of apps where the pill shouldn't be shown
+     */
     fun saveBlacklistedBarPackages(context: Context, packages: ArrayList<String>) =
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putStringSet("blacklisted_bar_apps", HashSet<String>(packages))
                     .apply()
 
+    /**
+     * Save the list of appps where immersive navigation should be disabled
+     */
     fun saveBlacklistedImmPackages(context: Context, packages: ArrayList<String>) =
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putStringSet("blacklisted_imm_apps", HashSet<String>(packages))
                     .apply()
 
+    /**
+     * Get the user-defined (or default) animation duration in ms
+     */
     fun getAnimationDurationMs(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getInt("anim_duration", context.resources.getInteger(R.integer.default_anim_duration)).toLong()
 
+    /**
+     * Check if the device is on the KeyGuard (lockscreen)
+     */
     fun isOnKeyguard(context: Context): Boolean {
         val kgm = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
 
@@ -517,6 +550,9 @@ object Utils {
                 || (if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) kgm.isDeviceLocked else false)
     }
 
+    /**
+     * Run commands for a result
+     */
     fun runCommand(vararg strings: String): String? {
         try {
             val comm = Runtime.getRuntime().exec("sh")

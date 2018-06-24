@@ -33,15 +33,15 @@ class DialogActivity : AppCompatActivity() {
             builder.setTitle(title)
             builder.setMessage(message)
 
-            if (yesRes != -1) builder.setPositiveButton(yesRes, { _, _ ->
+            if (yesRes != -1) builder.setPositiveButton(yesRes) { _, _ ->
                 yesAction?.invoke()
                 finish()
-            })
+            }
 
-            if (noRes != -1) builder.setNegativeButton(noRes, { _, _ ->
+            if (noRes != -1) builder.setNegativeButton(noRes) { _, _ ->
                 noAction?.invoke()
                 finish()
-            })
+            }
 
             builder.setOnCancelListener {
                 finish()
@@ -75,9 +75,6 @@ class DialogActivity : AppCompatActivity() {
         var message = android.R.string.untitled
         var yesRes = android.R.string.yes
         var noRes = android.R.string.no
-
-//        var yesUrl: String? = null
-//        var noUrl: String? = null
 
         var yesAction: (() -> Unit)? = null
         var noAction: (() -> Unit)? = null

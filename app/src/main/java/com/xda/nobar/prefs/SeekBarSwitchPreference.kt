@@ -13,6 +13,10 @@ import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnProgressSetListener
 import java.util.*
 
+/**
+ * A combination of a SwitchPreference and a DialogPreference containing a SeekBarPreferenceView
+ * The progress of the SeekBar is saved as ${key}_progress
+ */
 class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : SwitchPreference(context, attributeSet), OnProgressSetListener {
     companion object {
         const val KEY_SUFFIX = "_progress"

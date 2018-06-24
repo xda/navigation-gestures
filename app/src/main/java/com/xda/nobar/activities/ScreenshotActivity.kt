@@ -33,7 +33,19 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+/**
+ * Takes a screenshot, sort of
+ * Before Android P, there are only two ways for a third party to take a screenshot:
+ *     - Root
+ *     - MediaProjection API
+ * NoBar uses the latter (for non-rooted devices).
+ *
+ * MediaProjection is normally used for screen recording, but
+ * by only capturing a single frame, we can essentially use it to get a screenshot.
+ *
+ * Since this isn't the native screenshot method, it won't trigger any screenshot tools, such as Samsung's Smart Capture.
+ * It also may not work on every device.
+ */
 class ScreenshotActivity : AppCompatActivity() {
     companion object {
         private const val REQ = 100
@@ -134,7 +146,7 @@ class ScreenshotActivity : AppCompatActivity() {
             var bitmap: Bitmap? = null
 
             try {
-                if (count < 1) {
+                if (count < 1) { //make sure we ony get one image
                     runOnUiThread {
                         val flasher = LinearLayout(this@ScreenshotActivity).apply {
                             setBackgroundColor(Color.WHITE)

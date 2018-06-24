@@ -55,6 +55,7 @@ class IntroActivity : IntroActivity() {
         buttonBackFunction = BUTTON_BACK_FUNCTION_BACK
         isButtonBackVisible = true
 
+        //Write Secure Settings slide: prompt the user to grant this permission; used for hiding the navbar
         val wssSlide = DynamicForwardFragmentSlide(FragmentSlide.Builder()
                 .background(R.color.slide_4)
                 .backgroundDark(R.color.slide_4_dark)
@@ -77,7 +78,7 @@ class IntroActivity : IntroActivity() {
                     }
                 }) { prefs.getBoolean("has_confirmed_skip_wss", false) || hasWss(this) }
 
-        if (intent.hasExtra(EXTRA_WSS_ONLY)) {
+        if (intent.hasExtra(EXTRA_WSS_ONLY)) { //The folllowing logic will be used if the user tries to hide the navbar, but didn't grant WSS during the initial setup
             addSlide(wssSlide)
 
             addOnNavigationBlockedListener { index, dir ->
@@ -222,7 +223,7 @@ class IntroActivity : IntroActivity() {
             }
         }
 
-        if (Utils.isFirstRun(this)) {
+        if (Utils.isFirstRun(this)) { //If the user is using a tablet, we want to turn Tablet Mode on automatically
             if (SystemProperties.get("ro.build.characteristics").contains("tablet")) {
                 prefs.edit().putBoolean("tablet_mode", true).apply()
             }

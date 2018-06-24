@@ -200,8 +200,13 @@
     <string name="copied_to_clipboard">Email copied to clipboard</string>
 
     <!--Libraries-->
-    <string name="material_intro">Material Intro</string>
-    <string name="slider_pref_embedded">SliderPreferenceEmbedded</string>
+    <string name="material_intro">Material Intro (Fork)</string>
+    <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
+    <string name="color_picker">Color Picker (Fork)</string>
+    <string name="circle_progress">Circle Progress</string>
+    <string name="rx_java">RxJava/RxAndroid</string>
+    <string name="tasker_plugin">Tasker Plugin Library</string>
+    <string name="edge_sdk">Galaxy Edge SDK</string>
 
     <!--Action Values-->
     <string name="type_no_action">-1</string>

@@ -661,7 +661,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 if (!disabledNavReasonManager.contains(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)) {
                     if (Utils.shouldUseOverscanMethod(this@App)
                             && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)) {
-                        showNav(false)
+                        showNav(false, false)
                     }
                     onGlobalLayout()
                 }

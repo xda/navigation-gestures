@@ -13,6 +13,10 @@ import com.xda.nobar.util.AppSelectAdapter
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * Selector activity for choosing an app to launch
+ * This will be opened when the user chooses the "Launch App" action for a gesture
+ */
 class AppLaunchSelectActivity : BaseAppSelectActivity() {
     companion object {
         const val EXTRA_KEY = "key"

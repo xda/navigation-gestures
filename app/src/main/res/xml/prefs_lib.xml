@@ -5,14 +5,42 @@
         android:title="@string/material_intro">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://github.com/heinrichreimer/material-intro" />
+            android:data="https://github.com/zacharee/material-intro" />
     </Preference>
 
     <Preference
-        android:title="@string/slider_pref_embedded">
+        android:title="@string/slider_pref">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://github.com/zacharee/SliderPreferenceEmbedded" />
+            android:data="https://github.com/zacharee/MaterialSeekBarPreference" />
+    </Preference>
+
+    <Preference
+        android:title="@string/color_picker">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://github.com/zacharee/colorpicker" />
+    </Preference>
+
+    <Preference
+        android:title="@string/circle_progress">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://github.com/lzyzsd/CircleProgress" />
+    </Preference>
+
+    <Preference
+        android:title="@string/rx_java">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://github.com/ReactiveX/RxJava" />
+    </Preference>
+
+    <Preference
+        android:title="@string/edge_sdk">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://developer.samsung.com/galaxy/edge" />
     </Preference>
 
 </PreferenceScreen>

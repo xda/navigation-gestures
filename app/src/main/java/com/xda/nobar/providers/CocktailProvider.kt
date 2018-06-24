@@ -9,6 +9,9 @@ import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
 import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
 
+/**
+ * Widget provider for TouchWiz's Edge Screen framework
+ */
 class CocktailProvider : BaseProvider() {
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?) {
         val manager = SlookCocktailManager.getInstance(context)

@@ -7,6 +7,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 
+/**
+ * Simple preference that sets both the title and summary text color to red
+ * Useful for warnings
+ */
 class RedTextWarningPref : Preference {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)

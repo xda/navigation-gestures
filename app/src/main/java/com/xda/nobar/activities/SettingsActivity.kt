@@ -639,6 +639,9 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Experimental, but mostly working settings
+     */
     class ExperimentalFragment : PreferenceFragment() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)

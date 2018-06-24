@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity
 import com.joaomgcd.taskerpluginlibrary.config.TaskerPluginConfig
 import com.joaomgcd.taskerpluginlibrary.input.TaskerInput
 
+/**
+ * WIP
+ */
 open class TaskerConfig : AppCompatActivity(), TaskerPluginConfig<TaskerConfig.Input> {
     override val context: Context
         get() = this

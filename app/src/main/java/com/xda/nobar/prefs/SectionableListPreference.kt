@@ -21,6 +21,20 @@ import com.xda.nobar.interfaces.OnItemChosenListener
 import com.xda.nobar.util.Utils
 import com.xda.nobar.views.ItemView
 
+/**
+ * Android's built-in ListPreference has no option to make sections for the items
+ * This class is a custom ListPreference that has that option
+ *
+ * The following custom styleable options are available:
+ *     - section_names:
+ *         - a String[] representing the titles of each section
+ *     - section_data_names
+ *         - an array of String[]s representing the titles of the items for each section
+ *         - the top-level array holds each String[] of titles
+ *         - each String[] corresponds to a section_names index
+ *     - section_data_values
+ *         - Similar to above, just with the values/keys of each item
+ */
 class SectionableListPreference(context: Context, attributeSet: AttributeSet) : DialogPreference(context, attributeSet), OnItemChosenListener {
     val defaultValue: Any?
         get() {

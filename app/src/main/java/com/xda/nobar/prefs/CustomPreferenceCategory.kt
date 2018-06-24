@@ -5,6 +5,11 @@ import android.preference.PreferenceGroup
 import android.util.AttributeSet
 import com.xda.nobar.R
 
+/**
+ * Simple custom PreferenceGroup
+ * Used for placeholders in Settings
+ * Has zero height; is invisible
+ */
 class CustomPreferenceCategory : PreferenceGroup {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)

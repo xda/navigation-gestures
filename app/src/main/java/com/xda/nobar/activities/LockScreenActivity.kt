@@ -9,6 +9,22 @@ import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import com.xda.nobar.App
 
+/**
+ * Launch this activity to "lock" the screen
+ * Before Android P, Android only has 3 ways to lock the screen by a third party:
+ *     - Root (input keyevent POWER)
+ *     - Device Admin — blocks fingerprint unlock
+ *     - Screen timeout
+ * NoBar uses the third option.
+ * When this activity is launched, it shows a black screen.
+ * It also does the following:
+ *     - Screen timeout is set to 1 second (the Android framework may force this higher, up to 10 seconds total)
+ *     - Auto brightness is deactivated
+ *     - Screen brightness is set to 0 (the Android framework may force this higher)
+ *     - If WRITE_SECURE_SETTINGS is granted, the DevOp "Stay Awake" is deactivated
+ * Once the activity is stopped, either by screen off or the user forcing their way out of it,
+ * each setting gets reverted to its original value.
+ */
 class LockScreenActivity : AppCompatActivity() {
     private val screenOffReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -77,5 +93,8 @@ class LockScreenActivity : AppCompatActivity() {
         } catch (e: SecurityException) {}
     }
 
+    /**
+     * Helper class to consolidate the changed values, and make them easier to change/restore
+     */
     private class LockSettings(var brightness: Int = -1, var brightnessMode: Int = -1, var timeout: Int = -1, var keepScreenOn: Int = -1)
 }

@@ -3,6 +3,10 @@ package com.xda.nobar.util
 import android.support.v7.util.SortedList
 import android.support.v7.widget.RecyclerView
 
+/**
+ * For use by BaseAppSelectActivity
+ * Perform certain actions when a search is made
+ */
 class AppInfoSorterCallback(private val adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>) : SortedList.Callback<AppInfo>() {
     override fun areItemsTheSame(item1: AppInfo?, item2: AppInfo?) = item1?.packageName == item2?.packageName
     override fun areContentsTheSame(oldItem: AppInfo?, newItem: AppInfo?) = oldItem == newItem

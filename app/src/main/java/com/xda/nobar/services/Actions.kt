@@ -47,8 +47,6 @@ class Actions : AccessibilityService(), Serializable {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private var isBarHiddenForLauncher = false
-
     override fun onCreate() {
         receiver = ActionHandler()
         wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -60,7 +58,7 @@ class Actions : AccessibilityService(), Serializable {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (!IntroActivity.needsToRun(this)) {
-            app.uiHandler.setNodeInfoAndUpdate(event.source)
+            app.uiHandler.setNodeInfoAndUpdate(event.source) //We're listening for any changes to the window state, so we send those updates onto the UIHandler
         }
     }
 
@@ -244,6 +242,10 @@ class Actions : AccessibilityService(), Serializable {
             }
         }
 
+        /**
+         * Run an action that requires WRITE_SETTINGS
+         * Otherwise show a dialog prompting for permission
+         */
         private fun runSystemSettingsAction(action: () -> Unit) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(this@Actions)) {
                 action.invoke()

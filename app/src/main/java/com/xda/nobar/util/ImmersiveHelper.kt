@@ -4,6 +4,9 @@ import android.util.Log
 import com.xda.nobar.App
 import java.util.regex.Pattern
 
+/**
+ * Experimental class that might make immersive detection a lot more reliable (needs testing)
+ */
 class ImmersiveHelper(private val app: App) {
     companion object {
         const val COMMAND = "dumpsys activity service com.android.systemui/.SystemUIService"

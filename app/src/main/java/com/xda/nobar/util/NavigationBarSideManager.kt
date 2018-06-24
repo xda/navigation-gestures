@@ -6,6 +6,10 @@ import android.util.DisplayMetrics
 import android.view.Surface
 import android.view.WindowManager
 
+/**
+ * Copies AOSP's logic to detect which side the navigation bar is currently on
+ * This probably won't work on all devices
+ */
 class NavigationBarSideManager(private val context: Context) {
     companion object {
         const val NAV_BAR_LEFT = 1 shl 0

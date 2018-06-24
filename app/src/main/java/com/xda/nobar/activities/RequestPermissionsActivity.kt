@@ -7,6 +7,9 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 
+/**
+ * Use this activity to request permissions from a non-activity context
+ */
 class RequestPermissionsActivity : AppCompatActivity() {
     companion object {
         const val ACTION_RESULT = "com.xda.nobar.action.RESULT"

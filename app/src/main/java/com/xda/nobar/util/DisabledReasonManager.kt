@@ -2,6 +2,9 @@ package com.xda.nobar.util
 
 import java.util.*
 
+/**
+ * Base class for managing the reasons for why certain features are currently disabled
+ */
 open class DisabledReasonManager : TreeSet<String>() {
     object NavBarReasons {
         const val NAV_BLACKLIST = "nav_blacklist"

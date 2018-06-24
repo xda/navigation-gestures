@@ -12,6 +12,10 @@ import com.xda.nobar.util.Utils
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * Activity to manage which apps should be blacklisted for a certain function
+ * Use the constants in the companion object to specify the function
+ */
 class BlacklistSelectorActivity : BaseAppSelectActivity() {
     companion object {
         const val EXTRA_WHICH = "which"
