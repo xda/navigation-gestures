@@ -436,10 +436,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Hide the navbar
      */
     fun hideNav(callListeners: Boolean = true) {
-        if (Utils.shouldUseOverscanMethod(this) && disabledNavReasonManager.isEmpty()) {
+        if (Utils.shouldUseOverscanMethod(this)
+                && disabledNavReasonManager.isEmpty()
+                && IntroActivity.hasWss(this)) {
             if (Utils.useImmersiveWhenNavHidden(this)) Utils.setNavImmersive(this)
 
-            if (!Utils.useRot270Fix(this) && !Utils.useTabletMode(this)) 
+            if (!Utils.useRot270Fix(this) && !Utils.useTabletMode(this))
                 IWindowManager.setOverscan(0, 0, 0, -getAdjustedNavBarHeight())
             else {
                 uiHandler.handleRot()
