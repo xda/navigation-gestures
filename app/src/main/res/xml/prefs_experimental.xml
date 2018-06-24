@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Preference
+    <com.xda.nobar.prefs.RedTextWarningPref
         android:title="@string/warning"
         android:summary="@string/experimental_warning" />
 
