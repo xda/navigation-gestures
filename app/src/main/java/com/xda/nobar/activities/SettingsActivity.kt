@@ -525,11 +525,13 @@ class SettingsActivity : AppCompatActivity() {
         private fun setBlacklistListeners() {
             val barBL = findPreference("bar_blacklist")
             val navBL = findPreference("nav_blacklist")
+            val winFix = findPreference("window_fix")
 
             val listener = Preference.OnPreferenceClickListener {
                 val which = when (it.key) {
                     barBL.key -> BlacklistSelectorActivity.FOR_BAR
                     navBL.key -> BlacklistSelectorActivity.FOR_NAV
+                    winFix.key -> BlacklistSelectorActivity.FOR_WIN
                     else -> return@OnPreferenceClickListener false
                 }
 
@@ -542,6 +544,7 @@ class SettingsActivity : AppCompatActivity() {
 
             barBL.onPreferenceClickListener = listener
             navBL.onPreferenceClickListener = listener
+            winFix.onPreferenceClickListener = listener
         }
     }
 

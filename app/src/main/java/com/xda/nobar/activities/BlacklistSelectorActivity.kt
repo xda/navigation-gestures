@@ -1,5 +1,6 @@
 package com.xda.nobar.activities
 
+import android.Manifest
 import android.app.Activity
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -22,6 +23,7 @@ class BlacklistSelectorActivity : BaseAppSelectActivity() {
 
         const val FOR_BAR = "bar"
         const val FOR_NAV = "nav"
+        const val FOR_WIN = "win"
         const val FOR_IMM = "imm"
     }
 
@@ -52,6 +54,10 @@ class BlacklistSelectorActivity : BaseAppSelectActivity() {
                 title = resources.getText(R.string.imm_blacklist)
                 Utils.loadBlacklistedImmPackages(this, currentlyBlacklisted)
             }
+            FOR_WIN -> {
+                title = resources.getText(R.string.fix_for_other_windows)
+                Utils.loadOtherWindowApps(this, currentlyBlacklisted)
+            }
             else -> {
                 setResult(Activity.RESULT_CANCELED)
                 finish()
@@ -71,12 +77,19 @@ class BlacklistSelectorActivity : BaseAppSelectActivity() {
         return ArrayList(list)
     }
 
-    override fun loadAppInfo(info: Any): AppInfo {
+    override fun loadAppInfo(info: Any): AppInfo? {
         info as ApplicationInfo
-        return AppInfo(info.packageName,
+
+        val appInfo = AppInfo(info.packageName,
                 "",
                 info.loadLabel(packageManager).toString(),
                 info.loadIcon(packageManager), currentlyBlacklisted.contains(info.packageName))
+
+        return if (which == FOR_WIN) {
+            val perms = packageManager.getPackageInfo(info.packageName, PackageManager.GET_PERMISSIONS).requestedPermissions
+            if (perms != null && perms.contains(Manifest.permission.SYSTEM_ALERT_WINDOW)) appInfo
+            else null
+        } else appInfo
     }
 
     override fun onDestroy() {
@@ -86,6 +99,7 @@ class BlacklistSelectorActivity : BaseAppSelectActivity() {
             FOR_NAV -> Utils.saveBlacklistedNavPackageList(this, currentlyBlacklisted)
             FOR_BAR -> Utils.saveBlacklistedBarPackages(this, currentlyBlacklisted)
             FOR_IMM -> Utils.saveBlacklistedImmPackages(this, currentlyBlacklisted)
+            FOR_WIN -> Utils.saveOtherWindowApps(this, currentlyBlacklisted)
         }
     }
 }

@@ -508,6 +508,9 @@ object Utils {
     fun loadBlacklistedImmPackages(context: Context, packages: ArrayList<String>) =
             packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_imm_apps", HashSet<String>()))
 
+    fun loadOtherWindowApps(context: Context, packages: ArrayList<String>) =
+            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("other_window_apps", HashSet<String>()))
+
     /**
      * Save the list of apps that should keep the navbar shown
      */
@@ -530,6 +533,11 @@ object Utils {
     fun saveBlacklistedImmPackages(context: Context, packages: ArrayList<String>) =
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putStringSet("blacklisted_imm_apps", HashSet<String>(packages))
+                    .apply()
+
+    fun saveOtherWindowApps(context: Context, packages: ArrayList<String>) =
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    .putStringSet("other_window_apps", HashSet<String>(packages))
                     .apply()
 
     /**

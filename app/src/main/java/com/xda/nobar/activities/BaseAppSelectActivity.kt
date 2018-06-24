@@ -32,7 +32,7 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
     private lateinit var searchItem: MenuItem
 
     internal abstract fun loadAppList(): ArrayList<*>
-    internal abstract fun loadAppInfo(info: Any): AppInfo
+    internal abstract fun loadAppInfo(info: Any): AppInfo?
 
     /**
      * Override this to define whether or not the activity should run
@@ -69,8 +69,10 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
                     it.forEach { info ->
                         val appInfo = loadAppInfo(info)
 
-                        adapter.add(appInfo)
-                        origAppSet.add(appInfo)
+                        if (appInfo != null) {
+                            adapter.add(appInfo)
+                            origAppSet.add(appInfo)
+                        }
 
                         val index = it.indexOf(info)
                         val percent = (index.toFloat() / it.size.toFloat() * 100).toInt()

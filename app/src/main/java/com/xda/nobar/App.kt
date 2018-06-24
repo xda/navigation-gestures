@@ -52,17 +52,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var premiumInstallListener: PremiumInstallListener
     private lateinit var rootServiceIntent: Intent
 
-    var isValidPremium: Boolean = false
-    var rootBinder: RootService.RootBinder? = null
-
-    var navHidden = false
-    var pillShown = false
-
     lateinit var uiHandler: UIHandler
     lateinit var bar: BarView
     lateinit var immersiveHelperView: ImmersiveHelperView
     lateinit var prefs: SharedPreferences
     lateinit var immersiveHelper: ImmersiveHelper
+
+    private var isInOtherWindowApp = false
+
+    var isValidPremium: Boolean = false
+    var rootBinder: RootService.RootBinder? = null
+
+    var navHidden = false
+    var pillShown = false
 
     private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
     private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()
@@ -654,9 +656,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         private fun handleNewNodeInfo(info: AccessibilityNodeInfo) {
             val pName = info.packageName?.toString()
 
-            val navArray = ArrayList<String>()
-            Utils.loadBlacklistedNavPackages(this@App, navArray)
-
+            val navArray = ArrayList<String>().apply { Utils.loadBlacklistedNavPackages(this@App, this) }
             if (navArray.contains(pName)) {
                 if (!disabledNavReasonManager.contains(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)) {
                     if (Utils.shouldUseOverscanMethod(this@App)
@@ -673,9 +673,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 onGlobalLayout()
             }
 
-            val barArray = ArrayList<String>()
-            Utils.loadBlacklistedBarPackages(this@App, barArray)
-
+            val barArray = ArrayList<String>().apply { Utils.loadBlacklistedBarPackages(this@App, this) }
             if (barArray.contains(pName)) {
                 if (disabledBarReasonManager.add(DisabledReasonManager.PillReasons.BLACKLIST)) {
                     if (areGesturesActivated()) {
@@ -688,9 +686,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 }
             }
 
-            val immArray = ArrayList<String>()
-            Utils.loadBlacklistedImmPackages(this@App, immArray)
-
+            val immArray = ArrayList<String>().apply { Utils.loadBlacklistedImmPackages(this@App, this) }
             if (immArray.contains(pName)) {
                 if (Utils.shouldUseOverscanMethod(this@App)
                         && Utils.useImmersiveWhenNavHidden(this@App)
@@ -704,6 +700,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     Utils.setNavImmersive(this@App)
                 }
             }
+
+            val windowArray = ArrayList<String>().apply { Utils.loadOtherWindowApps(this@App, this) }
+            if (windowArray.contains(pName)) {
+                if (!isInOtherWindowApp) {
+                    addBar(false)
+                    isInOtherWindowApp = true
+                }
+            } else if (isInOtherWindowApp) isInOtherWindowApp = false
         }
 
         @SuppressLint("WrongConstant")
