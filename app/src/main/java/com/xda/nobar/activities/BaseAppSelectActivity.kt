@@ -1,7 +1,6 @@
 package com.xda.nobar.activities
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
@@ -53,6 +52,8 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayShowCustomEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_done_black_24dp)
 
         setContentView(R.layout.activity_app_launch_select)
 
@@ -105,9 +106,6 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
         return super.onCreateOptionsMenu(menu)
     }
 
-    /**
-     * Make sure the back button in the action bar triggers onBackPressed()
-     */
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> onBackPressed()
@@ -115,12 +113,8 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
         return super.onOptionsItemSelected(item)
     }
 
-    /**
-     * Set the activity result to cancelled and finish
-     */
     override fun onBackPressed() {
-        val resultIntent = Intent()
-        setResult(Activity.RESULT_CANCELED, resultIntent)
+        setResult(Activity.RESULT_OK)
         finish()
     }
 

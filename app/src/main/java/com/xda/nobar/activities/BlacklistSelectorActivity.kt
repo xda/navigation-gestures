@@ -87,7 +87,9 @@ class BlacklistSelectorActivity : BaseAppSelectActivity() {
 
         return if (which == FOR_WIN) {
             val perms = packageManager.getPackageInfo(info.packageName, PackageManager.GET_PERMISSIONS).requestedPermissions
-            if (perms != null && perms.contains(Manifest.permission.SYSTEM_ALERT_WINDOW)) appInfo
+            if (perms != null
+                    && (perms.contains(Manifest.permission.SYSTEM_ALERT_WINDOW )
+                            || perms.contains(Manifest.permission.INTERNAL_SYSTEM_WINDOW))) appInfo
             else null
         } else appInfo
     }
