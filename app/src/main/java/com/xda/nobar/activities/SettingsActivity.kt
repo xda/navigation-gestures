@@ -254,6 +254,7 @@ class SettingsActivity : AppCompatActivity() {
                 putInt("pill_bg", Color.TRANSPARENT)
                 putInt("pill_fg", Color.TRANSPARENT)
                 putInt("anim_duration", 0)
+                putInt("hold_time", 500)
 
                 putString(app.actionTap, app.typeNoAction.toString())
                 putString(app.actionDouble, app.typeNoAction.toString())
@@ -289,6 +290,7 @@ class SettingsActivity : AppCompatActivity() {
                 remove("pill_bg")
                 remove("pill_fg")
                 remove("anim_duration")
+                remove("hold_time")
 
                 remove(app.actionTap)
                 remove(app.actionDouble)
