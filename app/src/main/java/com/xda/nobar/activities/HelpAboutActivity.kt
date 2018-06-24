@@ -58,6 +58,13 @@ class HelpAboutActivity : AppCompatActivity() {
             val pref = findPreference("version")
 
             pref.summary = BuildConfig.VERSION_NAME
+            pref.setOnPreferenceClickListener {
+                val cm = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val data = ClipData.newPlainText("Navigation Gestures version", it.summary)
+                cm.primaryClip = data
+
+                true
+            }
         }
 
         private fun addTutorialListener() {
@@ -80,6 +87,7 @@ class HelpAboutActivity : AppCompatActivity() {
                 intent.data = Uri.parse("mailto:")
                 intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("navigationgestures@xda-developers.com"))
                 intent.putExtra(Intent.EXTRA_SUBJECT, resources.getString(R.string.app_name))
+                intent.putExtra(Intent.EXTRA_TEXT, "Version: ${BuildConfig.VERSION_NAME}")
                 try {
                     startActivity(intent)
                 } catch (e: ActivityNotFoundException) {
