@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemProperties
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -218,6 +219,12 @@ class IntroActivity : IntroActivity() {
                         .title(R.string.sorry)
                         .description(R.string.sorry_desc)
                         .build())
+            }
+        }
+
+        if (Utils.isFirstRun(this)) {
+            if (SystemProperties.get("ro.build.characteristics").contains("tablet")) {
+                prefs.edit().putBoolean("tablet_mode", true).apply()
             }
         }
     }
