@@ -8,6 +8,7 @@ open class DisabledReasonManager : TreeSet<String>() {
         const val CAR_MODE = "car_mode"
         const val KEYGUARD = "keyguard"
         const val IMMERSIVE = "immersive"
+        const val EDGE_LIGHTING = "edge_lighting"
     }
 
     object PillReasons {

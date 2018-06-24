@@ -40,6 +40,10 @@ import kotlin.math.absoluteValue
  * Centralize important stuff in the App class, so we can be sure to have an instance of it
  */
 class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
+    companion object {
+        const val EDGE_TYPE_ACTIVE = 2
+    }
+
     private lateinit var wm: WindowManager
     private lateinit var um: UiModeManager
     private lateinit var stateHandler: ScreenStateHandler
@@ -453,9 +457,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     /**
      * Show the navbar
      */
-    fun showNav(callListeners: Boolean = true) {
+    fun showNav(callListeners: Boolean = true, removeImmersive: Boolean = true) {
         if (IntroActivity.hasWss(this)) {
-            Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
+            if (removeImmersive) Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
 
             if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) }
 
@@ -705,12 +709,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (packageManager.hasSystemFeature("com.samsung.feature.samsung_experience_mobile")) {
                 try {
                     val SemCocktailBarManager = Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
+
                     val manager = getSystemService("CocktailBarService")
+
                     val getCocktailBarWindowType = SemCocktailBarManager.getMethod("getCocktailBarWindowType")
 
                     val edgeType = getCocktailBarWindowType.invoke(manager).toString().toInt()
 
-                    if (edgeType == 2) {
+                    if (edgeType == EDGE_TYPE_ACTIVE) {
                         if (Utils.shouldUseOverscanMethod(this@App)
                                 && Utils.useImmersiveWhenNavHidden(this@App)
                                 && disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
@@ -723,7 +729,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                             Utils.setNavImmersive(this@App)
                         }
                     }
-                } catch (e: Exception) {}
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
 
             if (!isNavBarHidden() && Utils.shouldUseOverscanMethod(this@App)) hideNav()
