@@ -463,7 +463,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      */
     fun showNav(callListeners: Boolean = true, removeImmersive: Boolean = true) {
         if (IntroActivity.hasWss(this)) {
-            if (removeImmersive) Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
+            if (removeImmersive && Utils.useImmersiveWhenNavHidden(this)) Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
 
             if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) }
 
