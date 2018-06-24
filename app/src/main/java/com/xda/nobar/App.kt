@@ -701,13 +701,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 }
             }
 
-            val windowArray = ArrayList<String>().apply { Utils.loadOtherWindowApps(this@App, this) }
-            if (windowArray.contains(pName)) {
-                if (!isInOtherWindowApp) {
-                    addBar(false)
-                    isInOtherWindowApp = true
-                }
-            } else if (isInOtherWindowApp) isInOtherWindowApp = false
+            if (pName != packageName) {
+                val windowArray = ArrayList<String>().apply { Utils.loadOtherWindowApps(this@App, this) }
+                if (windowArray.contains(pName)) {
+                    if (!isInOtherWindowApp) {
+                        addBar(false)
+                        isInOtherWindowApp = true
+                    }
+                } else if (isInOtherWindowApp) isInOtherWindowApp = false
+            }
         }
 
         @SuppressLint("WrongConstant")
