@@ -701,4 +701,8 @@ object Utils {
 
     fun defPillHeightDp(context: Context) =
             context.resources.getInteger(R.integer.default_pill_height_dp)
+
+    fun useFullOverscan(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("full_overscan", false)
 }

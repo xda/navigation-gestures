@@ -24,4 +24,10 @@
         android:icon="@drawable/ic_autorenew_black_24dp"
         android:key="window_fix" />
 
+    <SwitchPreference
+        android:title="@string/full_overscan"
+        android:summary="@string/full_overscan_desc"
+        android:icon="@drawable/ic_fullscreen_black_24dp"
+        android:key="full_overscan" />
+
 </PreferenceScreen>

@@ -291,6 +291,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             "hide_pill_on_keyboard" -> {
                 uiHandler.onGlobalLayout()
             }
+            "full_overscan" -> {
+                if (Utils.shouldUseOverscanMethod(this)) hideNav(false)
+            }
         }
     }
 
@@ -499,7 +502,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     fun setNavState(hidden: Boolean) = prefs.edit().putBoolean("hide_nav", hidden).apply()
 
     fun getAdjustedNavBarHeight() =
-            Utils.getNavBarHeight(this) - if (bar.isImmersive) 0 else 1
+            Utils.getNavBarHeight(this) - if (Utils.useFullOverscan(this)) 0 else 1
 
     private fun addBarInternal() {
         try {

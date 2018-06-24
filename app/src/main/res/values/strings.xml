@@ -99,6 +99,7 @@
     <string name="back_to_default">Go back to default settings?</string>
     <string name="experimental_prefs">Experimental Settings</string>
     <string name="fix_for_other_windows">Keep Pill Shown in other Overlay Apps</string>
+    <string name="full_overscan">Use Full Overscan</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -134,6 +135,7 @@
     <string name="back_to_default_desc">Split Pill disabled! Do you want us to set affected settings back to default?</string>
     <string name="fix_for_other_windows_desc">Choose which apps the pill should be forced to stay on top. Useful for apps like Facebook Messenger chat heads, Drupe, etc.</string>
     <string name="experimental_warning">THESE FEATURES ARE INCOMPLETE AND MAY NOT WORK ON YOUR DEVICE!</string>
+    <string name="full_overscan_desc">By default, Navigation Gestures leaves 1 pixel of the original navbar visible. Enable this to remove that pixel. WARNING: This will break certain devices!!!</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
