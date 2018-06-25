@@ -338,7 +338,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
                             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
                         else
-                            WindowManager.LayoutParams.TYPE_PHONE
+                            WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
                 bar.params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                         WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
                         WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
