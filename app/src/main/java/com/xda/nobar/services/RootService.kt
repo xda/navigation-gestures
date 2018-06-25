@@ -46,8 +46,8 @@ class RootService : Service() {
                 app.typeRootForward -> goForward()
                 app.typeRootMenu -> goMenu()
                 app.typeRootSleep -> goScreenOff()
-                app.premTypeRootVolDown -> goPremiumVolDown()
-                app.premTypeRootVolUp -> goPremiumVolUp()
+                app.typeRootVolDown -> goPremiumVolDown()
+                app.typeRootVolUp -> goPremiumVolUp()
             }
         }
 

@@ -178,10 +178,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         get() = resources.getString(R.string.type_menu).toInt()
     val typeRootSleep: Int
         get() = resources.getString(R.string.type_sleep).toInt()
-    val premTypeRootVolUp: Int
-        get() = resources.getString(R.string.prem_type_vol_up).toInt()
-    val premTypeRootVolDown: Int
-        get() = resources.getString(R.string.prem_type_vol_down).toInt()
+    val typeRootVolUp: Int
+        get() = resources.getString(R.string.type_vol_up).toInt()
+    val typeRootVolDown: Int
+        get() = resources.getString(R.string.type_vol_down).toInt()
 
     /**
      * ***************************************************************

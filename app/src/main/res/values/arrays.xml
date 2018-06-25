@@ -10,8 +10,8 @@
         <item>@string/type_forward</item>
         <item>@string/type_menu</item>
         <item>@string/type_sleep</item>
-        <item>@string/prem_type_vol_up</item>
-        <item>@string/prem_type_vol_down</item>
+        <item>@string/type_vol_up</item>
+        <item>@string/type_vol_down</item>
     </string-array>
 
     <string-array name="no_action_names">
