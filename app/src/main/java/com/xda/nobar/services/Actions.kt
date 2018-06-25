@@ -58,7 +58,9 @@ class Actions : AccessibilityService(), Serializable {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (!IntroActivity.needsToRun(this)) {
-            app.uiHandler.setNodeInfoAndUpdate(event.source) //We're listening for any changes to the window state, so we send those updates onto the UIHandler
+            try {
+                app.uiHandler.setNodeInfoAndUpdate(event.source) //We're listening for any changes to the window state, so we send those updates onto the UIHandler
+            } catch (e: NullPointerException) {}
         }
     }
 
