@@ -212,6 +212,7 @@
     <string name="rx_java">RxJava/RxAndroid</string>
     <string name="tasker_plugin">Tasker Plugin Library</string>
     <string name="edge_sdk">Galaxy Edge SDK</string>
+    <string name="anr_watchdog">ANR-WatchDog</string>
 
     <!--Action Values-->
     <string name="type_no_action">-1</string>

@@ -43,4 +43,11 @@
             android:data="https://developer.samsung.com/galaxy/edge" />
     </Preference>
 
+    <Preference
+        android:title="@string/anr_watchdog">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://github.com/SalomonBrys/ANR-WatchDog" />
+    </Preference>
+
 </PreferenceScreen>
