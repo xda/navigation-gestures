@@ -13,6 +13,7 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.TypedValue
 import android.view.WindowManager
+import com.crashlytics.android.Crashlytics
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.IntroActivity
@@ -123,7 +124,9 @@ object Utils {
             map[app.actionUpHoldCenter] = upHoldCenter
             map[app.actionUpRight] = upRight
             map[app.actionUpHoldRight] = upHoldRight
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+            Crashlytics.logException(e)
+        }
     }
 
     /**

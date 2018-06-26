@@ -846,118 +846,111 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    beingTouched = false
+                    app.runAsync {
+                        beingTouched = false
 
-                    if (wasHidden) {
-                        isSwipeUp = false
-                    }
+                        if (wasHidden) {
+                            isSwipeUp = false
+                        }
 
-                    if (isSwipeUp || (isRunningLongUp &&  getSectionedUpHoldAction(origX) == app.typeNoAction)) {
-                        upHoldHandle?.cancel(true)
-                        upHoldHandle = null
-                        sendAction(app.actionUp)
-                    }
+                        if (isSwipeUp || (isRunningLongUp &&  getSectionedUpHoldAction(origX) == app.typeNoAction)) {
+                            upHoldHandle?.cancel(true)
+                            upHoldHandle = null
+                            sendAction(app.actionUp)
+                        }
 
-                    if (isSwipeLeft || (isRunningLongLeft && actionMap[app.actionLeftHold] == app.typeNoAction)) {
-                        leftHoldHandle?.cancel(true)
-                        leftHoldHandle = null
-                        sendAction(app.actionLeft)
-                    }
+                        if (isSwipeLeft || (isRunningLongLeft && actionMap[app.actionLeftHold] == app.typeNoAction)) {
+                            leftHoldHandle?.cancel(true)
+                            leftHoldHandle = null
+                            sendAction(app.actionLeft)
+                        }
 
-                    if (isSwipeRight || (isRunningLongRight && actionMap[app.actionRightHold] == app.typeNoAction)) {
-                        rightHoldHandle?.cancel(true)
-                        rightHoldHandle = null
-                        sendAction(app.actionRight)
-                    }
+                        if (isSwipeRight || (isRunningLongRight && actionMap[app.actionRightHold] == app.typeNoAction)) {
+                            rightHoldHandle?.cancel(true)
+                            rightHoldHandle = null
+                            sendAction(app.actionRight)
+                        }
 
-                    if (pill.translationX != 0f) {
-                        pill.animate()
-                                .translationX(0f)
-                                .setDuration(getAnimationDurationMs())
-                                .withEndAction {
-                                    if (params.x == getAdjustedHomeX()) {
+                        if (pill.translationX != 0f) {
+                            pill.animate()
+                                    .translationX(0f)
+                                    .setDuration(getAnimationDurationMs())
+                                    .withEndAction {
+                                        if (params.x == getAdjustedHomeX()) {
+                                            isActing = false
+                                            isSwipeLeft = false
+                                            isSwipeRight = false
+                                        }
+                                    }
+                                    .start()
+                        }
+
+                        when {
+                            params.y > getAdjustedHomeY() -> {
+                                val distance = (params.y - getAdjustedHomeY()).absoluteValue
+                                if (yDownAnimator != null) {
+                                    yDownAnimator?.cancel()
+                                    yDownAnimator = null
+                                }
+                                yDownAnimator = ValueAnimator.ofInt(params.y, getAdjustedHomeY())
+                                yDownAnimator?.interpolator = DecelerateInterpolator()
+                                yDownAnimator?.addUpdateListener {
+                                    params.y = it.animatedValue.toString().toInt()
+                                    updateLayout(params)
+                                }
+                                yDownAnimator?.addListener(object : AnimatorListenerAdapter() {
+                                    override fun onAnimationEnd(animation: Animator?) {
+                                        isActing = false
+                                        isSwipeUp = false
+                                        isCarryingOutTouchAction = false
+
+                                        yDownAnimator = null
+                                    }
+
+                                    override fun onAnimationCancel(animation: Animator?) {
+                                        onAnimationEnd(animation)
+                                    }
+                                })
+                                yDownAnimator?.duration = (time * distance / 100f).toLong()
+                                yDownAnimator?.start()
+                            }
+                            params.x < getAdjustedHomeX() || params.x > getAdjustedHomeX() -> {
+                                val distance = (params.x - getAdjustedHomeX()).absoluteValue
+                                val animator = ValueAnimator.ofInt(params.x, getAdjustedHomeX())
+                                animator.interpolator = DecelerateInterpolator()
+                                animator.addUpdateListener {
+                                    params.x = it.animatedValue.toString().toInt()
+                                    updateLayout(params)
+                                }
+                                animator.addListener(object : AnimatorListenerAdapter() {
+                                    override fun onAnimationEnd(animation: Animator?) {
                                         isActing = false
                                         isSwipeLeft = false
                                         isSwipeRight = false
+                                        isCarryingOutTouchAction = false
                                     }
-                                }
-                                .start()
+                                })
+                                animator.duration = (time * distance / 100f).toLong()
+                                animator.start()
+                            }
+                            else -> {
+                                isActing = false
+                                isSwipeUp = false
+                                isSwipeLeft = false
+                                isSwipeRight = false
+                                isCarryingOutTouchAction = false
+                            }
+                        }
+
+                        isRunningLongRight = false
+                        isRunningLongLeft = false
+                        isRunningLongUp = false
+
+                        wasHidden = isHidden
                     }
-
-                    when {
-                        params.y > getAdjustedHomeY() -> {
-                            val distance = (params.y - getAdjustedHomeY()).absoluteValue
-                            if (yDownAnimator != null) {
-                                yDownAnimator?.cancel()
-                                yDownAnimator = null
-                            }
-                            yDownAnimator = ValueAnimator.ofInt(params.y, getAdjustedHomeY())
-                            yDownAnimator?.interpolator = DecelerateInterpolator()
-                            yDownAnimator?.addUpdateListener {
-                                params.y = it.animatedValue.toString().toInt()
-                                updateLayout(params)
-                            }
-                            yDownAnimator?.addListener(object : AnimatorListenerAdapter() {
-                                override fun onAnimationEnd(animation: Animator?) {
-//                                            if (isSwipeUp) jiggleDown()
-//
-                                    isActing = false
-                                    isSwipeUp = false
-                                    isCarryingOutTouchAction = false
-
-                                    yDownAnimator = null
-                                }
-
-                                override fun onAnimationCancel(animation: Animator?) {
-                                    onAnimationEnd(animation)
-                                }
-                            })
-                            yDownAnimator?.duration = (time * distance / 100f).toLong()
-                            yDownAnimator?.start()
-                        }
-                        params.x < getAdjustedHomeX() || params.x > getAdjustedHomeX() -> {
-                            val distance = (params.x - getAdjustedHomeX()).absoluteValue
-                            val animator = ValueAnimator.ofInt(params.x, getAdjustedHomeX())
-                            animator.interpolator = DecelerateInterpolator()
-                            animator.addUpdateListener {
-                                params.x = it.animatedValue.toString().toInt()
-                                updateLayout(params)
-                            }
-                            animator.addListener(object : AnimatorListenerAdapter() {
-                                override fun onAnimationEnd(animation: Animator?) {
-//                                            if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
-//                                            if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
-
-                                    isActing = false
-                                    isSwipeLeft = false
-                                    isSwipeRight = false
-                                    isCarryingOutTouchAction = false
-                                }
-                            })
-                            animator.duration = (time * distance / 100f).toLong()
-                            animator.start()
-                        }
-                        else -> {
-//                                    if (isSwipeLeft && actionMap[app.actionLeft] != app.typeNoAction) jiggleRight()
-//                                    if (isSwipeRight && actionMap[app.actionRight] != app.typeNoAction) jiggleLeft()
-//                                    if (isSwipeUp) jiggleDown()
-
-                            isActing = false
-                            isSwipeUp = false
-                            isSwipeLeft = false
-                            isSwipeRight = false
-                            isCarryingOutTouchAction = false
-                        }
-                    }
-
-                    isRunningLongRight = false
-                    isRunningLongLeft = false
-                    isRunningLongUp = false
-
-                    wasHidden = isHidden
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    ultimateReturn = ultimateReturn || handlePotentialSwipe(ev)
+                    ultimateReturn = handlePotentialSwipe(ev)
 
                     if (isSwipeUp && !isSwipeLeft && !isSwipeRight) {
                         if (!isActing) isActing = true
