@@ -351,8 +351,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         else
                             WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
                 bar.params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
-                        WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
+                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
                 bar.params.format = PixelFormat.TRANSLUCENT
                 bar.params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 
