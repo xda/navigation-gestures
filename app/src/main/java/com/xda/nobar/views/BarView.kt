@@ -571,7 +571,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         val diff = (frame.left + frame.right) - screenSize.x
 
-        return getHomeX(context) - (diff / 2f).toInt()
+        return getHomeX(context) - if (immersiveNav) (diff / 2f).toInt() else 0
     }
 
     /**
