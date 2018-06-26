@@ -16,6 +16,7 @@ import android.support.v4.content.LocalBroadcastManager
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
 import android.view.inputmethod.InputMethodManager
 import com.xda.nobar.App
 import com.xda.nobar.R
@@ -57,10 +58,13 @@ class Actions : AccessibilityService(), Serializable {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
+        val source = event.source
+        val new = if (source != null) AccessibilityNodeInfo.obtain(source) else null
+
         app.runAsync {
             if (!IntroActivity.needsToRun(this)) {
                 try {
-                    app.uiHandler.setNodeInfoAndUpdate(event.source) //We're listening for any changes to the window state, so we send those updates onto the UIHandler
+                    app.uiHandler.setNodeInfoAndUpdate(new) //We're listening for any changes to the window state, so we send those updates onto the UIHandler
                 } catch (e: NullPointerException) {}
             }
         }

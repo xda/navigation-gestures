@@ -346,27 +346,30 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param alpha desired alpha level (0-1)
      */
     fun animate(listener: Animator.AnimatorListener?, alpha: Float) {
-        animate().alpha(alpha).setDuration(getAnimationDurationMs()).setListener(object : Animator.AnimatorListener {
-            override fun onAnimationCancel(animation: Animator?) {
-                listener?.onAnimationCancel(animation)
-            }
+        handler?.post {
+            animate().alpha(alpha).setDuration(getAnimationDurationMs())
+                    .setListener(object : Animator.AnimatorListener {
+                        override fun onAnimationCancel(animation: Animator?) {
+                            listener?.onAnimationCancel(animation)
+                        }
 
-            override fun onAnimationEnd(animation: Animator?) {
-                listener?.onAnimationEnd(animation)
-            }
+                        override fun onAnimationEnd(animation: Animator?) {
+                            listener?.onAnimationEnd(animation)
+                        }
 
-            override fun onAnimationRepeat(animation: Animator?) {
-                listener?.onAnimationRepeat(animation)
-            }
+                        override fun onAnimationRepeat(animation: Animator?) {
+                            listener?.onAnimationRepeat(animation)
+                        }
 
-            override fun onAnimationStart(animation: Animator?) {
-                listener?.onAnimationStart(animation)
-            }
-        })
-        .withEndAction {
-            this@BarView.alpha = alpha
+                        override fun onAnimationStart(animation: Animator?) {
+                            listener?.onAnimationStart(animation)
+                        }
+                    })
+                    .withEndAction {
+                        this@BarView.alpha = alpha
+                    }
+                    .start()
         }
-        .start()
     }
 
     private var hideHandle: ScheduledFuture<*>? = null
@@ -620,141 +623,143 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * The animation for a single tap on the pill
      */
     private fun jiggleTap() {
-        animate()
-                .scaleX(SCALE_MID)
-                .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    animate()
-                            .scaleX(SCALE_NORMAL)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .start()
-                    animateActiveLayer(BRIGHTEN_INACTIVE)
-                }
-                .start()
-        animateActiveLayer(BRIGHTEN_ACTIVE)
+        handler?.post {
+            animate()
+                    .scaleX(SCALE_MID)
+                    .setInterpolator(ENTER_INTERPOLATOR)
+                    .setDuration(getAnimationDurationMs())
+                    .withEndAction {
+                        animate()
+                                .scaleX(SCALE_NORMAL)
+                                .setInterpolator(EXIT_INTERPOLATOR)
+                                .setDuration(getAnimationDurationMs())
+                                .start()
+                        animateActiveLayer(BRIGHTEN_INACTIVE)
+                    }
+                    .start()
+            animateActiveLayer(BRIGHTEN_ACTIVE)
+        }
     }
 
     /**
      * The animation for a swipe-left and hold on the pill
      */
     private fun jiggleLeftHold() {
-        animate()
-                .scaleX(SCALE_SMALL)
-//                .alpha(ALPHA_ACTIVE)
-                .x(-width * (1 - SCALE_SMALL) / 2)
-                .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    animate()
-                            .scaleX(SCALE_NORMAL)
-                            .x(0f)
-//                            .alpha(ALPHA_INACTIVE)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .start()
-                    animateActiveLayer(BRIGHTEN_INACTIVE)
-                }
-        animateActiveLayer(BRIGHTEN_ACTIVE)
+        handler?.post {
+            animate()
+                    .scaleX(SCALE_SMALL)
+                    .x(-width * (1 - SCALE_SMALL) / 2)
+                    .setInterpolator(ENTER_INTERPOLATOR)
+                    .setDuration(getAnimationDurationMs())
+                    .withEndAction {
+                        animate()
+                                .scaleX(SCALE_NORMAL)
+                                .x(0f)
+                                .setInterpolator(EXIT_INTERPOLATOR)
+                                .setDuration(getAnimationDurationMs())
+                                .start()
+                        animateActiveLayer(BRIGHTEN_INACTIVE)
+                    }
+            animateActiveLayer(BRIGHTEN_ACTIVE)
+        }
     }
 
     /**
      * The animation for a swipe-right and hold on the pill
      */
     private fun jiggleRightHold() {
-        animate()
-                .scaleX(SCALE_SMALL)
-//                .alpha(ALPHA_ACTIVE)
-                .x(width * (1 - SCALE_SMALL) / 2)
-                .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    animate()
-                            .scaleX(SCALE_NORMAL)
-                            .x(0f)
-//                            .alpha(ALPHA_INACTIVE)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .start()
-                    animateActiveLayer(BRIGHTEN_INACTIVE)
-                }
-        animateActiveLayer(BRIGHTEN_ACTIVE)
+        handler?.post {
+            animate()
+                    .scaleX(SCALE_SMALL)
+                    .x(width * (1 - SCALE_SMALL) / 2)
+                    .setInterpolator(ENTER_INTERPOLATOR)
+                    .setDuration(getAnimationDurationMs())
+                    .withEndAction {
+                        animate()
+                                .scaleX(SCALE_NORMAL)
+                                .x(0f)
+                                .setInterpolator(EXIT_INTERPOLATOR)
+                                .setDuration(getAnimationDurationMs())
+                                .start()
+                        animateActiveLayer(BRIGHTEN_INACTIVE)
+                    }
+            animateActiveLayer(BRIGHTEN_ACTIVE)
+        }
     }
 
     /**
      * The animation for a long-press on the pill
      */
     private fun jiggleHold() {
-        animate()
-                .scaleX(SCALE_SMALL)
-//                .alpha(ALPHA_ACTIVE)
-                .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    animate()
-                            .scaleX(SCALE_NORMAL)
-//                            .alpha(ALPHA_INACTIVE)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .start()
-                    animateActiveLayer(BRIGHTEN_INACTIVE)
-                }
-                .start()
-        animateActiveLayer(BRIGHTEN_ACTIVE)
+        handler?.post {
+            animate()
+                    .scaleX(SCALE_SMALL)
+                    .setInterpolator(ENTER_INTERPOLATOR)
+                    .setDuration(getAnimationDurationMs())
+                    .withEndAction {
+                        animate()
+                                .scaleX(SCALE_NORMAL)
+                                .setInterpolator(EXIT_INTERPOLATOR)
+                                .setDuration(getAnimationDurationMs())
+                                .start()
+                        animateActiveLayer(BRIGHTEN_INACTIVE)
+                    }
+                    .start()
+            animateActiveLayer(BRIGHTEN_ACTIVE)
+        }
     }
 
     /**
      * The animation for an up-swipe and hold on the pill
      */
     private fun jiggleHoldUp() {
-        animate()
-                .scaleY(SCALE_SMALL)
-                .y(-height * (1 - SCALE_SMALL) / 2)
-//                .alpha(ALPHA_ACTIVE)
-                .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    animate()
-                            .scaleY(SCALE_NORMAL)
-                            .y(0f)
-//                            .alpha(ALPHA_INACTIVE)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .start()
-                    animateActiveLayer(BRIGHTEN_INACTIVE)
-                }
-                .start()
-        animateActiveLayer(BRIGHTEN_ACTIVE)
+        handler?.post {
+            animate()
+                    .scaleY(SCALE_SMALL)
+                    .y(-height * (1 - SCALE_SMALL) / 2)
+                    .setInterpolator(ENTER_INTERPOLATOR)
+                    .setDuration(getAnimationDurationMs())
+                    .withEndAction {
+                        animate()
+                                .scaleY(SCALE_NORMAL)
+                                .y(0f)
+                                .setInterpolator(EXIT_INTERPOLATOR)
+                                .setDuration(getAnimationDurationMs())
+                                .start()
+                        animateActiveLayer(BRIGHTEN_INACTIVE)
+                    }
+                    .start()
+            animateActiveLayer(BRIGHTEN_ACTIVE)
+        }
     }
 
     /**
      * The animation for a double-tap on the pill
      */
     private fun jiggleDoubleTap() {
-        animate()
-                .scaleX(SCALE_MID)
-//                .alpha(ALPHA_ACTIVE)
-                .setInterpolator(AccelerateInterpolator())
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    animate()
-                            .scaleX(SCALE_SMALL)
-                            .setInterpolator(ENTER_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .withEndAction {
-                                animate()
-                                        .scaleX(SCALE_NORMAL)
-//                                        .alpha(ALPHA_INACTIVE)
-                                        .setInterpolator(EXIT_INTERPOLATOR)
-                                        .setDuration(getAnimationDurationMs())
-                                        .start()
-                                animateActiveLayer(BRIGHTEN_INACTIVE)
-                            }
-                            .start()
-                }
-                .start()
-        animateActiveLayer(BRIGHTEN_ACTIVE)
+        handler?.post {
+            animate()
+                    .scaleX(SCALE_MID)
+                    .setInterpolator(AccelerateInterpolator())
+                    .setDuration(getAnimationDurationMs())
+                    .withEndAction {
+                        animate()
+                                .scaleX(SCALE_SMALL)
+                                .setInterpolator(ENTER_INTERPOLATOR)
+                                .setDuration(getAnimationDurationMs())
+                                .withEndAction {
+                                    animate()
+                                            .scaleX(SCALE_NORMAL)
+                                            .setInterpolator(EXIT_INTERPOLATOR)
+                                            .setDuration(getAnimationDurationMs())
+                                            .start()
+                                    animateActiveLayer(BRIGHTEN_INACTIVE)
+                                }
+                                .start()
+                    }
+                    .start()
+            animateActiveLayer(BRIGHTEN_ACTIVE)
+        }
     }
 
     /**
@@ -777,18 +782,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param duration the desired duration
      */
     fun vibrate(duration: Long) {
-        if (duration > 0) {
-            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        handler?.post {
+            if (duration > 0) {
+                val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-                vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
-            } else {
-                vibrator.vibrate(duration)
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
+                } else {
+                    vibrator.vibrate(duration)
+                }
             }
-        }
 
-        if (isSoundEffectsEnabled) {
-            playSoundEffect(SoundEffectConstants.CLICK)
+            if (isSoundEffectsEnabled) {
+                playSoundEffect(SoundEffectConstants.CLICK)
+            }
         }
     }
 
@@ -872,17 +879,19 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }
 
                         if (pill.translationX != 0f) {
-                            pill.animate()
-                                    .translationX(0f)
-                                    .setDuration(getAnimationDurationMs())
-                                    .withEndAction {
-                                        if (params.x == getAdjustedHomeX()) {
-                                            isActing = false
-                                            isSwipeLeft = false
-                                            isSwipeRight = false
+                            handler?.post {
+                                pill.animate()
+                                        .translationX(0f)
+                                        .setDuration(getAnimationDurationMs())
+                                        .withEndAction {
+                                            if (params.x == getAdjustedHomeX()) {
+                                                isActing = false
+                                                isSwipeLeft = false
+                                                isSwipeRight = false
+                                            }
                                         }
-                                    }
-                                    .start()
+                                        .start()
+                            }
                         }
 
                         when {
@@ -912,7 +921,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     }
                                 })
                                 yDownAnimator?.duration = (time * distance / 100f).toLong()
-                                yDownAnimator?.start()
+                                handler?.post { yDownAnimator?.start() }
                             }
                             params.x < getAdjustedHomeX() || params.x > getAdjustedHomeX() -> {
                                 val distance = (params.x - getAdjustedHomeX()).absoluteValue
@@ -931,7 +940,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     }
                                 })
                                 animator.duration = (time * distance / 100f).toLong()
-                                animator.start()
+                                handler?.post { animator.start() }
                             }
                             else -> {
                                 isActing = false
