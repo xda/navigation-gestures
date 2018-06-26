@@ -378,24 +378,27 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Remove the pill from the screen
      */
     fun removeBar(callListeners: Boolean = true) {
-        if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, false) }
+        handler.post {
+            if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, false) }
 
-        pillShown = false
-        bar.hide(object : Animator.AnimatorListener {
-            override fun onAnimationCancel(animation: Animator?) {}
+            pillShown = false
+            bar.hide(object : Animator.AnimatorListener {
+                override fun onAnimationCancel(animation: Animator?) {}
 
-            override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationRepeat(animation: Animator?) {}
 
-            override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationStart(animation: Animator?) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
-                try {
-                    wm.removeView(bar)
-                } catch (e: Exception) {}
-            }
-        })
+                override fun onAnimationEnd(animation: Animator?) {
+                    try {
+                        wm.removeView(bar)
+                    } catch (e: Exception) {
+                    }
+                }
+            })
 
-        if (!navHidden) stopService(Intent(this, ForegroundService::class.java))
+            if (!navHidden) stopService(Intent(this, ForegroundService::class.java))
+        }
     }
 
     fun toggleGestureBar() {
@@ -465,7 +468,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             Utils.forceNavBlack(this)
             Utils.forceTouchWizNavEnabled(this)
 
-            if (callListeners) navbarListeners.forEach { it.onNavStateChange(true) }
+            handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(true) } }
             navHidden = true
 
             ContextCompat.startForegroundService(this, Intent(this, ForegroundService::class.java))
@@ -479,7 +482,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         if (IntroActivity.hasWss(this)) {
             if (removeImmersive && Utils.useImmersiveWhenNavHidden(this)) Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
 
-            if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) }
+            handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
 
             IWindowManager.setOverscan(0, 0, 0, 0)
             Utils.clearBlackNav(this)
