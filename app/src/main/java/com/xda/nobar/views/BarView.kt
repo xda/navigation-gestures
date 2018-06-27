@@ -346,7 +346,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param alpha desired alpha level (0-1)
      */
     fun animate(listener: Animator.AnimatorListener?, alpha: Float) {
-        handler?.post {
+        app.handler.post {
             animate().alpha(alpha).setDuration(getAnimationDurationMs())
                     .setListener(object : Animator.AnimatorListener {
                         override fun onAnimationCancel(animation: Animator?) {
@@ -382,7 +382,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
 
         if (!beingTouched || overrideBeingTouched) {
-            handler?.post {
+            app.handler.post {
                 if (app.isPillShown()) {
                     isPillHidingOrShowing = true
 
@@ -421,7 +421,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private fun animateHide() {
-        handler?.post {
+        app.handler.post {
             pill.animate()
                     .translationY(pill.height.toFloat() / 2f)
                     .alpha(ALPHA_HIDDEN)
@@ -461,7 +461,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     fun showPill(autoReasonToRemove: String?) {
         if (autoReasonToRemove != null) hiddenPillReasons.removeAll(autoReasonToRemove)
-        handler?.post {
+        app.handler.post {
             if (app.isPillShown()) {
                 isPillHidingOrShowing = true
                 synchronized(hideLock) {
@@ -493,7 +493,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private fun animateShow() {
-        handler?.post {
+        app.handler.post {
             val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
             val time = (getAnimationDurationMs() * animDurScale)
 
@@ -502,7 +502,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             val animator = ValueAnimator.ofInt(params.y, navHeight)
 
             if (distance == 0) {
-                handler?.postDelayed(Runnable {
+                app.handler.postDelayed(Runnable {
                     isHidden = false
                     isPillHidingOrShowing = false
                 }, (if (getAnimationDurationMs() < 12) 12 else 0))
@@ -514,7 +514,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
                 animator.addListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
-                        handler?.postDelayed(Runnable {
+                        app.handler.postDelayed(Runnable {
                             isHidden = false
                             isPillHidingOrShowing = false
                         }, (if (getAnimationDurationMs() < 12) 12 else 0))
@@ -588,7 +588,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
     
     fun updateLayout(params: WindowManager.LayoutParams) {
-        handler?.post {
+        app.handler.post {
             try {
                 wm.updateViewLayout(this, params)
             } catch (e: Exception) {}
@@ -623,7 +623,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * The animation for a single tap on the pill
      */
     private fun jiggleTap() {
-        handler?.post {
+        app.handler.post {
             animate()
                     .scaleX(SCALE_MID)
                     .setInterpolator(ENTER_INTERPOLATOR)
@@ -645,7 +645,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * The animation for a swipe-left and hold on the pill
      */
     private fun jiggleLeftHold() {
-        handler?.post {
+        app.handler.post {
             animate()
                     .scaleX(SCALE_SMALL)
                     .x(-width * (1 - SCALE_SMALL) / 2)
@@ -668,7 +668,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * The animation for a swipe-right and hold on the pill
      */
     private fun jiggleRightHold() {
-        handler?.post {
+        app.handler.post {
             animate()
                     .scaleX(SCALE_SMALL)
                     .x(width * (1 - SCALE_SMALL) / 2)
@@ -691,7 +691,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * The animation for a long-press on the pill
      */
     private fun jiggleHold() {
-        handler?.post {
+        app.handler.post {
             animate()
                     .scaleX(SCALE_SMALL)
                     .setInterpolator(ENTER_INTERPOLATOR)
@@ -713,7 +713,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * The animation for an up-swipe and hold on the pill
      */
     private fun jiggleHoldUp() {
-        handler?.post {
+        app.handler.post {
             animate()
                     .scaleY(SCALE_SMALL)
                     .y(-height * (1 - SCALE_SMALL) / 2)
@@ -737,7 +737,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * The animation for a double-tap on the pill
      */
     private fun jiggleDoubleTap() {
-        handler?.post {
+        app.handler.post {
             animate()
                     .scaleX(SCALE_MID)
                     .setInterpolator(AccelerateInterpolator())
@@ -766,7 +766,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * This is called twice to "flash" the pill when an action is performed
      */
     fun animateActiveLayer(alpha: Float) {
-        handler?.post {
+        app.handler.post {
             pillFlash.apply {
                 val alphaRatio = Color.alpha(Utils.getPillBGColor(context)).toFloat() / 255f
                 animate()
@@ -782,7 +782,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param duration the desired duration
      */
     fun vibrate(duration: Long) {
-        handler?.post {
+        app.handler.post {
             if (duration > 0) {
                 val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
@@ -879,7 +879,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }
 
                         if (pill.translationX != 0f) {
-                            handler?.post {
+                            app.handler.post {
                                 pill.animate()
                                         .translationX(0f)
                                         .setDuration(getAnimationDurationMs())
@@ -921,7 +921,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     }
                                 })
                                 yDownAnimator?.duration = (time * distance / 100f).toLong()
-                                handler?.post { yDownAnimator?.start() }
+                                app.handler.post { yDownAnimator?.start() }
                             }
                             params.x < getAdjustedHomeX() || params.x > getAdjustedHomeX() -> {
                                 val distance = (params.x - getAdjustedHomeX()).absoluteValue
@@ -940,7 +940,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     }
                                 })
                                 animator.duration = (time * distance / 100f).toLong()
-                                handler?.post { animator.start() }
+                                app.handler.post { animator.start() }
                             }
                             else -> {
                                 isActing = false
@@ -974,7 +974,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                         if (upHoldHandle == null) {
                             upHoldHandle = pool.schedule({
-                                handler?.post {
+                                app.handler.post {
                                     isRunningLongUp = true
                                     sendAction(app.actionUpHold)
                                     isSwipeUp = false
@@ -1010,7 +1010,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         if (isSwipeLeft) {
                             if (leftHoldHandle == null) {
                                 leftHoldHandle = pool.schedule({
-                                    handler?.post {
+                                    app.handler.post {
                                         isRunningLongLeft = true
                                         sendAction(app.actionLeftHold)
                                         isSwipeLeft = false
@@ -1023,7 +1023,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         if (isSwipeRight) {
                             if (rightHoldHandle == null) {
                                 rightHoldHandle = pool.schedule({
-                                    handler?.post {
+                                    app.handler.post {
                                         isRunningLongRight = true
                                         sendAction(app.actionRightHold)
                                         isSwipeRight = false
@@ -1128,7 +1128,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             vibrate(getVibrationDuration().toLong())
 
-            if (key == app.actionDouble) handler?.postDelayed({ vibrate(getVibrationDuration().toLong()) }, getVibrationDuration().toLong())
+            if (key == app.actionDouble) app.handler.postDelayed({ vibrate(getVibrationDuration().toLong()) }, getVibrationDuration().toLong())
 
             if (which == app.typeHide) {
                 if (key == app.actionUp || key == app.actionUpHold) {
