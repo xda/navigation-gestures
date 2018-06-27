@@ -18,6 +18,7 @@ import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.inputmethod.InputMethodManager
+import com.crashlytics.android.Crashlytics
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
@@ -58,15 +59,17 @@ class Actions : AccessibilityService(), Serializable {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        val source = event.source
-        val new = if (source != null) AccessibilityNodeInfo.obtain(source) else null
+        try {
+            val source = event.source
+            val new = if (source != null) AccessibilityNodeInfo.obtain(source) else null
 
-        app.runAsync {
-            if (!IntroActivity.needsToRun(this)) {
-                try {
+            app.runAsync {
+                if (!IntroActivity.needsToRun(this)) {
                     app.uiHandler.setNodeInfoAndUpdate(new) //We're listening for any changes to the window state, so we send those updates onto the UIHandler
-                } catch (e: NullPointerException) {}
+                }
             }
+        } catch (e: NullPointerException) {
+            Crashlytics.logException(e)
         }
     }
 
