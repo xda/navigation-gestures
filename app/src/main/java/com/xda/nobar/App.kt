@@ -891,10 +891,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) -> {
                         if (wm.defaultDisplay.state == Display.STATE_ON) {
                             handler.postDelayed({
-                                val intent = Intent(this@App, IntroActivity::class.java)
-                                intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                startActivity(intent)
+                                if (IntroActivity.needsToRun(this@App)) {
+                                    val intent = Intent(this@App, IntroActivity::class.java)
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    startActivity(intent)
+                                }
 
                                 if (Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true) {
                                     addBar()
