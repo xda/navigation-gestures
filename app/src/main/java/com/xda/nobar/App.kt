@@ -889,13 +889,17 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     Settings.Global.getUriFor("navigationbar_use_theme_default") -> if (isNavBarHidden()
                             && IntroActivity.hasWss(this@App)) Utils.forceNavBlack(this@App)
                     Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) -> {
-                        val intent = Intent(this@App, IntroActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
+                        if (wm.defaultDisplay.state == Display.STATE_ON) {
+                            handler.postDelayed({
+                                val intent = Intent(this@App, IntroActivity::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                startActivity(intent)
 
-                        if (Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true) {
-                            addBar()
+                                if (Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true) {
+                                    addBar()
+                                }
+                            }, 100)
                         }
                     }
                 }
