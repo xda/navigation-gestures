@@ -557,7 +557,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if ((wm.defaultDisplay.rotation == Surface.ROTATION_90
                             || wm.defaultDisplay.rotation == Surface.ROTATION_270)
                     && !Utils.useTabletMode(context)) if (Utils.hideInFullscreen(context) && isImmersive) 0 else getHomeY(context)
-            else if (Utils.origBarInFullscreen(context)) 0 else Utils.getNavBarHeight(context) + if (Utils.hideInFullscreen(context) && isImmersive) 0 else Utils.getHomeY(context)
+            else if (Utils.origBarInFullscreen(context)) 0 else Utils.getNavBarHeight(context) + if (Utils.hideInFullscreen(context)) 0 else Utils.getHomeY(context)
         } else getHomeY(context)
     }
 

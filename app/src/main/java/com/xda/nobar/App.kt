@@ -604,14 +604,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                                 if (Utils.shouldUseOverscanMethod(this@App)) {
                                     disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.KEYGUARD)
                                 }
-                                if (areGesturesActivated() && !pillShown) addBar()
                             }
+
+                            if (areGesturesActivated()) addBar()
                         }
                         Intent.ACTION_USER_PRESENT -> {
                             if (Utils.shouldUseOverscanMethod(this@App)) {
                                 disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             }
-                            if (areGesturesActivated() && !pillShown) addBar()
+                            if (areGesturesActivated()) addBar()
                         }
                     }
                 }, 50)
