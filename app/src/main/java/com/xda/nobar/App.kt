@@ -11,10 +11,7 @@ import android.graphics.PixelFormat
 import android.graphics.Point
 import android.graphics.Rect
 import android.net.Uri
-import android.os.Build
-import android.os.Handler
-import android.os.IBinder
-import android.os.Looper
+import android.os.*
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.content.ContextCompat
@@ -22,8 +19,9 @@ import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
-import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.core.CrashlyticsCore
 import com.github.anrwatchdog.ANRWatchDog
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
@@ -37,6 +35,8 @@ import com.xda.nobar.views.BarView
 import com.xda.nobar.views.ImmersiveHelperView
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import java.io.PrintWriter
+import java.io.StringWriter
 import kotlin.math.absoluteValue
 
 
@@ -197,7 +197,20 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         val watchDog = ANRWatchDog()
         watchDog.start()
         watchDog.setANRListener {
-            Crashlytics.logException(it)
+            val sWriter = StringWriter()
+            val pWriter = PrintWriter(sWriter)
+
+            it.printStackTrace(pWriter)
+
+            val bundle = Bundle()
+            bundle.putString("message", it.message)
+            bundle.putString("trace", sWriter.toString())
+
+            sWriter.close()
+            pWriter.close()
+
+            FirebaseAnalytics.getInstance(this).logEvent("ANR", bundle)
+            CrashlyticsCore.getInstance().logException(it)
         }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
