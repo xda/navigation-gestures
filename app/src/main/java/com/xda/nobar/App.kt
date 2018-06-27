@@ -538,7 +538,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     }
 
     fun runAsync(action: () -> Unit, listener: (() -> Unit)?) {
-        val thread = Schedulers.newThread()
+        val thread = Schedulers.io()
         Observable.fromCallable(action)
                 .subscribeOn(thread)
                 .observeOn(thread)
