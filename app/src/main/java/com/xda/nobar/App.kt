@@ -216,11 +216,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         immersiveHelper = ImmersiveHelper(this)
 
-        if (!Utils.canRunHiddenCommands(this)) {
+        if (!Utils.canRunHiddenCommands(this) || IntroActivity.needsToRun(this)) {
             val intent = Intent(this, IntroActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
-            return
         }
 
         wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -228,8 +227,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         bar = BarView(this)
         immersiveHelperView = ImmersiveHelperView(this)
         stateHandler = ScreenStateHandler()
-        carModeHandler = CarModeHandler()
         uiHandler = UIHandler()
+        carModeHandler = CarModeHandler()
         premiumInstallListener = PremiumInstallListener()
         rootServiceIntent = Intent(this, RootService::class.java)
 
@@ -686,6 +685,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_color"), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_current_color"), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_use_theme_default"), true, this)
+            contentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, this)
 
             bar.immersiveNav = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)?.contains("navigation") ?: false
         }
@@ -864,29 +864,40 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         override fun onChange(selfChange: Boolean, uri: Uri?) {
             runAsync {
-                if (uri == Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL)) {
-                    val current = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL) ?: ""
+                when (uri) {
+                    Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL) -> {
+                        val current = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL) ?: ""
 
-                    bar.immersiveNav = current.contains("nav")
-                    handleImmersiveChange(current.contains("full"))
-                }
-                if (uri == Settings.Global.getUriFor("navigationbar_hide_bar_enabled")) {
-                    if (Utils.shouldUseOverscanMethod(this@App)) {
-                        try {
-                            val current = Settings.Global.getInt(contentResolver, "navigationbar_hide_bar_enabled")
-
-                            if (current != 0) {
-                                Settings.Global.putInt(contentResolver, "navigationbar_hide_bar_enabled", 0)
-
-                                Toast.makeText(this@App, resources.getText(R.string.feature_not_avail), Toast.LENGTH_SHORT).show()
-                            }
-                        } catch (e: Settings.SettingNotFoundException) {}
+                        bar.immersiveNav = current.contains("nav")
+                        handleImmersiveChange(current.contains("full"))
                     }
-                }
-                if (uri == Settings.Global.getUriFor("navigationbar_color")
-                        || uri == Settings.Global.getUriFor("navigationbar_current_color")
-                        || uri == Settings.Global.getUriFor("navigationbar_use_theme_default")) {
-                    if (isNavBarHidden()) Utils.forceNavBlack(this@App)
+                    Settings.Global.getUriFor("navigationbar_hide_bar_enabled") -> {
+                        if (Utils.shouldUseOverscanMethod(this@App) && IntroActivity.hasWss(this@App)) {
+                            try {
+                                val current = Settings.Global.getInt(contentResolver, "navigationbar_hide_bar_enabled")
+
+                                if (current != 0) {
+                                    Settings.Global.putInt(contentResolver, "navigationbar_hide_bar_enabled", 0)
+
+                                    Toast.makeText(this@App, resources.getText(R.string.feature_not_avail), Toast.LENGTH_SHORT).show()
+                                }
+                            } catch (e: Settings.SettingNotFoundException) {}
+                        }
+                    }
+                    Settings.Global.getUriFor("navigationbar_color"),
+                    Settings.Global.getUriFor("navigationbar_current_color"),
+                    Settings.Global.getUriFor("navigationbar_use_theme_default") -> if (isNavBarHidden()
+                            && IntroActivity.hasWss(this@App)) Utils.forceNavBlack(this@App)
+                    Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) -> {
+                        val intent = Intent(this@App, IntroActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+
+                        if (Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true) {
+                            addBar()
+                        }
+                    }
                 }
             }
         }

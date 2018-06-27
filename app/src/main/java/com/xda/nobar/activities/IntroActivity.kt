@@ -123,6 +123,7 @@ class IntroActivity : IntroActivity() {
                             .buttonCtaClickListener {
                                 val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
                                 intent.data = Uri.parse("package:$packageName")
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
                                 try {
                                     startActivity(intent)
@@ -144,6 +145,7 @@ class IntroActivity : IntroActivity() {
                             .buttonCtaLabel(R.string.grant)
                             .buttonCtaClickListener {
                                 val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
                                 try {
                                     startActivity(intent)
