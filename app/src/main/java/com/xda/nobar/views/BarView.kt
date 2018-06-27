@@ -415,8 +415,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         } else {
             needsScheduledHide = true
-            app.handler.post { hideHandle?.cancel(true) }
-            hideHandle = null
+            app.handler.post {
+                hideHandle?.cancel(true)
+                hideHandle = null
+            }
         }
     }
 
@@ -861,20 +863,26 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }
 
                         if (isSwipeUp || (isRunningLongUp &&  getSectionedUpHoldAction(origX) == app.typeNoAction)) {
-                            app.handler.post { upHoldHandle?.cancel(true) }
-                            upHoldHandle = null
+                            app.handler.post {
+                                upHoldHandle?.cancel(true)
+                                upHoldHandle = null
+                            }
                             sendAction(app.actionUp)
                         }
 
                         if (isSwipeLeft || (isRunningLongLeft && actionMap[app.actionLeftHold] == app.typeNoAction)) {
-                            app.handler.post { leftHoldHandle?.cancel(true) }
-                            leftHoldHandle = null
+                            app.handler.post {
+                                leftHoldHandle?.cancel(true)
+                                leftHoldHandle = null
+                            }
                             sendAction(app.actionLeft)
                         }
 
                         if (isSwipeRight || (isRunningLongRight && actionMap[app.actionRightHold] == app.typeNoAction)) {
-                            app.handler.post { rightHoldHandle?.cancel(true) }
-                            rightHoldHandle = null
+                            app.handler.post {
+                                rightHoldHandle?.cancel(true)
+                                rightHoldHandle = null
+                            }
                             sendAction(app.actionRight)
                         }
 
@@ -898,8 +906,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             params.y > getAdjustedHomeY() -> {
                                 val distance = (params.y - getAdjustedHomeY()).absoluteValue
                                 if (yDownAnimator != null) {
-                                    app.handler.post { yDownAnimator?.cancel() }
-                                    yDownAnimator = null
+                                    app.handler.post {
+                                        yDownAnimator?.cancel()
+                                        yDownAnimator = null
+                                    }
                                 }
                                 yDownAnimator = ValueAnimator.ofInt(params.y, getAdjustedHomeY())
                                 yDownAnimator?.interpolator = DecelerateInterpolator()
@@ -1132,8 +1142,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             if (which == app.typeHide) {
                 if (key == app.actionUp || key == app.actionUpHold) {
-                    app.handler.post { yDownAnimator?.cancel() }
-                    yDownAnimator = null
+                    app.handler.post {
+                        yDownAnimator?.cancel()
+                        yDownAnimator = null
+                    }
                 }
                 hidePill(false, null, true)
                 return
