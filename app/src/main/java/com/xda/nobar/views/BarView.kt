@@ -533,7 +533,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             marginStart = margins.left
             marginEnd = margins.right
 
-            pill.layoutParams = pill.layoutParams
+            app.handler.post { pill.layoutParams = pill.layoutParams }
         }
     }
 
