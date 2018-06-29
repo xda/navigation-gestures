@@ -679,6 +679,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     inner class UIHandler : ContentObserver(handler), View.OnSystemUiVisibilityChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
         private var oldRot = Surface.ROTATION_0
         private var isActing = false
+        private var hadAccessibility = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
 
         init {
             contentResolver.registerContentObserver(Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL), true, this)
@@ -892,15 +893,20 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) -> {
                         if (wm.defaultDisplay.state == Display.STATE_ON) {
                             handler.postDelayed({
-                                if (IntroActivity.needsToRun(this@App)) {
-                                    val intent = Intent(this@App, IntroActivity::class.java)
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    startActivity(intent)
-                                }
+                                val enabled = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
+                                if (enabled != hadAccessibility) {
+                                    hadAccessibility = enabled
 
-                                if (Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true) {
-                                    addBar()
+                                    if (IntroActivity.needsToRun(this@App)) {
+                                        val intent = Intent(this@App, IntroActivity::class.java)
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        startActivity(intent)
+                                    }
+
+                                    if (enabled) {
+                                        addBar()
+                                    }
                                 }
                             }, 100)
                         }
