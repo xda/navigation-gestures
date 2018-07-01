@@ -200,13 +200,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         watchDog.start()
         watchDog.setANRListener {
             val sWriter = StringWriter()
-            val pWriter = PrintWriter(sWriter)
+            val pWriter = PrintWriter(sWriter, true)
 
             it.printStackTrace(pWriter)
 
             val bundle = Bundle()
             bundle.putString("message", it.message)
-            bundle.putString("trace", sWriter.toString())
+            bundle.putString("trace", sWriter.buffer.toString())
 
             sWriter.close()
             pWriter.close()
