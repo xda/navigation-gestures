@@ -34,6 +34,7 @@ import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.ImmersiveHelperView
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -553,7 +554,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         val thread = Schedulers.io()
         Observable.fromCallable(action)
                 .subscribeOn(thread)
-                .observeOn(thread)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     thread.createWorker().dispose()
                     listener?.invoke()
@@ -894,19 +895,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         if (wm.defaultDisplay.state == Display.STATE_ON) {
                             handler.postDelayed({
                                 val enabled = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
-                                if (enabled != hadAccessibility) {
-                                    hadAccessibility = enabled
-
-                                    if (IntroActivity.needsToRun(this@App)) {
-                                        val intent = Intent(this@App, IntroActivity::class.java)
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                        startActivity(intent)
-                                    }
-
-                                    if (enabled) {
-                                        addBar()
-                                    }
+                                if (enabled) {
+                                    addBar()
                                 }
                             }, 100)
                         }

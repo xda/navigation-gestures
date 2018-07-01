@@ -11,7 +11,6 @@ open class DisabledReasonManager : TreeSet<String>() {
         const val CAR_MODE = "car_mode"
         const val KEYGUARD = "keyguard"
         const val IMMERSIVE = "immersive"
-        const val EDGE_LIGHTING = "edge_lighting"
     }
 
     object PillReasons {
@@ -23,12 +22,16 @@ open class DisabledReasonManager : TreeSet<String>() {
         const val EDGE_SCREEN = "edge"
     }
 
+    private val lock = Any()
+
     override fun add(element: String): Boolean {
         return if (!contains(element)) super.add(element)
         else false
     }
 
     fun removeAll(element: String): Boolean {
-        return removeAll(Collections.singleton(element))
+        synchronized(lock) {
+            return removeAll(Collections.singleton(element))
+        }
     }
 }
