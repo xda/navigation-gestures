@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
+import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.github.anrwatchdog.ANRWatchDog
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -235,6 +236,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         premiumHelper = PremiumHelper(this, OnLicenseCheckResultListener { valid, reason ->
             Log.e("NoBar", reason)
+
+            val bundle = Bundle()
+            bundle.putBoolean("valid", valid)
+            bundle.putString("reason", reason)
+
+            FirebaseAnalytics.getInstance(this).logEvent("license_event", bundle)
+
             isValidPremium = valid
             prefs.edit().putBoolean("valid_prem", valid).apply()
 
