@@ -97,8 +97,10 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
     }
 
     override fun onResult(valid: Boolean, reason: String?) {
-        premStatus.setTextColor(if (valid) Color.GREEN else Color.RED)
-        premStatus.text = resources.getText(if (valid) R.string.installed else R.string.not_found)
+        runOnUiThread {
+            premStatus.setTextColor(if (valid) Color.GREEN else Color.RED)
+            premStatus.text = resources.getText(if (valid) R.string.installed else R.string.not_found)
+        }
     }
 
     override fun onDestroy() {

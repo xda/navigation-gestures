@@ -37,6 +37,7 @@ import com.xda.nobar.views.ImmersiveHelperView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.apache.commons.lang3.exception.ExceptionUtils
 import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.math.absoluteValue
@@ -199,20 +200,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         val watchDog = ANRWatchDog()
         watchDog.start()
         watchDog.setANRListener {
-            val sWriter = StringWriter()
-            val pWriter = PrintWriter(sWriter, true)
-
-            it.printStackTrace(pWriter)
-
             val bundle = Bundle()
             bundle.putString("message", it.message)
-            bundle.putString("trace", sWriter.buffer.toString())
-
-            sWriter.close()
-            pWriter.close()
+            bundle.putString("trace", ExceptionUtils.getStackTrace(it))
 
             FirebaseAnalytics.getInstance(this).logEvent("ANR", bundle)
-            CrashlyticsCore.getInstance().logException(it)
+            Crashlytics.logException(it)
         }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)

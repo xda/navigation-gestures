@@ -26,20 +26,19 @@ class PremiumHelper(private val context: Context, private val listener: OnLicens
         )
     }
 
+    private val premContext = if (isCompanionInstalled) context.createPackageContext(COMPANION_PACKAGE, 0) else null
+
     private val isCompanionInstalled: Boolean
         get() {
             return try {
-                context.packageManager.getPackageInfo(COMPANION_PACKAGE, 0)
-                true
+                context.packageManager.getApplicationInfo(COMPANION_PACKAGE, 0).enabled
             } catch (e: PackageManager.NameNotFoundException) {
                 false
             }
         }
 
-    private val checker = PiracyChecker(context.applicationContext)
-            .enableSigningCertificate("XbHBiv0+y/+w8q0KNdKP/6EQT54=")
+    private val checker = PiracyChecker(premContext ?: context.applicationContext)
             .enableGooglePlayLicensing("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzXiFD3XTGpPsUCcb6ipshaHZ0U6VKeW8oxTKPH4p90lqvumLqBZA4EACg+icC9aeHPpPNA9Qd3X+h8KScQWvZoCbgXF7HWJnCMrBBxTrK7VGIIRzSvrQvV/ESyjVj7f7HhkfDFCqZy/AQqqAXLtSTQUU3mVcjEuggaYgKODwZlQFm12yb+aNuG6vZvR9B8onK8lzaJNgLATbTh165VjnWDy5Xcu8IJgNB1wRynvfPXVoo+jPgiIXyIC3s3KzzA9ySPxdfZ4DCiWDecDaLLxZN7WYhJruCYn5Ph/rxE9+cl65zBsoujQS7c7nX4CbTLSEkt6My+3m/S9sNzbMjcvVIwIDAQAB")
-            .enableInstallerId(InstallerID.GOOGLE_PLAY)
             .callback(object : PiracyCheckerCallback() {
                 override fun dontAllow(error: PiracyCheckerError, app: PirateApp?) {
                     listener.onResult(false, error.toString())
