@@ -207,13 +207,28 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         watchDog.setReportMainThreadOnly()
         watchDog.start()
         watchDog.setANRListener {
+            val builder = StringBuilder()
             val traceString = ExceptionUtils.getStackTrace(it)
+
+            builder.append("*******\n")
+            builder.append("Time (ms): ${System.currentTimeMillis()}\n")
+            builder.append("Version Name: ${BuildConfig.VERSION_NAME}\n")
+            builder.append("Version Code: ${BuildConfig.VERSION_CODE}\n")
+            builder.append("Brand: ${Build.BRAND}\n")
+            builder.append("Manufacturer: ${Build.MANUFACTURER}\n")
+            builder.append("Device: ${Build.DEVICE}\n")
+            builder.append("Model: ${Build.MODEL}\n")
+            builder.append("Board ${Build.BOARD}\n")
+            builder.append("SDK Int: ${Build.VERSION.SDK_INT}\n")
+            builder.append("*******\n")
+            builder.append("\n\n")
+            builder.append(traceString)
 
             Log.e("NoBar ANR", traceString)
 
             val bundle = Bundle()
             bundle.putString("message", it.message)
-            bundle.putString("trace", traceString)
+            bundle.putString("trace", builder.toString())
 
             FirebaseAnalytics.getInstance(this).logEvent("ANR", bundle)
             Crashlytics.logException(it)
@@ -222,7 +237,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             date.timeZone = TimeZone.getTimeZone("GMT -0400")
 
             val anrRef = storageRef.child("anrs/${date.format(Date())}.txt")
-            anrRef.putStream(traceString.byteInputStream())
+            anrRef.putStream(builder.toString().byteInputStream())
         }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
