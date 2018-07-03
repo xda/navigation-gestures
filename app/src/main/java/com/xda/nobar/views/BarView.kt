@@ -70,6 +70,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private const val THIRD_SECTION = 2
     }
 
+    var view: View = View.inflate(context, R.layout.pill, this)
+    var pill: LinearLayout = view.findViewById(R.id.pill)
+    var pillFlash: LinearLayout = pill.findViewById(R.id.pill_tap_flash)
+    var yDownAnimator: ValueAnimator? = null
+
     val params: WindowManager.LayoutParams = WindowManager.LayoutParams().apply {
         width = Utils.getCustomWidth(context)
         height = Utils.getCustomHeight(context)
@@ -172,11 +177,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private var queuedLayoutUpdate: (() -> Unit)? = null
     private var needsScheduledHide = false
 
-    var view: View
-    var pill: LinearLayout
-    var pillFlash: LinearLayout
-    var yDownAnimator: ValueAnimator? = null
-
     private val hideLock = Any()
 
     constructor(context: Context) : super(context)
@@ -186,9 +186,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     init {
         alpha = ALPHA_GONE
-        view = View.inflate(context, R.layout.pill, this)
-        pill = view.findViewById(R.id.pill)
-        pillFlash = pill.findViewById(R.id.pill_tap_flash)
 
         gestureDetector.loadActionMap()
     }
