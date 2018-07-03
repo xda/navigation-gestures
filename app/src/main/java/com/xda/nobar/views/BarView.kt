@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -69,7 +70,35 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private const val THIRD_SECTION = 2
     }
 
-    val params: WindowManager.LayoutParams = WindowManager.LayoutParams()
+    val params: WindowManager.LayoutParams = WindowManager.LayoutParams().apply {
+        width = Utils.getCustomWidth(context)
+        height = Utils.getCustomHeight(context)
+        gravity = Gravity.CENTER or Gravity.BOTTOM
+        y = getAdjustedHomeY()
+        x = getAdjustedHomeX()
+        type =
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                else
+                    WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
+        flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+        format = PixelFormat.TRANSLUCENT
+        softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+
+        if (Utils.dontMoveForKeyboard(context)) {
+            flags = flags or
+                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
+                    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+            softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+        }
+
+        if (Utils.largerHitbox(context)) {
+            val margins = getPillMargins()
+            margins.top = resources.getDimensionPixelSize(R.dimen.pill_margin_top_large_hitbox)
+            changePillMargins(margins)
+        }
+    }
     val hiddenPillReasons = HiddenPillReasonManager()
 
     private val app = context.applicationContext as App
