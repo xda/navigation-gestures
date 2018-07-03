@@ -23,6 +23,7 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.github.anrwatchdog.ANRWatchDog
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.storage.FirebaseStorage
 import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
@@ -40,6 +41,8 @@ import io.reactivex.schedulers.Schedulers
 import org.apache.commons.lang3.exception.ExceptionUtils
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.absoluteValue
 
 
@@ -197,15 +200,29 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     override fun onCreate() {
         super.onCreate()
 
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.reference
+
         val watchDog = ANRWatchDog()
+        watchDog.setReportMainThreadOnly()
         watchDog.start()
         watchDog.setANRListener {
+            val traceString = ExceptionUtils.getStackTrace(it)
+
+            Log.e("NoBar ANR", traceString)
+
             val bundle = Bundle()
             bundle.putString("message", it.message)
-            bundle.putString("trace", ExceptionUtils.getStackTrace(it))
+            bundle.putString("trace", traceString)
 
             FirebaseAnalytics.getInstance(this).logEvent("ANR", bundle)
             Crashlytics.logException(it)
+
+            val date = SimpleDateFormat("YYY_mm_dd_HH_mm_ss", Locale.US)
+            date.timeZone = TimeZone.getTimeZone("GMT -0400")
+
+            val anrRef = storageRef.child("anrs/${date.format(Date())}.txt")
+            anrRef.putStream(traceString.byteInputStream())
         }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
