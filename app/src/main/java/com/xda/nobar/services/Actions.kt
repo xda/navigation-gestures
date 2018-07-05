@@ -60,14 +60,7 @@ class Actions : AccessibilityService(), Serializable {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         try {
-            val source = event.source
-            val new = if (source != null) AccessibilityNodeInfo.obtain(source) else null
-
-            app.runAsync {
-                if (!IntroActivity.needsToRun(this)) {
-                    app.uiHandler.setNodeInfoAndUpdate(new) //We're listening for any changes to the window state, so we send those updates onto the UIHandler
-                }
-            }
+            app.uiHandler.setNodeInfoAndUpdate(event.source)
         } catch (e: NullPointerException) {
             Crashlytics.logException(e)
         }

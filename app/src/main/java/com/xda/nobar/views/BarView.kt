@@ -80,8 +80,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         width = Utils.getCustomWidth(context)
         height = Utils.getCustomHeight(context)
         gravity = Gravity.CENTER or Gravity.BOTTOM
-        y = getAdjustedHomeY()
-        x = getAdjustedHomeX()
         type =
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -105,6 +103,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             changePillMargins(margins)
         }
     }
+        get() = field.apply {
+            y = getAdjustedHomeY()
+            x = getAdjustedHomeX()
+        }
+
     val hiddenPillReasons = HiddenPillReasonManager()
 
     private val gestureDetector = GestureManager()

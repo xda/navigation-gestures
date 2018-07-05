@@ -700,7 +700,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         fun setNodeInfoAndUpdate(info: AccessibilityNodeInfo?) {
             onGlobalLayout()
-            if (info != null) handleNewNodeInfo(info)
+            handleNewNodeInfo(info ?: return)
         }
 
         @SuppressLint("WrongConstant")
