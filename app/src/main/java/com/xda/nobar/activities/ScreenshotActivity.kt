@@ -118,7 +118,7 @@ class ScreenshotActivity : AppCompatActivity() {
 
     private fun createVirtualDisplay() {
         val size = Point()
-        mainDisplay.getSize(size)
+        mainDisplay.getRealSize(size)
 
         width = size.x
         height = size.y
@@ -146,7 +146,7 @@ class ScreenshotActivity : AppCompatActivity() {
             var bitmap: Bitmap? = null
 
             try {
-                if (count < 1) { //make sure we ony get one image
+                if (count < 1) { //make sure we only get one image
                     runOnUiThread {
                         val flasher = LinearLayout(this@ScreenshotActivity).apply {
                             setBackgroundColor(Color.WHITE)
