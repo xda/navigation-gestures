@@ -805,13 +805,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             if (!isNavBarHidden() && Utils.shouldUseOverscanMethod(this@App)) hideNav()
 
             if (isPillShown()) {
-                val rot = wm.defaultDisplay.rotation
-                if (oldRot != rot) {
-                    runAsync {
+                runAsync {
+                    val rot = wm.defaultDisplay.rotation
+                    if (oldRot != rot) {
                         handleRot()
-                    }
 
-                    oldRot = rot
+                        oldRot = rot
+                    }
                 }
 
                 if (!isActing) {
