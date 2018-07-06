@@ -289,9 +289,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         if (!IntroActivity.needsToRun(this)) {
             wm.addView(immersiveHelperView, immersiveHelperView.params)
             uiHandler.onGlobalLayout()
+            immersiveHelperView.viewTreeObserver.addOnGlobalLayoutListener(uiHandler)
         }
-
-        immersiveHelperView.viewTreeObserver.addOnGlobalLayoutListener(uiHandler)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
@@ -934,11 +933,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         fun handleRot() {
             runAsync {
-                bar.params.x = bar.getAdjustedHomeX()
-                bar.params.y = bar.getAdjustedHomeY()
-                bar.params.width = Utils.getCustomWidth(this@App)
-                bar.params.height = Utils.getCustomHeight(this@App)
-                bar.updateLayout(bar.params)
+                if (pillShown) {
+                    bar.params.x = bar.getAdjustedHomeX()
+                    bar.params.y = bar.getAdjustedHomeY()
+                    bar.params.width = Utils.getCustomWidth(this@App)
+                    bar.params.height = Utils.getCustomHeight(this@App)
+                    bar.updateLayout(bar.params)
+                }
             }
 
             if (Utils.shouldUseOverscanMethod(this@App)) {
