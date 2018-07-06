@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
+import com.android.internal.R.attr.*
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.github.anrwatchdog.ANRWatchDog
@@ -382,6 +383,36 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     fun addBar(callListeners: Boolean = true) {
         if (disabledBarReasonManager.isEmpty()) {
             handler.post {
+                bar.params.apply {
+                    y = bar.getAdjustedHomeY()
+                    x = bar.getAdjustedHomeX()
+                    width = Utils.getCustomWidth(this@App)
+                    height = Utils.getCustomHeight(this@App)
+                    gravity = Gravity.CENTER or Gravity.BOTTOM
+                    type =
+                            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
+                                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                            else
+                                WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
+                    flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                    format = PixelFormat.TRANSLUCENT
+                    softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+
+                    if (Utils.dontMoveForKeyboard(this@App)) {
+                        flags = flags or
+                                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
+                                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+                        softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+                    }
+
+                    if (Utils.largerHitbox(this@App)) {
+                        val margins = bar.getPillMargins()
+                        margins.top = resources.getDimensionPixelSize(R.dimen.pill_margin_top_large_hitbox)
+                        bar.changePillMargins(margins)
+                    }
+                }
+
                 pillShown = true
                 if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, true) }
 
