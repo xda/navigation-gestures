@@ -288,10 +288,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         if (!IntroActivity.needsToRun(this)) {
             wm.addView(immersiveHelperView, immersiveHelperView.params)
+            uiHandler.onGlobalLayout()
         }
 
         immersiveHelperView.viewTreeObserver.addOnGlobalLayoutListener(uiHandler)
-        uiHandler.onGlobalLayout()
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
