@@ -708,4 +708,6 @@ object Utils {
     fun useFullOverscan(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("full_overscan", false)
+
+    fun checkTouchWiz(context: Context) = context.packageManager.hasSystemFeature("com.samsung.feature.samsung_experience_mobile")
 }

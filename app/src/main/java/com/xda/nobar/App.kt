@@ -234,7 +234,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             FirebaseAnalytics.getInstance(this).logEvent("ANR", bundle)
             Crashlytics.logException(it)
 
-            val date = SimpleDateFormat("YYY_mm_dd_HH_mm_ss", Locale.US)
+            val date = SimpleDateFormat("yyyy_mm_dd_HH_mm_ss", Locale.US)
             date.timeZone = TimeZone.getTimeZone("GMT -0400")
 
             val anrRef = storageRef.child("anrs/${date.format(Date())}.txt")
@@ -513,7 +513,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 uiHandler.handleRot()
             }
             Utils.forceNavBlack(this)
-            Utils.forceTouchWizNavEnabled(this)
+            if (Utils.checkTouchWiz(this)) {
+                Utils.forceTouchWizNavEnabled(this)
+            }
 
             handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(true) } }
             navHidden = true
@@ -533,7 +535,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
             IWindowManager.setOverscan(0, 0, 0, 0)
             Utils.clearBlackNav(this)
-            Utils.undoForceTouchWizNavEnabled(this)
+
+            if (Utils.checkTouchWiz(this)) {
+                Utils.undoForceTouchWizNavEnabled(this)
+            }
 
             navHidden = false
 
@@ -715,7 +720,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     inner class UIHandler : ContentObserver(handler), View.OnSystemUiVisibilityChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
         private var oldRot = Surface.ROTATION_0
         private var isActing = false
-        private var hadAccessibility = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
 
         init {
             contentResolver.registerContentObserver(Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL), true, this)
@@ -803,7 +807,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
         @SuppressLint("WrongConstant")
         override fun onGlobalLayout() {
-            if (packageManager.hasSystemFeature("com.samsung.feature.samsung_experience_mobile")) {
+            if (Utils.checkTouchWiz(this@App)) {
                 runAsync {
                     try {
                         val SemCocktailBarManager = Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
@@ -965,11 +969,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         fun handleRot() {
             runAsync {
                 if (pillShown) {
-                    bar.params.x = bar.getAdjustedHomeX()
-                    bar.params.y = bar.getAdjustedHomeY()
-                    bar.params.width = Utils.getCustomWidth(this@App)
-                    bar.params.height = Utils.getCustomHeight(this@App)
-                    bar.updateLayout(bar.params)
+                    try {
+                        bar.params.x = bar.getAdjustedHomeX()
+                        bar.params.y = bar.getAdjustedHomeY()
+                        bar.params.width = Utils.getCustomWidth(this@App)
+                        bar.params.height = Utils.getCustomHeight(this@App)
+                        bar.updateLayout(bar.params)
+                    } catch (e: NullPointerException) {}
                 }
             }
 

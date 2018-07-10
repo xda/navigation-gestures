@@ -10,8 +10,8 @@ apply plugin: 'base'
 
 apply plugin: 'com.google.firebase.firebase-perf'
 
-project.version = 34
-def name = "1.2.0"
+project.version = 35
+def name = "1.3.0"
 
 preBuild {
     delete "${rootDir}/app/release/"
