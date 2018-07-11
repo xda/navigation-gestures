@@ -1,11 +1,14 @@
 package com.xda.nobar.util
 
+import org.apache.commons.collections4.list.SetUniqueList
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 /**
  * Base class for managing the reasons for why certain features are currently disabled
  */
-open class DisabledReasonManager : TreeSet<String>() {
+open class DisabledReasonManager : SetUniqueList<String>(ArrayList<String>(), HashSet<String>()) {
     object NavBarReasons {
         const val NAV_BLACKLIST = "nav_blacklist"
         const val CAR_MODE = "car_mode"
@@ -22,16 +25,8 @@ open class DisabledReasonManager : TreeSet<String>() {
         const val EDGE_SCREEN = "edge"
     }
 
-    private val lock = Any()
-
-    override fun add(element: String): Boolean {
-        return if (!contains(element)) super.add(element)
-        else false
-    }
-
+    @Deprecated("Not needed", ReplaceWith("remove(element)"))
     fun removeAll(element: String): Boolean {
-        synchronized(lock) {
-            return removeAll(Collections.singleton(element))
-        }
+        return remove(element)
     }
 }

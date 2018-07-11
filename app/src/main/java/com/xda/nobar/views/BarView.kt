@@ -461,7 +461,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Show" the pill by moving it back to its normal position
      */
     fun showPill(autoReasonToRemove: String?) {
-        if (autoReasonToRemove != null) hiddenPillReasons.removeAll(autoReasonToRemove)
+        if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
         app.handler.post {
             if (app.isPillShown()) {
                 isPillHidingOrShowing = true

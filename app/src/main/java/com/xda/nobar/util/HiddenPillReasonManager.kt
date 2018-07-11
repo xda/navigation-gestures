@@ -1,11 +1,13 @@
 package com.xda.nobar.util
 
-import java.util.*
+import org.apache.commons.collections4.list.SetUniqueList
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 /**
  * Manager to handle the reasons why the pill is currently in its "hide" state
  */
-class HiddenPillReasonManager : ArrayList<String>() {
+class HiddenPillReasonManager : SetUniqueList<String>(ArrayList<String>(), HashSet<String>()) {
     companion object {
         const val AUTO = "auto"
         const val FULLSCREEN = "fullscreen"
@@ -19,14 +21,15 @@ class HiddenPillReasonManager : ArrayList<String>() {
         else super.add(element)
     }
 
+    @Deprecated("Not needed", ReplaceWith("remove(element)"))
     fun removeAll(element: String): Boolean {
-        return removeAll(Collections.singleton(element))
+        return remove(element)
     }
 
     fun moveToRecent(element: String): Boolean {
         return if (!contains(element)) false
         else {
-            removeAll(element)
+            remove(element)
             add(element)
         }
     }
@@ -35,7 +38,7 @@ class HiddenPillReasonManager : ArrayList<String>() {
         var ret = ""
         while (ret.isEmpty()) {
             val get = try {
-                get(size -1)
+                get(size - 1)
             } catch (e: ArrayIndexOutOfBoundsException) {
                 null
             }

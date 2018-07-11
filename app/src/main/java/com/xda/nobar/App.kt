@@ -321,7 +321,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 if (um.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
                     if (enabled) {
                         if (Utils.shouldUseOverscanMethod(this)) {
-                            disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.CAR_MODE)
+                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         }
                         if (areGesturesActivated() && !pillShown) addBar()
                     } else {
@@ -335,13 +335,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             }
             "use_immersive_mode_when_nav_hidden" -> {
                 if (Utils.shouldUseOverscanMethod(this) && disabledNavReasonManager.isEmpty()) {
-                    if (Utils.useImmersiveWhenNavHidden(this)) {
-                        if (disabledImmReasonManager.isEmpty()) {
-                            Utils.setNavImmersive(this)
+                    try {
+                        if (Utils.useImmersiveWhenNavHidden(this)) {
+                            if (disabledImmReasonManager.isEmpty()) {
+                                Utils.setNavImmersive(this)
+                            }
+                        } else {
+                            Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
                         }
-                    } else {
-                        Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
-                    }
+                    } catch (e: SecurityException) {}
                 }
                 BaseProvider.sendUpdate(this)
             }
@@ -643,7 +645,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                                 }
                             } else {
                                 if (Utils.shouldUseOverscanMethod(this@App)) {
-                                    disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.KEYGUARD)
+                                    disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
                                 }
                             }
 
@@ -651,7 +653,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         }
                         Intent.ACTION_USER_PRESENT -> {
                             if (Utils.shouldUseOverscanMethod(this@App)) {
-                                disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.KEYGUARD)
+                                disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             }
                             if (areGesturesActivated()) addBar()
                         }
@@ -694,7 +696,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     } else {
                         if (areGesturesActivated() && !pillShown) addBar()
                         if (Utils.shouldUseOverscanMethod(this@App)) {
-                            disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.CAR_MODE)
+                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         }
                     }
                 }
@@ -753,7 +755,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     }
                 } else {
                     if (Utils.shouldUseOverscanMethod(this@App)) {
-                        disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
+                        disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
 
                     }
                     onGlobalLayout()
@@ -769,7 +771,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         }
                     }
                 } else {
-                    if (areGesturesActivated() && disabledBarReasonManager.removeAll(DisabledReasonManager.PillReasons.BLACKLIST)) {
+                    if (areGesturesActivated() && disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.BLACKLIST)) {
                         if (!pillShown) addBar(false)
                     }
                 }
@@ -786,7 +788,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 } else {
                     if (Utils.shouldUseOverscanMethod(this@App)
                             && Utils.useImmersiveWhenNavHidden(this@App)
-                            && disabledImmReasonManager.removeAll(DisabledReasonManager.ImmReasons.BLACKLIST)) {
+                            && disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.BLACKLIST)) {
                         Utils.setNavImmersive(this@App)
                     }
                 }
@@ -827,7 +829,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         } else {
                             if (Utils.shouldUseOverscanMethod(this@App)
                                     && Utils.useImmersiveWhenNavHidden(this@App)
-                                    && disabledImmReasonManager.removeAll(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
+                                    && disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
                                 Utils.setNavImmersive(this@App)
                             }
                         }
@@ -957,7 +959,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     if (hideInFullScreen) bar.hidePill(true, HiddenPillReasonManager.FULLSCREEN)
                 } else {
                     if (Utils.shouldUseOverscanMethod(this@App)) {
-                        disabledNavReasonManager.removeAll(DisabledReasonManager.NavBarReasons.IMMERSIVE)
+                        disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.IMMERSIVE)
                     }
                     if (hideInFullScreen && bar.hiddenPillReasons.onlyContains(HiddenPillReasonManager.FULLSCREEN)) {
                         bar.showPill(HiddenPillReasonManager.FULLSCREEN)
