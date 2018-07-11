@@ -36,13 +36,8 @@ import com.xda.nobar.views.ItemView
  *         - Similar to above, just with the values/keys of each item
  */
 class SectionableListPreference(context: Context, attributeSet: AttributeSet) : DialogPreference(context, attributeSet), OnItemChosenListener {
-    val defaultValue: Any?
-        get() {
-            val mDefaultProgress = Preference::class.java.getDeclaredField("mDefaultValue")
-            mDefaultProgress.isAccessible = true
+    var defaultValue: String? = null
 
-            return mDefaultProgress.get(this)
-        }
     val app = context.applicationContext as App
 
     private val sections = ArrayList<Section>()
@@ -162,7 +157,9 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     override fun onGetDefaultValue(a: TypedArray, index: Int): String {
-        return a.getString(index) ?: app.typeNoAction.toString()
+        val def = a.getString(index) ?: app.typeNoAction.toString()
+        defaultValue = def
+        return def
     }
 
     override fun onSetInitialValue(restorePersistedValue: Boolean, defaultValue: Any?) {
