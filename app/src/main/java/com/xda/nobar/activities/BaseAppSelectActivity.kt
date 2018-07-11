@@ -25,6 +25,8 @@ import io.reactivex.schedulers.Schedulers
 abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     internal abstract val adapter: AppSelectAdapter
 
+    internal var isCreated = false
+
     private val origAppSet = ArrayList<AppInfo>()
 
     private lateinit var list: RecyclerView
@@ -84,10 +86,15 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
                     }
 
                     runOnUiThread {
+                        isCreated = true
+
                         list.adapter = adapter
                         loader.visibility = View.GONE
                         list.visibility = View.VISIBLE
-                        searchItem.isVisible = true
+
+                        try {
+                            searchItem.isVisible = true
+                        } catch (e: UninitializedPropertyAccessException) {}
                     }
                 }
     }
@@ -99,7 +106,7 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
         menuInflater.inflate(R.menu.menu_search, menu)
 
         searchItem = menu.findItem(R.id.action_search)
-        searchItem.isVisible = false
+        if (!isCreated) searchItem.isVisible = false
         val searchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(this)
 
@@ -133,6 +140,12 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
      */
     override fun onQueryTextSubmit(query: String?): Boolean {
         return false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        isCreated = false
     }
 
     /**

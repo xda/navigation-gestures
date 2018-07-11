@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        app = application as App
+
         if (IntroActivity.needsToRun(this)) {
             val intent = Intent(this, IntroActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -58,7 +60,6 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         premStatus = findViewById(R.id.prem_stat)
         refresh = findViewById(R.id.refresh_prem)
 
-        app = application as App
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
         app.addLicenseCheckListener(this)
