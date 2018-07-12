@@ -15,6 +15,8 @@ import android.speech.RecognizerIntent
 import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
 import android.view.KeyEvent
+import android.view.OrientationEventListener
+import android.view.Surface
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -43,10 +45,19 @@ class Actions : AccessibilityService(), Serializable {
 
     private val receiver = ActionHandler()
     private val handler = Handler(Looper.getMainLooper())
-    private val wm by lazy { getSystemService(Context.WINDOW_SERVICE) as WindowManager }
     private val audio by lazy { getSystemService(Context.AUDIO_SERVICE) as AudioManager }
     private val imm by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
     private val app by lazy { applicationContext as App }
+
+    private val orientationEventListener by lazy {
+        object : OrientationEventListener(this) {
+            override fun onOrientationChanged(orientation: Int) {
+                currentDegree = orientation
+            }
+        }
+    }
+
+    private var currentDegree = 0
 
     override fun onCreate() {
         receiver.register()
@@ -200,12 +211,21 @@ class Actions : AccessibilityService(), Serializable {
                         startActivity(screenshot)
                     }
                     app.premTypeRot -> runPremiumAction { runSystemSettingsAction {
-                        val currentAcc = Settings.System.getInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
-                        Settings.System.putInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
+                        orientationEventListener.enable()
                         handler.postDelayed({
-                            Settings.System.putInt(contentResolver, Settings.System.USER_ROTATION, wm.defaultDisplay.rotation)
-                            Settings.System.putInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, currentAcc)
-                        }, 1000)
+                            val currentAcc = Settings.System.getInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
+                            if (currentAcc == 0) {
+                                val rotation = when (currentDegree) {
+                                    in 45..134 -> Surface.ROTATION_270
+                                    in 135..224 -> Surface.ROTATION_180
+                                    in 225..314 -> Surface.ROTATION_90
+                                    else -> Surface.ROTATION_0
+                                }
+
+                                Settings.System.putInt(contentResolver, Settings.System.USER_ROTATION, rotation)
+                            }
+                            orientationEventListener.disable()
+                        }, 20)
                     } }
                     app.premTypeVibe -> {
                         //TODO: Implement
