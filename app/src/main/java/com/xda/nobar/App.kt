@@ -182,6 +182,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         get() = resources.getString(R.string.prem_type_screenshot).toInt()
     val premTypeLaunchActivity: Int
         get() = resources.getString(R.string.prem_type_launch_activity).toInt()
+    val premTypeRot: Int
+        get() = resources.getString(R.string.prem_type_rot).toInt()
 
     val typeRootHoldBack: Int
         get() = resources.getString(R.string.type_hold_back).toInt()

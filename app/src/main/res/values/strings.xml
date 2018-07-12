@@ -198,6 +198,7 @@
     <string name="prem_lock_screen">Lock Screen (Premium)</string>
     <string name="prem_launch_activity">Launch Activity (Premium) (%s)</string>
     <string name="prem_launch_activity_no_format">Launch Activity (Premium)</string>
+    <string name="prem_rot">Rotate Screen (Premium)</string>
 
     <!--Messages-->
     <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
@@ -246,6 +247,7 @@
     <string name="prem_type_launch_app">25</string>
     <string name="prem_type_lock_screen">26</string>
     <string name="prem_type_launch_activity">27</string>
+    <string name="prem_type_rot">28</string>
 
     <!--Main Action Keys-->
     <string name="action_left">left</string>

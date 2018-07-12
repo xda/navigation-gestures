@@ -193,9 +193,7 @@ class Actions : AccessibilityService(), Serializable {
 
                             try {
                                 startActivity(launch)
-                            } catch (e: Exception) {
-                                Log.e("NoBar", e.message)
-                            }
+                            } catch (e: Exception) {}
                         }
                     }
                     app.premTypeLockScreen -> runPremiumAction { runSystemSettingsAction {
@@ -208,6 +206,14 @@ class Actions : AccessibilityService(), Serializable {
                         screenshot.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(screenshot)
                     }
+                    app.premTypeRot -> runPremiumAction { runSystemSettingsAction {
+                        val currentAcc = Settings.System.getInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
+                        Settings.System.putInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
+                        handler.postDelayed({
+                            Settings.System.putInt(contentResolver, Settings.System.USER_ROTATION, wm.defaultDisplay.rotation)
+                            Settings.System.putInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, currentAcc)
+                        }, 500)
+                    } }
                     app.premTypeVibe -> {
                         //TODO: Implement
                     }

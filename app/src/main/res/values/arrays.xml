@@ -47,6 +47,7 @@
         <item>@string/prem_switch_ime</item>
         <item>@string/prem_lock_screen</item>
         <item>@string/prem_screenshot</item>
+        <item>@string/prem_rot</item>
     </string-array>
 
     <string-array name="system_action_values">
@@ -58,6 +59,7 @@
         <item>@string/prem_type_switch_ime</item>
         <item>@string/prem_type_lock_screen</item>
         <item>@string/prem_type_screenshot</item>
+        <item>@string/prem_type_rot</item>
     </string-array>
 
     <string-array name="media_action_names">
