@@ -69,10 +69,12 @@
         <activity android:name=".activities.AppLaunchSelectActivity" />
         <activity
             android:name=".activities.ToggleNavActivity"
+            android:label="@string/toggle_nav"
             android:exported="true"
             android:theme="@style/AppTheme.Null" />
         <activity
             android:name=".activities.ToggleGesturesActivity"
+            android:label="@string/toggle_gestures"
             android:exported="true"
             android:theme="@style/AppTheme.Null" />
         <activity
@@ -91,6 +93,7 @@
             android:excludeFromRecents="true"
             android:theme="@style/AppTheme.Null" />
         <activity android:name=".activities.BlacklistSelectorActivity" />
+        <activity android:name=".activities.ActivityLaunchSelectActivity" />
 
         <service
             android:name=".tiles.GestureToggle"

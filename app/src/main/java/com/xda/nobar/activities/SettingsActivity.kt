@@ -209,6 +209,7 @@ class SettingsActivity : AppCompatActivity() {
             if (requestCode == 10) {
                 val key = data?.getStringExtra(AppLaunchSelectActivity.EXTRA_KEY)
                 val appName = data?.getStringExtra(AppLaunchSelectActivity.EXTRA_RESULT_DISPLAY_NAME)
+                val forActivity = data?.getBooleanExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, false) == true
 
                 when (resultCode) {
                     Activity.RESULT_OK -> {
@@ -218,11 +219,12 @@ class SettingsActivity : AppCompatActivity() {
                     Activity.RESULT_CANCELED -> {
                         listPrefs.forEach {
                             if (it.key == key) {
-                                val pack = preferenceManager.sharedPreferences.getString("${key}_package", null)
+                                val pack = preferenceManager.sharedPreferences.getString(
+                                        "${key}_${if (forActivity) "activity" else "package"}", null)
                                 if (pack == null) {
                                     it.saveValue(app.typeNoAction.toString())
                                 } else {
-                                    it.saveValueWithoutListener(app.premTypeLaunchApp.toString())
+                                    it.saveValueWithoutListener((if (forActivity) app.premTypeLaunchActivity else app.premTypeLaunchApp).toString())
                                 }
                             }
                         }
@@ -321,17 +323,14 @@ class SettingsActivity : AppCompatActivity() {
             listPrefs.forEach {
                 it.updateSummary(it.getSavedValue())
 
-                if (it.getSavedValue() == app.premTypeLaunchApp.toString()) {
-                    val packageInfo = preferenceManager.sharedPreferences.getString("${it.key}_package", null) ?: return
+                if (it.getSavedValue() == app.premTypeLaunchApp.toString() || it.getSavedValue() == app.premTypeLaunchActivity.toString()) {
+                    val forActivity = it.getSavedValue() == app.premTypeLaunchActivity.toString()
+                    val packageInfo = preferenceManager.sharedPreferences.getString(
+                            "${it.key}_${if (forActivity) "activity" else "package"}", null) ?: return
 
                     it.summary = String.format(Locale.getDefault(),
-                            resources.getString(R.string.prem_launch_app),
-                            try {
-                                activity.packageManager.getApplicationLabel(
-                                        activity.packageManager.getApplicationInfo(packageInfo.split("/")[0], 0))
-                            } catch (e: Exception) {
-                                packageInfo.split("/")[0]
-                            })
+                            resources.getString(if (forActivity) R.string.prem_launch_activity else R.string.prem_launch_app),
+                            preferenceManager.sharedPreferences.getString("${it.key}_displayname", packageInfo.split("/")[0]))
                 }
             }
         }
@@ -357,14 +356,21 @@ class SettingsActivity : AppCompatActivity() {
         private fun setListeners() {
             listPrefs.forEach {
                 it.setOnPreferenceChangeListener { _, newValue ->
-                    if (newValue?.toString() == app.premTypeLaunchApp.toString()) {
+                    if (newValue?.toString() == app.premTypeLaunchApp.toString() || newValue?.toString() == app.premTypeLaunchActivity.toString()) {
+                        val forActivity = newValue.toString() == app.premTypeLaunchActivity.toString()
                         val intent = Intent(activity, AppLaunchSelectActivity::class.java)
 
-                        var pack = preferenceManager.sharedPreferences.getString("${it.key}_package", null)
-                        if (pack != null) pack = pack.split("/")[0]
+                        var pack = preferenceManager.sharedPreferences.getString("${it.key}_${if (forActivity) "activity" else "package"}", null)
+                        var activity: String? = null
+                        if (pack != null) {
+                            activity = pack.split("/")[1]
+                            pack = pack.split("/")[0]
+                        }
 
                         intent.putExtra(AppLaunchSelectActivity.EXTRA_KEY, it.key)
                         intent.putExtra(AppLaunchSelectActivity.CHECKED_PACKAGE, pack)
+                        intent.putExtra(AppLaunchSelectActivity.CHECKED_ACTIVITY, activity)
+                        intent.putExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, forActivity)
 
                         startActivityForResult(intent, 10)
                     }

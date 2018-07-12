@@ -1,5 +1,6 @@
 package com.xda.nobar.util
 
+import android.content.res.Resources
 import android.support.v7.util.SortedList
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,15 +11,19 @@ import android.widget.TextView
 import com.rey.material.widget.CheckedImageView
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnAppSelectedListener
+import kotlin.math.sign
 
 /**
  * For use by BaseAppSelectActivity
  * This manages all the selection logic
  * Parses available AppInfo and displays the information
  */
-class AppSelectAdapter(private val isSingleSelect: Boolean, private val showSummary: Boolean, private val checkListener: OnAppSelectedListener)
+class AppSelectAdapter(val isSingleSelect: Boolean,
+                       val showSummary: Boolean,
+                       val checkListener: OnAppSelectedListener,
+                       val activity: Boolean = false)
     : RecyclerView.Adapter<AppSelectAdapter.VH>() {
-    val apps = SortedList<AppInfo>(AppInfo::class.java, AppInfoSorterCallback(this))
+    val apps = SortedList<AppInfo>(AppInfo::class.java, AppInfoSorterCallback(this, activity))
 
     override fun getItemCount() = apps.size()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -35,12 +40,18 @@ class AppSelectAdapter(private val isSingleSelect: Boolean, private val showSumm
         val check = view.findViewById<CheckedImageView>(R.id.checkmark)
 
         title.text = app.displayName
-        if (showSummary) summary.text = app.packageName
+        if (showSummary) summary.text = if (activity) app.activity else app.packageName
         else {
             summary.visibility = View.GONE
         }
 
-        icon.background = Utils.getBitmapDrawable(apps[position].icon, holder.view.context.resources)
+        val remoteResources = view.context.packageManager.getResourcesForApplication(app.packageName)
+        icon.background = try {
+            Utils.getBitmapDrawable(remoteResources.getDrawable(app.icon), holder.view.context.resources)
+                    ?: view.context.resources.getDrawable(android.R.drawable.ic_menu_help)
+        } catch (e: Resources.NotFoundException) {
+            view.context.resources.getDrawable(android.R.drawable.ic_menu_help)
+        }
 
         view.setOnClickListener {
             if (isSingleSelect) {
@@ -84,6 +95,12 @@ class AppSelectAdapter(private val isSingleSelect: Boolean, private val showSumm
         }
         apps.addAll(models)
         apps.endBatchedUpdates()
+    }
+
+    fun clear() {
+        val dataSize = apps.size()
+        apps.clear()
+        notifyItemRangeRemoved(0, dataSize)
     }
 
     class VH(val view: View) : RecyclerView.ViewHolder(view)

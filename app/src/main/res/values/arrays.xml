@@ -74,10 +74,12 @@
 
     <string-array name="apps_action_names">
         <item>@string/prem_launch_app_no_format</item>
+        <item>@string/prem_launch_activity_no_format</item>
     </string-array>
 
     <string-array name="apps_action_values">
         <item>@string/prem_type_launch_app</item>
+        <item>@string/prem_type_launch_activity</item>
     </string-array>
     
     <string-array name="action_section_names">

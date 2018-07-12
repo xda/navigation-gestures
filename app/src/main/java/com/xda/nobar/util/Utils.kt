@@ -614,19 +614,23 @@ object Utils {
      * Stolen from HalogenOS
      * https://github.com/halogenOS/android_frameworks_base/blob/XOS-8.1/packages/SystemUI/src/com/android/systemui/tuner/LockscreenFragment.java
      */
-    fun getBitmapDrawable(drawable: Drawable, resources: Resources): BitmapDrawable {
+    fun getBitmapDrawable(drawable: Drawable, resources: Resources): BitmapDrawable? {
         if (drawable is BitmapDrawable) return drawable
 
         val canvas = Canvas()
         canvas.drawFilter = PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG, Paint.FILTER_BITMAP_FLAG)
 
-        val bmp = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-        canvas.setBitmap(bmp)
+        return try {
+            val bmp = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+            canvas.setBitmap(bmp)
 
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
+            drawable.setBounds(0, 0, canvas.width, canvas.height)
+            drawable.draw(canvas)
 
-        return BitmapDrawable(resources, bmp)
+            BitmapDrawable(resources, bmp)
+        } catch (e: IllegalArgumentException) {
+            null
+        }
     }
 
     fun getXThresholdDp(context: Context) =

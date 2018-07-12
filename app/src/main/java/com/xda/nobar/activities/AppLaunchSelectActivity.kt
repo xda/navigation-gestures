@@ -2,11 +2,20 @@ package com.xda.nobar.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.preference.PreferenceManager
 import android.view.MenuItem
+import com.android.internal.R.attr.resource
+import com.android.internal.R.id.date
 import com.xda.nobar.R
+import com.xda.nobar.activities.AppLaunchSelectActivity.Companion.ACTIVITY_REQ
+import com.xda.nobar.activities.AppLaunchSelectActivity.Companion.EXTRA_KEY
+import com.xda.nobar.activities.AppLaunchSelectActivity.Companion.FOR_ACTIVITY_SELECT
 import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.util.AppInfo
 import com.xda.nobar.util.AppSelectAdapter
@@ -21,56 +30,89 @@ class AppLaunchSelectActivity : BaseAppSelectActivity() {
     companion object {
         const val EXTRA_KEY = "key"
         const val EXTRA_RESULT_DISPLAY_NAME = "name"
-        const val CHECKED_PACKAGE = "checked"
+        const val CHECKED_PACKAGE = "checked_package"
+        const val CHECKED_ACTIVITY = "checked_activity"
+
+        const val FOR_ACTIVITY_SELECT = "activity_select"
+
+        const val ACTIVITY_REQ = 1002
     }
 
     override val adapter = AppSelectAdapter(true, true, OnAppSelectedListener { info ->
-        PreferenceManager.getDefaultSharedPreferences(this@AppLaunchSelectActivity)
-                .edit()
-                .putString("${intent.getStringExtra(EXTRA_KEY)}_package", "${info.packageName}/${info.activity}")
-                .apply()
+        if (isForActivitySelect()) {
+            val intent = Intent(this, ActivityLaunchSelectActivity::class.java)
+            intent.putExtra(CHECKED_ACTIVITY, this.intent.getStringExtra(CHECKED_ACTIVITY))
+            intent.putExtra(EXTRA_KEY, this.intent.getStringExtra(EXTRA_KEY))
+            passAppInfo(intent, info)
+            startActivityForResult(intent, ACTIVITY_REQ)
+        } else {
+            PreferenceManager.getDefaultSharedPreferences(this@AppLaunchSelectActivity)
+                    .edit()
+                    .putString("${intent.getStringExtra(EXTRA_KEY)}_package", "${info.packageName}/${info.activity}")
+                    .putString("${intent.getStringExtra(EXTRA_KEY)}_displayname", info.displayName)
+                    .apply()
 
-        val resultIntent = Intent()
-        resultIntent.putExtra(EXTRA_KEY, intent.getStringExtra(EXTRA_KEY))
-        resultIntent.putExtra(EXTRA_RESULT_DISPLAY_NAME, info.displayName)
-        setResult(Activity.RESULT_OK, resultIntent)
-        finish()
+            val resultIntent = Intent()
+            resultIntent.putExtra(EXTRA_KEY, intent.getStringExtra(EXTRA_KEY))
+            resultIntent.putExtra(EXTRA_RESULT_DISPLAY_NAME, info.displayName)
+            resultIntent.putExtra(FOR_ACTIVITY_SELECT, false)
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
+        }
     })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        title = resources.getText(R.string.prem_launch_app_no_format)
+        title = resources.getText(if (isForActivitySelect()) R.string.prem_launch_activity_no_format else R.string.prem_launch_app_no_format)
     }
 
-    override fun canRun(): Boolean {
-        return intent != null && intent.hasExtra(EXTRA_KEY)
+    override fun canRun() = intent != null && intent.hasExtra(EXTRA_KEY)
+
+    override fun showUpAsCheckMark() = false
+
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onCreate(savedInstanceState, persistentState)
+
+        if (isForActivitySelect()) title = resources.getText(R.string.prem_launch_activity_no_format)
     }
 
     override fun loadAppList(): ArrayList<*> {
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_LAUNCHER)
+        return if (isForActivitySelect()) {
+            val list = packageManager.getInstalledApplications(0)
+            ArrayList(list)
+        } else {
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.addCategory(Intent.CATEGORY_LAUNCHER)
 
-        val list = packageManager.queryIntentActivities(intent, 0)
-        Collections.sort(list, ResolveInfo.DisplayNameComparator(packageManager))
+            val list = packageManager.queryIntentActivities(intent, 0)
+            Collections.sort(list, ResolveInfo.DisplayNameComparator(packageManager))
 
-        return ArrayList(list)
+            ArrayList(list)
+        }
     }
 
     override fun loadAppInfo(info: Any): AppInfo {
-        info as ResolveInfo
-        return AppInfo(info.activityInfo.packageName,
-                info.activityInfo.name,
-                info.loadLabel(packageManager).toString(),
-                info.loadIcon(packageManager), info.activityInfo.packageName == intent.getStringExtra(CHECKED_PACKAGE))
+        return if (isForActivitySelect()) {
+            info as ApplicationInfo
+            AppInfo(info.packageName,
+                    "",
+                    info.loadLabel(packageManager).toString(),
+                    info.icon, info.packageName == intent.getStringExtra(CHECKED_PACKAGE))
+        } else {
+            info as ResolveInfo
+            AppInfo(info.activityInfo.packageName,
+                    info.activityInfo.name,
+                    info.loadLabel(packageManager).toString(),
+                    info.iconResource, info.activityInfo.packageName == intent.getStringExtra(CHECKED_PACKAGE))
+        }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            android.R.id.home -> onBackPressed()
-        }
-        return super.onOptionsItemSelected(item)
-    }
+    override fun shouldAddInfo(appInfo: AppInfo) =
+            if (isForActivitySelect()) {
+                val activities = packageManager.getPackageInfo(appInfo.packageName, PackageManager.GET_ACTIVITIES).activities
+                (activities != null && activities.isNotEmpty())
+            } else true
 
     override fun onBackPressed() {
         val resultIntent = Intent()
@@ -78,4 +120,18 @@ class AppLaunchSelectActivity : BaseAppSelectActivity() {
         setResult(Activity.RESULT_CANCELED, resultIntent)
         finish()
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == ACTIVITY_REQ) {
+            if (resultCode == Activity.RESULT_OK) {
+                data?.putExtra(FOR_ACTIVITY_SELECT, true)
+                setResult(resultCode, data)
+                finish()
+            }
+        }
+    }
+
+    private fun isForActivitySelect() = intent.getBooleanExtra(FOR_ACTIVITY_SELECT, false)
 }

@@ -83,7 +83,7 @@ class BlacklistSelectorActivity : BaseAppSelectActivity() {
         val appInfo = AppInfo(info.packageName,
                 "",
                 info.loadLabel(packageManager).toString(),
-                info.loadIcon(packageManager), currentlyBlacklisted.contains(info.packageName))
+                info.icon, currentlyBlacklisted.contains(info.packageName))
 
         return if (which == FOR_WIN) {
             val perms = packageManager.getPackageInfo(info.packageName, PackageManager.GET_PERMISSIONS).requestedPermissions

@@ -13,6 +13,7 @@ import android.os.UserHandle
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.support.v4.content.LocalBroadcastManager
+import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -170,13 +171,31 @@ class Actions : AccessibilityService(), Serializable {
                         if (launchPackage != null) {
                             val launch = Intent(Intent.ACTION_MAIN)
                             launch.addCategory(Intent.CATEGORY_LAUNCHER)
+                            launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             launch.`package` = launchPackage.split("/")[0]
                             launch.component = ComponentName(launch.`package`, launchPackage.split("/")[1])
 
                             try {
-                                launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 startActivity(launch)
                             } catch (e: Exception) {}
+                        }
+                    }
+                    app.premTypeLaunchActivity -> {
+                        val key = "${intent.getStringExtra(EXTRA_GESTURE)}_activity"
+                        val activity = app.prefs.getString(key, null)
+
+                        val p = activity.split("/")[0]
+                        val c = activity.split("/")[1]
+
+                        if (activity != null) {
+                            val launch = Intent()
+                            launch.component = ComponentName(p, c)
+
+                            try {
+                                startActivity(launch)
+                            } catch (e: Exception) {
+                                Log.e("NoBar", e.message)
+                            }
                         }
                     }
                     app.premTypeLockScreen -> runPremiumAction { runSystemSettingsAction {
