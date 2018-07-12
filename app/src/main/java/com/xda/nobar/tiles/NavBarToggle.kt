@@ -15,11 +15,10 @@ import com.xda.nobar.util.Utils
  */
 @TargetApi(24)
 class NavBarToggle : TileService(), OnNavBarHideStateChangeListener {
-    private lateinit var handler: App
-
+    private val app by lazy { application as App }
+    
     override fun onCreate() {
-        handler = Utils.getHandler(this)
-        handler.addNavBarHideListener(this)
+        app.addNavBarHideListener(this)
     }
 
     override fun onStartListening() {
@@ -28,11 +27,11 @@ class NavBarToggle : TileService(), OnNavBarHideStateChangeListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeNavbarHideListener(this)
+        app.removeNavbarHideListener(this)
     }
 
     override fun onClick() {
-        handler.toggleNavState()
+        app.toggleNavState()
         updateState()
     }
 
@@ -43,7 +42,7 @@ class NavBarToggle : TileService(), OnNavBarHideStateChangeListener {
     @TargetApi(Build.VERSION_CODES.N)
     private fun updateState() {
         if (Utils.canRunHiddenCommands(this)) {
-            val active = handler.isNavBarHidden()
+            val active = app.isNavBarHidden()
 
             qsTile?.apply {
                 state = if (active) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE

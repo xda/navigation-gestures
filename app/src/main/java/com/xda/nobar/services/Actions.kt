@@ -41,22 +41,15 @@ class Actions : AccessibilityService(), Serializable {
         const val EXTRA_GESTURE = "gesture"
     }
 
-    private lateinit var receiver: ActionHandler
-    private lateinit var wm: WindowManager
-    private lateinit var am: ActivityManager
-    private lateinit var audio: AudioManager
-    private lateinit var imm: InputMethodManager
-    private lateinit var app: App
-
+    private val receiver = ActionHandler()
     private val handler = Handler(Looper.getMainLooper())
+    private val wm by lazy { getSystemService(Context.WINDOW_SERVICE) as WindowManager }
+    private val audio by lazy { getSystemService(Context.AUDIO_SERVICE) as AudioManager }
+    private val imm by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
+    private val app by lazy { applicationContext as App }
 
     override fun onCreate() {
-        receiver = ActionHandler()
-        wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        app = application as App
+        receiver.register()
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -77,7 +70,7 @@ class Actions : AccessibilityService(), Serializable {
      * Special BroadcastReceiver to handle actions sent to this service by {@link com.xda.nobar.views.BarView}
      */
     inner class ActionHandler : BroadcastReceiver(), Serializable {
-        init {
+        fun register() {
             val filter = IntentFilter()
             filter.addAction(ACTION)
 
@@ -212,7 +205,7 @@ class Actions : AccessibilityService(), Serializable {
                         handler.postDelayed({
                             Settings.System.putInt(contentResolver, Settings.System.USER_ROTATION, wm.defaultDisplay.rotation)
                             Settings.System.putInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, currentAcc)
-                        }, 500)
+                        }, 1000)
                     } }
                     app.premTypeVibe -> {
                         //TODO: Implement

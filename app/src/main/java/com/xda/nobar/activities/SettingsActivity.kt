@@ -107,25 +107,15 @@ class SettingsActivity : AppCompatActivity() {
     class GestureFragment : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
         private val listPrefs = ArrayList<SectionableListPreference>()
 
-        private lateinit var app: App
-        private lateinit var sectionedScreen: PreferenceScreen
-        private lateinit var sectionedCategory: PreferenceCategory
-        private lateinit var sectionedCategoryHolder: CustomPreferenceCategory
-        private lateinit var swipeUpCategory: CustomPreferenceCategory
-        private lateinit var swipeUpHoldCategory: CustomPreferenceCategory
+        private val app by lazy { Utils.getHandler(activity) }
+        private val sectionedScreen by lazy { preferenceManager.inflateFromResource(activity, R.xml.prefs_sectioned, null) }
+        private val sectionedCategory by lazy { sectionedScreen.findPreference("section_gestures") as PreferenceCategory }
+        private val sectionedCategoryHolder by lazy { findPreference("sectioned_pill_cat") as CustomPreferenceCategory }
+        private val swipeUpCategory by lazy { findPreference("swipe_up_cat") as CustomPreferenceCategory }
+        private val swipeUpHoldCategory by lazy { findPreference("swipe_up_hold_cat") as CustomPreferenceCategory }
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-
-            app = activity.application as App
-            sectionedScreen = preferenceManager.inflateFromResource(activity, R.xml.prefs_sectioned, null)
-            sectionedCategory = sectionedScreen.findPreference("section_gestures") as PreferenceCategory
-
-            addPreferencesFromResource(R.xml.prefs_gestures)
-
-            swipeUpCategory = findPreference("swipe_up_cat") as CustomPreferenceCategory
-            swipeUpHoldCategory = findPreference("swipe_up_hold_cat") as CustomPreferenceCategory
-            sectionedCategoryHolder = findPreference("sectioned_pill_cat") as CustomPreferenceCategory
 
             val sectionedPill = findPreference("sectioned_pill") as SwitchPreference
             sectionedPill.setOnPreferenceChangeListener { _, newValue ->

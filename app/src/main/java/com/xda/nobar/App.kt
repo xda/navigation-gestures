@@ -55,19 +55,34 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         const val EDGE_TYPE_ACTIVE = 2
     }
 
-    private lateinit var wm: WindowManager
-    private lateinit var um: UiModeManager
-    private lateinit var stateHandler: ScreenStateHandler
-    private lateinit var carModeHandler: CarModeHandler
-    private lateinit var premiumHelper: PremiumHelper
-    private lateinit var premiumInstallListener: PremiumInstallListener
-    private lateinit var rootServiceIntent: Intent
+    val wm by lazy { getSystemService(Context.WINDOW_SERVICE) as WindowManager }
+    val um by lazy { getSystemService(Context.UI_MODE_SERVICE) as UiModeManager }
 
-    lateinit var uiHandler: UIHandler
-    lateinit var bar: BarView
-    lateinit var immersiveHelperView: ImmersiveHelperView
-    lateinit var prefs: SharedPreferences
-    lateinit var immersiveHelper: ImmersiveHelper
+    private val stateHandler = ScreenStateHandler()
+    private val carModeHandler = CarModeHandler()
+    private val premiumHelper by lazy { PremiumHelper(this, OnLicenseCheckResultListener { valid, reason ->
+        Log.e("NoBar", reason)
+
+        val bundle = Bundle()
+        bundle.putBoolean("valid", valid)
+        bundle.putString("reason", reason)
+
+        FirebaseAnalytics.getInstance(this).logEvent("license_event", bundle)
+
+        isValidPremium = valid
+        prefs.edit().putBoolean("valid_prem", valid).apply()
+
+        licenseCheckListeners.forEach { it.onResult(valid, reason) }
+    })}
+
+    private val premiumInstallListener = PremiumInstallListener()
+    private val rootServiceIntent by lazy { Intent(this, RootService::class.java) }
+
+    val uiHandler by lazy { UIHandler() }
+    val bar by lazy { BarView(this) }
+    val immersiveHelperView by lazy { ImmersiveHelperView(this) }
+    val prefs by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+    val immersiveHelper by lazy { ImmersiveHelper(this) }
 
     private var isInOtherWindowApp = false
 
@@ -100,105 +115,58 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Actions and Types
      * *********************************************************
      */
-    val actionLeft: String
-        get() = resources.getString(R.string.action_left)
-    val actionRight: String
-        get() = resources.getString(R.string.action_right)
-    val actionUp: String
-        get() = resources.getString(R.string.action_up)
-    val actionDown: String
-        get() = resources.getString(R.string.action_down)
-    val actionDouble: String
-        get() = resources.getString(R.string.action_double)
-    val actionHold: String
-        get() = resources.getString(R.string.action_hold)
-    val actionTap: String
-        get() = resources.getString(R.string.action_tap)
-    val actionUpHold: String
-        get() = resources.getString(R.string.action_up_hold)
-    val actionLeftHold: String
-        get() = resources.getString(R.string.action_left_hold)
-    val actionRightHold: String
-        get() = resources.getString(R.string.action_right_hold)
-    val actionDownHold: String
-        get() = resources.getString(R.string.action_down_hold)
+    val actionLeft: String by lazy { resources.getString(R.string.action_left) }
+    val actionRight: String by lazy { resources.getString(R.string.action_right) }
+    val actionUp: String by lazy { resources.getString(R.string.action_up) }
+    val actionDown: String by lazy { resources.getString(R.string.action_down) }
+    val actionDouble: String by lazy { resources.getString(R.string.action_double) }
+    val actionHold: String by lazy { resources.getString(R.string.action_hold) }
+    val actionTap: String by lazy { resources.getString(R.string.action_tap) }
+    val actionUpHold: String by lazy { resources.getString(R.string.action_up_hold) }
+    val actionLeftHold: String by lazy { resources.getString(R.string.action_left_hold) }
+    val actionRightHold: String by lazy { resources.getString(R.string.action_right_hold) }
+    val actionDownHold: String by lazy { resources.getString(R.string.action_down_hold) }
 
-    val actionUpHoldLeft: String
-        get() = resources.getString(R.string.action_up_hold_left)
-    val actionUpLeft: String
-        get() = resources.getString(R.string.action_up_left)
+    val actionUpHoldLeft: String by lazy { resources.getString(R.string.action_up_hold_left) }
+    val actionUpLeft: String by lazy { resources.getString(R.string.action_up_left) }
 
-    val actionUpCenter: String
-        get() = resources.getString(R.string.action_up_center)
-    val actionUpHoldCenter: String
-        get() = resources.getString(R.string.action_up_hold_center)
+    val actionUpCenter: String by lazy { resources.getString(R.string.action_up_center) }
+    val actionUpHoldCenter: String by lazy { resources.getString(R.string.action_up_hold_center) }
 
-    val actionUpRight: String
-        get() = resources.getString(R.string.action_up_right)
-    val actionUpHoldRight: String
-        get() = resources.getString(R.string.action_up_hold_right)
+    val actionUpRight: String by lazy { resources.getString(R.string.action_up_right) }
+    val actionUpHoldRight: String by lazy { resources.getString(R.string.action_up_hold_right) }
 
-    val typeNoAction: Int
-        get() = resources.getString(R.string.type_no_action).toInt()
-    val typeBack: Int
-        get() = resources.getString(R.string.type_back).toInt()
-    val typeOhm: Int
-        get() = resources.getString(R.string.type_ohm).toInt()
-    val typeRecents: Int
-        get() = resources.getString(R.string.type_recents).toInt()
-    val typeHide: Int
-        get() = resources.getString(R.string.type_hide).toInt()
-    val typeSwitch: Int
-        get() = resources.getString(R.string.type_switch).toInt()
-    val typeAssist: Int
-        get() = resources.getString(R.string.type_assist).toInt()
-    val typeHome: Int
-        get() = resources.getString(R.string.type_home).toInt()
-    val premTypeNotif: Int
-        get() = resources.getString(R.string.prem_type_notif).toInt()
-    val premTypeQs: Int
-        get() = resources.getString(R.string.prem_type_qs).toInt()
-    val premTypePower: Int
-        get() = resources.getString(R.string.prem_type_power).toInt()
-    val typeSplit: Int
-        get() = resources.getString(R.string.type_split).toInt()
-    val premTypeVibe: Int
-        get() = resources.getString(R.string.prem_type_vibe).toInt()
-    val premTypeSilent: Int
-        get() = resources.getString(R.string.prem_type_silent).toInt()
-    val premTypeMute: Int
-        get() = resources.getString(R.string.prem_type_mute).toInt()
-    val premTypePlayPause: Int
-        get() = resources.getString(R.string.prem_type_play_pause).toInt()
-    val premTypePrev: Int
-        get() = resources.getString(R.string.prem_type_prev).toInt()
-    val premTypeNext: Int
-        get() = resources.getString(R.string.prem_type_next).toInt()
-    val premTypeSwitchIme: Int
-        get() = resources.getString(R.string.prem_type_switch_ime).toInt()
-    val premTypeLaunchApp: Int
-        get() = resources.getString(R.string.prem_type_launch_app).toInt()
-    val premTypeLockScreen: Int
-        get() = resources.getString(R.string.prem_type_lock_screen).toInt()
-    val premTypeScreenshot: Int
-        get() = resources.getString(R.string.prem_type_screenshot).toInt()
-    val premTypeLaunchActivity: Int
-        get() = resources.getString(R.string.prem_type_launch_activity).toInt()
-    val premTypeRot: Int
-        get() = resources.getString(R.string.prem_type_rot).toInt()
+    val typeNoAction by lazy { resources.getString(R.string.type_no_action).toInt() }
+    val typeBack by lazy { resources.getString(R.string.type_back).toInt() }
+    val typeOhm by lazy { resources.getString(R.string.type_ohm).toInt() }
+    val typeRecents by lazy { resources.getString(R.string.type_recents).toInt() }
+    val typeHide by lazy { resources.getString(R.string.type_hide).toInt() }
+    val typeSwitch by lazy { resources.getString(R.string.type_switch).toInt() }
+    val typeAssist by lazy { resources.getString(R.string.type_assist).toInt() }
+    val typeHome by lazy { resources.getString(R.string.type_home).toInt() }
+    val premTypeNotif by lazy { resources.getString(R.string.prem_type_notif).toInt() }
+    val premTypeQs by lazy { resources.getString(R.string.prem_type_qs).toInt() }
+    val premTypePower by lazy { resources.getString(R.string.prem_type_power).toInt() }
+    val typeSplit by lazy { resources.getString(R.string.type_split).toInt() }
+    val premTypeVibe by lazy { resources.getString(R.string.prem_type_vibe).toInt() }
+    val premTypeSilent by lazy { resources.getString(R.string.prem_type_silent).toInt() }
+    val premTypeMute by lazy { resources.getString(R.string.prem_type_mute).toInt() }
+    val premTypePlayPause by lazy { resources.getString(R.string.prem_type_play_pause).toInt() }
+    val premTypePrev by lazy { resources.getString(R.string.prem_type_prev).toInt() }
+    val premTypeNext by lazy { resources.getString(R.string.prem_type_next).toInt() }
+    val premTypeSwitchIme by lazy { resources.getString(R.string.prem_type_switch_ime).toInt() }
+    val premTypeLaunchApp by lazy { resources.getString(R.string.prem_type_launch_app).toInt() }
+    val premTypeLockScreen by lazy { resources.getString(R.string.prem_type_lock_screen).toInt() }
+    val premTypeScreenshot by lazy { resources.getString(R.string.prem_type_screenshot).toInt() }
+    val premTypeLaunchActivity by lazy { resources.getString(R.string.prem_type_launch_activity).toInt() }
+    val premTypeRot by lazy { resources.getString(R.string.prem_type_rot).toInt() }
 
-    val typeRootHoldBack: Int
-        get() = resources.getString(R.string.type_hold_back).toInt()
-    val typeRootForward: Int
-        get() = resources.getString(R.string.type_forward).toInt()
-    val typeRootMenu: Int
-        get() = resources.getString(R.string.type_menu).toInt()
-    val typeRootSleep: Int
-        get() = resources.getString(R.string.type_sleep).toInt()
-    val typeRootVolUp: Int
-        get() = resources.getString(R.string.type_vol_up).toInt()
-    val typeRootVolDown: Int
-        get() = resources.getString(R.string.type_vol_down).toInt()
+    val typeRootHoldBack by lazy { resources.getString(R.string.type_hold_back).toInt() }
+    val typeRootForward by lazy { resources.getString(R.string.type_forward).toInt() }
+    val typeRootMenu by lazy { resources.getString(R.string.type_menu).toInt() }
+    val typeRootSleep by lazy { resources.getString(R.string.type_sleep).toInt() }
+    val typeRootVolUp by lazy { resources.getString(R.string.type_vol_up).toInt() }
+    val typeRootVolDown by lazy { resources.getString(R.string.type_vol_down).toInt() }
 
     /**
      * ***************************************************************
@@ -247,39 +215,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             anrRef.putStream(builder.toString().byteInputStream())
         }
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        immersiveHelper = ImmersiveHelper(this)
-
         if (!Utils.canRunHiddenCommands(this) || IntroActivity.needsToRun(this)) {
             val intent = Intent(this, IntroActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
 
-        wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        um = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        bar = BarView(this)
-        immersiveHelperView = ImmersiveHelperView(this)
-        stateHandler = ScreenStateHandler()
-        uiHandler = UIHandler()
-        carModeHandler = CarModeHandler()
-        premiumInstallListener = PremiumInstallListener()
-        rootServiceIntent = Intent(this, RootService::class.java)
-
-        premiumHelper = PremiumHelper(this, OnLicenseCheckResultListener { valid, reason ->
-            Log.e("NoBar", reason)
-
-            val bundle = Bundle()
-            bundle.putBoolean("valid", valid)
-            bundle.putString("reason", reason)
-
-            FirebaseAnalytics.getInstance(this).logEvent("license_event", bundle)
-
-            isValidPremium = valid
-            prefs.edit().putBoolean("valid_prem", valid).apply()
-
-            licenseCheckListeners.forEach { it.onResult(valid, reason) }
-        })
+        stateHandler.register()
+        uiHandler.register()
+        carModeHandler.register()
+        premiumInstallListener.register()
 
         isValidPremium = prefs.getBoolean("valid_prem", false)
 
@@ -613,7 +558,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Listen for changes in the screen state and handle appropriately
      */
     inner class ScreenStateHandler : BroadcastReceiver() {
-        init {
+        fun register() {
             val filter = IntentFilter()
             filter.addAction(Intent.ACTION_BOOT_COMPLETED)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -674,7 +619,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * We want to disable NoBar when Car Mode is active
      */
     inner class CarModeHandler : BroadcastReceiver() {
-        init {
+        fun register() {
             val filter = IntentFilter()
             filter.addAction(UiModeManager.ACTION_ENTER_CAR_MODE)
             filter.addAction(UiModeManager.ACTION_EXIT_CAR_MODE)
@@ -729,7 +674,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         private var oldRot = Surface.ROTATION_0
         private var isActing = false
 
-        init {
+        fun register() {
             contentResolver.registerContentObserver(Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_color"), true, this)
@@ -1032,7 +977,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
      * Listen to see if the premium add-on has been installed/uninstalled, and refresh the premium state
      */
     inner class PremiumInstallListener : BroadcastReceiver() {
-        init {
+        fun register() {
             val filter = IntentFilter()
             filter.addAction(Intent.ACTION_PACKAGE_ADDED)
             filter.addAction(Intent.ACTION_PACKAGE_CHANGED)

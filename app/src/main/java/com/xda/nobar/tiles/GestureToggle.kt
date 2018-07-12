@@ -15,11 +15,10 @@ import com.xda.nobar.views.BarView
  */
 @TargetApi(24)
 class GestureToggle : TileService(), OnGestureStateChangeListener {
-    private lateinit var handler: App
+    private val app by lazy { application as App }
 
     override fun onCreate() {
-        handler = Utils.getHandler(this)
-        handler.addGestureActivationListener(this)
+        app.addGestureActivationListener(this)
     }
 
     override fun onStartListening() {
@@ -28,11 +27,11 @@ class GestureToggle : TileService(), OnGestureStateChangeListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeGestureActivationListener(this)
+        app.removeGestureActivationListener(this)
     }
 
     override fun onClick() {
-        handler.toggleGestureBar()
+        app.toggleGestureBar()
         updateState()
     }
 
@@ -42,7 +41,7 @@ class GestureToggle : TileService(), OnGestureStateChangeListener {
 
     @TargetApi(Build.VERSION_CODES.N)
     private fun updateState() {
-        val active = handler.isPillShown()
+        val active = app.isPillShown()
 
         qsTile?.apply {
             state = if (active) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE

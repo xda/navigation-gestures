@@ -24,13 +24,12 @@ import com.xda.nobar.views.TextSwitch
  * The main app activity
  */
 class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBarHideStateChangeListener, OnLicenseCheckResultListener {
-    private lateinit var gestureSwitch: TextSwitch
-    private lateinit var hideNavSwitch: TextSwitch
-    private lateinit var app: App
-    private lateinit var prefs: SharedPreferences
+    private val app by lazy { application as App }
 
-    private lateinit var premStatus: TextView
-    private lateinit var refresh: ImageView
+    private val gestureSwitch by lazy { findViewById<TextSwitch>(R.id.activate) }
+    private val hideNavSwitch by lazy { findViewById<TextSwitch>(R.id.hide_nav) }
+    private val premStatus by lazy { findViewById<TextView>(R.id.prem_stat) }
+    private val refresh by lazy { findViewById<ImageView>(R.id.refresh_prem) }
 
     private val navListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
         app.toggleNavState(!isChecked)
@@ -38,8 +37,6 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        app = application as App
 
         if (IntroActivity.needsToRun(this)) {
             val intent = Intent(this, IntroActivity::class.java)
@@ -54,13 +51,6 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
 
         setContentView(R.layout.activity_main)
         setUpActionBar()
-
-        gestureSwitch = findViewById(R.id.activate)
-        hideNavSwitch = findViewById(R.id.hide_nav)
-        premStatus = findViewById(R.id.prem_stat)
-        refresh = findViewById(R.id.refresh_prem)
-
-        prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
         app.addLicenseCheckListener(this)
         app.addGestureActivationListener(this)

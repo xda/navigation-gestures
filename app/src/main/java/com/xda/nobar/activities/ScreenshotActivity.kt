@@ -52,27 +52,37 @@ class ScreenshotActivity : AppCompatActivity() {
         private const val PERM_REQ = 1000
     }
 
-    private lateinit var projectionManager: MediaProjectionManager
-    private lateinit var imageReader: ImageReader
-    private lateinit var mainDisplay: Display
-    private lateinit var handler: Handler
+    private val projectionManager by lazy { getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager }
+    private val imageReader by lazy { ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 1) }
+    private val size = Point()
+        get() {
+            mainDisplay.getRealSize(field)
+            return field
+        }
+    private val metrics = DisplayMetrics()
+        get() {
+            mainDisplay.getMetrics(field)
+            return field
+        }
+    private val mainDisplay by lazy { windowManager.defaultDisplay }
+    private val handler by lazy { Handler(handlerThread.looper) }
+
+    private val width: Int
+        get() = size.x
+    private val height: Int
+        get() = size.y
+
     private lateinit var virtualDisplay: VirtualDisplay
     private lateinit var projection: MediaProjection
 
-    private var width = 0
-    private var height = 0
     private var count = 0
 
     private val handlerThread = HandlerThread("NavGestScreenshot").apply {
         start()
-        handler = Handler(looper)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-        mainDisplay = windowManager.defaultDisplay
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) getShot()
         else ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERM_REQ)
@@ -117,16 +127,6 @@ class ScreenshotActivity : AppCompatActivity() {
     }
 
     private fun createVirtualDisplay() {
-        val size = Point()
-        mainDisplay.getRealSize(size)
-
-        width = size.x
-        height = size.y
-
-        val metrics = DisplayMetrics()
-        mainDisplay.getMetrics(metrics)
-
-        imageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 1)
         virtualDisplay = projection.createVirtualDisplay("NavGestScreenShot",
                 width, height,
                 metrics.densityDpi,
