@@ -180,7 +180,7 @@ class Actions : AccessibilityService(), Serializable {
                             } catch (e: Exception) {}
                         }
                     }
-                    app.premTypeLaunchActivity -> {
+                    app.premTypeLaunchActivity -> runPremiumAction {
                         val key = "${intent.getStringExtra(EXTRA_GESTURE)}_activity"
                         val activity = app.prefs.getString(key, null)
 
