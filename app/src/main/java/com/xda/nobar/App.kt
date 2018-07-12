@@ -120,6 +120,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         get() = resources.getString(R.string.action_left_hold)
     val actionRightHold: String
         get() = resources.getString(R.string.action_right_hold)
+    val actionDownHold: String
+        get() = resources.getString(R.string.action_down_hold)
 
     val actionUpHoldLeft: String
         get() = resources.getString(R.string.action_up_hold_left)

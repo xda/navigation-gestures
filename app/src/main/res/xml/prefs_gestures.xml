@@ -100,6 +100,15 @@
             app:section_data_names="@array/action_section_data_names"
             app:section_data_values="@array/action_section_data_values" />
 
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/down_hold"
+            android:key="@string/action_down_hold"
+            android:icon="@drawable/swipe_down"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

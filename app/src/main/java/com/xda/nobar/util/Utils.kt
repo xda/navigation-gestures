@@ -99,6 +99,7 @@ object Utils {
             val holdUp = prefs.getString(app.actionUpHold, app.typeNoAction.toString()).toInt()
             val holdLeft = prefs.getString(app.actionLeftHold, app.typeNoAction.toString()).toInt()
             val holdRight = prefs.getString(app.actionRightHold, app.typeNoAction.toString()).toInt()
+            val holdDown = prefs.getString(app.actionDownHold, app.typeNoAction.toString()).toInt()
 
             val upLeft = prefs.getString(app.actionUpLeft, app.typeBack.toString()).toInt()
             val upHoldLeft = prefs.getString(app.actionUpHoldLeft, app.typeNoAction.toString()).toInt()
@@ -117,6 +118,7 @@ object Utils {
             map[app.actionUpHold] = holdUp
             map[app.actionLeftHold] = holdLeft
             map[app.actionRightHold] = holdRight
+            map[app.actionDownHold] = holdDown
 
             map[app.actionUpLeft] = upLeft
             map[app.actionUpHoldLeft] = upHoldLeft
