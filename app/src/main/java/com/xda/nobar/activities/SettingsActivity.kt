@@ -117,6 +117,8 @@ class SettingsActivity : AppCompatActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
 
+            addPreferencesFromResource(R.xml.prefs_gestures)
+
             val sectionedPill = findPreference("sectioned_pill") as SwitchPreference
             sectionedPill.setOnPreferenceChangeListener { _, newValue ->
                 if (newValue.toString().toBoolean()) {
