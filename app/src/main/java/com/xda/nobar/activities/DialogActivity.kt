@@ -1,6 +1,7 @@
 package com.xda.nobar.activities
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -16,8 +17,8 @@ class DialogActivity : AppCompatActivity() {
         const val EXTRA_YES_RES = "yes_res"
         const val EXTRA_NO_RES = "no_res"
 
-        private var yesAction: (() -> Unit)? = null
-        private var noAction: (() -> Unit)? = null
+        var yesAct: DialogInterface.OnClickListener? = null
+        var noAct: DialogInterface.OnClickListener? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,22 +27,15 @@ class DialogActivity : AppCompatActivity() {
         try {
             val title = intent.getIntExtra(EXTRA_TITLE, android.R.string.untitled)
             val message = intent.getIntExtra(EXTRA_MESSAGE, android.R.string.untitled)
-            val yesRes = intent.getIntExtra(EXTRA_YES_RES, -1)
-            val noRes = intent.getIntExtra(EXTRA_NO_RES, -1)
+            val yesRes = intent.getIntExtra(EXTRA_YES_RES, 0)
+            val noRes = intent.getIntExtra(EXTRA_NO_RES, 0)
 
             val builder = AlertDialog.Builder(this)
             builder.setTitle(title)
             builder.setMessage(message)
 
-            if (yesRes != -1) builder.setPositiveButton(yesRes) { _, _ ->
-                yesAction?.invoke()
-                finish()
-            }
-
-            if (noRes != -1) builder.setNegativeButton(noRes) { _, _ ->
-                noAction?.invoke()
-                finish()
-            }
+            if (yesRes != 0) builder.setPositiveButton(yesRes, yesAct)
+            if (noRes != 0) builder.setNegativeButton(noRes, noAct)
 
             builder.setOnCancelListener {
                 finish()
@@ -59,11 +53,11 @@ class DialogActivity : AppCompatActivity() {
         }
     }
 
-    override fun finish() {
-        super.finish()
+    override fun onDestroy() {
+        super.onDestroy()
 
-        yesAction = null
-        noAction = null
+        yesAct = null
+        noAct = null
     }
 
     /**
@@ -76,8 +70,8 @@ class DialogActivity : AppCompatActivity() {
         var yesRes = android.R.string.yes
         var noRes = android.R.string.no
 
-        var yesAction: (() -> Unit)? = null
-        var noAction: (() -> Unit)? = null
+        var yesAction: DialogInterface.OnClickListener? = null
+        var noAction: DialogInterface.OnClickListener? = null
 
         fun start() {
             val intent = Intent(context, DialogActivity::class.java)
@@ -87,8 +81,8 @@ class DialogActivity : AppCompatActivity() {
             intent.putExtra(EXTRA_NO_RES, noRes)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-            DialogActivity.yesAction = yesAction
-            DialogActivity.noAction = noAction
+            yesAct = yesAction
+            noAct = noAction
 
             context.startActivity(intent)
         }

@@ -1,7 +1,6 @@
 package com.xda.nobar.services
 
 import android.accessibilityservice.AccessibilityService
-import android.app.ActivityManager
 import android.app.SearchManager
 import android.content.*
 import android.media.AudioManager
@@ -13,19 +12,15 @@ import android.os.UserHandle
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.support.v4.content.LocalBroadcastManager
-import android.util.Log
 import android.view.KeyEvent
 import android.view.OrientationEventListener
 import android.view.Surface
-import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityNodeInfo
 import android.view.inputmethod.InputMethodManager
 import com.crashlytics.android.Crashlytics
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
-import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.activities.LockScreenActivity
 import com.xda.nobar.activities.ScreenshotActivity
 import java.io.Serializable
@@ -256,7 +251,7 @@ class Actions : AccessibilityService(), Serializable {
                 DialogActivity.Builder(this@Actions).apply {
                     title = R.string.premium_required
                     message = R.string.premium_required_desc
-                    yesAction = {
+                    yesAction = DialogInterface.OnClickListener { _, _ ->
                         val intent = Intent(Intent.ACTION_VIEW)
                         intent.data = Uri.parse("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -298,8 +293,8 @@ class Actions : AccessibilityService(), Serializable {
                     yesRes = android.R.string.ok
                     noRes = android.R.string.cancel
 
-                    yesAction = {
-                        val intent = Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS)
+                    yesAction = DialogInterface.OnClickListener { _, _ ->
+                        val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
                         intent.data = Uri.parse("package:$packageName")
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)
