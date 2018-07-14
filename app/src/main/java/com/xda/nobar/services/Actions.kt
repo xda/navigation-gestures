@@ -23,6 +23,10 @@ import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
 import com.xda.nobar.activities.LockScreenActivity
 import com.xda.nobar.activities.ScreenshotActivity
+import com.xda.nobar.util.Utils
+import com.xda.nobar.util.Utils.runNougatAction
+import com.xda.nobar.util.Utils.runPremiumAction
+import com.xda.nobar.util.Utils.runSystemSettingsAction
 import java.io.Serializable
 
 
@@ -241,68 +245,8 @@ class Actions : AccessibilityService(), Serializable {
             } catch (e: Exception) {}
         }
 
-        /**
-         * Check for valid premium and run the action if possible
-         * Otherwise show a warning dialog
-         */
-        private fun runPremiumAction(action: () -> Unit) {
-            if (app.isValidPremium) action.invoke()
-            else {
-                DialogActivity.Builder(this@Actions).apply {
-                    title = R.string.premium_required
-                    message = R.string.premium_required_desc
-                    yesAction = DialogInterface.OnClickListener { _, _ ->
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
-                    }
-                    start()
-                }
-            }
-        }
-
-        /**
-         * Run action if device is on Nougat or later
-         * Otherwise show a warning dialog
-         */
-        private fun runNougatAction(action: () -> Unit) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                action.invoke()
-            } else {
-                DialogActivity.Builder(this@Actions).apply {
-                    title = R.string.nougat_required
-                    message = R.string.nougat_required_desc
-                    yesRes = android.R.string.ok
-                    start()
-                }
-            }
-        }
-
-        /**
-         * Run an action that requires WRITE_SETTINGS
-         * Otherwise show a dialog prompting for permission
-         */
-        private fun runSystemSettingsAction(action: () -> Unit) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(this@Actions)) {
-                action.invoke()
-            } else {
-                DialogActivity.Builder(this@Actions).apply {
-                    title = R.string.grant_write_settings
-                    message = R.string.grant_write_settings_desc
-                    yesRes = android.R.string.ok
-                    noRes = android.R.string.cancel
-
-                    yesAction = DialogInterface.OnClickListener { _, _ ->
-                        val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-                        intent.data = Uri.parse("package:$packageName")
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
-                    }
-
-                    start()
-                }
-            }
-        }
+        private fun runNougatAction(action: () -> Unit) = Utils.runNougatAction(app, action)
+        private fun runPremiumAction(action: () -> Unit) = Utils.runPremiumAction(app, action)
+        private fun runSystemSettingsAction(action: () -> Unit) = Utils.runSystemSettingsAction(app, action)
     }
 }

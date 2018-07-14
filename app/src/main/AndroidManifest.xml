@@ -94,6 +94,24 @@
             android:theme="@style/AppTheme.Null" />
         <activity android:name=".activities.BlacklistSelectorActivity" />
         <activity android:name=".activities.ActivityLaunchSelectActivity" />
+        <activity
+            android:name=".tasker.activities.ToggleGestureActivity"
+            android:exported="true"
+            android:icon="@drawable/ic_gesture_black_24dp"
+            android:label="@string/toggle_gestures_prem">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".tasker.activities.ToggleNavActivity"
+            android:exported="true"
+            android:icon="@drawable/ic_border_bottom_black_24dp"
+            android:label="@string/toggle_nav_prem">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".tiles.GestureToggle"

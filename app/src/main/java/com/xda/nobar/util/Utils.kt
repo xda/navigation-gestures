@@ -3,19 +3,25 @@ package com.xda.nobar.util
 import android.app.KeyguardManager
 import android.app.UiModeManager
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.support.v4.content.ContextCompat.startActivity
 import android.util.TypedValue
 import android.view.WindowManager
+import com.android.internal.R.attr.action
 import com.crashlytics.android.Crashlytics
 import com.xda.nobar.App
 import com.xda.nobar.R
+import com.xda.nobar.activities.DialogActivity
 import com.xda.nobar.activities.IntroActivity
 import java.io.BufferedReader
 import java.io.DataOutputStream
@@ -716,4 +722,74 @@ object Utils {
                     .getBoolean("full_overscan", false)
 
     fun checkTouchWiz(context: Context) = context.packageManager.hasSystemFeature("com.samsung.feature.samsung_experience_mobile")
+
+    /**
+     * Check for valid premium and run the action if possible
+     * Otherwise show a warning dialog
+     */
+    fun runPremiumAction(app: App, action: () -> Unit): Boolean {
+        if (app.isValidPremium) action.invoke()
+        else {
+            DialogActivity.Builder(app).apply {
+                title = R.string.premium_required
+                message = R.string.premium_required_desc
+                yesAction = DialogInterface.OnClickListener { _, _ ->
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    app.startActivity(intent)
+                }
+                start()
+            }
+        }
+
+        return app.isValidPremium
+    }
+
+    /**
+     * Run action if device is on Nougat or later
+     * Otherwise show a warning dialog
+     */
+    fun runNougatAction(app: App, action: () -> Unit): Boolean {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            action.invoke()
+        } else {
+            DialogActivity.Builder(app).apply {
+                title = R.string.nougat_required
+                message = R.string.nougat_required_desc
+                yesRes = android.R.string.ok
+                start()
+            }
+        }
+
+        return Build.VERSION.SDK_INT > Build.VERSION_CODES.M
+    }
+
+    /**
+     * Run an action that requires WRITE_SETTINGS
+     * Otherwise show a dialog prompting for permission
+     */
+    fun runSystemSettingsAction(app: App, action: () -> Unit): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(app)) {
+            action.invoke()
+        } else {
+            DialogActivity.Builder(app).apply {
+                title = R.string.grant_write_settings
+                message = R.string.grant_write_settings_desc
+                yesRes = android.R.string.ok
+                noRes = android.R.string.cancel
+
+                yesAction = DialogInterface.OnClickListener { _, _ ->
+                    val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+                    intent.data = Uri.parse("package:${app.packageName}")
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    app.startActivity(intent)
+                }
+
+                start()
+            }
+        }
+
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(app)
+    }
 }
