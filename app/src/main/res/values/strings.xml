@@ -102,6 +102,7 @@
     <string name="experimental_prefs">Experimental Settings</string>
     <string name="fix_for_other_windows">Keep Pill Shown in other Overlay Apps</string>
     <string name="full_overscan">Use Full Overscan</string>
+    <string name="tasker_event">Tasker Event (Premium)</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -253,6 +254,7 @@
     <string name="prem_type_lock_screen">26</string>
     <string name="prem_type_launch_activity">27</string>
     <string name="prem_type_rot">28</string>
+    <string name="prem_type_tasker_event">29</string>
 
     <!--Main Action Keys-->
     <string name="action_left">left</string>

@@ -8,7 +8,7 @@ import com.joaomgcd.taskerpluginlibrary.config.TaskerPluginConfig
 import com.joaomgcd.taskerpluginlibrary.config.TaskerPluginConfigHelperNoOutputOrInput
 import com.joaomgcd.taskerpluginlibrary.input.TaskerInput
 
-abstract class BaseToggleActivity : AppCompatActivity(), TaskerPluginConfig<Unit> {
+abstract class BaseNoInputOutputActivity : AppCompatActivity(), TaskerPluginConfig<Unit> {
     override val context  by lazy { this }
     override val inputForTasker: TaskerInput<Unit> = TaskerInput(Unit)
 

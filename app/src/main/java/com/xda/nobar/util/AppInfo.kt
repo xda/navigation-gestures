@@ -1,11 +1,7 @@
 package com.xda.nobar.util
 
-import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
-import com.xda.nobar.R
 
 /**
  * Simple helper class that contains relevant app information
@@ -33,6 +29,16 @@ class AppInfo(val packageName: String, val activity: String, val displayName: St
 
     override fun describeContents(): Int {
         return 0
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return (
+                other is AppInfo &&
+                        other.packageName == packageName &&
+                        other.activity == activity &&
+                        other.displayName == displayName &&
+                        other.icon == icon
+                )
     }
 
     companion object CREATOR : Parcelable.Creator<AppInfo> {

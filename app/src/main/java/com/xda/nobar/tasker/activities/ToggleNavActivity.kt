@@ -5,7 +5,7 @@ import com.joaomgcd.taskerpluginlibrary.input.TaskerInput
 import com.xda.nobar.R
 import com.xda.nobar.tasker.runners.ToggleNavRunner
 
-class ToggleNavActivity : BaseToggleActivity() {
+class ToggleNavActivity : BaseNoInputOutputActivity() {
     override val helper: TaskerPluginConfigHelperNoOutputOrInput<ToggleNavRunner> by lazy {
         object : TaskerPluginConfigHelperNoOutputOrInput<ToggleNavRunner>(this) {
             override val runnerClass = ToggleNavRunner::class.java

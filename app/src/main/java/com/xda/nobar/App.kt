@@ -19,9 +19,7 @@ import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
-import com.android.internal.R.attr.*
 import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
 import com.github.anrwatchdog.ANRWatchDog
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.storage.FirebaseStorage
@@ -40,8 +38,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.apache.commons.lang3.exception.ExceptionUtils
-import java.io.PrintWriter
-import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue
@@ -127,14 +123,82 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     val actionRightHold: String by lazy { resources.getString(R.string.action_right_hold) }
     val actionDownHold: String by lazy { resources.getString(R.string.action_down_hold) }
 
-    val actionUpHoldLeft: String by lazy { resources.getString(R.string.action_up_hold_left) }
     val actionUpLeft: String by lazy { resources.getString(R.string.action_up_left) }
+    val actionUpHoldLeft: String by lazy { resources.getString(R.string.action_up_hold_left) }
 
     val actionUpCenter: String by lazy { resources.getString(R.string.action_up_center) }
     val actionUpHoldCenter: String by lazy { resources.getString(R.string.action_up_hold_center) }
 
     val actionUpRight: String by lazy { resources.getString(R.string.action_up_right) }
     val actionUpHoldRight: String by lazy { resources.getString(R.string.action_up_hold_right) }
+
+    val actionsList by lazy { arrayListOf(
+            actionLeft,
+            actionRight,
+            actionUp,
+            actionDown,
+            actionDouble,
+            actionHold,
+            actionTap,
+            actionUpHold,
+            actionLeftHold,
+            actionRightHold,
+            actionDownHold,
+            actionUpLeft,
+            actionUpHoldLeft,
+            actionUpCenter,
+            actionUpHoldCenter,
+            actionUpRight,
+            actionUpHoldRight
+    ) }
+    
+    fun name(action: String): String? {
+        val res = when(action) {
+            actionLeft -> R.string.left
+            actionRight -> R.string.right
+            actionUp -> R.string.up
+            actionDown -> R.string.down
+            actionDouble -> R.string.double_tap
+            actionHold -> R.string.hold
+            actionTap -> R.string.tap
+            actionUpHold -> R.string.swipe_up_hold
+            actionLeftHold -> R.string.left_hold
+            actionRightHold -> R.string.right_hold
+            actionDownHold -> R.string.down_hold
+            actionUpLeft -> R.string.swipe_up_left
+            actionUpHoldLeft -> R.string.swipe_up_hold_left
+            actionUpCenter -> R.string.swipe_up_center
+            actionUpHoldCenter -> R.string.swipe_up_hold_center
+            actionUpRight -> R.string.swipe_up_right
+            actionUpHoldRight -> R.string.swipe_up_hold_right
+            else -> 0
+        }
+        return if (res != 0) resources.getString(res)
+        else null
+    }
+    
+    fun icon(action: String): Int {
+        return when(action) {
+            actionLeft -> R.drawable.swipe_left
+            actionRight -> R.drawable.swipe_right
+            actionUp -> R.drawable.swipe_up
+            actionDown -> R.drawable.swipe_down
+            actionDouble -> R.drawable.double_tap
+            actionHold -> R.drawable.tap_hold
+            actionTap -> R.drawable.tap
+            actionUpHold -> R.drawable.swipe_up_hold
+            actionLeftHold -> R.drawable.swipe_left
+            actionRightHold -> R.drawable.swipe_right
+            actionDownHold -> R.drawable.swipe_down
+            actionUpLeft -> R.drawable.swipe_up
+            actionUpHoldLeft -> R.drawable.swipe_up_hold
+            actionUpCenter -> R.drawable.swipe_up
+            actionUpHoldCenter -> R.drawable.swipe_up_hold
+            actionUpRight -> R.drawable.swipe_up
+            actionUpHoldRight -> R.drawable.swipe_up_hold
+            else -> 0
+        }
+    }
 
     val typeNoAction by lazy { resources.getString(R.string.type_no_action).toInt() }
     val typeBack by lazy { resources.getString(R.string.type_back).toInt() }
@@ -160,6 +224,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     val premTypeScreenshot by lazy { resources.getString(R.string.prem_type_screenshot).toInt() }
     val premTypeLaunchActivity by lazy { resources.getString(R.string.prem_type_launch_activity).toInt() }
     val premTypeRot by lazy { resources.getString(R.string.prem_type_rot).toInt() }
+    val premTypeTaskerEvent by lazy { resources.getString(R.string.prem_type_tasker_event).toInt() }
 
     val typeRootHoldBack by lazy { resources.getString(R.string.type_hold_back).toInt() }
     val typeRootForward by lazy { resources.getString(R.string.type_forward).toInt() }

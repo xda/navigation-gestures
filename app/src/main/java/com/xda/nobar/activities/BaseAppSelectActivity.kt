@@ -13,8 +13,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import com.github.lzyzsd.circleprogress.ArcProgress
+import com.xda.nobar.App
 import com.xda.nobar.R
-import com.xda.nobar.activities.BaseAppSelectActivity.Companion.APPINFO
 import com.xda.nobar.util.AppInfo
 import com.xda.nobar.util.AppSelectAdapter
 import io.reactivex.Observable
@@ -32,6 +32,8 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
     internal abstract val adapter: AppSelectAdapter
 
     internal var isCreated = false
+
+    internal val app by lazy { application as App }
 
     private val origAppSet = ArrayList<AppInfo>()
     private val list by lazy { findViewById<RecyclerView>(R.id.list) }

@@ -11,7 +11,6 @@ import android.widget.TextView
 import com.rey.material.widget.CheckedImageView
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnAppSelectedListener
-import kotlin.math.sign
 
 /**
  * For use by BaseAppSelectActivity
@@ -21,7 +20,8 @@ import kotlin.math.sign
 class AppSelectAdapter(val isSingleSelect: Boolean,
                        val showSummary: Boolean,
                        val checkListener: OnAppSelectedListener,
-                       val activity: Boolean = false)
+                       val activity: Boolean = false,
+                       val isRemote: Boolean = true)
     : RecyclerView.Adapter<AppSelectAdapter.VH>() {
     val apps = SortedList<AppInfo>(AppInfo::class.java, AppInfoSorterCallback(this, activity))
 
@@ -45,7 +45,7 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
             summary.visibility = View.GONE
         }
 
-        val remoteResources = view.context.packageManager.getResourcesForApplication(app.packageName)
+        val remoteResources = if (isRemote) view.context.packageManager.getResourcesForApplication(app.packageName) else view.context.resources
         icon.background = try {
             Utils.getBitmapDrawable(remoteResources.getDrawable(app.icon), holder.view.context.resources)
                     ?: view.context.resources.getDrawable(android.R.drawable.ic_menu_help)
@@ -54,14 +54,21 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
         }
 
         view.setOnClickListener {
-            if (isSingleSelect) {
-                checkListener.onAppSelected(app)
-            } else {
-                check.isChecked = !check.isChecked
-                app.isChecked = check.isChecked
+            check.isChecked = !check.isChecked || isSingleSelect
+            app.isChecked = check.isChecked
 
-                checkListener.onAppSelected(app)
+            if (isSingleSelect) {
+                (0 until apps.size())
+                        .map { apps[it] }
+                        .filterNot { it == app }
+                        .filter { it.isChecked }
+                        .forEach {
+                            it.isChecked = false
+                            notifyItemChanged(apps.indexOf(it))
+                        }
             }
+
+            checkListener.onAppSelected(app)
         }
 
         check.isChecked = app.isChecked
@@ -101,6 +108,16 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
         val dataSize = apps.size()
         apps.clear()
         notifyItemRangeRemoved(0, dataSize)
+    }
+
+    fun setSelectedByPackage(packageName: String) {
+        (0 until apps.size())
+                .map { apps[it] }
+                .filter { it.packageName == packageName }
+                .forEach {
+                    it.isChecked = true
+                    notifyItemChanged(apps.indexOf(it))
+                }
     }
 
     class VH(val view: View) : RecyclerView.ViewHolder(view)

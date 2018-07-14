@@ -5,7 +5,7 @@ import com.joaomgcd.taskerpluginlibrary.input.TaskerInput
 import com.xda.nobar.R
 import com.xda.nobar.tasker.runners.ToggleGestureRunner
 
-class ToggleGestureActivity : BaseToggleActivity() {
+class ToggleGestureActivity : BaseNoInputOutputActivity() {
     override val helper: TaskerPluginConfigHelperNoOutputOrInput<ToggleGestureRunner> by lazy {
         object : TaskerPluginConfigHelperNoOutputOrInput<ToggleGestureRunner>(this) {
             override val runnerClass = ToggleGestureRunner::class.java

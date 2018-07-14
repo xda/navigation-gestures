@@ -4,7 +4,6 @@ import android.accessibilityservice.AccessibilityService
 import android.app.SearchManager
 import android.content.*
 import android.media.AudioManager
-import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -19,14 +18,9 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
 import com.crashlytics.android.Crashlytics
 import com.xda.nobar.App
-import com.xda.nobar.R
-import com.xda.nobar.activities.DialogActivity
 import com.xda.nobar.activities.LockScreenActivity
 import com.xda.nobar.activities.ScreenshotActivity
 import com.xda.nobar.util.Utils
-import com.xda.nobar.util.Utils.runNougatAction
-import com.xda.nobar.util.Utils.runPremiumAction
-import com.xda.nobar.util.Utils.runSystemSettingsAction
 import java.io.Serializable
 
 
@@ -57,6 +51,10 @@ class Actions : AccessibilityService(), Serializable {
     }
 
     private var currentDegree = 0
+        set(value) {
+            field = value
+            orientationEventListener.disable()
+        }
 
     override fun onCreate() {
         receiver.register()
@@ -223,9 +221,10 @@ class Actions : AccessibilityService(), Serializable {
 
                                 Settings.System.putInt(contentResolver, Settings.System.USER_ROTATION, rotation)
                             }
-                            orientationEventListener.disable()
                         }, 20)
                     } }
+                    app.premTypeTaskerEvent -> runPremiumAction {
+                    }
                     app.premTypeVibe -> {
                         //TODO: Implement
                     }
