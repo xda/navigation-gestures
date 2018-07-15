@@ -116,7 +116,7 @@
             android:name=".tasker.activities.EventConfigureActivity"
             android:exported="true"
             android:icon="@drawable/ic_gesture_black_24dp"
-            android:label="@string/tasker_event">
+            android:label="@string/prem_tasker_event">
             <intent-filter>
                 <action android:name="net.dinglisch.android.tasker.ACTION_EDIT_EVENT" />
             </intent-filter>

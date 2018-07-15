@@ -17,9 +17,12 @@ import android.view.Surface
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
 import com.crashlytics.android.Crashlytics
+import com.joaomgcd.taskerpluginlibrary.extensions.requestQuery
 import com.xda.nobar.App
 import com.xda.nobar.activities.LockScreenActivity
 import com.xda.nobar.activities.ScreenshotActivity
+import com.xda.nobar.tasker.activities.EventConfigureActivity
+import com.xda.nobar.tasker.states.EventUpdate
 import com.xda.nobar.util.Utils
 import java.io.Serializable
 
@@ -87,6 +90,7 @@ class Actions : AccessibilityService(), Serializable {
 
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ACTION) {
+                val gesture = intent.getStringExtra(EXTRA_GESTURE)
                 when (intent.getIntExtra(EXTRA_ACTION, app.typeNoAction)) {
                     app.typeHome -> performGlobalAction(GLOBAL_ACTION_HOME)
                     app.typeRecents -> performGlobalAction(GLOBAL_ACTION_RECENTS)
@@ -136,7 +140,8 @@ class Actions : AccessibilityService(), Serializable {
                                                     searchMan.launchLegacyAssist(null, UserHandle.USER_CURRENT, null)
                                                 }
                                             } else {
-                                                val launchAssistAction = searchMan::class.java.getMethod("launchAssistAction", Int::class.java, String::class.java, Int::class.java)
+                                                val launchAssistAction = searchMan::class.java
+                                                        .getMethod("launchAssistAction", Int::class.java, String::class.java, Int::class.java)
                                                 launchAssistAction.invoke(searchMan, 1, null, UserHandle.USER_CURRENT)
                                             }
                                         }
@@ -166,7 +171,7 @@ class Actions : AccessibilityService(), Serializable {
                         imm.showInputMethodPicker()
                     }
                     app.premTypeLaunchApp -> runPremiumAction {
-                        val key = "${intent.getStringExtra(EXTRA_GESTURE)}_package"
+                        val key = "${gesture}_package"
                         val launchPackage = app.prefs.getString(key, null)
 
                         if (launchPackage != null) {
@@ -182,7 +187,7 @@ class Actions : AccessibilityService(), Serializable {
                         }
                     }
                     app.premTypeLaunchActivity -> runPremiumAction {
-                        val key = "${intent.getStringExtra(EXTRA_GESTURE)}_activity"
+                        val key = "${gesture}_activity"
                         val activity = app.prefs.getString(key, null)
 
                         val p = activity.split("/")[0]
@@ -224,6 +229,7 @@ class Actions : AccessibilityService(), Serializable {
                         }, 20)
                     } }
                     app.premTypeTaskerEvent -> runPremiumAction {
+                        EventConfigureActivity::class.java.requestQuery(this@Actions, EventUpdate(gesture))
                     }
                     app.premTypeVibe -> {
                         //TODO: Implement

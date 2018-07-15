@@ -102,7 +102,6 @@
     <string name="experimental_prefs">Experimental Settings</string>
     <string name="fix_for_other_windows">Keep Pill Shown in other Overlay Apps</string>
     <string name="full_overscan">Use Full Overscan</string>
-    <string name="tasker_event">Tasker Event (Premium)</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -205,6 +204,7 @@
     <string name="prem_launch_activity">Launch Activity (Premium) (%s)</string>
     <string name="prem_launch_activity_no_format">Launch Activity (Premium)</string>
     <string name="prem_rot">Rotate Screen (Premium)</string>
+    <string name="prem_tasker_event">Tasker Event (Premium)</string>
 
     <!--Messages-->
     <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
