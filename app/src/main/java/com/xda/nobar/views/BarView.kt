@@ -800,6 +800,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var origX = 0F
         private var origY = 0F
 
+        private var origAdjX = 0F
+        private var origAdjY = 0F
+
         private val manager = GestureDetector(context, Detector())
 
         fun onTouchEvent(ev: MotionEvent?): Boolean {
@@ -820,6 +823,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     oldX = ev.rawX
                     origX = ev.rawX
                     origY = ev.rawY
+                    origAdjX = ev.x
+                    origAdjY = ev.y
                     beingTouched = true
                     isCarryingOutTouchAction = true
                 }
@@ -832,7 +837,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             isSwipeUp = false
                         }
 
-                        if (isSwipeUp || (isRunningLongUp &&  getSectionedUpHoldAction(origX) == app.typeNoAction)) {
+                        if (isSwipeUp || (isRunningLongUp &&  getSectionedUpHoldAction(origAdjX) == app.typeNoAction)) {
                             app.handler.post {
                                 upHoldHandle?.cancel(true)
                                 upHoldHandle = null
@@ -1128,7 +1133,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         ).contains(this) && Utils.sectionedPill(context)
 
         private fun getSection(x: Float): Int {
-            val third = params.width / 3f
+            val third = Utils.getCustomWidth(context) / 3f
 
             return when {
                 x < third -> FIRST_SECTION
@@ -1139,7 +1144,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         private fun sendAction(action: String) {
             if (action.isEligible()) {
-                when(getSection(origX)) {
+                when(getSection(origAdjX)) {
                     FIRST_SECTION -> sendActionInternal("${action}_left")
                     SECOND_SECTION -> sendActionInternal("${action}_center")
                     THIRD_SECTION -> sendActionInternal("${action}_right")
