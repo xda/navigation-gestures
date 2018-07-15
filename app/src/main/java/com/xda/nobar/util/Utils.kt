@@ -14,10 +14,8 @@ import android.net.Uri
 import android.os.Build
 import android.preference.PreferenceManager
 import android.provider.Settings
-import android.support.v4.content.ContextCompat.startActivity
 import android.util.TypedValue
 import android.view.WindowManager
-import com.android.internal.R.attr.action
 import com.crashlytics.android.Crashlytics
 import com.xda.nobar.App
 import com.xda.nobar.R
@@ -792,4 +790,6 @@ object Utils {
 
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(app)
     }
+
+    fun shouldKeepOverscanOnLock(context: Context) = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("lockscreen_overscan", false)
 }

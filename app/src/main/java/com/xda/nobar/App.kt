@@ -647,6 +647,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         Intent.ACTION_SHUTDOWN,
                         Intent.ACTION_SCREEN_OFF -> {
                             if (Utils.shouldUseOverscanMethod(this@App)
+                                    && Utils.shouldKeepOverscanOnLock(this@App)
                                     && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)) {
                                 showNav()
                             }
@@ -656,6 +657,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         Intent.ACTION_LOCKED_BOOT_COMPLETED -> {
                             if (Utils.isOnKeyguard(this@App)) {
                                 if (Utils.shouldUseOverscanMethod(this@App)
+                                        && Utils.shouldKeepOverscanOnLock(this@App)
                                         && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)) {
                                     showNav()
                                 }
