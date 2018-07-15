@@ -39,7 +39,7 @@
     <integer name="max_anim_duration">500</integer>
     <integer name="max_x_threshold_dp">100</integer>
     <integer name="max_y_threshold_dp">100</integer>
-    <integer name="max_auto_hide_time">3000</integer>
+    <integer name="max_auto_hide_time">10000</integer>
     <integer name="max_pill_height_dp">50</integer>
 
     <integer name="pill_margin_top_normal_dp">4</integer>
