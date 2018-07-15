@@ -975,8 +975,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         val velocity = (oldY - ev.rawY)
                         oldY = ev.rawY
 
-                        if (params.y < Utils.getRealScreenSize(context).y / 6 + getAdjustedHomeY() && getAnimationDurationMs() > 0) {
-                            params.y = params.y + (velocity / 2).toInt()
+                        if (params.y > Utils.getRealScreenSize(context).y - Utils.getRealScreenSize(context).y / 6 - getHomeY(context) && getAnimationDurationMs() > 0) {
+                            params.y -= (velocity / 2).toInt()
                             updateLayout(params)
                         }
 
@@ -998,7 +998,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         val velocity = (oldY - ev.rawY)
                         oldY = ev.rawY
 
-                        params.y = params.y + (velocity / 2).toInt()
+                        params.y -= (velocity / 2).toInt()
                         updateLayout(params)
 
                         if (downHoldHandle == null) {
