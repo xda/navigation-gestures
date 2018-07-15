@@ -151,6 +151,9 @@ object Utils {
     fun forceTouchWizNavEnabled(context: Context) =
             Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0)
 
+    fun forceTouchWizNavNotEnabled(context: Context) =
+            Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 1)
+
     fun undoForceTouchWizNavEnabled(context: Context) =
             Settings.Global.putString(context.contentResolver, "navigationbar_hide_bar_enabled", null)
 
@@ -365,6 +368,8 @@ object Utils {
 
     fun setNavImmersive(context: Context) =
             Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation=*")
+                    || (checkTouchWiz(context)
+                    && forceTouchWizNavNotEnabled(context))
 
     /**
      * Check if the current device can use the necessary hidden APIs

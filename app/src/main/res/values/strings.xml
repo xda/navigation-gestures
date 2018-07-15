@@ -103,6 +103,7 @@
     <string name="fix_for_other_windows">Keep Pill Shown in other Overlay Apps</string>
     <string name="full_overscan">Use Full Overscan</string>
     <string name="keep_overscan_on_lockscreen">Keep Overscan on Lock Screen</string>
+    <string name="current_overscan">Current Overscan</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>

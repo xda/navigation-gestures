@@ -531,7 +531,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 uiHandler.handleRot()
             }
             Utils.forceNavBlack(this)
-            if (Utils.checkTouchWiz(this)) {
+            if (Utils.checkTouchWiz(this) && !Utils.useImmersiveWhenNavHidden(this)) {
                 Utils.forceTouchWizNavEnabled(this)
             }
 
@@ -938,7 +938,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                             try {
                                 val current = Settings.Global.getInt(contentResolver, "navigationbar_hide_bar_enabled")
 
-                                if (current != 0) {
+                                if (current != 0 && !Utils.useImmersiveWhenNavHidden(this@App)) {
                                     Settings.Global.putInt(contentResolver, "navigationbar_hide_bar_enabled", 0)
 
                                     handler.post { Toast.makeText(this@App, resources.getText(R.string.feature_not_avail), Toast.LENGTH_SHORT).show() }
