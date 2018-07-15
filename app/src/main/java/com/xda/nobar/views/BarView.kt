@@ -74,6 +74,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var pill: LinearLayout = view.findViewById(R.id.pill)
     var pillFlash: LinearLayout = pill.findViewById(R.id.pill_tap_flash)
     var yHomeAnimator: ValueAnimator? = null
+    var lastTouchTime = 0L
 
     val params: WindowManager.LayoutParams = WindowManager.LayoutParams()
 
@@ -92,61 +93,18 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             field = value
             if (!value) {
                 if (needsScheduledHide) {
-                    scheduleHide()
+                    app.runAsync {
+                        scheduleHide()
+                    }
                     needsScheduledHide = false
                 }
             }
         }
     var isCarryingOutTouchAction = false
-        set(value) {
-            field = value
-            if (!value && !isPillHidingOrShowing && !isHidden) {
-                queuedLayoutUpdate?.invoke()
-                queuedLayoutUpdate = null
-            }
-        }
     var isPillHidingOrShowing = false
-        set(value) {
-            field = value
-            if (!value && !isCarryingOutTouchAction && !isHidden) {
-                queuedLayoutUpdate?.invoke()
-                queuedLayoutUpdate = null
-            }
-        }
     var isImmersive = false
-        set(value) {
-            field = value
-            if (Utils.shouldUseOverscanMethod(context)) {
-                queuedLayoutUpdate = {
-                    if (params.y != getAdjustedHomeY()) {
-                        params.y = getAdjustedHomeY()
-                        updateLayout(params)
-                    }
-                }
-
-                if (!isCarryingOutTouchAction && !isPillHidingOrShowing && !isHidden) {
-                    queuedLayoutUpdate?.invoke()
-                    queuedLayoutUpdate = null
-                }
-            }
-        }
     var immersiveNav: Boolean = false
-        set(value) {
-            field = value
-            queuedLayoutUpdate = {
-                if (params.y != getAdjustedHomeY()) {
-                    params.y = getAdjustedHomeY()
-                    updateLayout(params)
-                }
-            }
 
-            if (!isCarryingOutTouchAction && !isPillHidingOrShowing && !isHidden) {
-                queuedLayoutUpdate?.invoke()
-                queuedLayoutUpdate = null
-            }
-        }
-
-    private var queuedLayoutUpdate: (() -> Unit)? = null
     private var needsScheduledHide = false
 
     private val hideLock = Any()
@@ -379,7 +337,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (auto && autoReason == null) throw IllegalArgumentException("autoReason must not be null when auto is true")
         if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
 
-        if (!beingTouched || overrideBeingTouched) {
+        if ((!beingTouched && !isCarryingOutTouchAction) || overrideBeingTouched) {
             app.handler.post {
                 if (app.isPillShown()) {
                     isPillHidingOrShowing = true
@@ -551,21 +509,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun getAdjustedHomeY(): Int {
-        return if ((isImmersive || immersiveNav) && Utils.shouldUseOverscanMethod(context)) {
-            if ((wm.defaultDisplay.rotation == Surface.ROTATION_90
-                            || wm.defaultDisplay.rotation == Surface.ROTATION_270)
-                    && !Utils.useTabletMode(context)) if (Utils.hideInFullscreen(context) && isImmersive) - 1 else getHomeY(context) - 1
-            else if (Utils.origBarInFullscreen(context)) 0 else Utils.getNavBarHeight(context) - 1 + if (Utils.hideInFullscreen(context)) 0 else Utils.getHomeY(context) - 1
-        } else getHomeY(context)
+        return Utils.getRealScreenSize(context).y - getHomeY(context) - Utils.getCustomHeight(context)
     }
 
     fun getZeroY(): Int {
-        return if ((isImmersive || immersiveNav) && Utils.shouldUseOverscanMethod(context)) {
-            if ((wm.defaultDisplay.rotation == Surface.ROTATION_270
-                            || wm.defaultDisplay.rotation == Surface.ROTATION_90)
-                    && !Utils.useTabletMode(context)) 0
-            else if (Utils.origBarInFullscreen(context)) 0 else Utils.getNavBarHeight(context)
-        } else 0
+        return Utils.getRealScreenSize(context).y - Utils.getCustomHeight(context)
     }
 
     fun getAdjustedHomeX(): Int {
@@ -864,6 +812,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             when (ev?.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    lastTouchTime = System.currentTimeMillis()
                     wasHidden = isHidden
                     app.uiHandler.onGlobalLayout()
                     oldY = ev.rawY
@@ -875,9 +824,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    app.runAsync {
-                        beingTouched = false
+                    beingTouched = false
 
+                    app.runAsync {
                         if (wasHidden) {
                             isSwipeUp = false
                         }
@@ -1155,7 +1104,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     && !isActing
                     && distanceY < -yThresh
                     && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
-                showPill(null)
+                if (isHidden && !isPillHidingOrShowing && !beingTouched) {
+                    vibrate(getVibrationDuration().toLong())
+                    showPill(null)
+                }
                 true
             } else false
         }
@@ -1204,6 +1156,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             val which = actionMap[key] ?: return
 
             if (which == app.typeNoAction) return
+
+            if (isHidden || isPillHidingOrShowing) return
 
             vibrate(getVibrationDuration().toLong())
 
@@ -1293,7 +1247,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                         sendAction(app.actionTap)
                         true
-                    } else if (isHidden) {
+                    } else if (isHidden && !isPillHidingOrShowing) {
                         isOverrideTap = false
                         vibrate(getVibrationDuration().toLong())
                         showPill(null)

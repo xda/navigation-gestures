@@ -402,11 +402,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
         if (disabledBarReasonManager.isEmpty()) {
             handler.post {
                 bar.params.apply {
-                    y = bar.getAdjustedHomeY()
                     x = bar.getAdjustedHomeX()
                     width = Utils.getCustomWidth(this@App)
                     height = Utils.getCustomHeight(this@App)
-                    gravity = Gravity.CENTER or Gravity.BOTTOM
+                    gravity = Gravity.CENTER or Gravity.TOP
+                    y = bar.getAdjustedHomeY()
                     type =
                             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
                                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
