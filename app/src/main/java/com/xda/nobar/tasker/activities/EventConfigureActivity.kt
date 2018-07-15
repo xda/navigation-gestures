@@ -6,30 +6,30 @@ import com.joaomgcd.taskerpluginlibrary.config.TaskerPluginConfigHelper
 import com.joaomgcd.taskerpluginlibrary.input.TaskerInput
 import com.xda.nobar.activities.BaseAppSelectActivity
 import com.xda.nobar.interfaces.OnAppSelectedListener
-import com.xda.nobar.tasker.inputs.BaseConditionInput
-import com.xda.nobar.tasker.runners.BaseConditionRunner
+import com.xda.nobar.tasker.inputs.EventInput
+import com.xda.nobar.tasker.runners.EventRunner
 import com.xda.nobar.util.AppInfo
 import com.xda.nobar.util.AppSelectAdapter
 
-class EventConfigureActivity : BaseAppSelectActivity(), TaskerPluginConfig<BaseConditionInput> {
+class EventConfigureActivity : BaseAppSelectActivity(), TaskerPluginConfig<EventInput> {
     override val context by lazy { this }
-    override val inputForTasker: TaskerInput<BaseConditionInput>
-        get() = TaskerInput(BaseConditionInput(gesture))
+    override val inputForTasker: TaskerInput<EventInput>
+        get() = TaskerInput(EventInput(gesture))
     override val adapter = AppSelectAdapter(true, false, OnAppSelectedListener {
         gesture = it.packageName
     }, false, false)
 
     private var gesture: String? = null
 
-    private val helper: TaskerPluginConfigHelper<BaseConditionInput, Unit, BaseConditionRunner> by lazy {
-        object : TaskerPluginConfigHelper<BaseConditionInput, Unit, BaseConditionRunner>(this) {
-            override val runnerClass = BaseConditionRunner::class.java
-            override val inputClass = BaseConditionInput::class.java
+    private val helper: TaskerPluginConfigHelper<EventInput, Unit, EventRunner> by lazy {
+        object : TaskerPluginConfigHelper<EventInput, Unit, EventRunner>(this) {
+            override val runnerClass = EventRunner::class.java
+            override val inputClass = EventInput::class.java
             override val outputClass = Unit::class.java
         }
     }
 
-    override fun assignFromInput(input: TaskerInput<BaseConditionInput>) {
+    override fun assignFromInput(input: TaskerInput<EventInput>) {
         gesture = input.regular.gesture
         adapter.setSelectedByPackage(gesture ?: return)
     }

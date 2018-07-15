@@ -22,7 +22,7 @@ import com.xda.nobar.App
 import com.xda.nobar.activities.LockScreenActivity
 import com.xda.nobar.activities.ScreenshotActivity
 import com.xda.nobar.tasker.activities.EventConfigureActivity
-import com.xda.nobar.tasker.states.EventUpdate
+import com.xda.nobar.tasker.updates.EventUpdate
 import com.xda.nobar.util.Utils
 import java.io.Serializable
 

@@ -6,11 +6,11 @@ import com.joaomgcd.taskerpluginlibrary.input.TaskerInput
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultCondition
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultConditionSatisfied
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultConditionUnsatisfied
-import com.xda.nobar.tasker.inputs.BaseConditionInput
-import com.xda.nobar.tasker.states.EventUpdate
+import com.xda.nobar.tasker.inputs.EventInput
+import com.xda.nobar.tasker.updates.EventUpdate
 
-class BaseConditionRunner : TaskerPluginRunnerConditionEvent<BaseConditionInput, Unit, EventUpdate>() {
-    override fun getSatisfiedCondition(context: Context, input: TaskerInput<BaseConditionInput>, update: EventUpdate?): TaskerPluginResultCondition<Unit> {
+class EventRunner : TaskerPluginRunnerConditionEvent<EventInput, Unit, EventUpdate>() {
+    override fun getSatisfiedCondition(context: Context, input: TaskerInput<EventInput>, update: EventUpdate?): TaskerPluginResultCondition<Unit> {
         return if (input.regular.gesture == update?.gesture) TaskerPluginResultConditionSatisfied(context)
         else TaskerPluginResultConditionUnsatisfied()
     }

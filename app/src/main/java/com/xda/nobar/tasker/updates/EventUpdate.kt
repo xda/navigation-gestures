@@ -1,4 +1,4 @@
-package com.xda.nobar.tasker.states
+package com.xda.nobar.tasker.updates
 
 import com.joaomgcd.taskerpluginlibrary.input.TaskerInputField
 import com.joaomgcd.taskerpluginlibrary.input.TaskerInputRoot
