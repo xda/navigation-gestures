@@ -400,7 +400,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private fun scheduleHide(time: Long? = parseHideTime()) {
         if (time != null) {
             hideHandle = pool.schedule({
-                if (hiddenPillReasons.isNotEmpty()) hidePill(true, hiddenPillReasons.getMostRecentReason())
+                if (System.currentTimeMillis() - lastTouchTime < time) {
+                    scheduleHide()
+                } else {
+                    if (hiddenPillReasons.isNotEmpty()) {
+                        hidePill(true, hiddenPillReasons.getMostRecentReason())
+                    }
+                }
             }, time, TimeUnit.MILLISECONDS)
         }
     }
@@ -922,6 +928,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                         override fun onAnimationEnd(animation: Animator?) {
                                             isActing = false
                                             isSwipeUp = false
+                                            isSwipeDown = false
                                             isCarryingOutTouchAction = false
 
                                             yHomeAnimator = null
