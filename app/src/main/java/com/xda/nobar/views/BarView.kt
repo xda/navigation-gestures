@@ -191,6 +191,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
         if (key == "custom_height_percent" || key == "custom_height") {
             params.height = getCustomHeight(context)
+            params.y = getAdjustedHomeY()
             updateLayout(params)
         }
         if (key == "custom_y_percent" || key == "custom_y") {
