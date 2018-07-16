@@ -6,9 +6,9 @@
         android:title="@string/blacklisting">
 
         <SwitchPreference
-            android:title="@string/keep_overscan_on_lockscreen"
-            android:summary="@string/keep_overscan_on_lockscreen_desc"
-            android:key="lockscreen_overscan"
+            android:title="@string/dont_keep_overscan_on_lockscreen"
+            android:summary="@string/dont_keep_overscan_on_lockscreen_desc"
+            android:key="lockscreen_no_overscan"
             android:icon="@drawable/ic_border_clear_black_24dp" />
 
         <Preference

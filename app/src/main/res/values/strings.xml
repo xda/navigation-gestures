@@ -102,7 +102,7 @@
     <string name="experimental_prefs">Experimental Settings</string>
     <string name="fix_for_other_windows">Keep Pill Shown in other Overlay Apps</string>
     <string name="full_overscan">Use Full Overscan</string>
-    <string name="keep_overscan_on_lockscreen">Keep Overscan on Lock Screen</string>
+    <string name="dont_keep_overscan_on_lockscreen">Don\'t Hide NavBar on Lock Screen</string>
     <string name="current_overscan">Current Overscan</string>
 
     <!--Descriptions-->
@@ -142,7 +142,7 @@
     <string name="full_overscan_desc">By default, Navigation Gestures leaves 1 pixel of the original navbar visible. Enable this to remove that pixel. WARNING: This will break certain devices!!!</string>
     <string name="toggle_gestures_desc">Toggle whether or not the gesture pill is displayed onscreen.</string>
     <string name="toggle_nav_desc">Toggle whether or not the device\'s software navigation bar should be hidden.</string>
-    <string name="keep_overscan_on_lockscreen_desc">This will prevent the original navigation bar from showing momentarily on unlock, at the cost of using lock screen shortcuts.</string>
+    <string name="dont_keep_overscan_on_lockscreen_desc">Enable this to show lock screen shortcuts and to fix issues with items being cut off on the lock screen, ambient display, or always on display.</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>

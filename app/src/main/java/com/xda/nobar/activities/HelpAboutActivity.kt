@@ -73,6 +73,8 @@ class HelpAboutActivity : AppCompatActivity() {
             val pref = findPreference("current_overscan")
 
             pref.summary = Rect().apply { activity.display.getOverscanInsets(this) }.toShortString()
+
+            preferenceScreen.removePreference(pref)
         }
 
         private fun addTutorialListener() {
