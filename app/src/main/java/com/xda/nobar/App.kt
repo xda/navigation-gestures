@@ -301,7 +301,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             addBar()
         }
 
-        if (Utils.useRot270Fix(this) || Utils.useTabletMode(this)) uiHandler.handleRot()
+        if (Utils.useRot270Fix(this)
+                || Utils.useTabletMode(this)
+                || Utils.useRot180Fix(this)) uiHandler.handleRot()
 
         if (!IntroActivity.needsToRun(this)) {
             wm.addView(immersiveHelperView, immersiveHelperView.params)
@@ -328,6 +330,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             }
             "rot270_fix" -> {
                 if (Utils.useRot270Fix(this)) uiHandler.handleRot()
+            }
+            "rot180_fix" -> {
+                if (Utils.useRot180Fix(this)) uiHandler.handleRot()
             }
             "tablet_mode" -> {
                 if (Utils.useTabletMode(this)) uiHandler.handleRot()
@@ -525,7 +530,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                 && IntroActivity.hasWss(this)) {
             if (Utils.useImmersiveWhenNavHidden(this)) Utils.setNavImmersive(this)
 
-            if (!Utils.useRot270Fix(this) && !Utils.useTabletMode(this))
+            if (!Utils.useRot270Fix(this)
+                    && !Utils.useTabletMode(this)
+                    && !Utils.useRot180Fix(this))
                 IWindowManager.setOverscan(0, 0, 0, -getAdjustedNavBarHeight())
             else {
                 uiHandler.handleRot()
@@ -1008,18 +1015,23 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
             if (Utils.shouldUseOverscanMethod(this@App)) {
                 if (Utils.useRot270Fix(this@App)) handle270()
+                if (Utils.useRot180Fix(this@App)) handle180()
                 if (Utils.useTabletMode(this@App)) handleTablet()
             }
         }
 
         private fun handle270() {
             runAsync {
-                if (wm.defaultDisplay.rotation == Surface.ROTATION_270 || wm.defaultDisplay.rotation == Surface.ROTATION_180) {
+                if (wm.defaultDisplay.rotation == Surface.ROTATION_270) {
                     IWindowManager.setOverscan(0, -getAdjustedNavBarHeight(), 0, 0)
                 } else {
                     IWindowManager.setOverscan(0, 0, 0, -getAdjustedNavBarHeight())
                 }
             }
+        }
+
+        private fun handle180() {
+            handle270()
         }
 
         private fun handleTablet() {

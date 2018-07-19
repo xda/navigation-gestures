@@ -319,6 +319,10 @@ object Utils {
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("rot270_fix", context.resources.getBoolean(R.bool.rot_fix_default))
 
+    fun useRot180Fix(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("rot180_fix", context.resources.getBoolean(R.bool.rot_fix_default))
+
     /**
      * Tablets usually have the software nav on the bottom, which isn't always the physical bottom.
      * @param context a context object
