@@ -800,5 +800,5 @@ object Utils {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(app)
     }
 
-    fun shouldKeepOverscanOnLock(context: Context) = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("lockscreen_overscan", false)
+    fun shouldntKeepOverscanOnLock(context: Context) = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("lockscreen_overscan", false)
 }

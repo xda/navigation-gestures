@@ -654,7 +654,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         Intent.ACTION_SHUTDOWN,
                         Intent.ACTION_SCREEN_OFF -> {
                             if (Utils.shouldUseOverscanMethod(this@App)
-                                    && Utils.shouldKeepOverscanOnLock(this@App)
+                                    && Utils.shouldntKeepOverscanOnLock(this@App)
                                     && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)) {
                                 showNav()
                             }
@@ -664,7 +664,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                         Intent.ACTION_LOCKED_BOOT_COMPLETED -> {
                             if (Utils.isOnKeyguard(this@App)) {
                                 if (Utils.shouldUseOverscanMethod(this@App)
-                                        && Utils.shouldKeepOverscanOnLock(this@App)
+                                        && Utils.shouldntKeepOverscanOnLock(this@App)
                                         && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)) {
                                     showNav()
                                 }
@@ -967,9 +967,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) -> {
                         if (wm.defaultDisplay.state == Display.STATE_ON) {
                             handler.postDelayed({
-                                val enabled = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
+                                val enabled =
+                                        Settings.Secure.getString(contentResolver,
+                                                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
                                 if (enabled) {
-                                    addBar()
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                                            || Settings.canDrawOverlays(this@App)) addBar()
                                 }
                             }, 100)
                         }
