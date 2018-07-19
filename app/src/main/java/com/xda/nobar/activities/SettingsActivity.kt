@@ -241,7 +241,7 @@ class SettingsActivity : AppCompatActivity() {
                 putBoolean("auto_hide_pill", false)
 
                 putInt("custom_width_percent", 1000)
-                putInt("custom_height", Utils.minPillHeightPx(activity) + Utils.dpAsPx(activity, 4.5f))
+                putInt("custom_height", Utils.minPillHeightPx(activity) + Utils.dpAsPx(activity, 7f))
                 putInt("custom_y_percent", 0)
                 putInt("pill_corner_radius", 0)
                 putInt("pill_bg", Color.TRANSPARENT)

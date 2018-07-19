@@ -22,39 +22,7 @@
             style="@android:style/TextAppearance.Material.Subhead" />
 
         <TextView
-            android:text="@string/rec_disable_shadow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textColor="?android:textColorSecondary"
-            style="@android:style/TextAppearance.Material.Body2" />
-
-        <TextView
             android:text="@string/rec_set_transparent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textColor="?android:textColorSecondary"
-            style="@android:style/TextAppearance.Material.Body2" />
-
-        <TextView
-            android:text="@string/rec_set_radius"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textColor="?android:textColorSecondary"
-            style="@android:style/TextAppearance.Material.Body2" />
-
-        <TextView
-            android:text="@string/rec_set_width"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textColor="?android:textColorSecondary"
-            style="@android:style/TextAppearance.Material.Body2" />
-
-        <TextView
-            android:text="@string/rec_set_height"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -70,7 +38,7 @@
             style="@android:style/TextAppearance.Material.Body2" />
 
         <TextView
-            android:text="@string/rec_disable_hide_in_fullscren"
+            android:text="@string/rec_swipe_left_right"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -78,7 +46,7 @@
             style="@android:style/TextAppearance.Material.Body2" />
 
         <TextView
-            android:text="@string/rec_dont_move_pill"
+            android:text="@string/rec_swipe_middle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -86,31 +54,7 @@
             style="@android:style/TextAppearance.Material.Body2" />
 
         <TextView
-            android:text="@string/rec_no_large_hitbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textColor="?android:textColorSecondary"
-            style="@android:style/TextAppearance.Material.Body2" />
-
-        <TextView
-            android:text="@string/rec_disable_default_gestures"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textColor="?android:textColorSecondary"
-            style="@android:style/TextAppearance.Material.Body2" />
-
-        <TextView
-            android:text="@string/rec_disable_anim"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textColor="?android:textColorSecondary"
-            style="@android:style/TextAppearance.Material.Body2" />
-
-        <TextView
-            android:text="@string/rec_no_hide_keyboard"
+            android:text="@string/rec_swipe_hold_middle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
