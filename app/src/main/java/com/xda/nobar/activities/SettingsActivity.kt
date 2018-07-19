@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.jaredrummler.android.colorpicker.ColorPreference
 import com.pavelsikun.seekbarpreference.SeekBarPreference
-import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.prefs.CustomPreferenceCategory
 import com.xda.nobar.prefs.SectionableListPreference
@@ -242,7 +241,7 @@ class SettingsActivity : AppCompatActivity() {
                 putBoolean("auto_hide_pill", false)
 
                 putInt("custom_width_percent", 1000)
-                putInt("custom_height", Utils.minPillHeightPx(activity) + Utils.dpAsPx(activity, 3.8f))
+                putInt("custom_height", Utils.minPillHeightPx(activity) + Utils.dpAsPx(activity, 4.5f))
                 putInt("custom_y_percent", 0)
                 putInt("pill_corner_radius", 0)
                 putInt("pill_bg", Color.TRANSPARENT)
