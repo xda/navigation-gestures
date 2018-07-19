@@ -757,10 +757,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             handleNewNodeInfo(info ?: return)
         }
 
+        private var oldPName: String? = null
+
         @SuppressLint("WrongConstant")
         private fun handleNewNodeInfo(info: AccessibilityNodeInfo) {
             val pName = info.packageName?.toString()
 
+            if (pName != oldPName && pName != "com.android.systemui") {
+                oldPName = pName
+                runNewNodeInfo(pName)
+            }
+        }
+
+        private fun runNewNodeInfo(pName: String?) {
             runAsync {
                 val navArray = ArrayList<String>().apply { Utils.loadBlacklistedNavPackages(this@App, this) }
                 if (navArray.contains(pName)) {
@@ -871,48 +880,46 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
                 if (!isActing) {
                     isActing = true
-                    handler.postDelayed({
-                        runAsync {
-                            val screenRes = Utils.getRealScreenSize(this@App)
-                            val overscan = getOverscan()
+                    runAsync {
+                        val screenRes = Utils.getRealScreenSize(this@App)
+                        val overscan = getOverscan()
 
-                            val rect = Rect()
-                            immersiveHelperView.getWindowVisibleDisplayFrame(rect)
+                        val rect = Rect()
+                        immersiveHelperView.getWindowVisibleDisplayFrame(rect)
 
-                            val screenHeight = Utils.getRealScreenSize(this@App).y
+                        val screenHeight = Utils.getRealScreenSize(this@App).y
 
-                            val isKeyboardProbablyShown = rect.bottom <
-                                    if (IWindowManager.hasNavigationBar()) screenHeight - Utils.getNavBarHeight(this@App) else screenHeight
+                        val isKeyboardProbablyShown = rect.bottom <
+                                if (IWindowManager.hasNavigationBar()) screenHeight - Utils.getNavBarHeight(this@App) else screenHeight
 
-                            bar.immersiveNav = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)?.contains("navigation") ?: false
-                                    && !isKeyboardProbablyShown
+                        bar.immersiveNav = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)?.contains("navigation") ?: false
+                                && !isKeyboardProbablyShown
 
-                            if (Utils.hidePillWhenKeyboardShown(this@App) && !bar.isCarryingOutTouchAction) {
-                                if (isKeyboardProbablyShown) bar.hidePill(true, HiddenPillReasonManager.KEYBOARD)
-                                else if (bar.hiddenPillReasons.onlyContains(HiddenPillReasonManager.KEYBOARD)) {
-                                    bar.showPill(HiddenPillReasonManager.KEYBOARD)
-                                }
+                        if (Utils.hidePillWhenKeyboardShown(this@App) && !bar.isCarryingOutTouchAction) {
+                            if (isKeyboardProbablyShown) bar.hidePill(true, HiddenPillReasonManager.KEYBOARD)
+                            else if (bar.hiddenPillReasons.onlyContains(HiddenPillReasonManager.KEYBOARD)) {
+                                bar.showPill(HiddenPillReasonManager.KEYBOARD)
                             }
-
-                            val insets = Rect()
-                            IWindowManager.getStableInsetsForDefaultDisplay(insets)
-
-                            val height = Point(screenRes.x - rect.left - rect.right,
-                                    screenRes.y - rect.top - rect.bottom)
-
-                            val totalOverscan = overscan.left + overscan.top + overscan.right + overscan.bottom
-
-                            val hidden = when {
-                                (wm.defaultDisplay.rotation == Surface.ROTATION_270
-                                        || wm.defaultDisplay.rotation == Surface.ROTATION_90)
-                                        && !Utils.useTabletMode(this@App) -> height.x.absoluteValue == totalOverscan.absoluteValue
-                                else -> height.y.absoluteValue == totalOverscan.absoluteValue
-                            }
-
-                            handleImmersiveChange(hidden)
-                            isActing = false
                         }
-                    }, 50)
+
+                        val insets = Rect()
+                        IWindowManager.getStableInsetsForDefaultDisplay(insets)
+
+                        val height = Point(screenRes.x - rect.left - rect.right,
+                                screenRes.y - rect.top - rect.bottom)
+
+                        val totalOverscan = overscan.left + overscan.top + overscan.right + overscan.bottom
+
+                        val hidden = when {
+                            (wm.defaultDisplay.rotation == Surface.ROTATION_270
+                                    || wm.defaultDisplay.rotation == Surface.ROTATION_90)
+                                    && !Utils.useTabletMode(this@App) -> height.x.absoluteValue == totalOverscan.absoluteValue
+                            else -> height.y.absoluteValue == totalOverscan.absoluteValue
+                        }
+
+                        handleImmersiveChange(hidden)
+                        isActing = false
+                    }
                 }
             }
         }
