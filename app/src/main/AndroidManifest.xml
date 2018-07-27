@@ -246,6 +246,9 @@
         <meta-data
             android:name="android.max_aspect"
             android:value="2.5" />
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="true" />
     </application>
 
 </manifest>
