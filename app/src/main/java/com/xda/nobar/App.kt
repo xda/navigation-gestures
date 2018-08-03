@@ -1,10 +1,13 @@
 package com.xda.nobar
 
+import android.Manifest
 import android.animation.Animator
 import android.annotation.SuppressLint
+import android.app.AppOpsManager
 import android.app.Application
 import android.app.UiModeManager
 import android.content.*
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.ContentObserver
 import android.graphics.PixelFormat
@@ -17,12 +20,11 @@ import android.provider.Settings
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.*
-import android.view.accessibility.AccessibilityNodeInfo
+import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
 import com.crashlytics.android.Crashlytics
 import com.github.anrwatchdog.ANRWatchDog
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.storage.FirebaseStorage
 import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
@@ -37,8 +39,6 @@ import com.xda.nobar.views.ImmersiveHelperView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import org.apache.commons.lang3.exception.ExceptionUtils
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue
 
@@ -46,13 +46,14 @@ import kotlin.math.absoluteValue
 /**
  * Centralize important stuff in the App class, so we can be sure to have an instance of it
  */
-class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
+class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
     companion object {
         const val EDGE_TYPE_ACTIVE = 2
     }
 
     val wm by lazy { getSystemService(Context.WINDOW_SERVICE) as WindowManager }
     val um by lazy { getSystemService(Context.UI_MODE_SERVICE) as UiModeManager }
+    val appOps by lazy { getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager }
 
     private val stateHandler = ScreenStateHandler()
     private val carModeHandler = CarModeHandler()
@@ -240,50 +241,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
     override fun onCreate() {
         super.onCreate()
 
-        val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference
-
         val watchDog = ANRWatchDog()
         watchDog.setReportMainThreadOnly()
         watchDog.start()
         watchDog.setANRListener {
-            val builder = StringBuilder()
-            val traceString = ExceptionUtils.getStackTrace(it)
-
-            builder.append("*******\n")
-            builder.append("Time (ms): ${System.currentTimeMillis()}\n")
-            builder.append("Version Name: ${BuildConfig.VERSION_NAME}\n")
-            builder.append("Version Code: ${BuildConfig.VERSION_CODE}\n")
-            builder.append("Brand: ${Build.BRAND}\n")
-            builder.append("Manufacturer: ${Build.MANUFACTURER}\n")
-            builder.append("Device: ${Build.DEVICE}\n")
-            builder.append("Model: ${Build.MODEL}\n")
-            builder.append("Board ${Build.BOARD}\n")
-            builder.append("SDK Int: ${Build.VERSION.SDK_INT}\n")
-            builder.append("*******\n")
-            builder.append("\n\n")
-            builder.append(traceString)
-
-            Log.e("NoBar ANR", traceString)
-
-            val bundle = Bundle()
-            bundle.putString("message", it.message)
-            bundle.putString("trace", builder.toString())
-
-            FirebaseAnalytics.getInstance(this).logEvent("ANR", bundle)
             Crashlytics.logException(it)
-
-            val date = SimpleDateFormat("yyyy_mm_dd_HH_mm_ss", Locale.US)
-            date.timeZone = TimeZone.getTimeZone("GMT -0400")
-
-            val anrRef = storageRef.child("anrs/${date.format(Date())}.txt")
-            anrRef.putStream(builder.toString().byteInputStream())
         }
 
         if (!Utils.canRunHiddenCommands(this) || IntroActivity.needsToRun(this)) {
-            val intent = Intent(this, IntroActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
+            IntroActivity.start(this)
         }
 
         stateHandler.register()
@@ -310,6 +276,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             uiHandler.onGlobalLayout()
             immersiveHelperView.viewTreeObserver.addOnGlobalLayoutListener(uiHandler)
         }
+
+        appOps.startWatchingMode(AppOpsManager.OP_SYSTEM_ALERT_WINDOW, packageName, this)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
@@ -373,6 +341,21 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             }
             "full_overscan" -> {
                 if (Utils.shouldUseOverscanMethod(this)) hideNav(false)
+            }
+        }
+    }
+
+    override fun onOpChanged(op: String?, packageName: String?) {
+        if (packageName == this.packageName) {
+            when (op) {
+                AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW -> {
+                    val mode = appOps.checkOpNoThrow(op, Process.myUid(), packageName)
+                    if ((Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1
+                                    && mode == AppOpsManager.MODE_DEFAULT
+                                    && checkSelfPermission(Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_GRANTED)
+                            || mode == AppOpsManager.MODE_ALLOWED)
+                        IntroActivity.start(this)
+                }
             }
         }
     }
@@ -491,10 +474,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
             BaseProvider.sendUpdate(this)
         } else {
-            val activity = Intent(this, IntroActivity::class.java)
-            activity.putExtra(IntroActivity.EXTRA_WSS_ONLY, true)
-            activity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(activity)
+            IntroActivity.start(this, Bundle().apply { putBoolean(IntroActivity.EXTRA_WSS_ONLY, true) })
         }
     }
 
@@ -759,20 +739,27 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
             bar.immersiveNav = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)?.contains("navigation") ?: false
         }
 
-        fun setNodeInfoAndUpdate(info: AccessibilityNodeInfo?) {
+        fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
             onGlobalLayout()
-            handleNewNodeInfo(info ?: return)
+            handleNewEvent(info ?: return)
         }
 
         private var oldPName: String? = null
 
         @SuppressLint("WrongConstant")
-        private fun handleNewNodeInfo(info: AccessibilityNodeInfo) {
+        private fun handleNewEvent(info: AccessibilityEvent) {
             val pName = info.packageName?.toString()
 
-            if (pName != oldPName && pName != "com.android.systemui") {
+            if (pName != oldPName) {
                 oldPName = pName
-                runNewNodeInfo(pName)
+
+                if (pName != "com.android.systemui") {
+                    runNewNodeInfo(pName)
+                } else {
+                    if (info.className?.contains("TextView") == false) {
+                        runNewNodeInfo(pName)
+                    }
+                }
             }
         }
 
@@ -964,16 +951,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
                     Settings.Global.getUriFor("navigationbar_current_color"),
                     Settings.Global.getUriFor("navigationbar_use_theme_default") -> if (isNavBarHidden()
                             && IntroActivity.hasWss(this@App)) Utils.forceNavBlack(this@App)
+
                     Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) -> {
                         if (wm.defaultDisplay.state == Display.STATE_ON) {
                             handler.postDelayed({
                                 val enabled =
                                         Settings.Secure.getString(contentResolver,
                                                 Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
-                                if (enabled) {
+                                if (enabled && areGesturesActivated()) {
                                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
-                                            || Settings.canDrawOverlays(this@App)) addBar()
+                                            || Settings.canDrawOverlays(this@App)) addBar(false)
                                 }
+
+                                if (enabled) IntroActivity.start(this@App)
                             }, 100)
                         }
                     }

@@ -57,6 +57,19 @@ class Actions : AccessibilityService(), Serializable {
         set(value) {
             field = value
             orientationEventListener.disable()
+            handler.postDelayed({
+                val currentAcc = Settings.System.getInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
+                if (currentAcc == 0) {
+                    val rotation = when (currentDegree) {
+                        in 45..134 -> Surface.ROTATION_270
+                        in 135..224 -> Surface.ROTATION_180
+                        in 225..314 -> Surface.ROTATION_90
+                        else -> Surface.ROTATION_0
+                    }
+
+                    Settings.System.putInt(contentResolver, Settings.System.USER_ROTATION, rotation)
+                }
+            }, 20)
         }
 
     override fun onCreate() {
@@ -65,7 +78,7 @@ class Actions : AccessibilityService(), Serializable {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         try {
-            app.uiHandler.setNodeInfoAndUpdate(event.source)
+            app.uiHandler.setNodeInfoAndUpdate(event)
         } catch (e: NullPointerException) {
             Crashlytics.logException(e)
         }
@@ -214,19 +227,6 @@ class Actions : AccessibilityService(), Serializable {
                     }
                     app.premTypeRot -> runPremiumAction { runSystemSettingsAction {
                         orientationEventListener.enable()
-                        handler.postDelayed({
-                            val currentAcc = Settings.System.getInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
-                            if (currentAcc == 0) {
-                                val rotation = when (currentDegree) {
-                                    in 45..134 -> Surface.ROTATION_270
-                                    in 135..224 -> Surface.ROTATION_180
-                                    in 225..314 -> Surface.ROTATION_90
-                                    else -> Surface.ROTATION_0
-                                }
-
-                                Settings.System.putInt(contentResolver, Settings.System.USER_ROTATION, rotation)
-                            }
-                        }, 20)
                     } }
                     app.premTypeTaskerEvent -> runPremiumAction {
                         EventConfigureActivity::class.java.requestQuery(this@Actions, EventUpdate(gesture))

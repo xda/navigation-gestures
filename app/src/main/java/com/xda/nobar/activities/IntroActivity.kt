@@ -45,6 +45,14 @@ class IntroActivity : IntroActivity() {
         fun hasWss(context: Context): Boolean {
             return context.checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED
         }
+
+        fun start(context: Context, extras: Bundle = Bundle()) {
+            val launch = Intent(context, com.xda.nobar.activities.IntroActivity::class.java)
+            launch.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK)
+            launch.putExtras(extras)
+
+            context.startActivity(launch)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -240,6 +248,7 @@ class IntroActivity : IntroActivity() {
         super.onDestroy()
 
         Utils.setFirstRun(this, false)
+        MainActivity.start(this)
     }
 
     private fun nonRootDialog() {

@@ -1,10 +1,11 @@
 package com.xda.nobar.activities
 
+import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
+import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
@@ -24,6 +25,18 @@ import com.xda.nobar.views.TextSwitch
  * The main app activity
  */
 class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBarHideStateChangeListener, OnLicenseCheckResultListener {
+    companion object {
+        fun start(context: Context) {
+            context.startActivity(makeIntent(context))
+        }
+
+        fun makeIntent(context: Context): Intent {
+            val launch = Intent(context, MainActivity::class.java)
+            launch.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK)
+            return launch
+        }
+    }
+
     private val app by lazy { application as App }
 
     private val gestureSwitch by lazy { findViewById<TextSwitch>(R.id.activate) }
@@ -33,15 +46,14 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
 
     private val navListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
         app.toggleNavState(!isChecked)
+        if (!IntroActivity.hasWss(this)) onNavStateChange(false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (IntroActivity.needsToRun(this)) {
-            val intent = Intent(this, IntroActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
+            IntroActivity.start(this)
         }
 
         if (!Utils.canRunHiddenCommands(this)) {
@@ -58,12 +70,13 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
 
         gestureSwitch.isChecked = app.areGesturesActivated()
         gestureSwitch.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { button, isChecked ->
-            if (!IntroActivity.needsToRun(this)) {
+            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this))
+                    && Utils.isAccessibilityEnabled(this)) {
                 if (isChecked) app.addBar() else app.removeBar()
                 app.setGestureState(isChecked)
             } else {
                 button.isChecked = false
-                startActivity(Intent(this, IntroActivity::class.java))
+                IntroActivity.start(this)
             }
         }
 

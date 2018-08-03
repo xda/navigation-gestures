@@ -21,11 +21,7 @@ class CocktailProvider : BaseProvider() {
 
     override fun onUpdate(context: Context, manager: SlookCocktailManager, ids: IntArray) {
         val views = handleUpdate(context, R.layout.widget_layout)
-
-        val longClickIntent = Intent(context, MainActivity::class.java)
-        longClickIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-        val longClickPendingIntent = PendingIntent.getActivity(context, 400, longClickIntent, 0)
+        val longClickPendingIntent = PendingIntent.getActivity(context, 400, MainActivity.makeIntent(context), 0)
 
         manager.setOnLongClickPendingIntent(views, R.id.root, longClickPendingIntent)
 

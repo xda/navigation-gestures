@@ -1,5 +1,6 @@
 package com.xda.nobar.util
 
+import android.app.AppOpsManager
 import android.app.KeyguardManager
 import android.app.UiModeManager
 import android.content.Context
@@ -12,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
+import android.os.Process
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.TypedValue
@@ -801,4 +803,10 @@ object Utils {
     }
 
     fun shouldntKeepOverscanOnLock(context: Context) = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("lockscreen_overscan", false)
+
+    fun hasUsageAccess(context: Context): Boolean {
+        val manager = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val mode = manager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+        return mode == AppOpsManager.MODE_ALLOWED
+    }
 }

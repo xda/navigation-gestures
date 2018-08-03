@@ -844,36 +844,39 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             isSwipeUp = false
                         }
 
+                        app.handler.post {
+                            upHoldHandle?.cancel(false)
+                            upHoldHandle = null
+                        }
+
+                        app.handler.post {
+                            leftHoldHandle?.cancel(false)
+                            leftHoldHandle = null
+                        }
+
+                        app.handler.post {
+                            rightHoldHandle?.cancel(true)
+                            rightHoldHandle = null
+                        }
+
+                        app.handler.post {
+                            downHoldHandle?.cancel(true)
+                            downHoldHandle = null
+                        }
+
                         if (isSwipeUp || (isRunningLongUp &&  getSectionedUpHoldAction(origAdjX) == app.typeNoAction)) {
-                            app.handler.post {
-                                upHoldHandle?.cancel(true)
-                                upHoldHandle = null
-                            }
                             sendAction(app.actionUp)
                         }
 
                         if (isSwipeLeft || (isRunningLongLeft && actionMap[app.actionLeftHold] == app.typeNoAction)) {
-                            app.handler.post {
-                                leftHoldHandle?.cancel(true)
-                                leftHoldHandle = null
-                            }
                             sendAction(app.actionLeft)
                         }
 
                         if (isSwipeRight || (isRunningLongRight && actionMap[app.actionRightHold] == app.typeNoAction)) {
-                            app.handler.post {
-                                rightHoldHandle?.cancel(true)
-                                rightHoldHandle = null
-                            }
                             sendAction(app.actionRight)
                         }
 
                         if (isSwipeDown || (isRunningLongDown && actionMap[app.actionDown] == app.typeNoAction)) {
-                            app.handler.post {
-                                downHoldHandle?.cancel(true)
-                                downHoldHandle = null
-                            }
-
                             sendAction(app.actionDown)
                         }
 

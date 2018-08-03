@@ -22,7 +22,6 @@ import android.os.*
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
-import android.view.Display
 import android.view.WindowManager
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -102,6 +101,8 @@ class ScreenshotActivity : AppCompatActivity() {
 
             createVirtualDisplay()
             projection.registerCallback(MediaProjectionStopCallback(), handler)
+        } else {
+            finish()
         }
     }
 
@@ -130,7 +131,7 @@ class ScreenshotActivity : AppCompatActivity() {
         virtualDisplay = projection.createVirtualDisplay("NavGestScreenShot",
                 width, height,
                 metrics.densityDpi,
-                DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC or DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY,
+                DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
                 imageReader.surface,
                 null,
                 handler)
@@ -207,7 +208,7 @@ class ScreenshotActivity : AppCompatActivity() {
                         enter.start()
                     }
 
-                    image = reader.acquireLatestImage()
+                    image = reader.acquireNextImage()
                     if (image != null) {
                         val planes = image.planes
                         val buffer = planes[0].buffer

@@ -17,6 +17,7 @@
     <uses-permission
         android:name="android.permission.DUMP"
         tools:ignore="ProtectedPermissions" />
+
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -40,7 +41,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.MainActivity"
-            android:theme="@style/AppTheme.NoBar">
+            android:theme="@style/AppTheme.NoBar"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -61,7 +63,8 @@
         <activity android:name=".activities.HelpAboutActivity" />
         <activity
             android:name=".activities.IntroActivity"
-            android:theme="@style/AppTheme.Intro" />
+            android:theme="@style/AppTheme.Intro"
+            android:launchMode="singleInstance" />
         <activity
             android:name=".activities.DialogActivity"
             android:theme="@style/AppTheme.Null" />

@@ -34,7 +34,7 @@ class ForegroundService : Service() {
         val builder = NotificationCompat.Builder(this, "nobar")
                 .setSmallIcon(R.drawable.ic_navgest)
                 .setPriority(if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) NotificationCompat.PRIORITY_MIN else NotificationCompat.PRIORITY_LOW)
-                .setContentIntent(PendingIntent.getActivity(this, 10, Intent(this, MainActivity::class.java), 0))
+                .setContentIntent(PendingIntent.getActivity(this, 10, MainActivity.makeIntent(this), 0))
                 .setStyle(NotificationCompat.BigTextStyle()
                         .bigText(resources.getText(R.string.foreground_desc))
                         .setBigContentTitle(resources.getText(R.string.foreground)))
