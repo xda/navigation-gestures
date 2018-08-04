@@ -8,9 +8,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
+import android.graphics.Bitmap.createBitmap
 import android.graphics.Color
 import android.graphics.PixelFormat
-import android.graphics.Point
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
 import android.media.Image
@@ -53,23 +53,18 @@ class ScreenshotActivity : AppCompatActivity() {
 
     private val projectionManager by lazy { getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager }
     private val imageReader by lazy { ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 1) }
-    private val size = Point()
-        get() {
-            mainDisplay.getRealSize(field)
-            return field
-        }
     private val metrics = DisplayMetrics()
         get() {
-            mainDisplay.getMetrics(field)
+            mainDisplay.getRealMetrics(field)
             return field
         }
     private val mainDisplay by lazy { windowManager.defaultDisplay }
     private val handler by lazy { Handler(handlerThread.looper) }
 
     private val width: Int
-        get() = size.x
+        get() = metrics.widthPixels
     private val height: Int
-        get() = size.y
+        get() = metrics.heightPixels
 
     private lateinit var virtualDisplay: VirtualDisplay
     private lateinit var projection: MediaProjection
@@ -95,6 +90,8 @@ class ScreenshotActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        imageReader.setOnImageAvailableListener(ImageAvailableListener(), handler)
 
         if (requestCode == REQ && data != null) {
             projection = projectionManager.getMediaProjection(resultCode, data)
@@ -130,13 +127,11 @@ class ScreenshotActivity : AppCompatActivity() {
     private fun createVirtualDisplay() {
         virtualDisplay = projection.createVirtualDisplay("NavGestScreenShot",
                 width, height,
-                metrics.densityDpi,
+                metrics.density.toInt(),
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
                 imageReader.surface,
                 null,
                 handler)
-
-        imageReader.setOnImageAvailableListener(ImageAvailableListener(), handler)
     }
 
     @Suppress("DEPRECATION")
@@ -147,7 +142,7 @@ class ScreenshotActivity : AppCompatActivity() {
             var bitmap: Bitmap? = null
 
             try {
-                if (count < 1) { //make sure we only get one image
+                if (count < 1) {
                     runOnUiThread {
                         val flasher = LinearLayout(this@ScreenshotActivity).apply {
                             setBackgroundColor(Color.WHITE)
@@ -215,10 +210,12 @@ class ScreenshotActivity : AppCompatActivity() {
                         val pixelStride = planes[0].pixelStride
                         val rowStride = planes[0].rowStride
                         val rowPadding = rowStride - pixelStride * width
+                        val bitmapWidth = width + rowPadding / pixelStride
 
-                        // create bitmap
-                        bitmap = Bitmap.createBitmap(width + rowPadding / pixelStride, height, Bitmap.Config.ARGB_8888)
+                        bitmap = createBitmap(bitmapWidth, height, Bitmap.Config.ARGB_8888)
                         bitmap.copyPixelsFromBuffer(buffer)
+
+                        val cropped = Bitmap.createBitmap(bitmap, 0, 0, width, height)
 
                         // write bitmap to a file
                         val root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString()
@@ -230,13 +227,15 @@ class ScreenshotActivity : AppCompatActivity() {
                         val screenshot = File(file, "Screenshot_${dateFormat.format(Date())}.jpg")
 
                         fos = FileOutputStream(screenshot)
-                        bitmap.compress(CompressFormat.JPEG, 100, fos)
+                        cropped.compress(CompressFormat.JPEG, 100, fos)
 
                         MediaScannerConnection.scanFile(applicationContext, arrayOf(screenshot.toString()), null, null)
 
-                        count++
+                        cropped.recycle()
                     }
-                } else return
+
+                    count++
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {

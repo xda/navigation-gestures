@@ -727,6 +727,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     inner class UIHandler : ContentObserver(handler), View.OnSystemUiVisibilityChangeListener, ViewTreeObserver.OnGlobalLayoutListener {
         private var oldRot = Surface.ROTATION_0
         private var isActing = false
+        private var asDidContainApp: Boolean = false
 
         fun register() {
             contentResolver.registerContentObserver(Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL), true, this)
@@ -737,6 +738,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             contentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, this)
 
             bar.immersiveNav = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)?.contains("navigation") ?: false
+
+            asDidContainApp = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
         }
 
         fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
@@ -953,18 +956,21 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             && IntroActivity.hasWss(this@App)) Utils.forceNavBlack(this@App)
 
                     Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) -> {
-                        if (wm.defaultDisplay.state == Display.STATE_ON) {
-                            handler.postDelayed({
-                                val enabled =
-                                        Settings.Secure.getString(contentResolver,
-                                                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
-                                if (enabled && areGesturesActivated()) {
-                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
-                                            || Settings.canDrawOverlays(this@App)) addBar(false)
-                                }
+                        val contains = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
+                        val changed = asDidContainApp != contains
 
-                                if (enabled) IntroActivity.start(this@App)
-                            }, 100)
+                        if (changed) {
+                            asDidContainApp = contains
+                            if (wm.defaultDisplay.state == Display.STATE_ON) {
+                                handler.postDelayed({
+                                    if (contains && areGesturesActivated()) {
+                                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                                                || Settings.canDrawOverlays(this@App)) addBar(false)
+                                    }
+
+                                    if (contains) IntroActivity.start(this@App)
+                                }, 100)
+                            }
                         }
                     }
                 }
