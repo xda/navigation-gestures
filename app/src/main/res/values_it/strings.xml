@@ -3,13 +3,13 @@
 <resources>
   <string name="app_name">Navigation Gestures</string>
   <!--Titles-->
-  <string name="gestures_on">Gestures On</string>
-  <string name="gestures_off">Gestures Off</string>
-  <string name="nav_hidden">NavBar Hidden</string>
-  <string name="nav_shown">NavBar Shown</string>
-  <string name="settings">Settings</string>
-  <string name="gestures">Gestures</string>
-  <string name="appearance">Appearance</string>
+  <string name="gestures_on">Gestione attivi</string>
+  <string name="gestures_off">Gesti disattivi</string>
+  <string name="nav_hidden">Barra di navigazione nascosta</string>
+  <string name="nav_shown">Barra di navigazione attiva</string>
+  <string name="settings">Impostazioni</string>
+  <string name="gestures">Gesti</string>
+  <string name="appearance">Apparenza</string>
   <string name="behavior">Behavior</string>
   <string name="activated">Enable Gesture Pill</string>
   <string name="toggle">Toggle</string>
