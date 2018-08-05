@@ -166,11 +166,11 @@
   <string name="feature_not_avail">This feature cannot be used while Navigation Gestures is hiding the navigation bar.</string>
   <!--Gestures-->
   <string name="tap">Tap</string>
-  <string name="left">Balayez à gauche</string>
+  <string name="left">Balayage à gauche</string>
   <string name="right">Balayez à droite</string>
-  <string name="up">Balayer vers le haut</string>
+  <string name="up">Balayage vers le haut</string>
   <string name="down">Balayage vers le bas</string>
-  <string name="hold">Long Press</string>
+  <string name="hold">Appui long</string>
   <string name="double_tap">Double Tap</string>
   <string name="swipe_up_hold">Swipe Up and Hold</string>
   <string name="left_hold">Swipe Left and Hold</string>
