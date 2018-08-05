@@ -229,6 +229,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val typeToggleNav by lazy { resources.getString(R.string.type_toggle_nav).toInt() }
     val premTypeFlashlight by lazy { resources.getString(R.string.prem_type_flashlight).toInt() }
     val premTypeVolumePanel by lazy { resources.getString(R.string.prem_volume_panel).toInt() }
+    val premTypeBluetooth by lazy { resources.getString(R.string.prem_type_bluetooth).toInt() }
+    val premTypeWiFi by lazy { resources.getString(R.string.prem_type_wifi).toInt() }
 
     val typeRootHoldBack by lazy { resources.getString(R.string.type_hold_back).toInt() }
     val typeRootForward by lazy { resources.getString(R.string.type_forward).toInt() }

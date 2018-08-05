@@ -179,6 +179,23 @@
     <string name="right_hold">Swipe Right and Hold</string>
     <string name="down_hold">Swipe Down and Hold</string>
 
+    <!--Messages-->
+    <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
+    <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
+    <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
+    <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
+    <string name="copied_to_clipboard">Email copied to clipboard</string>
+
+    <!--Libraries-->
+    <string name="material_intro">Material Intro (Fork)</string>
+    <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
+    <string name="color_picker">Color Picker (Fork)</string>
+    <string name="circle_progress">Circle Progress</string>
+    <string name="rx_java">RxJava/RxAndroid</string>
+    <string name="tasker_plugin">Tasker Plugin Library</string>
+    <string name="edge_sdk">Galaxy Edge SDK</string>
+    <string name="anr_watchdog">ANR-WatchDog</string>
+
     <!--Actions-->
     <string name="home">Home</string>
     <string name="back">Back</string>
@@ -212,23 +229,8 @@
     <string name="prem_tasker_event">Tasker Event (Premium)</string>
     <string name="prem_flashlight">Toggle Flashlight (Premium)</string>
     <string name="prem_volume_panel">Open Volume Panel (Premium)</string>
-
-    <!--Messages-->
-    <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
-    <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
-    <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
-    <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
-    <string name="copied_to_clipboard">Email copied to clipboard</string>
-
-    <!--Libraries-->
-    <string name="material_intro">Material Intro (Fork)</string>
-    <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
-    <string name="color_picker">Color Picker (Fork)</string>
-    <string name="circle_progress">Circle Progress</string>
-    <string name="rx_java">RxJava/RxAndroid</string>
-    <string name="tasker_plugin">Tasker Plugin Library</string>
-    <string name="edge_sdk">Galaxy Edge SDK</string>
-    <string name="anr_watchdog">ANR-WatchDog</string>
+    <string name="prem_bluetooth">Toggle Bluetooth (Premium)</string>
+    <string name="prem_wifi">Toggle WiFi (Premium)</string>
 
     <!--Action Values-->
     <string name="type_no_action">-1</string>
@@ -265,6 +267,8 @@
     <string name="type_toggle_nav">30</string>
     <string name="prem_type_flashlight">31</string>
     <string name="prem_type_volume_panel">32</string>
+    <string name="prem_type_bluetooth">33</string>
+    <string name="prem_type_wifi">34</string>
 
     <!--Main Action Keys-->
     <string name="action_left">left</string>

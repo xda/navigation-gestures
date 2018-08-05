@@ -2,8 +2,10 @@ package com.xda.nobar.services
 
 import android.accessibilityservice.AccessibilityService
 import android.app.SearchManager
+import android.bluetooth.BluetoothAdapter
 import android.content.*
 import android.media.AudioManager
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -45,6 +47,7 @@ class Actions : AccessibilityService(), Serializable {
     private val handler = Handler(Looper.getMainLooper())
     private val audio by lazy { getSystemService(Context.AUDIO_SERVICE) as AudioManager }
     private val imm by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
+    private val wifiManager by lazy { getSystemService(Context.WIFI_SERVICE) as WifiManager }
     private val app by lazy { applicationContext as App }
     private val flashlightController by lazy {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) FlashlightControllerMarshmallow(this)
@@ -247,6 +250,13 @@ class Actions : AccessibilityService(), Serializable {
                     }
                     app.premTypeVolumePanel -> runPremiumAction {
                         audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
+                    }
+                    app.premTypeBluetooth -> runPremiumAction {
+                        val adapter = BluetoothAdapter.getDefaultAdapter()
+                        if (adapter.isEnabled) adapter.disable() else adapter.enable()
+                    }
+                    app.premTypeWiFi -> runPremiumAction {
+                        wifiManager.isWifiEnabled = !wifiManager.isWifiEnabled
                     }
                     app.premTypeVibe -> {
                         //TODO: Implement
