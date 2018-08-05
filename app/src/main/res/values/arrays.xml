@@ -28,6 +28,7 @@
         <item>@string/recents</item>
         <item>@string/switch_apps</item>
         <item>@string/hide</item>
+        <item>@string/toggle_nav</item>
     </string-array>
 
     <string-array name="navigation_action_values">
@@ -36,6 +37,7 @@
         <item>@string/type_recents</item>
         <item>@string/type_switch</item>
         <item>@string/type_hide</item>
+        <item>@string/type_toggle_nav</item>
     </string-array>
 
     <string-array name="system_action_names">
@@ -48,6 +50,7 @@
         <item>@string/prem_lock_screen</item>
         <item>@string/prem_screenshot</item>
         <item>@string/prem_rot</item>
+        <item>@string/prem_flashlight</item>
     </string-array>
 
     <string-array name="system_action_values">
@@ -60,18 +63,21 @@
         <item>@string/prem_type_lock_screen</item>
         <item>@string/prem_type_screenshot</item>
         <item>@string/prem_type_rot</item>
+        <item>@string/prem_type_flashlight</item>
     </string-array>
 
     <string-array name="media_action_names">
         <item>@string/prem_prev</item>
         <item>@string/prem_play_pause</item>
         <item>@string/prem_next</item>
+        <item>@string/prem_volume_panel</item>
     </string-array>
 
     <string-array name="media_action_values">
         <item>@string/prem_type_prev</item>
         <item>@string/prem_type_play_pause</item>
         <item>@string/prem_type_next</item>
+        <item>@string/prem_type_volume_panel</item>
     </string-array>
 
     <string-array name="apps_action_names">

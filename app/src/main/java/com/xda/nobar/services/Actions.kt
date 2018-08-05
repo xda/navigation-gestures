@@ -23,6 +23,8 @@ import com.xda.nobar.activities.LockScreenActivity
 import com.xda.nobar.activities.ScreenshotActivity
 import com.xda.nobar.tasker.activities.EventConfigureActivity
 import com.xda.nobar.tasker.updates.EventUpdate
+import com.xda.nobar.util.FlashlighControllerLollipop
+import com.xda.nobar.util.FlashlightControllerMarshmallow
 import com.xda.nobar.util.Utils
 import java.io.Serializable
 
@@ -44,6 +46,10 @@ class Actions : AccessibilityService(), Serializable {
     private val audio by lazy { getSystemService(Context.AUDIO_SERVICE) as AudioManager }
     private val imm by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
     private val app by lazy { applicationContext as App }
+    private val flashlightController by lazy {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) FlashlightControllerMarshmallow(this)
+        else FlashlighControllerLollipop(this)
+    }
 
     private val orientationEventListener by lazy {
         object : OrientationEventListener(this) {
@@ -74,6 +80,7 @@ class Actions : AccessibilityService(), Serializable {
 
     override fun onCreate() {
         receiver.register()
+        flashlightController.onCreate()
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -88,6 +95,7 @@ class Actions : AccessibilityService(), Serializable {
 
     override fun onDestroy() {
         receiver.destroy()
+        flashlightController.onDestroy()
     }
 
     /**
@@ -230,6 +238,15 @@ class Actions : AccessibilityService(), Serializable {
                     } }
                     app.premTypeTaskerEvent -> runPremiumAction {
                         EventConfigureActivity::class.java.requestQuery(this@Actions, EventUpdate(gesture))
+                    }
+                    app.typeToggleNav -> {
+                        app.toggleNavState()
+                    }
+                    app.premTypeFlashlight -> runPremiumAction {
+                        flashlightController.flashlightEnabled = !flashlightController.flashlightEnabled
+                    }
+                    app.premTypeVolumePanel -> runPremiumAction {
+                        audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
                     }
                     app.premTypeVibe -> {
                         //TODO: Implement

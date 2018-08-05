@@ -226,6 +226,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val premTypeLaunchActivity by lazy { resources.getString(R.string.prem_type_launch_activity).toInt() }
     val premTypeRot by lazy { resources.getString(R.string.prem_type_rot).toInt() }
     val premTypeTaskerEvent by lazy { resources.getString(R.string.prem_type_tasker_event).toInt() }
+    val typeToggleNav by lazy { resources.getString(R.string.type_toggle_nav).toInt() }
+    val premTypeFlashlight by lazy { resources.getString(R.string.prem_type_flashlight).toInt() }
+    val premTypeVolumePanel by lazy { resources.getString(R.string.prem_volume_panel).toInt() }
 
     val typeRootHoldBack by lazy { resources.getString(R.string.type_hold_back).toInt() }
     val typeRootForward by lazy { resources.getString(R.string.type_forward).toInt() }
