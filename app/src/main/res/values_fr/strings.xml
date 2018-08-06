@@ -17,8 +17,8 @@
   <string name="height">Hauteur de la pilule</string>
   <string name="position_y">Position verticale (Y)</string>
   <string name="position_x">Position horizontale (X)</string>
-  <string name="taps">Taps</string>
-  <string name="swipes">Swipes</string>
+  <string name="taps">Appuis</string>
+  <string name="swipes">Balayages</string>
   <string name="version">Version</string>
   <string name="tutorial_video">Vidéo de tutoriel</string>
   <string name="email_us">Envoyez nous un mail</string>
@@ -28,8 +28,8 @@
   <string name="draw_over_apps">Dessiner au dessus des applications</string>
   <string name="grant">Autoriser</string>
   <string name="accessibility">Service d\'accessibilité</string>
-  <string name="write_secure_settings">Write Secure Settings</string>
-  <string name="ready">All Set</string>
+  <string name="write_secure_settings">Écriture des paramètres de sécurité</string>
+  <string name="ready">Tout est pret</string>
   <string name="root_found">Votre appareil est rooté !</string>
   <string name="use_root">Utiliser l\'accès Root</string>
   <string name="missing_perms">Permissions manquantes !</string>
@@ -53,7 +53,7 @@
   <string name="static_pill">Ne pas déplacer la pilule quand le clavier est affiché</string>
   <string name="hide_navbar_in_landscape">Cacher la barre de navigation en mode paysage</string>
   <string name="hide_navbar_in_upside_down">Cacher la barre de navigation quand l\'appareil est à l\'envers</string>
-  <string name="white_bar">White Bar</string>
+  <string name="white_bar">Barre blanche</string>
   <string name="tablet_mode">Cacher la barre de navigation sur les tablettes</string>
   <string name="compatibility">Compatibilité</string>
   <string name="foreground">Les gestes de navigations sont activés</string>
@@ -87,12 +87,12 @@
   <string name="swipe_up_hold_right">Balayez vers le haut et maintenez, de la droite</string>
   <string name="use_recommended_settings">Utiliser les paramètres recommandés ?</string>
   <string name="hide_pill_on_keyboard">Masquer la pilule quand le clavier est affiché</string>
-  <string name="use_immersive_mode_when_nav_hidden">Enable Immersive Navigation Mode</string>
-  <string name="nav_imm_enabled">Immersive Navigation Enabled</string>
-  <string name="nav_imm_disabled">Immersive Navigation Disabled</string>
+  <string name="use_immersive_mode_when_nav_hidden">Activer le Mode Navigation Immersive</string>
+  <string name="nav_imm_enabled">Navigation immersive activée</string>
+  <string name="nav_imm_disabled">Navigation immersive desactivée</string>
   <string name="nav_blacklist">Afficher la barre de navigation dans les applications selectionnées</string>
   <string name="bar_blacklist">Masquer la pilule dans les applications sélectionnées</string>
-  <string name="imm_blacklist">Immersive Blacklist</string>
+  <string name="imm_blacklist">Liste noire Navigation Immersive</string>
   <string name="x_threshold">Distance de balayage horizontale (X)</string>
   <string name="y_threshold">Distance de balayage vertical (Y)</string>
   <string name="hide_after_set_time">Masquer la pilule après le délai spécifié</string>
@@ -118,12 +118,12 @@
   <string name="run_command_desc">adb shell pm grant com.xda.nobar android.permission.WRITE_SECURE_SETTINGS</string>
   <string name="foreground_desc">Cette notification empêche Android d\'arrêter l’application. Cacher là en accedant aux paramètres par un appui long.</string>
   <string name="static_pill_desc">Empêcher la pilule de se déplacer au-dessus du clavier.</string>
-  <string name="hide_navbar_in_landscape_desc">Certain devices show the original navigation bar on the side in landscape. Activate this to prevent that behavior.</string>
-  <string name="hide_navbar_in_upside_down_desc">Some devices are able to rotate the screen when the device is upside down, which can cause the original navigation bar to show. Enable this option to make sure it stays hidden.</string>
-  <string name="compatibility_pref_desc">Compatibility options</string>
-  <string name="tablet_mode_desc">Many tablets force the navigation bar to always be on the bottom of the screen. Turn this on to account for that behavior.</string>
-  <string name="hide_in_fullscreen_desc">When activated, the pill will automatically hide in fullscreen apps (e.g. videos or games).</string>
-  <string name="compatibility_warning">DO NOT CHANGE THESE OPTIONS UNLESS YOU NEED THEM! THEY CAN CAUSE PROBLEMS INSTEAD OF FIXING THEM!</string>
+  <string name="hide_navbar_in_landscape_desc">Certains appareils montrent la barre de navigation sur le côté en mode paysage. Activer cette option pour empêcher ce comportement.</string>
+  <string name="hide_navbar_in_upside_down_desc">Certains appareils permettent de faire pivoter l’écran lorsque l’appareil est en sens inverse, ce qui peut causer l\'affichage de la barre de navigation. Activez cette option pour vous assurer qu’elle reste cachée.</string>
+  <string name="compatibility_pref_desc">Options de compatibilité</string>
+  <string name="tablet_mode_desc">De nombreuses tablettes forcent l\'affichage de la barre de navigation en le bas de l’écran. Activez ce paramètre pour prendre en compte ce comportement.</string>
+  <string name="hide_in_fullscreen_desc">Lorsqu’il est activé, la pilule sera masquée automatiquement dans les applications plein écran (par exemple les vidéos ou les jeux).</string>
+  <string name="compatibility_warning">NE MODIFIEZ CES OPTIONS QUE SI CELA EST NÉCESSAIRE ! ELLES PEUVENT CAUSER DES PROBLÈMES AU LIEU DE LES RÉSOUDRE !</string>
   <string name="larger_hitbox_desc">Enable this to make the pill easier to swipe.</string>
   <string name="hide_nav_summary">Only use this if your device has a software navigation bar.</string>
   <string name="orig_nav_in_immersive_desc">When enabled, the original navigation bar will be accessible with a swipe in fullscreen apps.</string>
@@ -171,11 +171,26 @@
   <string name="up">Balayage vers le haut</string>
   <string name="down">Balayage vers le bas</string>
   <string name="hold">Appui long</string>
-  <string name="double_tap">Double Tap</string>
+  <string name="double_tap">Appui double</string>
   <string name="swipe_up_hold">Swipe Up and Hold</string>
   <string name="left_hold">Swipe Left and Hold</string>
   <string name="right_hold">Swipe Right and Hold</string>
   <string name="down_hold">Swipe Down and Hold</string>
+  <!--Messages-->
+  <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
+  <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
+  <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
+  <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
+  <string name="copied_to_clipboard">Email copied to clipboard</string>
+  <!--Libraries-->
+  <string name="material_intro">Material Intro (Fork)</string>
+  <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
+  <string name="color_picker">Color Picker (Fork)</string>
+  <string name="circle_progress">Circle Progress</string>
+  <string name="rx_java">RxJava/RxAndroid</string>
+  <string name="tasker_plugin">Tasker Plugin Library</string>
+  <string name="edge_sdk">Galaxy Edge SDK</string>
+  <string name="anr_watchdog">ANR-WatchDog</string>
   <!--Actions-->
   <string name="home">Home</string>
   <string name="back">Back</string>
@@ -209,21 +224,8 @@
   <string name="prem_tasker_event">Tasker Event (Premium)</string>
   <string name="prem_flashlight">Toggle Flashlight (Premium)</string>
   <string name="prem_volume_panel">Open Volume Panel (Premium)</string>
-  <!--Messages-->
-  <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
-  <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
-  <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
-  <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
-  <string name="copied_to_clipboard">Email copied to clipboard</string>
-  <!--Libraries-->
-  <string name="material_intro">Material Intro (Fork)</string>
-  <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
-  <string name="color_picker">Color Picker (Fork)</string>
-  <string name="circle_progress">Circle Progress</string>
-  <string name="rx_java">RxJava/RxAndroid</string>
-  <string name="tasker_plugin">Tasker Plugin Library</string>
-  <string name="edge_sdk">Galaxy Edge SDK</string>
-  <string name="anr_watchdog">ANR-WatchDog</string>
+  <string name="prem_bluetooth">Toggle Bluetooth (Premium)</string>
+  <string name="prem_wifi">Toggle WiFi (Premium)</string>
   <!--Action Values-->
   <string name="type_no_action">-1</string>
   <string name="type_back">0</string>
@@ -259,6 +261,8 @@
   <string name="type_toggle_nav">30</string>
   <string name="prem_type_flashlight">31</string>
   <string name="prem_type_volume_panel">32</string>
+  <string name="prem_type_bluetooth">33</string>
+  <string name="prem_type_wifi">34</string>
   <!--Main Action Keys-->
   <string name="action_left">left</string>
   <string name="action_right">right</string>
