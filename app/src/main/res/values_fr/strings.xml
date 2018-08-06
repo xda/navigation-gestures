@@ -124,8 +124,8 @@
   <string name="tablet_mode_desc">De nombreuses tablettes forcent l\'affichage de la barre de navigation en le bas de l’écran. Activez ce paramètre pour prendre en compte ce comportement.</string>
   <string name="hide_in_fullscreen_desc">Lorsqu’il est activé, la pilule sera masquée automatiquement dans les applications plein écran (par exemple les vidéos ou les jeux).</string>
   <string name="compatibility_warning">NE MODIFIEZ CES OPTIONS QUE SI CELA EST NÉCESSAIRE ! ELLES PEUVENT CAUSER DES PROBLÈMES AU LIEU DE LES RÉSOUDRE !</string>
-  <string name="larger_hitbox_desc">Enable this to make the pill easier to swipe.</string>
-  <string name="hide_nav_summary">Only use this if your device has a software navigation bar.</string>
+  <string name="larger_hitbox_desc">Activer pour faciliter le balayage de la pilule.</string>
+  <string name="hide_nav_summary">Utiliser ce paramètre seulement si votre appareil est équipé d’une barre de navigation logicielle.</string>
   <string name="orig_nav_in_immersive_desc">When enabled, the original navigation bar will be accessible with a swipe in fullscreen apps.</string>
   <string name="use_pixels_desc">Set dimension using pixel count rather than percentages.</string>
   <string name="sectioned_pill_desc">Divide the pill into three sections, each with their own set of actions.</string>
@@ -264,22 +264,22 @@
   <string name="prem_type_bluetooth">33</string>
   <string name="prem_type_wifi">34</string>
   <!--Main Action Keys-->
-  <string name="action_left">left</string>
-  <string name="action_right">right</string>
-  <string name="action_up">up</string>
-  <string name="action_down">down</string>
-  <string name="action_double">double_tap</string>
-  <string name="action_hold">hold</string>
-  <string name="action_tap">tap</string>
-  <string name="action_up_hold">up_hold</string>
-  <string name="action_left_hold">left_hold</string>
-  <string name="action_right_hold">right_hold</string>
-  <string name="action_down_hold">down_hold</string>
+  <string name="action_left">gauche</string>
+  <string name="action_right">droite</string>
+  <string name="action_up">haut</string>
+  <string name="action_down">bas</string>
+  <string name="action_double">appui_double</string>
+  <string name="action_hold">maintien</string>
+  <string name="action_tap">appui</string>
+  <string name="action_up_hold">haut_maintien</string>
+  <string name="action_left_hold">gauche_maintien</string>
+  <string name="action_right_hold">droite_maintien</string>
+  <string name="action_down_hold">bas_maintien</string>
   <!--Center Action Keys-->
-  <string name="action_up_center">up_center</string>
-  <string name="action_up_hold_center">up_hold_center</string>
+  <string name="action_up_center">haut_centre</string>
+  <string name="action_up_hold_center">haut_maintien_centre</string>
   <!--Left Action Keys-->
-  <string name="action_up_left">up_left</string>
+  <string name="action_up_left">haut_gauche</string>
   <string name="action_up_hold_left">up_hold_left</string>
   <!--Right Action Keys-->
   <string name="action_up_right">up_right</string>
