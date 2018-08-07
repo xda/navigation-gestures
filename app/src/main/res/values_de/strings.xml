@@ -52,7 +52,7 @@
   <string name="show_pill_shadow">Zeige Pill-Schatten</string>
   <string name="static_pill">Pille nicht bewegen, wenn die Tastatur zu sehen ist</string>
   <string name="hide_navbar_in_landscape">Navigationsleiste im Landscape verstecken</string>
-  <string name="hide_navbar_in_upside_down">Hide NavBar when Upside Down</string>
+  <string name="hide_navbar_in_upside_down">Verstecke NavBar wenn Rotation 180 Grad</string>
   <string name="white_bar">Weiße Leiste</string>
   <string name="tablet_mode">Navigationsleiste auf Tablets verstecken</string>
   <string name="compatibility">Kompatibilität</string>
@@ -77,7 +77,7 @@
   <string name="toggle_nav">NavBar-Schalter</string>
   <string name="toggle_gestures_prem">Gesten-Schalter (Premium)</string>
   <string name="toggle_nav_prem">NavBar-Schalter (Premium)</string>
-  <string name="grant_write_settings">Write Settings Permission Required!</string>
+  <string name="grant_write_settings">Schreibberechtigung erforderlich!</string>
   <string name="sections">Abschnitte</string>
   <string name="swipe_up_left">Von links nach oben streichen</string>
   <string name="swipe_up_hold_left">Nach oben streichen und von links halten</string>
@@ -96,22 +96,22 @@
   <string name="x_threshold">Horizontaler (X) Wisch-Abstand</string>
   <string name="y_threshold">Vertikaler (Y) Wisch-Abstand</string>
   <string name="hide_after_set_time">Pille nach der angegebenen Verzögerung ausblenden</string>
-  <string name="blacklisting">Blacklisting</string>
+  <string name="blacklisting">Blacklist</string>
   <string name="look_feel">Look &amp; Feel</string>
   <string name="pill_hiding">Pille verstecken</string>
   <string name="sensitivity">Empfindlichkeit</string>
   <string name="back_to_default">Zurück zu den Standardeinstellungen?</string>
   <string name="experimental_prefs">Experimentelle Einstellungen</string>
   <string name="fix_for_other_windows">Pille weiterhin in Overlay-Apps anzeigen</string>
-  <string name="full_overscan">Use Full Overscan</string>
+  <string name="full_overscan">Verwende gesamten Overacan</string>
   <string name="dont_keep_overscan_on_lockscreen">NavBar nicht auf dem Sperrbildschirm ausblenden</string>
-  <string name="current_overscan">Current Overscan</string>
+  <string name="current_overscan">Aktueller Overscan</string>
   <!--Descriptions-->
   <string name="gestures_desc">Gestenaktionen anpassen</string>
   <string name="appearance_desc">Aussehen der Navigation-Pille anpassen</string>
   <string name="behavior_desc">Anpassen, wie sich die Pille verhält</string>
-  <string name="tutorial_video_desc">Wondering how to use the app? We\'re here to help.</string>
-  <string name="email_us_desc">If you have some feedback, we\'d love to hear it!</string>
+  <string name="tutorial_video_desc">Du willst wissen wie man die App verwendet? Wir sind hier um zu helfen.</string>
+  <string name="email_us_desc">Wenn du Kritik hast, würden wir sie gerne hören!</string>
   <string name="xda_thread_desc">Have a question about the app? Visit the XDA thread and ask away.</string>
   <string name="other_apps_desc">XDA has other apps too. Check them out!</string>
   <string name="buy_premium_desc">Unlock more functionality with the premium add-on.</string>
