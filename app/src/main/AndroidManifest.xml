@@ -105,6 +105,7 @@
             android:theme="@style/AppTheme.Null" />
         <activity android:name=".activities.BlacklistSelectorActivity" />
         <activity android:name=".activities.ActivityLaunchSelectActivity" />
+        <activity android:name=".activities.IntentSelectorActivity" />
         <activity
             android:name=".tasker.activities.ToggleGestureActivity"
             android:exported="true"

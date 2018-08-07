@@ -3,19 +3,12 @@ package com.xda.nobar.activities
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.ApplicationInfo
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
-import android.view.MenuItem
-import com.android.internal.R.attr.resource
-import com.android.internal.R.id.date
 import com.xda.nobar.R
-import com.xda.nobar.activities.AppLaunchSelectActivity.Companion.ACTIVITY_REQ
-import com.xda.nobar.activities.AppLaunchSelectActivity.Companion.EXTRA_KEY
-import com.xda.nobar.activities.AppLaunchSelectActivity.Companion.FOR_ACTIVITY_SELECT
 import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.util.AppInfo
 import com.xda.nobar.util.AppSelectAdapter
@@ -26,9 +19,8 @@ import kotlin.collections.ArrayList
  * Selector activity for choosing an app to launch
  * This will be opened when the user chooses the "Launch App" action for a gesture
  */
-class AppLaunchSelectActivity : BaseAppSelectActivity() {
+class AppLaunchSelectActivity : BaseAppSelectActivity<Any>() {
     companion object {
-        const val EXTRA_KEY = "key"
         const val EXTRA_RESULT_DISPLAY_NAME = "name"
         const val CHECKED_PACKAGE = "checked_package"
         const val CHECKED_ACTIVITY = "checked_activity"
@@ -77,7 +69,7 @@ class AppLaunchSelectActivity : BaseAppSelectActivity() {
         if (isForActivitySelect()) title = resources.getText(R.string.prem_launch_activity_no_format)
     }
 
-    override fun loadAppList(): ArrayList<*> {
+    override fun loadAppList(): ArrayList<Any> {
         return if (isForActivitySelect()) {
             val list = packageManager.getInstalledApplications(0)
             ArrayList(list)

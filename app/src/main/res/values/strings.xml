@@ -195,6 +195,15 @@
     <string name="tasker_plugin">Tasker Plugin Library</string>
     <string name="edge_sdk">Galaxy Edge SDK</string>
     <string name="anr_watchdog">ANR-WatchDog</string>
+    
+    <!--Intent Names-->
+    <string name="google_music_search">Google Music Search</string>
+    <string name="google_weather">Google Weather Results</string>
+    <string name="google_new_calendar_event">New Google Calendar Event</string>
+    <string name="camera_take_photo">Take Photo</string>
+    <string name="camera_take_video">Take Video</string>
+    <string name="shazam_it">Shazam It</string>
+    <string name="soundhound_it">SoundHound It</string>
 
     <!--Actions-->
     <string name="home">Home</string>
@@ -231,6 +240,8 @@
     <string name="prem_volume_panel">Open Volume Panel (Premium)</string>
     <string name="prem_bluetooth">Toggle Bluetooth (Premium)</string>
     <string name="prem_wifi">Toggle WiFi (Premium)</string>
+    <string name="prem_intent">Send Intent (Premium) (%s)</string>
+    <string name="prem_intent_no_format">Send Intent (Premium)</string>
 
     <!--Action Values-->
     <string name="type_no_action">-1</string>
@@ -269,6 +280,7 @@
     <string name="prem_type_volume_panel">32</string>
     <string name="prem_type_bluetooth">33</string>
     <string name="prem_type_wifi">34</string>
+    <string name="prem_type_intent">35</string>
 
     <!--Main Action Keys-->
     <string name="action_left">left</string>

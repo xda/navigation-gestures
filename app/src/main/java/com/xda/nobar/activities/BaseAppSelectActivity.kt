@@ -24,9 +24,10 @@ import io.reactivex.schedulers.Schedulers
  * Base activity for all app selection activities
  * Manages the basic logic of each
  */
-abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
+abstract class BaseAppSelectActivity<ListItem : Any> : AppCompatActivity(), SearchView.OnQueryTextListener {
     internal companion object {
         const val APPINFO = "app_info"
+        const val EXTRA_KEY = "key"
     }
 
     internal abstract val adapter: AppSelectAdapter
@@ -41,8 +42,8 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
 
     private lateinit var searchItem: MenuItem
 
-    internal abstract fun loadAppList(): ArrayList<*>
-    internal abstract fun loadAppInfo(info: Any): AppInfo?
+    internal abstract fun loadAppList(): ArrayList<ListItem>
+    internal abstract fun loadAppInfo(info: ListItem): AppInfo?
 
     /**
      * Override this to define whether or not the activity should run
@@ -172,6 +173,8 @@ abstract class BaseAppSelectActivity : AppCompatActivity(), SearchView.OnQueryTe
                     }
                 }
     }
+
+    internal fun getKey() = intent.getStringExtra(EXTRA_KEY)
 
     internal fun passAppInfo(intent: Intent, info: AppInfo) {
         val bundle = Bundle()

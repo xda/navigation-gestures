@@ -66,6 +66,7 @@ dependencies {
     implementation project(':sdk-v1.0.0')
     implementation project(':slook_v1.4.0')
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.4'
+    implementation 'com.google.code.gson:gson:2.8.5'
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
 }
 

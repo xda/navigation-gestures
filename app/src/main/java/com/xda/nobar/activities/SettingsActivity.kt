@@ -198,7 +198,7 @@ class SettingsActivity : AppCompatActivity() {
 
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
             if (requestCode == 10) {
-                val key = data?.getStringExtra(AppLaunchSelectActivity.EXTRA_KEY)
+                val key = data?.getStringExtra(BaseAppSelectActivity.EXTRA_KEY)
                 val appName = data?.getStringExtra(AppLaunchSelectActivity.EXTRA_RESULT_DISPLAY_NAME)
                 val forActivity = data?.getBooleanExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, false) == true
 
@@ -317,11 +317,16 @@ class SettingsActivity : AppCompatActivity() {
                 if (it.getSavedValue() == app.premTypeLaunchApp.toString() || it.getSavedValue() == app.premTypeLaunchActivity.toString()) {
                     val forActivity = it.getSavedValue() == app.premTypeLaunchActivity.toString()
                     val packageInfo = preferenceManager.sharedPreferences.getString(
-                            "${it.key}_${if (forActivity) "activity" else "package"}", null) ?: return
+                            "${it.key}_${if (forActivity) "activity" else "package"}", null) ?: return@forEach
 
                     it.summary = String.format(Locale.getDefault(),
                             resources.getString(if (forActivity) R.string.prem_launch_activity else R.string.prem_launch_app),
                             preferenceManager.sharedPreferences.getString("${it.key}_displayname", packageInfo.split("/")[0]))
+                } else if (it.getSavedValue() == app.premTypeIntent.toString()) {
+                    val res = Utils.getIntentKey(activity, it.key)
+                    it.summary = String.format(Locale.getDefault(),
+                            resources.getString(R.string.prem_intent),
+                            if (res > 0) resources.getString(res) else "")
                 }
             }
         }
@@ -358,7 +363,7 @@ class SettingsActivity : AppCompatActivity() {
                             pack = pack.split("/")[0]
                         }
 
-                        intent.putExtra(AppLaunchSelectActivity.EXTRA_KEY, it.key)
+                        intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
                         intent.putExtra(AppLaunchSelectActivity.CHECKED_PACKAGE, pack)
                         intent.putExtra(AppLaunchSelectActivity.CHECKED_ACTIVITY, activity)
                         intent.putExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, forActivity)

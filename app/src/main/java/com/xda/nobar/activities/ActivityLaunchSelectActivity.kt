@@ -4,26 +4,22 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
 import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.util.AppInfo
 import com.xda.nobar.util.AppSelectAdapter
-import java.util.*
-import kotlin.collections.ArrayList
 
-class ActivityLaunchSelectActivity : BaseAppSelectActivity() {
+class ActivityLaunchSelectActivity : BaseAppSelectActivity<ActivityInfo>() {
     override val adapter = AppSelectAdapter(true, true, OnAppSelectedListener { info ->
         PreferenceManager.getDefaultSharedPreferences(this@ActivityLaunchSelectActivity)
                 .edit()
-                .putString("${intent.getStringExtra(AppLaunchSelectActivity.EXTRA_KEY)}_activity", "${info.packageName}/${info.activity}")
-                .putString("${intent.getStringExtra(AppLaunchSelectActivity.EXTRA_KEY)}_displayname", "${getPassedAppInfo()?.displayName}/${info.displayName}")
+                .putString("${intent.getStringExtra(EXTRA_KEY)}_activity", "${info.packageName}/${info.activity}")
+                .putString("${intent.getStringExtra(EXTRA_KEY)}_displayname", "${getPassedAppInfo()?.displayName}/${info.displayName}")
                 .apply()
 
         val resultIntent = Intent()
-        resultIntent.putExtra(AppLaunchSelectActivity.EXTRA_KEY, intent.getStringExtra(AppLaunchSelectActivity.EXTRA_KEY))
+        resultIntent.putExtra(EXTRA_KEY, intent.getStringExtra(EXTRA_KEY))
         resultIntent.putExtra(AppLaunchSelectActivity.EXTRA_RESULT_DISPLAY_NAME, "${getPassedAppInfo()?.displayName}/${info.displayName}")
         setResult(Activity.RESULT_OK, resultIntent)
         finish()
@@ -39,17 +35,13 @@ class ActivityLaunchSelectActivity : BaseAppSelectActivity() {
         title = getPassedAppInfo()?.displayName
     }
 
-    override fun loadAppList(): ArrayList<*> {
+    override fun loadAppList(): ArrayList<ActivityInfo> {
         val info = packageManager.getPackageInfo(getPassedAppInfo()?.packageName, PackageManager.GET_ACTIVITIES)
-
-        Log.e("NoBar", info.activities.size.toString())
 
         return ArrayList(info.activities.toList())
     }
 
-    override fun loadAppInfo(info: Any): AppInfo? {
-        info as ActivityInfo
-
+    override fun loadAppInfo(info: ActivityInfo): AppInfo? {
         return if (info.exported) {
             AppInfo(info.packageName,
                     info.name,

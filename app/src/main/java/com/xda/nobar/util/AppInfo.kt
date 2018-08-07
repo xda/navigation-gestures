@@ -41,6 +41,15 @@ class AppInfo(val packageName: String, val activity: String, val displayName: St
                 )
     }
 
+    override fun hashCode(): Int {
+        var result = packageName.hashCode()
+        result = 31 * result + activity.hashCode()
+        result = 31 * result + displayName.hashCode()
+        result = 31 * result + icon
+        result = 31 * result + isChecked.hashCode()
+        return result
+    }
+
     companion object CREATOR : Parcelable.Creator<AppInfo> {
         override fun createFromParcel(parcel: Parcel): AppInfo {
             return AppInfo(parcel)

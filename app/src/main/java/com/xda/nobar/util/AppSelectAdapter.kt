@@ -53,7 +53,7 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
             view.context.resources.getDrawable(android.R.drawable.ic_menu_help)
         }
 
-        view.setOnClickListener {
+        view.setOnClickListener { _ ->
             check.isChecked = !check.isChecked || isSingleSelect
             app.isChecked = check.isChecked
 
