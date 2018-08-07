@@ -289,8 +289,8 @@
   <!--Split Pill Recommendations-->
   <string name="rec_set_transparent">\u2022 Pill becomes fully transparent</string>
   <string name="rec_set_y">\u2022 Pill moves to the bottom of the screen</string>
-  <string name="rec_swipe_left_right">\u2022 Swipe up from left/right for back</string>
-  <string name="rec_swipe_middle">\u2022 Swipe up from middle for home</string>
+  <string name="rec_swipe_left_right">\u2022 Deslizar hacia arriba desde la izquierda/derecha para volver</string>
+  <string name="rec_swipe_middle">\u2022 Deslizar hacia arriba desde el medio para inicio</string>
   <string name="rec_swipe_hold_middle">\u2022 Swipe up from middle and hold for multitasking</string>
   <!--Premium-->
   <string name="prem_stat">Premium Status:</string>
