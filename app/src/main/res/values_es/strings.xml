@@ -22,7 +22,7 @@
   <string name="version">Versión</string>
   <string name="tutorial_video">Video tutorial</string>
   <string name="email_us">Envíanos un email</string>
-  <string name="xda_thread">Tema en XDA</string>
+  <string name="xda_thread">Hilo en XDA</string>
   <string name="other_apps">Aplicaciones de XDA</string>
   <string name="welcome">¡Bienvenido!</string>
   <string name="draw_over_apps">Dibujarse sobre las aplicaciones</string>
@@ -30,23 +30,23 @@
   <string name="accessibility">Servicio de accesibilidad</string>
   <string name="write_secure_settings">Escribir configuraciones de seguridad</string>
   <string name="ready">Todo listo</string>
-  <string name="root_found">¡Tiene permisos root!</string>
+  <string name="root_found">¡Tienes permisos root!</string>
   <string name="use_root">Utilizar permisos root</string>
   <string name="missing_perms">¡Hacen falta permisos!</string>
   <string name="premium_required">¡Acciones premium!</string>
   <string name="nougat_required">Requiere versión de Android Nougat</string>
   <string name="hold_time">Tiempo para deslizar y mantener</string>
   <string name="vibration_duration">Duración de la vibración</string>
-  <string name="buy_premium">Comprar acciones de pago</string>
+  <string name="buy_premium">Comprar Premium</string>
   <string name="libraries">Librerías</string>
   <string name="qs_tile">Mosaico de configuración rápida</string>
   <string name="run_command">Ejecuta este comando desde tu PC</string>
-  <string name="got_it">Obtenido</string>
+  <string name="got_it">Entiendo</string>
   <string name="need_help">Necesito ayuda</string>
   <string name="non_root">Sin permisos root</string>
   <string name="sorry">Lo siento :(</string>
-  <string name="anim_duration">Duración de animaciones</string>
-  <string name="warning">¡Ten cuidado!</string>
+  <string name="anim_duration">Duración de la animación</string>
+  <string name="warning">¡Advertencia!</string>
   <string name="pill_color">Color de la barra de gestos</string>
   <string name="pill_border_color">Color de borde de la barra de gestos</string>
   <string name="show_pill_shadow">Mostrar sombra de la barra de gestos</string>
@@ -57,7 +57,7 @@
   <string name="tablet_mode">Ocultar barra de navegación en Tabletas</string>
   <string name="compatibility">Compatibilidad</string>
   <string name="foreground">Gestos de Navegación está activo</string>
-  <string name="pill_corner_radius">Radio de esquina de la píldora</string>
+  <string name="pill_corner_radius">Radio de esquina de la barra de gestos</string>
   <string name="hide_in_fullscreen">Ocultar en aplicaciones de pantalla completa</string>
   <string name="larger_hitbox">Zona de pulsación aumentada</string>
   <string name="hide_nav">Ocultar barra de navegación</string>
@@ -70,9 +70,9 @@
   <string name="apps">Aplicaciones</string>
   <string name="loading">Cargando…</string>
   <string name="orig_nav_in_immersive">Mostrar barra de navegación en pantalla completa</string>
-  <string name="enable_in_car_mode">Mostrar píldora en modo coche</string>
+  <string name="enable_in_car_mode">Mostrar barra de gestos en modo coche</string>
   <string name="use_pixels">Utilizar píxeles para la dimensión</string>
-  <string name="sectioned_pill">Píldora dividida</string>
+  <string name="sectioned_pill">Barra de gestos dividida</string>
   <string name="toggle_gestures">Activar o desactivar gestos</string>
   <string name="toggle_nav">Activar o desactivar barra de navegación</string>
   <string name="toggle_gestures_prem">Activar o desactivar gestos (Premium)</string>
@@ -86,12 +86,12 @@
   <string name="swipe_up_right">Deslizar hacia arriba desde la derecha</string>
   <string name="swipe_up_hold_right">Deslizar hacia arriba y mantener desde la derecha</string>
   <string name="use_recommended_settings">¿Utilizar las configuraciones recomendadas?</string>
-  <string name="hide_pill_on_keyboard">Ocultar píldora cuando se muestra el teclado</string>
+  <string name="hide_pill_on_keyboard">Ocultar barra de gestos cuando se muestra el teclado</string>
   <string name="use_immersive_mode_when_nav_hidden">Habilitar modo de navegación inmersiva</string>
   <string name="nav_imm_enabled">Navegación inmersiva habilitada</string>
   <string name="nav_imm_disabled">Navegación inmersiva desactivada</string>
   <string name="nav_blacklist">Mostrar barra de navegación en aplicaciones seleccionadas</string>
-  <string name="bar_blacklist">Ocultar píldora en aplicaciones seleccionadas</string>
+  <string name="bar_blacklist">Ocultar barra de gestos en aplicaciones seleccionadas</string>
   <string name="imm_blacklist">Lista negra de inmersión</string>
   <string name="x_threshold">Distancia de deslizamiento horizontal (X)</string>
   <string name="y_threshold">Distancia de deslizamiento vertical (Y)</string>
@@ -103,13 +103,13 @@
   <string name="back_to_default">¿Volver a los ajustes predeterminados?</string>
   <string name="experimental_prefs">Configuraciones experimentales</string>
   <string name="fix_for_other_windows">Mantener la barra de gestos visible en otras aplicaciones sobrepuestas</string>
-  <string name="full_overscan">Use Full Overscan</string>
+  <string name="full_overscan">Utilizar overscan completo</string>
   <string name="dont_keep_overscan_on_lockscreen">No ocultar barra de navegación en pantalla de bloqueo</string>
-  <string name="current_overscan">Current Overscan</string>
+  <string name="current_overscan">Overscan actual</string>
   <!--Descriptions-->
   <string name="gestures_desc">Personalizar acciones de gestos</string>
-  <string name="appearance_desc">Personalizar el aspecto de la píldora de navegación</string>
-  <string name="behavior_desc">Personalizar cómo se comporta la píldora</string>
+  <string name="appearance_desc">Personalizar el aspecto de la barra de gestos de navegación</string>
+  <string name="behavior_desc">Personalizar cómo se comporta la barra de gestos</string>
   <string name="tutorial_video_desc">¿Te preguntas cómo usar la aplicación? Estamos aquí para ayudar.</string>
   <string name="email_us_desc">Si tienes algún comentario, ¡nos encantaría escucharlo!</string>
   <string name="xda_thread_desc">¿Tienes alguna pregunta sobre la aplicación? Visita el hilo de XDA y pregunta.</string>
@@ -117,32 +117,32 @@
   <string name="buy_premium_desc">Desbloquear más funcionalidades con el complemento premium.</string>
   <string name="run_command_desc">adb shell pm grant com.xda.nobar android.permission.WRITE_SECURE_SETTINGS</string>
   <string name="foreground_desc">Esta notificación impide que Android detenga la aplicación. Puedes ocultarla manteniéndola presionada y accediendo a Configuración.</string>
-  <string name="static_pill_desc">Evitar que la píldora se mueva sobre el teclado.</string>
+  <string name="static_pill_desc">Evitar que la barra de gestos se mueva sobre el teclado.</string>
   <string name="hide_navbar_in_landscape_desc">Ciertos dispositivos muestran la barra de navegación original en el lateral en la vista horizontal (landscape). Activa esto para evitar ese comportamiento.</string>
   <string name="hide_navbar_in_upside_down_desc">Algunos dispositivos pueden rotar la pantalla cuando el dispositivo está boca abajo, lo que puede hacer que se muestre la barra de navegación original. Habilita esta opción para asegurarte de que permanezca oculta.</string>
   <string name="compatibility_pref_desc">Opciones de compatibilidad</string>
   <string name="tablet_mode_desc">Muchas tabletas obligan a la barra de navegación a estar siempre en la parte inferior de la pantalla. Activa esto para tener en cuenta ese comportamiento.</string>
-  <string name="hide_in_fullscreen_desc">Cuando se activa, la píldora se oculta automáticamente en las aplicaciones de pantalla completa (por ejemplo, videos o juegos).</string>
+  <string name="hide_in_fullscreen_desc">Cuando se activa, la barra de gestos se oculta automáticamente en las aplicaciones de pantalla completa (por ejemplo, videos o juegos).</string>
   <string name="compatibility_warning">¡NO CAMBIES ESTAS OPCIONES A MENOS QUE LAS NECESITES! ¡PUEDEN CAUSAR PROBLEMAS EN LUGAR DE ARREGLARLOS!</string>
-  <string name="larger_hitbox_desc">Habilita esto para hacer que la píldora sea más fácil de deslizar.</string>
+  <string name="larger_hitbox_desc">Habilita esto para hacer que la barra de gestos sea más fácil de deslizar.</string>
   <string name="hide_nav_summary">Solo utiliza esto si tu dispositivo tiene una barra de navegación de software.</string>
   <string name="orig_nav_in_immersive_desc">Cuando esté habilitado, se podrá acceder a la barra de navegación original con un deslizamiento en aplicaciones de pantalla completa.</string>
   <string name="use_pixels_desc">Establecer la dimensión utilizando el número de píxeles en lugar de porcentajes.</string>
-  <string name="sectioned_pill_desc">Dividir la píldora en tres secciones, cada una con su propio conjunto de acciones.</string>
+  <string name="sectioned_pill_desc">Dividir la barra de gestos en tres secciones, cada una con su propio conjunto de acciones.</string>
   <string name="enable_in_car_mode_desc">Cuando está habilitado, Gestos de Navegación no se desactivará en el Modo Coche. No habilites esto en dispositivos TouchWiz si tienes una barra de navegación de software.</string>
   <string name="grant_write_settings_desc">Pulsa en Aceptar para permitir que Gestos de Navegación escriba en la configuración del sistema.</string>
-  <string name="use_recommended_settings_desc">Barra dividida activada! Quieres seleccionar la configuración recomendada para este modo?</string>
+  <string name="use_recommended_settings_desc">Barra de gestos dividida activada! ¿Quieres seleccionar la configuración recomendada para este modo?</string>
   <string name="use_immersive_mode_when_nav_hidden_desc">Activar el modo de navegación inmersiva de Android cuando la barra de navegación está oculta. Esto soluciona problemas en dispositivos de Samsung como cuando el \"botón háptico de inicio\" no funciona.</string>
   <string name="nav_blacklist_desc">Elige qué aplicaciones deberían mostrar siempre la barra de navegación original.</string>
-  <string name="bar_blacklist_desc">Elige qué aplicaciones nunca deberían mostrar la píldora.</string>
+  <string name="bar_blacklist_desc">Elige qué aplicaciones nunca deberían mostrar la barra de gestos.</string>
   <string name="imm_blacklist_desc">Elige qué aplicaciones no deberían utilizar el modo inmersivo.</string>
-  <string name="auto_hide_pill_desc_disabled">Cuando está habilitado, la píldora se oculta automáticamente después del retardo especificado.</string>
+  <string name="auto_hide_pill_desc_disabled">Cuando está habilitado, la barra de gestos se oculta automáticamente después del retardo especificado.</string>
   <string name="auto_hide_pill_desc_enabled">Retardo: %sms. Toca para cambiar.</string>
-  <string name="back_to_default_desc">¡Barra dividida desactivada! ¿Quieres reestablecer los ajustes correspondientes por defecto?</string>
-  <string name="fix_for_other_windows_desc">Elegir las aplicaciones en las que se forzará a la barra a permanecer por encima. Útil para aplicaciones como la cabecera de Facebook Messenger, Drupe, etcetera.</string>
+  <string name="back_to_default_desc">¡Barra de gestos dividida desactivada! ¿Quieres restablecer los ajustes correspondientes por defecto?</string>
+  <string name="fix_for_other_windows_desc">Elegir las aplicaciones en las que se forzará a la barra a permanecer por encima. Útil para aplicaciones como la cabecera de Facebook Messenger, Drupe, etcétera.</string>
   <string name="experimental_warning">¡ESTAS FUNCIONES ESTÁN INCOMPLETAS Y PUEDEN NO FUNCIONAR EN TU DISPOSITIVO!</string>
   <string name="full_overscan_desc">Por defecto, Gestos de Navegación deja visible 1 píxel de la barra de navegación original. Habilítalo para eliminar ese píxel. ADVERTENCIA: ¡Esto podría dañar ciertos dispositivos!</string>
-  <string name="toggle_gestures_desc">Alternar si la píldora de gestos se muestra o no en pantalla.</string>
+  <string name="toggle_gestures_desc">Alternar si la barra de gestos se muestra o no en pantalla.</string>
   <string name="toggle_nav_desc">Alternar si la barra de navegación del software del dispositivo debe ocultarse o no.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Habilítalo para mostrar los accesos directos de la pantalla de bloqueo y para solucionar problemas con los elementos que se cortan en la pantalla de bloqueo, en la pantalla ambiental o en la pantalla always on.</string>
   <!--Paragraphs-->
@@ -157,20 +157,20 @@
   <string name="premium_required_desc">Esta acción requiere el complemento premium. ¿Te gustaría comprarlo?</string>
   <string name="nougat_required_desc">Esta acción requiere un dispositivo que ejecute Android Nougat o posterior. Perdón por eso.</string>
   <string name="nougat_qs_reminder">Android Nougat permite mosaicos personalizados de configuración rápida, y hemos incluido uno para alternar Gestos de Navegación. Puedes agregarlo deslizando dos veces desde la barra de estado, tocando el icono del lápiz o \"EDITAR\" y arrastrando el mosaico de Gestos de Navegación al área activa.</string>
-  <string name="accessibility_screen_text">This app uses an Accessibility Service to simulate navigation button presses like the back, home, and multitasking buttons. We do not use it to collect any personal information, and no action will be performed except by the user.</string>
+  <string name="accessibility_screen_text">Esta aplicación utiliza el servicio de accesibilidad para simular la pulsación de los botones de navegación, como los de Inicio, atrás y multitarea. No la utilizamos para recoger información personal, y no se realiza ninguna acción no requerida por el usuario.</string>
   <string name="sorry_desc">Debido a que tu dispositivo ejecuta Android P, esta aplicación no funcionará por ahora.</string>
   <string name="warning_desc">Antes de desinstalar Gestos de Navegación, ¡asegúrate de mostrar la barra de navegación del software usando el Switch en la aplicación! Solo necesitas hacer esto si ocultas la barra de navegación con nuestra aplicación.</string>
   <string name="white_bar_desc">Al usar esta aplicación, es posible que notes una pequeña barra blanca en la parte inferior de la pantalla. ¡Esto no es un error! Se requiere para prevenir problemas mucho más serios. No debería ocurrir en dispositivos TouchWiz.</string>
-  <string name="compatibility_desc">Al utilizar esta aplicación, si observas que la barra de navegación original está presente cuando no debería estar, ve a Configuración&gt;&gt;Compatibilidad y prueba las opciones de compatibilidad allí.</string>
+  <string name="compatibility_desc">Al utilizar esta aplicación, si observas que la barra de navegación original está presente cuando no debería estar, ve a Configuración&gt;&gt;Compatibilidad y prueba las opciones de compatibilidad allí mostradas.</string>
   <string name="skip_wss_message">Siempre puedes volver a este paso activando el interruptor Ocultar Barra de Navegación en la pantalla principal de esta aplicación.</string>
   <string name="feature_not_avail">Esta función no se puede usar mientras Gestos de Navegación esté ocultando la barra de navegación.</string>
   <!--Gestures-->
-  <string name="tap">Tap</string>
+  <string name="tap">Tocar</string>
   <string name="left">Deslizar a la izquierda</string>
   <string name="right">Deslizar a la derecha</string>
   <string name="up">Deslizar hacia arriba</string>
   <string name="down">Deslizar hacia abajo</string>
-  <string name="hold">Long Press</string>
+  <string name="hold">Pulsación larga</string>
   <string name="double_tap">Doble toque</string>
   <string name="swipe_up_hold">Deslizar hacia arriba y mantener</string>
   <string name="left_hold">Deslizar a la izquierda y mantener</string>
@@ -178,9 +178,9 @@
   <string name="down_hold">Deslizar hacia abajo y mantener</string>
   <!--Messages-->
   <string name="grant_permission">Hmm. Parece que este permiso no fue otorgado. Asegúrate de seguir todas las instrucciones y vuelve a intentarlo.</string>
-  <string name="pill_hidden">Píldora oculta. Toca o desliza hacia arriba para volver a mostrar.</string>
-  <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
-  <string name="deactivate_before_uninstall">¡Asegúrate de que la opción \"Ocultar barra de navegación\" esté desactivada antes de desinstalar!</string>
+  <string name="pill_hidden">Barra de gestos oculta. Toca o desliza hacia arriba para volver a mostrar.</string>
+  <string name="accessibility_msg">Busca \"Accesibilidad\" y púlsala.</string>
+  <string name="deactivate_before_uninstall">¡Asegúrate de que la opción \"Ocultar barra de navegación\" esté desactivada antes de desinstalar esta aplicación!</string>
   <string name="copied_to_clipboard">Correo electrónico copiado al portapapeles</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
@@ -188,7 +188,7 @@
   <string name="color_picker">Color Picker (Fork)</string>
   <string name="circle_progress">Circle Progress</string>
   <string name="rx_java">RxJava/RxAndroid</string>
-  <string name="tasker_plugin">Tasker Plugin Library</string>
+  <string name="tasker_plugin">Biblioteca de Plugins de Tasker</string>
   <string name="edge_sdk">Galaxy Edge SDK</string>
   <string name="anr_watchdog">ANR-WatchDog</string>
   <!--Intent Names-->
@@ -215,10 +215,10 @@
   <string name="prem_prev">Pista anterior (Premium)</string>
   <string name="prem_next">Pista siguiente (Premium)</string>
   <string name="prem_play_pause">Reproducir/Pausar (Premium)</string>
-  <string name="hold_back">Hold Back (Root)</string>
+  <string name="hold_back">Mantener pulsado atrás (root)</string>
   <string name="forward">Avanzar (Root)</string>
-  <string name="menu">Open Menu (Root)</string>
-  <string name="sleep">Sleep (Root)</string>
+  <string name="menu">Abrir menú (root)</string>
+  <string name="sleep">Dormir (root)</string>
   <string name="prem_vol_up">Subir volumen (Root) (Premium)</string>
   <string name="prem_vol_down">Bajar volumen (Root) (Premium)</string>
   <string name="prem_screenshot">Captura de pantalla (Premium)</string>
@@ -229,12 +229,12 @@
   <string name="prem_launch_activity">Iniciar actividad (Premium) (%s)</string>
   <string name="prem_launch_activity_no_format">Iniciar actividad (Premium)</string>
   <string name="prem_rot">Girar pantalla (Premium)</string>
-  <string name="prem_tasker_event">Tasker Event (Premium)</string>
+  <string name="prem_tasker_event">Evento de Tasker (Premium)</string>
   <string name="prem_flashlight">Activar o desactivar linterna (Premium)</string>
   <string name="prem_volume_panel">Abrir panel de volumen (Premium)</string>
   <string name="prem_bluetooth">Activar o desactivar Bluetooth (Premium)</string>
   <string name="prem_wifi">Activar o desactivar WiFi (Premium)</string>
-  <string name="prem_intent">Send Intent (Premium) (%s)</string>
+  <string name="prem_intent">Enviar intención (Premium) (%s)</string>
   <string name="prem_intent_no_format">Send Intent (Premium)</string>
   <!--Action Values-->
   <string name="type_no_action">-1</string>
@@ -279,13 +279,13 @@
   <string name="action_right">derecha</string>
   <string name="action_up">arriba</string>
   <string name="action_down">abajo</string>
-  <string name="action_double">double_tap</string>
+  <string name="action_double">double_toque</string>
   <string name="action_hold">mantener</string>
   <string name="action_tap">tocar</string>
-  <string name="action_up_hold">up_hold</string>
-  <string name="action_left_hold">left_hold</string>
-  <string name="action_right_hold">right_hold</string>
-  <string name="action_down_hold">down_hold</string>
+  <string name="action_up_hold">mantener_arriba</string>
+  <string name="action_left_hold">mantener_izquierda</string>
+  <string name="action_right_hold">mantener_derecha</string>
+  <string name="action_down_hold">mantener_abajo</string>
   <!--Center Action Keys-->
   <string name="action_up_center">up_center</string>
   <string name="action_up_hold_center">up_hold_center</string>
@@ -298,7 +298,7 @@
   <!--Buttons-->
   <string name="no">No</string>
   <!--Split Pill Recommendations-->
-  <string name="rec_set_transparent">\u2022 La píldora se vuelve completamente transparente</string>
+  <string name="rec_set_transparent">\u2022 La barra de gestos se vuelve completamente transparente</string>
   <string name="rec_set_y">\u2022 La píldora se mueve hacia la parte inferior de la pantalla</string>
   <string name="rec_swipe_left_right">\u2022 Deslizar hacia arriba desde la izquierda/derecha para ir atrás</string>
   <string name="rec_swipe_middle">\u2022 Deslizar hacia arriba desde el medio para inicio</string>
