@@ -77,7 +77,7 @@
   <string name="toggle_nav">Activar o desactivar barra de navegación</string>
   <string name="toggle_gestures_prem">Activar o desactivar gestos (Premium)</string>
   <string name="toggle_nav_prem">Activar o desactivar barra de navegación (Premium)</string>
-  <string name="grant_write_settings">Write Settings Permission Required!</string>
+  <string name="grant_write_settings">¡Se requiere permiso de escritura de la configuración del sistema!</string>
   <string name="sections">Secciones</string>
   <string name="swipe_up_left">Deslizar hacia arriba desde la izquierda</string>
   <string name="swipe_up_hold_left">Deslizar hacia arriba y mantener desde la izquierda</string>
@@ -109,7 +109,7 @@
   <!--Descriptions-->
   <string name="gestures_desc">Personalizar acciones de gestos</string>
   <string name="appearance_desc">Personalizar el aspecto de la píldora de navegación</string>
-  <string name="behavior_desc">Customize how the pill behaves</string>
+  <string name="behavior_desc">Personalizar cómo se comporta la píldora</string>
   <string name="tutorial_video_desc">¿Te preguntas cómo usar la aplicación? Estamos aquí para ayudar.</string>
   <string name="email_us_desc">Si tienes algún comentario, ¡nos encantaría escucharlo!</string>
   <string name="xda_thread_desc">¿Tienes alguna pregunta sobre la aplicación? Visita el hilo de XDA y pregunta.</string>
@@ -132,23 +132,23 @@
   <string name="enable_in_car_mode_desc">Cuando está habilitado, Gestos de Navegación no se desactivará en el Modo Coche. No habilites esto en dispositivos TouchWiz si tienes una barra de navegación de software.</string>
   <string name="grant_write_settings_desc">Pulsa en Aceptar para permitir que Gestos de Navegación escriba en la configuración del sistema.</string>
   <string name="use_recommended_settings_desc">Barra dividida activada! Quieres seleccionar la configuración recomendada para este modo?</string>
-  <string name="use_immersive_mode_when_nav_hidden_desc">Enable Android\'s Immersive Navigation Mode when Hide Navigation Bar is active. This fixes issues on Samsung devices such as the \"Hard press Home button\" not working.</string>
+  <string name="use_immersive_mode_when_nav_hidden_desc">Activar el modo de navegación inmersiva de Android cuando la barra de navegación está oculta. Esto soluciona problemas en dispositivos de Samsung como cuando el \"botón háptico de inicio\" no funciona.</string>
   <string name="nav_blacklist_desc">Elige qué aplicaciones deberían mostrar siempre la barra de navegación original.</string>
   <string name="bar_blacklist_desc">Elige qué aplicaciones nunca deberían mostrar la píldora.</string>
   <string name="imm_blacklist_desc">Elige qué aplicaciones no deberían utilizar el modo inmersivo.</string>
   <string name="auto_hide_pill_desc_disabled">Cuando está habilitado, la píldora se oculta automáticamente después del retardo especificado.</string>
   <string name="auto_hide_pill_desc_enabled">Retardo: %sms. Toca para cambiar.</string>
-  <string name="back_to_default_desc">Split Pill disabled! Do you want us to set affected settings back to default?</string>
-  <string name="fix_for_other_windows_desc">Choose which apps the pill should be forced to stay on top. Useful for apps like Facebook Messenger chat heads, Drupe, etc.</string>
+  <string name="back_to_default_desc">¡Barra dividida desactivada! ¿Quieres reestablecer los ajustes correspondientes por defecto?</string>
+  <string name="fix_for_other_windows_desc">Elegir las aplicaciones en las que se forzará a la barra a permanecer por encima. Útil para aplicaciones como la cabecera de Facebook Messenger, Drupe, etcetera.</string>
   <string name="experimental_warning">¡ESTAS FUNCIONES ESTÁN INCOMPLETAS Y PUEDEN NO FUNCIONAR EN TU DISPOSITIVO!</string>
   <string name="full_overscan_desc">Por defecto, Gestos de Navegación deja visible 1 píxel de la barra de navegación original. Habilítalo para eliminar ese píxel. ADVERTENCIA: ¡Esto podría dañar ciertos dispositivos!</string>
   <string name="toggle_gestures_desc">Alternar si la píldora de gestos se muestra o no en pantalla.</string>
   <string name="toggle_nav_desc">Alternar si la barra de navegación del software del dispositivo debe ocultarse o no.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Habilítalo para mostrar los accesos directos de la pantalla de bloqueo y para solucionar problemas con los elementos que se cortan en la pantalla de bloqueo, en la pantalla ambiental o en la pantalla always on.</string>
   <!--Paragraphs-->
-  <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
-  <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
-  <string name="accessibility_desc">This app uses an Accessibility Service to simulate the original navigation buttons. Click \“Grant\” below to enable access.</string>
+  <string name="app_purpose">Esta aplicación proporciona increíbles gestos de navegación para cualquier dispositivo Android. Lo mejor de todo es que no necesita root! Antes de utilizar los gestos, hay algunas cosas que tenemos que hacer para configurar la aplicación.</string>
+  <string name="draw_over_apps_desc">A fin de que Navigation Gestures muestren la barra, tendrá que otorgar el permiso para que pueda dibujarse sobre otras aplicaciones. Pulse el botón de abajo para hacerlo. Si lo instaló desde la Play Store, ya se habrá otorgarado este permiso.</string>
+  <string name="accessibility_desc">Esta aplicación utiliza el servicio de accesibilidad para simular los botones de navegación originales. Haga clic en \"Conceder\" a continuación para permitir el acceso.</string>
   <string name="write_secure_settings_desc">Podemos ocultar completamente tu barra de navegación de stock, pero necesitamos acceso a un permiso especial para hacerlo. Haz clic en el botón de abajo para saber cómo puedes otorgarlo. Si el dispositivo está rooteado, acepta el aviso root. Si no tienes una barra de navegación de software, o tu teléfono tiene otra forma de ocultar la barra de navegación, puedes omitir este paso.\n\nNOTA: ¡ADB no es root! No anulará tu garantía, tampoco aumentará el contador KNOX, etc.</string>
   <string name="ready_first_run_desc">¡Estás listo para usar Gestos de Navegación! Puedes activar o desactivar la píldora en la siguiente página o desde el mosaico de Configuración rápida (Nougat y posterior).</string>
   <string name="ready_desc">Estás listo para utilizar Gestos de Navegación en tu dispositivo.</string>
@@ -180,8 +180,8 @@
   <string name="grant_permission">Hmm. Parece que este permiso no fue otorgado. Asegúrate de seguir todas las instrucciones y vuelve a intentarlo.</string>
   <string name="pill_hidden">Píldora oculta. Toca o desliza hacia arriba para volver a mostrar.</string>
   <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
-  <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
-  <string name="copied_to_clipboard">Email copied to clipboard</string>
+  <string name="deactivate_before_uninstall">¡Asegúrate de que la opción \"Ocultar barra de navegación\" esté desactivada antes de desinstalar!</string>
+  <string name="copied_to_clipboard">Correo electrónico copiado al portapapeles</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
@@ -202,7 +202,7 @@
   <!--Actions-->
   <string name="home">Inicio</string>
   <string name="back">Atrás</string>
-  <string name="ohm">Toggle OHM</string>
+  <string name="ohm">Activar o desactivar OHM</string>
   <string name="recents">Aplicaciones recientes</string>
   <string name="hide">Ocultar píldora</string>
   <string name="assist">Asistente</string>
