@@ -120,7 +120,7 @@
   <string name="static_pill_desc">Prevent the pill from moving above the keyboard.</string>
   <string name="hide_navbar_in_landscape_desc">Certain devices show the original navigation bar on the side in landscape. Activate this to prevent that behavior.</string>
   <string name="hide_navbar_in_upside_down_desc">Some devices are able to rotate the screen when the device is upside down, which can cause the original navigation bar to show. Enable this option to make sure it stays hidden.</string>
-  <string name="compatibility_pref_desc">Compatibility options</string>
+  <string name="compatibility_pref_desc">Opciones de compatibilidad</string>
   <string name="tablet_mode_desc">Many tablets force the navigation bar to always be on the bottom of the screen. Turn this on to account for that behavior.</string>
   <string name="hide_in_fullscreen_desc">When activated, the pill will automatically hide in fullscreen apps (e.g. videos or games).</string>
   <string name="compatibility_warning">DO NOT CHANGE THESE OPTIONS UNLESS YOU NEED THEM! THEY CAN CAUSE PROBLEMS INSTEAD OF FIXING THEM!</string>
@@ -166,19 +166,19 @@
   <string name="feature_not_avail">This feature cannot be used while Navigation Gestures is hiding the navigation bar.</string>
   <!--Gestures-->
   <string name="tap">Tap</string>
-  <string name="left">Swipe Left</string>
-  <string name="right">Swipe Right</string>
-  <string name="up">Swipe Up</string>
-  <string name="down">Swipe Down</string>
+  <string name="left">Deslizar a la izquierda</string>
+  <string name="right">Deslizar a la derecha</string>
+  <string name="up">Deslizar hacia arriba</string>
+  <string name="down">Deslizar hacia abajo</string>
   <string name="hold">Long Press</string>
   <string name="double_tap">Double Tap</string>
-  <string name="swipe_up_hold">Swipe Up and Hold</string>
-  <string name="left_hold">Swipe Left and Hold</string>
-  <string name="right_hold">Swipe Right and Hold</string>
-  <string name="down_hold">Swipe Down and Hold</string>
+  <string name="swipe_up_hold">Deslizar hacia arriba y mantener</string>
+  <string name="left_hold">Deslizar a la izquierda y mantener</string>
+  <string name="right_hold">Deslizar a la derecha y mantener</string>
+  <string name="down_hold">Deslizar hacia abajo y mantener</string>
   <!--Messages-->
   <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
-  <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
+  <string name="pill_hidden">Píldora oculta. Toca o desliza hacia arriba para volver a mostrar.</string>
   <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
   <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
   <string name="copied_to_clipboard">Email copied to clipboard</string>
