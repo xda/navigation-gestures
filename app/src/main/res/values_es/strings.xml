@@ -111,7 +111,7 @@
   <string name="appearance_desc">Customize appearance of the navigation pill</string>
   <string name="behavior_desc">Customize how the pill behaves</string>
   <string name="tutorial_video_desc">Wondering how to use the app? We\'re here to help.</string>
-  <string name="email_us_desc">If you have some feedback, we\'d love to hear it!</string>
+  <string name="email_us_desc">Si tienes algún comentario, ¡nos encantaría escucharlo!</string>
   <string name="xda_thread_desc">Have a question about the app? Visit the XDA thread and ask away.</string>
   <string name="other_apps_desc">XDA también tiene otras aplicaciones. ¡Échales un vistazo!</string>
   <string name="buy_premium_desc">Desbloquear más funcionalidades con el complemento premium.</string>
@@ -124,9 +124,9 @@
   <string name="tablet_mode_desc">Many tablets force the navigation bar to always be on the bottom of the screen. Turn this on to account for that behavior.</string>
   <string name="hide_in_fullscreen_desc">When activated, the pill will automatically hide in fullscreen apps (e.g. videos or games).</string>
   <string name="compatibility_warning">DO NOT CHANGE THESE OPTIONS UNLESS YOU NEED THEM! THEY CAN CAUSE PROBLEMS INSTEAD OF FIXING THEM!</string>
-  <string name="larger_hitbox_desc">Enable this to make the pill easier to swipe.</string>
+  <string name="larger_hitbox_desc">Habilita esto para hacer que la píldora sea más fácil de deslizar.</string>
   <string name="hide_nav_summary">Only use this if your device has a software navigation bar.</string>
-  <string name="orig_nav_in_immersive_desc">When enabled, the original navigation bar will be accessible with a swipe in fullscreen apps.</string>
+  <string name="orig_nav_in_immersive_desc">Cuando esté habilitado, se podrá acceder a la barra de navegación original con un deslizamiento en aplicaciones de pantalla completa.</string>
   <string name="use_pixels_desc">Set dimension using pixel count rather than percentages.</string>
   <string name="sectioned_pill_desc">Divide the pill into three sections, each with their own set of actions.</string>
   <string name="enable_in_car_mode_desc">When enabled, Navigation Gestures will not disable in Car Mode. Don\'t enable this on TouchWiz devices if you have a software navigation bar.</string>
@@ -193,7 +193,7 @@
   <string name="anr_watchdog">ANR-WatchDog</string>
   <!--Actions-->
   <string name="home">Home</string>
-  <string name="back">Back</string>
+  <string name="back">Atrás</string>
   <string name="ohm">Toggle OHM</string>
   <string name="recents">Recent Apps</string>
   <string name="hide">Hide Pill</string>
@@ -289,9 +289,9 @@
   <!--Split Pill Recommendations-->
   <string name="rec_set_transparent">\u2022 Pill becomes fully transparent</string>
   <string name="rec_set_y">\u2022 Pill moves to the bottom of the screen</string>
-  <string name="rec_swipe_left_right">\u2022 Deslizar hacia arriba desde la izquierda/derecha para volver</string>
+  <string name="rec_swipe_left_right">\u2022 Deslizar hacia arriba desde la izquierda/derecha para ir atrás</string>
   <string name="rec_swipe_middle">\u2022 Deslizar hacia arriba desde el medio para inicio</string>
-  <string name="rec_swipe_hold_middle">\u2022 Swipe up from middle and hold for multitasking</string>
+  <string name="rec_swipe_hold_middle">\u2022 Deslizar hacia arriba desde el medio y mantener para multitarea</string>
   <!--Premium-->
   <string name="prem_stat">Premium Status:</string>
   <string name="checking">Checking…</string>
