@@ -139,9 +139,9 @@
   <string name="auto_hide_pill_desc_disabled">Wenn aktiviert, wird die Pille nach einer gewählten Verzögerung ausgeblendet.</string>
   <string name="auto_hide_pill_desc_enabled">Verzögerung: %sms. Tippen, um zu ändern.</string>
   <string name="back_to_default_desc">Split Pille ausgeschaltet! Möchtest du unsere empfohlenen Einstellungen übernehmen?</string>
-  <string name="fix_for_other_windows_desc">Choose which apps the pill should be forced to stay on top. Useful for apps like Facebook Messenger chat heads, Drupe, etc.</string>
-  <string name="experimental_warning">THESE FEATURES ARE INCOMPLETE AND MAY NOT WORK ON YOUR DEVICE!</string>
-  <string name="full_overscan_desc">By default, Navigation Gestures leaves 1 pixel of the original navbar visible. Enable this to remove that pixel. WARNING: This will break certain devices!!!</string>
+  <string name="fix_for_other_windows_desc">Wählen Sie aus, bei welchen Apps die Pille gezwungen wird, oben zu bleiben. Nützlich für Apps wie Facebook Messenger Chat headst, Drupe, etc.</string>
+  <string name="experimental_warning">DIESE FUNKTIONEN SIND UNVOLLSTÄNDIG UND FUNKTIONIEREN MÖGLICHERWEISE NICHT AUF IHREM GERÄT!</string>
+  <string name="full_overscan_desc">Standardmäßig lässt Navigation Gesten 1 Pixel von der ursprünglichen Navigationsleiste sichtbar. Aktivieren Sie dies um die Pixel zu entfernen. Achtung: Dies wird bestimmte Geräte bricken!!!</string>
   <string name="toggle_gestures_desc">Toggle whether or not the gesture pill is displayed onscreen.</string>
   <string name="toggle_nav_desc">Toggle whether or not the device\'s software navigation bar should be hidden.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Enable this to show lock screen shortcuts and to fix issues with items being cut off on the lock screen, ambient display, or always on display.</string>
