@@ -162,7 +162,7 @@
   <string name="warning_desc">Before you uninstall Navigation Gestures, make sure you unhide the software navigation bar using the toggle in the app! You only need to do this if you hide the navigation bar using our app.</string>
   <string name="white_bar_desc">Using this app you may notice a small white bar at the very bottom of the display. This is not a bug! It is required to prevent much more serious issues. It should not occur on TouchWiz devices.</string>
   <string name="compatibility_desc">While using this app, if you notice that the original navigation bar is present when it shouldn\'t be, head over to Settings&gt;&gt;Compatibility and try the compatibility options there.</string>
-  <string name="skip_wss_message">You can always come back to this step by toggling the Hide Navigation Bar switch on in the main screen of this app.</string>
+  <string name="skip_wss_message">Siempre puedes volver a este paso activando el interruptor Ocultar Barra de Navegación en la pantalla principal de esta aplicación.</string>
   <string name="feature_not_avail">This feature cannot be used while Navigation Gestures is hiding the navigation bar.</string>
   <!--Gestures-->
   <string name="tap">Tap</string>
@@ -200,23 +200,23 @@
   <string name="assist">Assistant</string>
   <string name="switch_apps">Previous App (Nougat+)</string>
   <string name="nothing">No Action</string>
-  <string name="prem_notif">Notifications (Premium)</string>
-  <string name="prem_qs">Quick Settings (Premium)</string>
-  <string name="prem_power">Power Menu (Premium)</string>
-  <string name="split">Split Screen (Nougat+)</string>
-  <string name="prem_prev">Previous Track (Premium)</string>
-  <string name="prem_next">Next Track (Premium)</string>
-  <string name="prem_play_pause">Play/Pause (Premium)</string>
+  <string name="prem_notif">Notificaciones (Premium)</string>
+  <string name="prem_qs">Configuración rápida (Premium)</string>
+  <string name="prem_power">Menú de apagado (Premium)</string>
+  <string name="split">Pantalla dividida (Nougat+)</string>
+  <string name="prem_prev">Pista anterior (Premium)</string>
+  <string name="prem_next">Pista siguiente (Premium)</string>
+  <string name="prem_play_pause">Reproducir/Pausar (Premium)</string>
   <string name="hold_back">Hold Back (Root)</string>
   <string name="forward">Go Forward (Root)</string>
   <string name="menu">Open Menu (Root)</string>
   <string name="sleep">Sleep (Root)</string>
-  <string name="prem_vol_up">Volume Up (Root) (Premium)</string>
-  <string name="prem_vol_down">Volume Down (Root) (Premium)</string>
-  <string name="prem_screenshot">Screenshot (Premium)</string>
-  <string name="prem_switch_ime">Switch Keyboard (Premium)</string>
-  <string name="prem_launch_app">Launch App (Premium) (%s)</string>
-  <string name="prem_launch_app_no_format">Launch App (Premium)</string>
+  <string name="prem_vol_up">Subir volumen (Root) (Premium)</string>
+  <string name="prem_vol_down">Bajar volumen (Root) (Premium)</string>
+  <string name="prem_screenshot">Captura de pantalla (Premium)</string>
+  <string name="prem_switch_ime">Cambiar el teclado (Premium)</string>
+  <string name="prem_launch_app">Iniciar aplicación (Premium) (%s)</string>
+  <string name="prem_launch_app_no_format">Iniciar aplicación (Premium)</string>
   <string name="prem_lock_screen">Lock Screen (Premium)</string>
   <string name="prem_launch_activity">Launch Activity (Premium) (%s)</string>
   <string name="prem_launch_activity_no_format">Launch Activity (Premium)</string>
@@ -287,14 +287,14 @@
   <!--Buttons-->
   <string name="no">No</string>
   <!--Split Pill Recommendations-->
-  <string name="rec_set_transparent">\u2022 Pill becomes fully transparent</string>
-  <string name="rec_set_y">\u2022 Pill moves to the bottom of the screen</string>
+  <string name="rec_set_transparent">\u2022 La píldora se vuelve completamente transparente</string>
+  <string name="rec_set_y">\u2022 La píldora se mueve hacia la parte inferior de la pantalla</string>
   <string name="rec_swipe_left_right">\u2022 Deslizar hacia arriba desde la izquierda/derecha para ir atrás</string>
   <string name="rec_swipe_middle">\u2022 Deslizar hacia arriba desde el medio para inicio</string>
   <string name="rec_swipe_hold_middle">\u2022 Deslizar hacia arriba desde el medio y mantener para multitarea</string>
   <!--Premium-->
-  <string name="prem_stat">Premium Status:</string>
-  <string name="checking">Checking…</string>
-  <string name="not_found">Not Found!</string>
-  <string name="installed">Installed!</string>
+  <string name="prem_stat">Estado Premium:</string>
+  <string name="checking">Comprobando…</string>
+  <string name="not_found">¡No encontrado!</string>
+  <string name="installed">¡Instalado!</string>
 </resources>
