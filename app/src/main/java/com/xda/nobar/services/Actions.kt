@@ -212,19 +212,17 @@ class Actions : AccessibilityService(), Serializable {
                     }
                     app.premTypeLaunchActivity -> runPremiumAction {
                         val key = "${gesture}_activity"
-                        val activity = app.prefs.getString(key, null)
+                        val activity = app.prefs.getString(key, null) ?: return@runPremiumAction
 
                         val p = activity.split("/")[0]
                         val c = activity.split("/")[1]
 
-                        if (activity != null) {
-                            val launch = Intent()
-                            launch.component = ComponentName(p, c)
+                        val launch = Intent()
+                        launch.component = ComponentName(p, c)
 
-                            try {
-                                startActivity(launch)
-                            } catch (e: Exception) {}
-                        }
+                        try {
+                            startActivity(launch)
+                        } catch (e: Exception) {}
                     }
                     app.premTypeLockScreen -> runPremiumAction { runSystemSettingsAction {
                         val lock = Intent(this@Actions, LockScreenActivity::class.java)

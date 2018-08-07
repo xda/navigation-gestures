@@ -1,7 +1,6 @@
 package com.xda.nobar.activities
 
 import android.content.*
-import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceFragment
@@ -72,7 +71,7 @@ class HelpAboutActivity : AppCompatActivity() {
         private fun fillInOverscan() {
             val pref = findPreference("current_overscan")
 
-            pref.summary = Rect().apply { activity.display.getOverscanInsets(this) }.toShortString()
+//            pref.summary = Rect().apply { activity.display.getOverscanInsets(this) }.toShortString()
 
             preferenceScreen.removePreference(pref)
         }
