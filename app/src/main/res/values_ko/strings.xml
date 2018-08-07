@@ -103,12 +103,12 @@
   <string name="back_to_default">기본 설정으로 복구?</string>
   <string name="experimental_prefs">실험실 기능</string>
   <string name="fix_for_other_windows">다른 오버레이 앱에서 Pill 표시 유지</string>
-  <string name="full_overscan">Use Full Overscan</string>
-  <string name="dont_keep_overscan_on_lockscreen">Don\'t Hide NavBar on Lock Screen</string>
+  <string name="full_overscan">Full Overscan 사용</string>
+  <string name="dont_keep_overscan_on_lockscreen">잠금화면에서 NavBar 숨기지 않음</string>
   <string name="current_overscan">Current Overscan</string>
   <!--Descriptions-->
-  <string name="gestures_desc">Customize gesture actions</string>
-  <string name="appearance_desc">Customize appearance of the navigation pill</string>
+  <string name="gestures_desc">제스처 동작 사용자 지정</string>
+  <string name="appearance_desc">Pill의 외관 사용자 지정</string>
   <string name="behavior_desc">Customize how the pill behaves</string>
   <string name="tutorial_video_desc">Wondering how to use the app? We\'re here to help.</string>
   <string name="email_us_desc">If you have some feedback, we\'d love to hear it!</string>
