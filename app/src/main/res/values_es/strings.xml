@@ -113,8 +113,8 @@
   <string name="tutorial_video_desc">Wondering how to use the app? We\'re here to help.</string>
   <string name="email_us_desc">If you have some feedback, we\'d love to hear it!</string>
   <string name="xda_thread_desc">Have a question about the app? Visit the XDA thread and ask away.</string>
-  <string name="other_apps_desc">XDA has other apps too. Check them out!</string>
-  <string name="buy_premium_desc">Unlock more functionality with the premium add-on.</string>
+  <string name="other_apps_desc">XDA también tiene otras aplicaciones. ¡Échales un vistazo!</string>
+  <string name="buy_premium_desc">Desbloquear más funcionalidades con el complemento premium.</string>
   <string name="run_command_desc">adb shell pm grant com.xda.nobar android.permission.WRITE_SECURE_SETTINGS</string>
   <string name="foreground_desc">This notification prevents Android from stopping the app. Hide it by long-pressing and going to Settings.</string>
   <string name="static_pill_desc">Prevent the pill from moving above the keyboard.</string>
