@@ -3,14 +3,14 @@
 <resources>
   <string name="app_name">Navigation Gestures</string>
   <!--Titles-->
-  <string name="gestures_on">Gestures On</string>
-  <string name="gestures_off">Gestures Off</string>
-  <string name="nav_hidden">NavBar Hidden</string>
-  <string name="nav_shown">NavBar Shown</string>
-  <string name="settings">Settings</string>
-  <string name="gestures">Gestures</string>
-  <string name="appearance">Appearance</string>
-  <string name="behavior">Behavior</string>
+  <string name="gestures_on">제스처 켜기</string>
+  <string name="gestures_off">제스처 끄기</string>
+  <string name="nav_hidden">NavBar 숨김</string>
+  <string name="nav_shown">NavBar 보임</string>
+  <string name="settings">설정</string>
+  <string name="gestures">제스처</string>
+  <string name="appearance">외관</string>
+  <string name="behavior">동작</string>
   <string name="activated">Enable Gesture Pill</string>
   <string name="toggle">Toggle</string>
   <string name="width">Pill Width</string>
