@@ -51,7 +51,7 @@
   <string name="pill_border_color">Цвет обводки панели</string>
   <string name="show_pill_shadow">Отображать тень панели</string>
   <string name="static_pill">Не двигать панель, когда показывается клавиатура</string>
-  <string name="hide_navbar_in_landscape">Hide Navigation Bar in Landscape</string>
+  <string name="hide_navbar_in_landscape">Скрывать панель навигации в ландшафтном режиме</string>
   <string name="hide_navbar_in_upside_down">Hide NavBar when Upside Down</string>
   <string name="white_bar">White Bar</string>
   <string name="tablet_mode">Hide Navigation Bar on Tablets</string>
