@@ -15,10 +15,10 @@
   <string name="toggle">Växla</string>
   <string name="width">Pill bredd</string>
   <string name="height">Pill höjd</string>
-  <string name="position_y">Vertical (Y) Position</string>
-  <string name="position_x">Horizontal (X) Position</string>
-  <string name="taps">Taps</string>
-  <string name="swipes">Swipes</string>
+  <string name="position_y">Vertikal (Y) Position</string>
+  <string name="position_x">Vågrät (X) Position</string>
+  <string name="taps">Tryck</string>
+  <string name="swipes">Svep</string>
   <string name="version">Version</string>
   <string name="tutorial_video">Tutorial Video</string>
   <string name="email_us">Email Us</string>
