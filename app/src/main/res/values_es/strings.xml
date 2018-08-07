@@ -146,7 +146,7 @@
   <string name="toggle_nav_desc">Alternar si la barra de navegación del software del dispositivo debe ocultarse o no.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Habilítalo para mostrar los accesos directos de la pantalla de bloqueo y para solucionar problemas con los elementos que se cortan en la pantalla de bloqueo, en la pantalla ambiental o en la pantalla always on.</string>
   <!--Paragraphs-->
-  <string name="app_purpose">Esta aplicación proporciona increíbles gestos de navegación para cualquier dispositivo Android. Lo mejor de todo es que no necesita root! Antes de utilizar los gestos, hay algunas cosas que tenemos que hacer para configurar la aplicación.</string>
+  <string name="app_purpose">Esta aplicación proporciona increíbles gestos de navegación para cualquier dispositivo Android. ¡Lo mejor de todo es que no necesita root! Antes de utilizar los gestos, hay algunas cosas que tenemos que hacer para configurar la aplicación.</string>
   <string name="draw_over_apps_desc">Para que Navigation Gestures muestre la barra, tendrás que otorgar el permiso para que pueda dibujarse sobre otras aplicaciones. Pulsa el botón de abajo para hacerlo. Si lo instalaste desde Play Store, ya se habrá otorgado este permiso.</string>
   <string name="accessibility_desc">Esta aplicación utiliza el servicio de accesibilidad para simular los botones de navegación originales. Haga clic en \"Conceder\" a continuación para permitir el acceso.</string>
   <string name="write_secure_settings_desc">Podemos ocultar completamente tu barra de navegación de stock, pero necesitamos acceso a un permiso especial para hacerlo. Haz clic en el botón de abajo para saber cómo puedes otorgarlo. Si el dispositivo está rooteado, acepta el aviso root. Si no tienes una barra de navegación de software, o tu teléfono tiene otra forma de ocultar la barra de navegación, puedes omitir este paso.\n\nNOTA: ¡ADB no es root! No anulará tu garantía, tampoco aumentará el contador KNOX, etc.</string>
@@ -215,10 +215,10 @@
   <string name="prem_prev">Pista anterior (Premium)</string>
   <string name="prem_next">Pista siguiente (Premium)</string>
   <string name="prem_play_pause">Reproducir/Pausar (Premium)</string>
-  <string name="hold_back">Mantener pulsado atrás (root)</string>
+  <string name="hold_back">Mantener pulsado atrás (Root)</string>
   <string name="forward">Avanzar (Root)</string>
-  <string name="menu">Abrir menú (root)</string>
-  <string name="sleep">Dormir (root)</string>
+  <string name="menu">Abrir menú (Root)</string>
+  <string name="sleep">Dormir (Root)</string>
   <string name="prem_vol_up">Subir volumen (Root) (Premium)</string>
   <string name="prem_vol_down">Bajar volumen (Root) (Premium)</string>
   <string name="prem_screenshot">Captura de pantalla (Premium)</string>
