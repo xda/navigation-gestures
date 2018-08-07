@@ -112,7 +112,7 @@
   <string name="behavior_desc">Anpassen, wie sich die Pille verhält</string>
   <string name="tutorial_video_desc">Du willst wissen wie man die App verwendet? Wir sind hier um zu helfen.</string>
   <string name="email_us_desc">Wenn du Kritik hast, würden wir sie gerne hören!</string>
-  <string name="xda_thread_desc">Have a question about the app? Visit the XDA thread and ask away.</string>
+  <string name="xda_thread_desc">Hast du eine Frage zur App? Besuche den Thread auf XDA und frag drauf los.</string>
   <string name="other_apps_desc">XDA has other apps too. Check them out!</string>
   <string name="buy_premium_desc">Unlock more functionality with the premium add-on.</string>
   <string name="run_command_desc">adb shell pm grant com.xda.nobar android.permission.WRITE_SECURE_SETTINGS</string>
