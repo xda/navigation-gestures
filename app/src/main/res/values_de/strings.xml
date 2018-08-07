@@ -73,10 +73,10 @@
   <string name="enable_in_car_mode">Pille im Automodus anzeigen</string>
   <string name="use_pixels">Pixel für Abmessungen verwenden</string>
   <string name="sectioned_pill">Pille teilen</string>
-  <string name="toggle_gestures">Toggle Gestures</string>
-  <string name="toggle_nav">Toggle NavBar</string>
-  <string name="toggle_gestures_prem">Toggle Gestures (Premium)</string>
-  <string name="toggle_nav_prem">Toggle NavBar (Premium)</string>
+  <string name="toggle_gestures">Gesten-Schalter</string>
+  <string name="toggle_nav">NavBar-Schalter</string>
+  <string name="toggle_gestures_prem">Gesten-Schalter (Premium)</string>
+  <string name="toggle_nav_prem">NavBar-Schalter (Premium)</string>
   <string name="grant_write_settings">Write Settings Permission Required!</string>
   <string name="sections">Abschnitte</string>
   <string name="swipe_up_left">Von links nach oben streichen</string>
@@ -98,16 +98,16 @@
   <string name="hide_after_set_time">Pille nach der angegebenen Verzögerung ausblenden</string>
   <string name="blacklisting">Blacklisting</string>
   <string name="look_feel">Look &amp; Feel</string>
-  <string name="pill_hiding">Pill Hiding</string>
+  <string name="pill_hiding">Pille verstecken</string>
   <string name="sensitivity">Empfindlichkeit</string>
   <string name="back_to_default">Zurück zu den Standardeinstellungen?</string>
   <string name="experimental_prefs">Experimentelle Einstellungen</string>
   <string name="fix_for_other_windows">Pill weiterhin in Overlay Apps anzeigen</string>
   <string name="full_overscan">Use Full Overscan</string>
-  <string name="dont_keep_overscan_on_lockscreen">Don\'t Hide NavBar on Lock Screen</string>
+  <string name="dont_keep_overscan_on_lockscreen">NavBar nicht auf dem Sperrbildschirm ausblenden</string>
   <string name="current_overscan">Current Overscan</string>
   <!--Descriptions-->
-  <string name="gestures_desc">Customize gesture actions</string>
+  <string name="gestures_desc">Gestenaktionen anpassen</string>
   <string name="appearance_desc">Customize appearance of the navigation pill</string>
   <string name="behavior_desc">Customize how the pill behaves</string>
   <string name="tutorial_video_desc">Wondering how to use the app? We\'re here to help.</string>
@@ -169,38 +169,38 @@
   <string name="left">Nach links streichen</string>
   <string name="right">Nach rechts streichen</string>
   <string name="up">Nach oben streichen</string>
-  <string name="down">Swipe Down</string>
-  <string name="hold">Long Press</string>
-  <string name="double_tap">Double Tap</string>
-  <string name="swipe_up_hold">Swipe Up and Hold</string>
-  <string name="left_hold">Swipe Left and Hold</string>
-  <string name="right_hold">Swipe Right and Hold</string>
-  <string name="down_hold">Swipe Down and Hold</string>
+  <string name="down">Nach unten streichen</string>
+  <string name="hold">Langes Drücken</string>
+  <string name="double_tap">Doppeltippen</string>
+  <string name="swipe_up_hold">Nach oben streichen und halten</string>
+  <string name="left_hold">Nach links streichen und halten</string>
+  <string name="right_hold">Nach rechts streichen und halten</string>
+  <string name="down_hold">Nach unten streichen und halten</string>
   <!--Messages-->
   <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
   <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
-  <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
+  <string name="accessibility_msg">\"Eingabehilfe\" finden und tippen.</string>
   <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
-  <string name="copied_to_clipboard">Email copied to clipboard</string>
+  <string name="copied_to_clipboard">E-Mail in die Zwischenablage kopiert</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
   <string name="color_picker">Color Picker (Fork)</string>
   <string name="circle_progress">Circle Progress</string>
   <string name="rx_java">RxJava/RxAndroid</string>
-  <string name="tasker_plugin">Tasker Plugin Library</string>
+  <string name="tasker_plugin">Tasker Plug-in-Bibliothek</string>
   <string name="edge_sdk">Galaxy Edge SDK</string>
   <string name="anr_watchdog">ANR-WatchDog</string>
   <!--Intent Names-->
-  <string name="google_music_search">Google Music Search</string>
-  <string name="google_weather">Google Weather Results</string>
-  <string name="google_new_calendar_event">New Google Calendar Event</string>
-  <string name="camera_take_photo">Take Photo</string>
-  <string name="camera_take_video">Take Video</string>
-  <string name="shazam_it">Shazam It</string>
-  <string name="soundhound_it">SoundHound It</string>
+  <string name="google_music_search">Google Musiksuche</string>
+  <string name="google_weather">Google Wetter-Ergebnisse</string>
+  <string name="google_new_calendar_event">Neues Google-Kalender-Ereignis</string>
+  <string name="camera_take_photo">Foto aufnehmen</string>
+  <string name="camera_take_video">Video aufnehmen</string>
+  <string name="shazam_it">Shazam es</string>
+  <string name="soundhound_it">SoundHound es</string>
   <!--Actions-->
-  <string name="home">Home</string>
+  <string name="home">Start</string>
   <string name="back">Back</string>
   <string name="ohm">Toggle OHM</string>
   <string name="recents">Recent Apps</string>
@@ -229,11 +229,11 @@
   <string name="prem_launch_activity">Launch Activity (Premium) (%s)</string>
   <string name="prem_launch_activity_no_format">Launch Activity (Premium)</string>
   <string name="prem_rot">Rotate Screen (Premium)</string>
-  <string name="prem_tasker_event">Tasker Event (Premium)</string>
-  <string name="prem_flashlight">Toggle Flashlight (Premium)</string>
-  <string name="prem_volume_panel">Open Volume Panel (Premium)</string>
-  <string name="prem_bluetooth">Toggle Bluetooth (Premium)</string>
-  <string name="prem_wifi">Toggle WiFi (Premium)</string>
+  <string name="prem_tasker_event">Tasker Ereignis (Premium)</string>
+  <string name="prem_flashlight">Taschenlampen-Schalter (Premium)</string>
+  <string name="prem_volume_panel">Lautstärkeleiste öffnen (Premium)</string>
+  <string name="prem_bluetooth">Bluetooth-Schalter (Premium)</string>
+  <string name="prem_wifi">WLAN-Schalter (Premium)</string>
   <string name="prem_intent">Send Intent (Premium) (%s)</string>
   <string name="prem_intent_no_format">Send Intent (Premium)</string>
   <!--Action Values-->
@@ -275,12 +275,12 @@
   <string name="prem_type_wifi">34</string>
   <string name="prem_type_intent">35</string>
   <!--Main Action Keys-->
-  <string name="action_left">left</string>
-  <string name="action_right">right</string>
-  <string name="action_up">up</string>
-  <string name="action_down">down</string>
-  <string name="action_double">double_tap</string>
-  <string name="action_hold">hold</string>
+  <string name="action_left">Links</string>
+  <string name="action_right">Rechts</string>
+  <string name="action_up">Oben</string>
+  <string name="action_down">Unten</string>
+  <string name="action_double">Doppeltippen</string>
+  <string name="action_hold">Halten</string>
   <string name="action_tap">tap</string>
   <string name="action_up_hold">up_hold</string>
   <string name="action_left_hold">left_hold</string>
