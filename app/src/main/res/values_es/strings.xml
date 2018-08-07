@@ -141,10 +141,10 @@
   <string name="back_to_default_desc">Split Pill disabled! Do you want us to set affected settings back to default?</string>
   <string name="fix_for_other_windows_desc">Choose which apps the pill should be forced to stay on top. Useful for apps like Facebook Messenger chat heads, Drupe, etc.</string>
   <string name="experimental_warning">¡ESTAS FUNCIONES ESTÁN INCOMPLETAS Y PUEDEN NO FUNCIONAR EN TU DISPOSITIVO!</string>
-  <string name="full_overscan_desc">By default, Navigation Gestures leaves 1 pixel of the original navbar visible. Enable this to remove that pixel. WARNING: This will break certain devices!!!</string>
+  <string name="full_overscan_desc">Por defecto, Gestos de Navegación deja visible 1 píxel de la barra de navegación original. Habilítalo para eliminar ese píxel. ADVERTENCIA: ¡Esto podría dañar ciertos dispositivos!</string>
   <string name="toggle_gestures_desc">Toggle whether or not the gesture pill is displayed onscreen.</string>
   <string name="toggle_nav_desc">Toggle whether or not the device\'s software navigation bar should be hidden.</string>
-  <string name="dont_keep_overscan_on_lockscreen_desc">Enable this to show lock screen shortcuts and to fix issues with items being cut off on the lock screen, ambient display, or always on display.</string>
+  <string name="dont_keep_overscan_on_lockscreen_desc">Habilítalo para mostrar los accesos directos de la pantalla de bloqueo y para solucionar problemas con los elementos que se cortan en la pantalla de bloqueo, en la pantalla ambiental o en la pantalla always on.</string>
   <!--Paragraphs-->
   <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
   <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
