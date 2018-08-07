@@ -130,7 +130,7 @@
   <string name="use_pixels_desc">Set dimension using pixel count rather than percentages.</string>
   <string name="sectioned_pill_desc">Divide the pill into three sections, each with their own set of actions.</string>
   <string name="enable_in_car_mode_desc">When enabled, Navigation Gestures will not disable in Car Mode. Don\'t enable this on TouchWiz devices if you have a software navigation bar.</string>
-  <string name="grant_write_settings_desc">Tap OK to allow Navigation Gestures to write to system settings.</string>
+  <string name="grant_write_settings_desc">Pulsa en Aceptar para permitir que Gestos de Navegación escriba en la configuración del sistema.</string>
   <string name="use_recommended_settings_desc">Split Pill enabled! Do you want to try our recommended settings for this mode?</string>
   <string name="use_immersive_mode_when_nav_hidden_desc">Enable Android\'s Immersive Navigation Mode when Hide Navigation Bar is active. This fixes issues on Samsung devices such as the \"Hard press Home button\" not working.</string>
   <string name="nav_blacklist_desc">Choose which apps should always show the original navigation bar.</string>
