@@ -9,12 +9,12 @@
   <string name="nav_shown">Hiện thanh điều hướng</string>
   <string name="settings">Cài đặt</string>
   <string name="gestures">Cử chỉ</string>
-  <string name="appearance">Xuất hiện</string>
+  <string name="appearance">Hình dáng</string>
   <string name="behavior">Hành vi</string>
-  <string name="activated">Bật thanh cử chỉ hình viên thuốc</string>
+  <string name="activated">Bật thanh cử chỉ</string>
   <string name="toggle">Bật/Tắt</string>
-  <string name="width">Chiều rộng của thanh hình viên</string>
-  <string name="height">Chiều cao của thanh hình viên</string>
+  <string name="width">Chiều rộng của thanh cử chỉ</string>
+  <string name="height">Chiều cao của thanh cử chỉ</string>
   <string name="position_y">Vị trí thẳng đứng (Y)</string>
   <string name="position_x">Vị trí nằm ngang (X)</string>
   <string name="taps">Chạm</string>
@@ -232,9 +232,9 @@
   <string name="prem_tasker_event">Tasker Event (Premium)</string>
   <string name="prem_flashlight">Toggle Flashlight (Premium)</string>
   <string name="prem_volume_panel">Open Volume Panel (Premium)</string>
-  <string name="prem_bluetooth">Toggle Bluetooth (Premium)</string>
-  <string name="prem_wifi">Toggle WiFi (Premium)</string>
-  <string name="prem_intent">Send Intent (Premium) (%s)</string>
+  <string name="prem_bluetooth">Bật/tắt Bluetooth (Nâng cao)</string>
+  <string name="prem_wifi">Bật tắt WiFi (Nâng cao)</string>
+  <string name="prem_intent">Gửi Intent (Nâng cao) (%s)</string>
   <string name="prem_intent_no_format">Send Intent (Premium)</string>
   <!--Action Values-->
   <string name="type_no_action">-1</string>
@@ -296,16 +296,16 @@
   <string name="action_up_right">up_right</string>
   <string name="action_up_hold_right">up_hold_right</string>
   <!--Buttons-->
-  <string name="no">No</string>
+  <string name="no">Không</string>
   <!--Split Pill Recommendations-->
-  <string name="rec_set_transparent">\u2022 Pill becomes fully transparent</string>
-  <string name="rec_set_y">\u2022 Pill moves to the bottom of the screen</string>
-  <string name="rec_swipe_left_right">\u2022 Swipe up from left/right for back</string>
-  <string name="rec_swipe_middle">\u2022 Swipe up from middle for home</string>
-  <string name="rec_swipe_hold_middle">\u2022 Swipe up from middle and hold for multitasking</string>
+  <string name="rec_set_transparent">Thanh cử chỉ trong suốt hoàn toàn</string>
+  <string name="rec_set_y">Thanh cử chỉ hạ xuống viền dưới màn hình</string>
+  <string name="rec_swipe_left_right">Vuốt lên ở bên trái/phải để quay về</string>
+  <string name="rec_swipe_middle">Vuốt lên ở giữa để về trang chủ</string>
+  <string name="rec_swipe_hold_middle">Vuốt lên ở giữa và giữ để chạy đa nhiệm</string>
   <!--Premium-->
-  <string name="prem_stat">Premium Status:</string>
-  <string name="checking">Checking…</string>
-  <string name="not_found">Not Found!</string>
-  <string name="installed">Installed!</string>
+  <string name="prem_stat">Tình trạng gói nâng cao:</string>
+  <string name="checking">Đang kiểm tra…</string>
+  <string name="not_found">Không tìm thấy!</string>
+  <string name="installed">Đã cài đặt!</string>
 </resources>
