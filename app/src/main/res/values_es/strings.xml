@@ -59,7 +59,7 @@
   <string name="foreground">Gestos de Navegación está activo</string>
   <string name="pill_corner_radius">Radio de esquina de la píldora</string>
   <string name="hide_in_fullscreen">Ocultar en aplicaciones de pantalla completa</string>
-  <string name="larger_hitbox">Larger Hitbox</string>
+  <string name="larger_hitbox">Zona de pulsación aumentada</string>
   <string name="hide_nav">Ocultar barra de navegación</string>
   <string name="are_you_sure">¿Estás seguro?</string>
   <string name="color_prefs">Colores</string>
@@ -131,7 +131,7 @@
   <string name="sectioned_pill_desc">Dividir la píldora en tres secciones, cada una con su propio conjunto de acciones.</string>
   <string name="enable_in_car_mode_desc">Cuando está habilitado, Gestos de Navegación no se desactivará en el Modo Coche. No habilites esto en dispositivos TouchWiz si tienes una barra de navegación de software.</string>
   <string name="grant_write_settings_desc">Pulsa en Aceptar para permitir que Gestos de Navegación escriba en la configuración del sistema.</string>
-  <string name="use_recommended_settings_desc">Split Pill enabled! Do you want to try our recommended settings for this mode?</string>
+  <string name="use_recommended_settings_desc">Barra dividida activada! Quieres seleccionar la configuración recomendada para este modo?</string>
   <string name="use_immersive_mode_when_nav_hidden_desc">Enable Android\'s Immersive Navigation Mode when Hide Navigation Bar is active. This fixes issues on Samsung devices such as the \"Hard press Home button\" not working.</string>
   <string name="nav_blacklist_desc">Elige qué aplicaciones deberían mostrar siempre la barra de navegación original.</string>
   <string name="bar_blacklist_desc">Elige qué aplicaciones nunca deberían mostrar la píldora.</string>
@@ -149,7 +149,7 @@
   <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
   <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
   <string name="accessibility_desc">This app uses an Accessibility Service to simulate the original navigation buttons. Click \“Grant\” below to enable access.</string>
-  <string name="write_secure_settings_desc">We can completely hide your stock navigation bar, but we need access to a special permission to do so. Click the button below to learn how you can grant it. If you are rooted, accept the root prompt. If you don\'t have a software navigation bar, or your phone has another way to hide the software navigation bar, you can skip this step.\n\nNOTE: ADB is not root! It will not void your warranty, trip KNOX, etc.</string>
+  <string name="write_secure_settings_desc">Podemos ocultar completamente tu barra de navegación de stock, pero necesitamos acceso a un permiso especial para hacerlo. Haz clic en el botón de abajo para saber cómo puedes otorgarlo. Si el dispositivo está rooteado, acepta el aviso root. Si no tienes una barra de navegación de software, o tu teléfono tiene otra forma de ocultar la barra de navegación, puedes omitir este paso.\n\nNOTA: ¡ADB no es root! No anulará tu garantía, tampoco aumentará el contador KNOX, etc.</string>
   <string name="ready_first_run_desc">¡Estás listo para usar Gestos de Navegación! Puedes activar o desactivar la píldora en la siguiente página o desde el mosaico de Configuración rápida (Nougat y posterior).</string>
   <string name="ready_desc">Estás listo para utilizar Gestos de Navegación en tu dispositivo.</string>
   <string name="root_found_desc">No te preocupes. Aún puedes usar esta aplicación. Root realmente facilita la configuración. Si lo deseas, podemos utilizar el acceso root para otorgar este permiso automáticamente. De lo contrario, puedes optar por utilizar el método tutorial/manual.</string>
@@ -161,7 +161,7 @@
   <string name="sorry_desc">Debido a que tu dispositivo ejecuta Android P, esta aplicación no funcionará por ahora.</string>
   <string name="warning_desc">Antes de desinstalar Gestos de Navegación, ¡asegúrate de mostrar la barra de navegación del software usando el Switch en la aplicación! Solo necesitas hacer esto si ocultas la barra de navegación con nuestra aplicación.</string>
   <string name="white_bar_desc">Al usar esta aplicación, es posible que notes una pequeña barra blanca en la parte inferior de la pantalla. ¡Esto no es un error! Se requiere para prevenir problemas mucho más serios. No debería ocurrir en dispositivos TouchWiz.</string>
-  <string name="compatibility_desc">While using this app, if you notice that the original navigation bar is present when it shouldn\'t be, head over to Settings&gt;&gt;Compatibility and try the compatibility options there.</string>
+  <string name="compatibility_desc">Al utilizar esta aplicación, si observas que la barra de navegación original está presente cuando no debería estar, ve a Configuración&gt;&gt;Compatibilidad y prueba las opciones de compatibilidad allí.</string>
   <string name="skip_wss_message">Siempre puedes volver a este paso activando el interruptor Ocultar Barra de Navegación en la pantalla principal de esta aplicación.</string>
   <string name="feature_not_avail">Esta función no se puede usar mientras Gestos de Navegación esté ocultando la barra de navegación.</string>
   <!--Gestures-->
