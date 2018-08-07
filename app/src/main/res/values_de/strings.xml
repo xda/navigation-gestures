@@ -102,7 +102,7 @@
   <string name="sensitivity">Empfindlichkeit</string>
   <string name="back_to_default">Zurück zu den Standardeinstellungen?</string>
   <string name="experimental_prefs">Experimentelle Einstellungen</string>
-  <string name="fix_for_other_windows">Pill weiterhin in Overlay Apps anzeigen</string>
+  <string name="fix_for_other_windows">Pille weiterhin in Overlay-Apps anzeigen</string>
   <string name="full_overscan">Use Full Overscan</string>
   <string name="dont_keep_overscan_on_lockscreen">NavBar nicht auf dem Sperrbildschirm ausblenden</string>
   <string name="current_overscan">Current Overscan</string>
@@ -296,16 +296,16 @@
   <string name="action_up_right">up_right</string>
   <string name="action_up_hold_right">up_hold_right</string>
   <!--Buttons-->
-  <string name="no">No</string>
+  <string name="no">Nein</string>
   <!--Split Pill Recommendations-->
-  <string name="rec_set_transparent">\u2022 Pill becomes fully transparent</string>
-  <string name="rec_set_y">\u2022 Pill moves to the bottom of the screen</string>
-  <string name="rec_swipe_left_right">\u2022 Swipe up from left/right for back</string>
-  <string name="rec_swipe_middle">\u2022 Swipe up from middle for home</string>
-  <string name="rec_swipe_hold_middle">\u2022 Swipe up from middle and hold for multitasking</string>
+  <string name="rec_set_transparent">\u2022 Pille wird vollständig transparent</string>
+  <string name="rec_set_y">\u2022 Pille bewegt sich zum unteren Bildschirmrand</string>
+  <string name="rec_swipe_left_right">\u2022 Streiche nach oben von links/rechts für Zurück</string>
+  <string name="rec_swipe_middle">\u2022 Streiche von der Mitte für Startbildschirm</string>
+  <string name="rec_swipe_hold_middle">\u2022 Streiche von der Mitte nach oben und halte für Multitasking</string>
   <!--Premium-->
-  <string name="prem_stat">Premium Status:</string>
-  <string name="checking">Checking…</string>
-  <string name="not_found">Not Found!</string>
-  <string name="installed">Installed!</string>
+  <string name="prem_stat">Premium-Status:</string>
+  <string name="checking">Überprüfen…</string>
+  <string name="not_found">Nicht gefunden!</string>
+  <string name="installed">Installiert!</string>
 </resources>
