@@ -184,12 +184,12 @@
   <string name="deactivate_before_uninstall">卸载前，请确保 \"隐藏导航栏\" 已关闭！</string>
   <string name="copied_to_clipboard">电子邮件地址已经被复制到剪贴板</string>
   <!--Libraries-->
-  <string name="material_intro">材料介绍(分支)</string>
-  <string name="slider_pref">材料搜索栏偏好设置(分支)</string>
+  <string name="material_intro">质感设计引导页面 (分支)</string>
+  <string name="slider_pref">质感式搜索栏偏好设置(分支)</string>
   <string name="color_picker">拾色器(分支)</string>
   <string name="circle_progress">圆圈进度条</string>
   <string name="rx_java">RxJava/RxAndroid</string>
-  <string name="tasker_plugin">任务插件库</string>
+  <string name="tasker_plugin">Tasker 插件库</string>
   <string name="edge_sdk">盖世边缘SDK</string>
   <string name="anr_watchdog">ANR-日志监视器</string>
   <!--Intent Names-->
@@ -307,7 +307,7 @@
   <string name="rec_swipe_hold_middle">\ u2022 中心往上滑动并长按触发多任务</string>
   <!--Premium-->
   <string name="prem_stat">高级版状态:</string>
-  <string name="checking">Checking…</string>
+  <string name="checking">检查中……</string>
   <string name="not_found">未找到!</string>
   <string name="installed">已安装！</string>
 </resources>
