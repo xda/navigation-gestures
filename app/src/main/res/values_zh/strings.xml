@@ -191,7 +191,7 @@
   <string name="rx_java">RxJava/RxAndroid</string>
   <string name="tasker_plugin">Tasker 插件库</string>
   <string name="edge_sdk">盖世边缘SDK</string>
-  <string name="anr_watchdog">ANR-日志监视器</string>
+  <string name="anr_watchdog">应用无响应监视器</string>
   <!--Intent Names-->
   <string name="google_music_search">Google 音乐搜索</string>
   <string name="google_weather">Google 天气预报结果</string>
