@@ -3,22 +3,22 @@
 <resources>
   <string name="app_name">Navigation Gestures</string>
   <!--Titles-->
-  <string name="gestures_on">Gestione attivi</string>
-  <string name="gestures_off">Gesti disattivi</string>
+  <string name="gestures_on">Gesti Attivati</string>
+  <string name="gestures_off">Gesti disattivati</string>
   <string name="nav_hidden">Barra di navigazione nascosta</string>
   <string name="nav_shown">Barra di navigazione attiva</string>
   <string name="settings">Impostazioni</string>
   <string name="gestures">Gesti</string>
   <string name="appearance">Apparenza</string>
   <string name="behavior">Comportamento</string>
-  <string name="activated">Attiva gestures</string>
+  <string name="activated">Abilita Barra</string>
   <string name="toggle">on/off</string>
   <string name="width">Larghezza barra</string>
   <string name="height">Altezza barra</string>
   <string name="position_y">Posizione verticale (Y)</string>
   <string name="position_x">Posizione orizzontale (X)</string>
-  <string name="taps">Tocca</string>
-  <string name="swipes">Scorri</string>
+  <string name="taps">Tocchi</string>
+  <string name="swipes">Scorrimenti</string>
   <string name="version">Versione</string>
   <string name="tutorial_video">Video tutorial</string>
   <string name="email_us">Contattaci via e-mail</string>
@@ -35,10 +35,10 @@
   <string name="missing_perms">Mancano dei permessi!</string>
   <string name="premium_required">Richiesta versione premium!</string>
   <string name="nougat_required">Richiesto Android Nougat</string>
-  <string name="hold_time">Swipe and Hold Time</string>
+  <string name="hold_time">Scorri e tieni premuto (tempo)</string>
   <string name="vibration_duration">Durata vibrazione</string>
-  <string name="buy_premium">Acquista versione premium</string>
-  <string name="libraries">Librerie</string>
+  <string name="buy_premium">Acquista Versione Premium</string>
+  <string name="libraries">Documentazione</string>
   <string name="qs_tile">Quick Settings Tile</string>
   <string name="run_command">Esegui questo comando da PC</string>
   <string name="got_it">Capito</string>
