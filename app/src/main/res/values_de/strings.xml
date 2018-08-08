@@ -282,10 +282,10 @@
   <string name="action_double">Doppeltippen</string>
   <string name="action_hold">Halten</string>
   <string name="action_tap">tippen</string>
-  <string name="action_up_hold">up_hold</string>
-  <string name="action_left_hold">left_hold</string>
-  <string name="action_right_hold">right_hold</string>
-  <string name="action_down_hold">down_hold</string>
+  <string name="action_up_hold">hoch_halten</string>
+  <string name="action_left_hold">links_halten</string>
+  <string name="action_right_hold">rechts_halten</string>
+  <string name="action_down_hold">runter_halten</string>
   <!--Center Action Keys-->
   <string name="action_up_center">up_center</string>
   <string name="action_up_hold_center">up_hold_center</string>
@@ -293,8 +293,8 @@
   <string name="action_up_left">up_left</string>
   <string name="action_up_hold_left">up_hold_left</string>
   <!--Right Action Keys-->
-  <string name="action_up_right">up_right</string>
-  <string name="action_up_hold_right">up_hold_right</string>
+  <string name="action_up_right">hoch_rechts</string>
+  <string name="action_up_hold_right">hoch_halten_rechts</string>
   <!--Buttons-->
   <string name="no">Nein</string>
   <!--Split Pill Recommendations-->
