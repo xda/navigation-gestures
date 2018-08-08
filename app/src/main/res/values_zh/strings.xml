@@ -193,16 +193,16 @@
   <string name="edge_sdk">盖世边缘SDK</string>
   <string name="anr_watchdog">ANR-日志监视器</string>
   <!--Intent Names-->
-  <string name="google_music_search">Google Music Search</string>
-  <string name="google_weather">Google Weather Results</string>
-  <string name="google_new_calendar_event">New Google Calendar Event</string>
-  <string name="camera_take_photo">Take Photo</string>
+  <string name="google_music_search">Google 音乐搜索</string>
+  <string name="google_weather">Google 天气预报结果</string>
+  <string name="google_new_calendar_event">新的 Google 日历事件</string>
+  <string name="camera_take_photo">拍照</string>
   <string name="camera_take_video">拍视频</string>
-  <string name="shazam_it">Shazam It</string>
-  <string name="soundhound_it">SoundHound It</string>
+  <string name="shazam_it">Shazam 识别音乐</string>
+  <string name="soundhound_it">SoundHound 识别音乐</string>
   <!--Actions-->
   <string name="home">主屏幕</string>
-  <string name="back">Back</string>
+  <string name="back">返回</string>
   <string name="ohm">Toggle OHM</string>
   <string name="recents">多任务</string>
   <string name="hide">隐藏 Pill</string>
