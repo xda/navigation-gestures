@@ -145,10 +145,10 @@
 AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <string name="toggle_gestures_desc">Activar se o manípulo de gestos aparece ou não no ecrã.</string>
   <string name="toggle_nav_desc">Escolhe se a Barra de Navegação do dispositivo deve estar visível ou escondida.</string>
-  <string name="dont_keep_overscan_on_lockscreen_desc">Enable this to show lock screen shortcuts and to fix issues with items being cut off on the lock screen, ambient display, or always on display.</string>
+  <string name="dont_keep_overscan_on_lockscreen_desc">Activar isto para mostrar atalhos do ecrã de bloqueio e resolver também os problemas de objectos cortados no ecrã de bloqueio, ambientador de ecrã ou de ecrã sempre activado.</string>
   <!--Paragraphs-->
-  <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
-  <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
+  <string name="app_purpose">Esta aplicação traz Navegação por Gestos para qualquer dispositivo Android. Melhor ainda, não precisa de Root! Antes de experimentar esta navegação há algumas coisas que precisamos configurar para usar a aplicação.</string>
+  <string name="draw_over_apps_desc">Para que a Navigations Gestures possa mostrar o Manípulo de Navegação, tens de dar permissões para que possa ficar em sobreposição de outras aplicações. Carrega no botão abaixo para esta permissão. Se instalaste através da Play Store está permissão já está garantida.</string>
   <string name="accessibility_desc">This app uses an Accessibility Service to simulate the original navigation buttons. Click \“Grant\” below to enable access.</string>
   <string name="write_secure_settings_desc">We can completely hide your stock navigation bar, but we need access to a special permission to do so. Click the button below to learn how you can grant it. If you are rooted, accept the root prompt. If you don\'t have a software navigation bar, or your phone has another way to hide the software navigation bar, you can skip this step.\n\nNOTE: ADB is not root! It will not void your warranty, trip KNOX, etc.</string>
   <string name="ready_first_run_desc">You\'re ready to use Navigation Gestures! You can toggle the pill on the following page or from the Quick Settings tile (Nougat and later).</string>
