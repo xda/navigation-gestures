@@ -6,7 +6,7 @@
   <string name="gestures_on">开启手势</string>
   <string name="gestures_off">关闭手势</string>
   <string name="nav_hidden">隐藏导航栏</string>
-  <string name="nav_shown">显示导航栏</string>
+  <string name="nav_shown">下沉导航栏</string>
   <string name="settings">设置</string>
   <string name="gestures">手势</string>
   <string name="appearance">外观</string>
@@ -51,7 +51,7 @@
   <string name="pill_border_color">横条边框颜色</string>
   <string name="show_pill_shadow">显示横条阴影</string>
   <string name="static_pill">当键盘弹出时不改变横条位置</string>
-  <string name="hide_navbar_in_landscape">横向时隐藏导航栏</string>
+  <string name="hide_navbar_in_landscape">横屏时隐藏导航栏</string>
   <string name="hide_navbar_in_upside_down">上下颠倒时隐藏导航栏</string>
   <string name="white_bar">白色栏</string>
   <string name="tablet_mode">隐藏平板设备的导航栏</string>
@@ -72,11 +72,11 @@
   <string name="orig_nav_in_immersive">在全屏应用中显示导航栏</string>
   <string name="enable_in_car_mode">在车载模式显示横条</string>
   <string name="use_pixels">使用像素为单位</string>
-  <string name="sectioned_pill">分裂式横条</string>
+  <string name="sectioned_pill">分屏横条</string>
   <string name="toggle_gestures">开关手势</string>
-  <string name="toggle_nav">开关导航栏</string>
-  <string name="toggle_gestures_prem">开关手势（付费）</string>
-  <string name="toggle_nav_prem">开关导航栏（付费）</string>
+  <string name="toggle_nav">导航栏开关</string>
+  <string name="toggle_gestures_prem">手势开关（付费）</string>
+  <string name="toggle_nav_prem">导航栏开关（付费）</string>
   <string name="grant_write_settings">需要写入设置权限</string>
   <string name="sections">分区</string>
   <string name="swipe_up_left">于左侧上滑</string>
