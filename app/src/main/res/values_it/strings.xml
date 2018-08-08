@@ -112,7 +112,7 @@
   <string name="behavior_desc">Customize how the pill behaves</string>
   <string name="tutorial_video_desc">Wondering how to use the app? We\'re here to help.</string>
   <string name="email_us_desc">Se avessi qualche suggerimento da darci, saremmo lieti di ascoltarlo!</string>
-  <string name="xda_thread_desc">Have a question about the app? Visit the XDA thread and ask away.</string>
+  <string name="xda_thread_desc">Hai domande? Puoi visitare la discussione su XDA e chiedere lì.</string>
   <string name="other_apps_desc">XDA ha pubblicato altre app oltre questa. Dai un\'occhiata!</string>
   <string name="buy_premium_desc">Sblocca altre funzionalità con la versione premium.</string>
   <string name="run_command_desc">adb shell pm grant com.xda.nobar android.permission.WRITE_SECURE_SETTINGS</string>
@@ -128,9 +128,9 @@
   <string name="hide_nav_summary">Usare solo se il dispositivo ha una barra di navigazione software.</string>
   <string name="orig_nav_in_immersive_desc">Quando abilitata, la barra di navigazione originaria sarà accessibile con uno swipe nelle app a schermo intero.</string>
   <string name="use_pixels_desc">Impostare dimensione utilizzando il numero di pixel piuttosto che le percentuali.</string>
-  <string name="sectioned_pill_desc">Divide the pill into three sections, each with their own set of actions.</string>
+  <string name="sectioned_pill_desc">Divide la barra in tre sezione, ognuna di queste con le proprie gesture.</string>
   <string name="enable_in_car_mode_desc">Quando abilitata, Navigation Gestures non si disabiliterà in Modalità Auto. Non abilitare su dispositivi TouchWiz se si ha una barra di navigazione software.</string>
-  <string name="grant_write_settings_desc">Tap OK to allow Navigation Gestures to write to system settings.</string>
+  <string name="grant_write_settings_desc">Premi OK per permettere all\'app di modificare le impostazioni di sistema.</string>
   <string name="use_recommended_settings_desc">Split Pill enabled! Do you want to try our recommended settings for this mode?</string>
   <string name="use_immersive_mode_when_nav_hidden_desc">Enable Android\'s Immersive Navigation Mode when Hide Navigation Bar is active. This fixes issues on Samsung devices such as the \"Hard press Home button\" not working.</string>
   <string name="nav_blacklist_desc">Choose which apps should always show the original navigation bar.</string>
