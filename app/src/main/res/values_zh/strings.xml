@@ -156,8 +156,8 @@
   <string name="root_found_desc">不用担心，您仍然可以使用该应用程序。Root权限会使设置更容易。如果您愿意，我们可以使用 root 访问权限自动授予此权限。否则，您可以选择使用教程/手动方法。</string>
   <string name="missing_perms_desc">看起来像是一个或多个权限授权被拒绝了。不过不用担心，我们会帮你恢复正常工作的。</string>
   <string name="premium_required_desc">此操作需要付费插件。您想购买它吗？</string>
-  <string name="nougat_required_desc">This action requires a device running Android Nougat or later. Sorry about that.</string>
-  <string name="nougat_qs_reminder">Android Nougat allows for custom quick settings tiles, and we\'ve included one to toggle Navigation Gestures. You can add it by swiping down twice from the status bar, tapping the pencil icon or \"EDIT\" and dragging Navigation Gestures\' tile into the active area.</string>
+  <string name="nougat_required_desc">抱歉，此操作需要运行 Android 牛轧糖或更高版本的设备。</string>
+  <string name="nougat_qs_reminder">Android 牛轧糖允许定制快速设置磁贴，我们提供了一个切换导航手势的开关。您可以通过从状态栏向下滑动两次，点击铅笔图标或 \"编辑\" ，之后拖动导航手势开关瓷砖到活动区域。</string>
   <string name="accessibility_screen_text">This app uses an Accessibility Service to simulate navigation button presses like the back, home, and multitasking buttons. We do not use it to collect any personal information, and no action will be performed except by the user.</string>
   <string name="sorry_desc">Because your device is running Android P, this app will not currently work.</string>
   <string name="warning_desc">Before you uninstall Navigation Gestures, make sure you unhide the software navigation bar using the toggle in the app! You only need to do this if you hide the navigation bar using our app.</string>
