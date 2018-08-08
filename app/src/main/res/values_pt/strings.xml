@@ -179,10 +179,10 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <string name="right_hold">Puxar para Direita e Segurar</string>
   <string name="down_hold">Puxar para baixo e Segurar</string>
   <!--Messages-->
-  <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
-  <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
-  <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
-  <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
+  <string name="grant_permission">Hmm. Parece que esta permissão ainda não foi garantida, Verifica se seguiste todas as instruções e tenta novamente.</string>
+  <string name="pill_hidden">Manípulo Escondido, Toque ou Puxe para Cima para mostrar.</string>
+  <string name="accessibility_msg">Encontre \"Acessibilidade\" e toque.</string>
+  <string name="deactivate_before_uninstall">Verifique que \"Esconder Barra de Navegação\" está desligado antes de desinstalar!</string>
   <string name="copied_to_clipboard">Email copied to clipboard</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
@@ -204,13 +204,13 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <!--Actions-->
   <string name="home">Home</string>
   <string name="back">Back</string>
-  <string name="ohm">Toggle OHM</string>
-  <string name="recents">Recent Apps</string>
-  <string name="hide">Hide Pill</string>
-  <string name="assist">Assistant</string>
-  <string name="switch_apps">Previous App (Nougat+)</string>
-  <string name="nothing">No Action</string>
-  <string name="prem_notif">Notifications (Premium)</string>
+  <string name="ohm">Activar/Desactivar OHM</string>
+  <string name="recents">Aplicações Recentes</string>
+  <string name="hide">Esconder Manípulo</string>
+  <string name="assist">Assistente</string>
+  <string name="switch_apps">Aplicação Anterior (Nougat+)</string>
+  <string name="nothing">Sem Acção</string>
+  <string name="prem_notif">Notificações (Pago)</string>
   <string name="prem_qs">Definições Rápidas (Pago)</string>
   <string name="prem_power">Menu de energia (Pago)</string>
   <string name="split">Tela dividida (Nougat +)</string>
@@ -284,19 +284,19 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <string name="action_double">duplo toque</string>
   <string name="action_hold">manter</string>
   <string name="action_tap">toque</string>
-  <string name="action_up_hold">up_hold</string>
-  <string name="action_left_hold">left_hold</string>
-  <string name="action_right_hold">right_hold</string>
-  <string name="action_down_hold">down_hold</string>
+  <string name="action_up_hold">cima_segurar</string>
+  <string name="action_left_hold">esquerda_segurar</string>
+  <string name="action_right_hold">direita_segurar</string>
+  <string name="action_down_hold">baixo_segurar</string>
   <!--Center Action Keys-->
-  <string name="action_up_center">up_center</string>
-  <string name="action_up_hold_center">up_hold_center</string>
+  <string name="action_up_center">cima_segurar</string>
+  <string name="action_up_hold_center">cima_segurar_centro</string>
   <!--Left Action Keys-->
-  <string name="action_up_left">up_left</string>
-  <string name="action_up_hold_left">up_hold_left</string>
+  <string name="action_up_left">cima_esquerda</string>
+  <string name="action_up_hold_left">cima_segurar_esquerda</string>
   <!--Right Action Keys-->
-  <string name="action_up_right">up_right</string>
-  <string name="action_up_hold_right">up_hold_right</string>
+  <string name="action_up_right">cima_direita</string>
+  <string name="action_up_hold_right">cima_segurar_direita</string>
   <!--Buttons-->
   <string name="no">No</string>
   <!--Split Pill Recommendations-->
