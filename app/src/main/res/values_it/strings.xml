@@ -9,12 +9,12 @@
   <string name="nav_shown">Barra di navigazione attiva</string>
   <string name="settings">Impostazioni</string>
   <string name="gestures">Gesti</string>
-  <string name="appearance">Apparenza</string>
+  <string name="appearance">Aspetto</string>
   <string name="behavior">Comportamento</string>
-  <string name="activated">Abilita Barra</string>
+  <string name="activated">Attiva pillola gestures</string>
   <string name="toggle">on/off</string>
-  <string name="width">Larghezza barra</string>
-  <string name="height">Altezza barra</string>
+  <string name="width">Larghezza pillola</string>
+  <string name="height">Altezza pillola</string>
   <string name="position_y">Posizione verticale (Y)</string>
   <string name="position_x">Posizione orizzontale (X)</string>
   <string name="taps">Tocchi</string>
@@ -50,14 +50,14 @@
   <string name="pill_color">Colore barra</string>
   <string name="pill_border_color">Colore bordo barra</string>
   <string name="show_pill_shadow">Mostra ombra barra</string>
-  <string name="static_pill">Non spostare barra durante la digitazione</string>
+  <string name="static_pill">Non spostare la pillola durante la digitazione</string>
   <string name="hide_navbar_in_landscape">Nascondi Barra di Navigazione in orizzontale</string>
   <string name="hide_navbar_in_upside_down">Nascondi barra di navigazione quando capovolto</string>
   <string name="white_bar">Barra bianca</string>
   <string name="tablet_mode">Nascondi Navigation Bar su tablet</string>
   <string name="compatibility">Compatibilità</string>
   <string name="foreground">Navigation Gestures è Attiva</string>
-  <string name="pill_corner_radius">Raggio angoli barra</string>
+  <string name="pill_corner_radius">Raggio angoli pillola</string>
   <string name="hide_in_fullscreen">Nascondi in app a schermo intero</string>
   <string name="larger_hitbox">Hitbox più ampia</string>
   <string name="hide_nav">Nascondi barra di navigazione</string>
@@ -72,7 +72,7 @@
   <string name="orig_nav_in_immersive">Mostra barra di navigazione con schermo intero</string>
   <string name="enable_in_car_mode">Mostra barra in modalità Auto</string>
   <string name="use_pixels">Dimensioni in pixel</string>
-  <string name="sectioned_pill">Dividi barra</string>
+  <string name="sectioned_pill">Dividi pillola</string>
   <string name="toggle_gestures">Gesti on/off</string>
   <string name="toggle_nav">NavBar on/off</string>
   <string name="toggle_gestures_prem">Gesti on/off (Premium)</string>
@@ -86,7 +86,7 @@
   <string name="swipe_up_right">Scorri in alto da destra</string>
   <string name="swipe_up_hold_right">Scorri in Alto e Mantieni da Destra</string>
   <string name="use_recommended_settings">Applico impostazioni consigliate?</string>
-  <string name="hide_pill_on_keyboard">Nascondi la barra durante la digitazione</string>
+  <string name="hide_pill_on_keyboard">Nascondi la pillola durante la digitazione</string>
   <string name="use_immersive_mode_when_nav_hidden">Attiva modalità immersiva</string>
   <string name="nav_imm_enabled">Modalità immersiva attivata</string>
   <string name="nav_imm_disabled">Modalità immersiva disattivata</string>
@@ -95,21 +95,21 @@
   <string name="imm_blacklist">Esclusioni modalità immersiva</string>
   <string name="x_threshold">Distanza Swipe Orizzontale (X)</string>
   <string name="y_threshold">Distanza Scorrimento Verticale (Y)</string>
-  <string name="hide_after_set_time">Nascondi Barra dopo un tempo specifico</string>
-  <string name="blacklisting">Lista Nera</string>
+  <string name="hide_after_set_time">Nascondi pillola dopo un tempo specifico</string>
+  <string name="blacklisting">Esclusioni</string>
   <string name="look_feel">Vista e tatto</string>
-  <string name="pill_hiding">Nascondimento della barra</string>
+  <string name="pill_hiding">Nascondi la pillola</string>
   <string name="sensitivity">Sensibilità</string>
   <string name="back_to_default">Ripristina impostazioni di default?</string>
-  <string name="experimental_prefs">Sperimentali</string>
-  <string name="fix_for_other_windows">Mantieni la Barra Visibile in altre App Overlay</string>
+  <string name="experimental_prefs">Impostazioni sperimentali</string>
+  <string name="fix_for_other_windows">Mantieni la pillola visibile nelle altre app overlay</string>
   <string name="full_overscan">Usa Overscan Completo</string>
   <string name="dont_keep_overscan_on_lockscreen">Non nascondere Navigation Bar nella schermata di blocco</string>
   <string name="current_overscan">Overscan corrente</string>
   <!--Descriptions-->
   <string name="gestures_desc">Personalizza gesture</string>
-  <string name="appearance_desc">Personalizza l\'aspetto della barra</string>
-  <string name="behavior_desc">Personalizza il comportamento della barra</string>
+  <string name="appearance_desc">Personalizza l\'aspetto della pillola</string>
+  <string name="behavior_desc">Personalizza il comportamento della pillola</string>
   <string name="tutorial_video_desc">Ti stai chiedendo come usare l\'app? Siamo qui per aiutarti.</string>
   <string name="email_us_desc">Se avessi qualche suggerimento da darci, saremmo lieti di ascoltarlo!</string>
   <string name="xda_thread_desc">Hai domande? Puoi visitare la discussione su XDA e chiedere lì.</string>
@@ -185,10 +185,10 @@
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
-  <string name="color_picker">Color Picker (Fork)</string>
+  <string name="color_picker">Selettore colore (Fork)</string>
   <string name="circle_progress">Circle Progress</string>
   <string name="rx_java">RxJava/RxAndroid</string>
-  <string name="tasker_plugin">Tasker Plugin Library</string>
+  <string name="tasker_plugin">Libreria plugin di Tasker</string>
   <string name="edge_sdk">Galaxy Edge SDK</string>
   <string name="anr_watchdog">ANR-WatchDog</string>
   <!--Intent Names-->
@@ -218,7 +218,7 @@
   <string name="hold_back">Torna Indietro (Root)</string>
   <string name="forward">Vai Avanti (Root)</string>
   <string name="menu">Apri Menu (Root)</string>
-  <string name="sleep">Sleep (Root)</string>
+  <string name="sleep">Iberna (Root)</string>
   <string name="prem_vol_up">Volume Su (Root) (Premium)</string>
   <string name="prem_vol_down">Volume Giù (Root) (Premium)</string>
   <string name="prem_screenshot">Cattura schermata (Premium)</string>
