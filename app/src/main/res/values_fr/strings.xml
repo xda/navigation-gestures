@@ -136,9 +136,9 @@
   <string name="nav_blacklist_desc">Choisir quelles applications devraient toujours afficher la barre de navigation originale.</string>
   <string name="bar_blacklist_desc">Choisir quelles applications ne devraient jamais afficher la pilule.</string>
   <string name="imm_blacklist_desc">Choisir quelles applications ne devraient pas utiliser le mode immersif.</string>
-  <string name="auto_hide_pill_desc_disabled">When enabled, the pill will automatically hide after the specified delay.</string>
-  <string name="auto_hide_pill_desc_enabled">Delay: %sms. Tap to change.</string>
-  <string name="back_to_default_desc">Split Pill disabled! Do you want us to set affected settings back to default?</string>
+  <string name="auto_hide_pill_desc_disabled">Quand activé, la pilule sera automatiquement masquée après le délai spécifié.</string>
+  <string name="auto_hide_pill_desc_enabled">Retard : %sms. Appuyez pour changer.</string>
+  <string name="back_to_default_desc">Division de pilule désactivée ! Voulez-vous restaurez les paramètres affectés à leurs valeurs par défaut ?</string>
   <string name="fix_for_other_windows_desc">Choose which apps the pill should be forced to stay on top. Useful for apps like Facebook Messenger chat heads, Drupe, etc.</string>
   <string name="experimental_warning">THESE FEATURES ARE INCOMPLETE AND MAY NOT WORK ON YOUR DEVICE!</string>
   <string name="full_overscan_desc">By default, Navigation Gestures leaves 1 pixel of the original navbar visible. Enable this to remove that pixel. WARNING: This will break certain devices!!!</string>
@@ -163,25 +163,25 @@
   <string name="white_bar_desc">Using this app you may notice a small white bar at the very bottom of the display. This is not a bug! It is required to prevent much more serious issues. It should not occur on TouchWiz devices.</string>
   <string name="compatibility_desc">While using this app, if you notice that the original navigation bar is present when it shouldn\'t be, head over to Settings&gt;&gt;Compatibility and try the compatibility options there.</string>
   <string name="skip_wss_message">You can always come back to this step by toggling the Hide Navigation Bar switch on in the main screen of this app.</string>
-  <string name="feature_not_avail">This feature cannot be used while Navigation Gestures is hiding the navigation bar.</string>
+  <string name="feature_not_avail">Cette fonctionnalité ne peut pas être utilisée quand les Gestes de Navigation cachent la barre de navigation.</string>
   <!--Gestures-->
-  <string name="tap">Tap</string>
+  <string name="tap">Appui</string>
   <string name="left">Balayage à gauche</string>
   <string name="right">Balayez à droite</string>
   <string name="up">Balayage vers le haut</string>
   <string name="down">Balayage vers le bas</string>
   <string name="hold">Appui long</string>
   <string name="double_tap">Appui double</string>
-  <string name="swipe_up_hold">Swipe Up and Hold</string>
-  <string name="left_hold">Swipe Left and Hold</string>
-  <string name="right_hold">Swipe Right and Hold</string>
-  <string name="down_hold">Swipe Down and Hold</string>
+  <string name="swipe_up_hold">Balayage vers le faut et maintien</string>
+  <string name="left_hold">Balayage vers la gauche et maintien</string>
+  <string name="right_hold">Balayage vers la droite et maintien</string>
+  <string name="down_hold">Balayage vers le bas et maintien</string>
   <!--Messages-->
-  <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
-  <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
-  <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
-  <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
-  <string name="copied_to_clipboard">Email copied to clipboard</string>
+  <string name="grant_permission">Hmm. Il semble que cette autorisation n’a pas été accordée. Assurez-vous de suivre toutes les instructions, puis réessayez.</string>
+  <string name="pill_hidden">Pilule cachée. Appuyez ou balayez vers le faut pour la ré-afficher.</string>
+  <string name="accessibility_msg">Trouvez le paramètre d\'accessibilité correspondant et activez le.</string>
+  <string name="deactivate_before_uninstall">Assuez-vous que \"Cacher la barre de navigation\" soit désactivé avant de désinstaller l\'application!</string>
+  <string name="copied_to_clipboard">Email copié dans le presse-papier</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
