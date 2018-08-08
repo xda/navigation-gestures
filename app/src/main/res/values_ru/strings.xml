@@ -57,7 +57,7 @@
   <string name="tablet_mode">Скрывать панель навигации на планшетах</string>
   <string name="compatibility">Совместимость</string>
   <string name="foreground">Жесты навигации активны</string>
-  <string name="pill_corner_radius">Радиус скругления панели</string>
+  <string name="pill_corner_radius">Радиус скругления таблетки</string>
   <string name="hide_in_fullscreen">Скрывать в полноэкранном режиме</string>
   <string name="larger_hitbox">Увеличенный хитбокс</string>
   <string name="hide_nav">Скрывать панель навигации</string>
@@ -226,13 +226,13 @@
   <string name="prem_launch_app">Launch App (Premium) (%s)</string>
   <string name="prem_launch_app_no_format">Launch App (Premium)</string>
   <string name="prem_lock_screen">Lock Screen (Premium)</string>
-  <string name="prem_launch_activity">Launch Activity (Premium) (%s)</string>
-  <string name="prem_launch_activity_no_format">Launch Activity (Premium)</string>
-  <string name="prem_rot">Rotate Screen (Premium)</string>
-  <string name="prem_tasker_event">Tasker Event (Premium)</string>
-  <string name="prem_flashlight">Toggle Flashlight (Premium)</string>
-  <string name="prem_volume_panel">Open Volume Panel (Premium)</string>
-  <string name="prem_bluetooth">Toggle Bluetooth (Premium)</string>
+  <string name="prem_launch_activity">Запуск приложения (Премиум) (%s)</string>
+  <string name="prem_launch_activity_no_format">Запуск приложения (Премиум)</string>
+  <string name="prem_rot">Поворот экрана (Премиум)</string>
+  <string name="prem_tasker_event">Событие Tasker (Премиум)</string>
+  <string name="prem_flashlight">Включить/выключить фонарик (Премиум)</string>
+  <string name="prem_volume_panel">Открыть панель громкости (Премиум)</string>
+  <string name="prem_bluetooth">Включить/выключить Bluetooth (Премиум)</string>
   <string name="prem_wifi">Toggle WiFi (Premium)</string>
   <string name="prem_intent">Send Intent (Premium) (%s)</string>
   <string name="prem_intent_no_format">Send Intent (Premium)</string>
@@ -278,34 +278,34 @@
   <string name="action_left">left</string>
   <string name="action_right">right</string>
   <string name="action_up">up</string>
-  <string name="action_down">down</string>
-  <string name="action_double">double_tap</string>
-  <string name="action_hold">hold</string>
-  <string name="action_tap">tap</string>
-  <string name="action_up_hold">up_hold</string>
-  <string name="action_left_hold">left_hold</string>
-  <string name="action_right_hold">right_hold</string>
-  <string name="action_down_hold">down_hold</string>
+  <string name="action_down">вниз</string>
+  <string name="action_double">двойное_касание</string>
+  <string name="action_hold">удержание</string>
+  <string name="action_tap">касание</string>
+  <string name="action_up_hold">вверх_удержание</string>
+  <string name="action_left_hold">влево_удержание</string>
+  <string name="action_right_hold">вправо_удержание</string>
+  <string name="action_down_hold">вниз_удержание</string>
   <!--Center Action Keys-->
-  <string name="action_up_center">up_center</string>
-  <string name="action_up_hold_center">up_hold_center</string>
+  <string name="action_up_center">вверх_центр</string>
+  <string name="action_up_hold_center">вверх_удержание_центр</string>
   <!--Left Action Keys-->
-  <string name="action_up_left">up_left</string>
-  <string name="action_up_hold_left">up_hold_left</string>
+  <string name="action_up_left">вверх_влево</string>
+  <string name="action_up_hold_left">вверх_удержание_влево</string>
   <!--Right Action Keys-->
-  <string name="action_up_right">up_right</string>
-  <string name="action_up_hold_right">up_hold_right</string>
+  <string name="action_up_right">вверх_вправо</string>
+  <string name="action_up_hold_right">вверх_удержание_вправо</string>
   <!--Buttons-->
-  <string name="no">No</string>
+  <string name="no">Нет</string>
   <!--Split Pill Recommendations-->
-  <string name="rec_set_transparent">\u2022 Pill becomes fully transparent</string>
-  <string name="rec_set_y">\u2022 Pill moves to the bottom of the screen</string>
-  <string name="rec_swipe_left_right">\u2022 Swipe up from left/right for back</string>
-  <string name="rec_swipe_middle">\u2022 Swipe up from middle for home</string>
-  <string name="rec_swipe_hold_middle">\u2022 Swipe up from middle and hold for multitasking</string>
+  <string name="rec_set_transparent">\u2022 Таблетка становится полностью прозрачной</string>
+  <string name="rec_set_y">\u2022 Таблетка переносится в нижнюю часть экрана</string>
+  <string name="rec_swipe_left_right">\u2022 Свайп вверх слева/справа для перехода назад</string>
+  <string name="rec_swipe_middle">\u2022 Свайп вверх посередине для перехода домой</string>
+  <string name="rec_swipe_hold_middle">\u2022 Свайп вверх и удержание для открытия окна мультизадачности</string>
   <!--Premium-->
-  <string name="prem_stat">Premium Status:</string>
-  <string name="checking">Checking…</string>
-  <string name="not_found">Not Found!</string>
-  <string name="installed">Installed!</string>
+  <string name="prem_stat">Премиум-статус:</string>
+  <string name="checking">Проверка…</string>
+  <string name="not_found">Не найдено!</string>
+  <string name="installed">Установлено!</string>
 </resources>
