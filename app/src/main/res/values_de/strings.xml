@@ -142,13 +142,13 @@
   <string name="fix_for_other_windows_desc">Wählen Sie aus, bei welchen Apps die Pille gezwungen wird, oben zu bleiben. Nützlich für Apps wie Facebook Messenger Chat headst, Drupe, etc.</string>
   <string name="experimental_warning">DIESE FUNKTIONEN SIND UNVOLLSTÄNDIG UND FUNKTIONIEREN MÖGLICHERWEISE NICHT AUF IHREM GERÄT!</string>
   <string name="full_overscan_desc">Standardmäßig lässt Navigation Gesten 1 Pixel von der ursprünglichen Navigationsleiste sichtbar. Aktivieren Sie dies um die Pixel zu entfernen. Achtung: Dies wird bestimmte Geräte bricken!!!</string>
-  <string name="toggle_gestures_desc">Toggle whether or not the gesture pill is displayed onscreen.</string>
-  <string name="toggle_nav_desc">Toggle whether or not the device\'s software navigation bar should be hidden.</string>
+  <string name="toggle_gestures_desc">Onscreenzeige von gesture pill aktivieren oder deaktivieren.</string>
+  <string name="toggle_nav_desc">Software-Navigationleiste der Gerätesoftware aktivieren / deaktivieren.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Enable this to show lock screen shortcuts and to fix issues with items being cut off on the lock screen, ambient display, or always on display.</string>
   <!--Paragraphs-->
-  <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
+  <string name="app_purpose">Diese App bringt großartige Gestennavigation auf jedes Android Gerät. Und das Beste ist, man benötigt hierfür keinen Root-Zugriff. Bevor du die Gestennavigation nutzen kann gibt es ein paar Sachen, die noch eingestellt werden müssen.</string>
   <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
-  <string name="accessibility_desc">This app uses an Accessibility Service to simulate the original navigation buttons. Click \“Grant\” below to enable access.</string>
+  <string name="accessibility_desc">Diese App verwendet Bedienungshilfe-Dienste um die Aktionen der original Navigationsschaltflächen zu simulieren. Klicke nachfolgend \"Ein\" um den Dienst zu aktivieren.</string>
   <string name="write_secure_settings_desc">We can completely hide your stock navigation bar, but we need access to a special permission to do so. Click the button below to learn how you can grant it. If you are rooted, accept the root prompt. If you don\'t have a software navigation bar, or your phone has another way to hide the software navigation bar, you can skip this step.\n\nNOTE: ADB is not root! It will not void your warranty, trip KNOX, etc.</string>
   <string name="ready_first_run_desc">You\'re ready to use Navigation Gestures! You can toggle the pill on the following page or from the Quick Settings tile (Nougat and later).</string>
   <string name="ready_desc">You\’re ready to use navigation gestures on your device.</string>
@@ -287,11 +287,11 @@
   <string name="action_right_hold">rechts_halten</string>
   <string name="action_down_hold">runter_halten</string>
   <!--Center Action Keys-->
-  <string name="action_up_center">up_center</string>
-  <string name="action_up_hold_center">up_hold_center</string>
+  <string name="action_up_center">hoch_mitte</string>
+  <string name="action_up_hold_center">hoch_halten_mitte</string>
   <!--Left Action Keys-->
-  <string name="action_up_left">up_left</string>
-  <string name="action_up_hold_left">up_hold_left</string>
+  <string name="action_up_left">hoch_links</string>
+  <string name="action_up_hold_left">hoch_halten_links</string>
   <!--Right Action Keys-->
   <string name="action_up_right">hoch_rechts</string>
   <string name="action_up_hold_right">hoch_halten_rechts</string>
