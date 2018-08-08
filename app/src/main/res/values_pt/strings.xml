@@ -11,10 +11,10 @@
   <string name="gestures">Gestos</string>
   <string name="appearance">Aparência</string>
   <string name="behavior">Comportamento</string>
-  <string name="activated">Habilitar Gesto Pílula</string>
-  <string name="toggle">Alternância</string>
-  <string name="width">Largura da Pílula</string>
-  <string name="height">Altura da Pílula</string>
+  <string name="activated">Habilitar Gestos da Barra</string>
+  <string name="toggle">Alternador</string>
+  <string name="width">Largura da Barra</string>
+  <string name="height">Altura da Barra</string>
   <string name="position_y">Posição Vertical (Y)</string>
   <string name="position_x">Posição Horizontal (X)</string>
   <string name="taps">Toques</string>
@@ -25,7 +25,7 @@
   <string name="xda_thread">Tópico XDA</string>
   <string name="other_apps">Aplicações XDA</string>
   <string name="welcome">Bem vindo!</string>
-  <string name="draw_over_apps">Desenhar sobre Aplicações</string>
+  <string name="draw_over_apps">Sobrepor sobre Aplicações</string>
   <string name="grant">Garantir</string>
   <string name="accessibility">Serviço de Acessibilidade</string>
   <string name="write_secure_settings">Escrever Configurações Seguras</string>
@@ -183,19 +183,19 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <string name="pill_hidden">Manípulo Escondido, Toque ou Puxe para Cima para mostrar.</string>
   <string name="accessibility_msg">Encontre \"Acessibilidade\" e toque.</string>
   <string name="deactivate_before_uninstall">Verifique que \"Esconder Barra de Navegação\" está desligado antes de desinstalar!</string>
-  <string name="copied_to_clipboard">Email copied to clipboard</string>
+  <string name="copied_to_clipboard">Email copiado para a área de transferência</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
   <string name="color_picker">Color Picker (Fork)</string>
-  <string name="circle_progress">Circle Progress</string>
+  <string name="circle_progress">Círculo de Progresso</string>
   <string name="rx_java">RxJava/RxAndroid</string>
   <string name="tasker_plugin">Tasker Plugin Library</string>
   <string name="edge_sdk">Galaxy Edge SDK</string>
   <string name="anr_watchdog">ANR-WatchDog</string>
   <!--Intent Names-->
   <string name="google_music_search">Google Music Search</string>
-  <string name="google_weather">Google Weather Results</string>
+  <string name="google_weather">Resultados Meteorologia Google</string>
   <string name="google_new_calendar_event">New Google Calendar Event</string>
   <string name="camera_take_photo">Take Photo</string>
   <string name="camera_take_video">Take Video</string>
@@ -300,14 +300,14 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <!--Buttons-->
   <string name="no">No</string>
   <!--Split Pill Recommendations-->
-  <string name="rec_set_transparent">\u2022 Pill becomes fully transparent</string>
-  <string name="rec_set_y">\u2022 Pill moves to the bottom of the screen</string>
-  <string name="rec_swipe_left_right">\u2022 Swipe up from left/right for back</string>
-  <string name="rec_swipe_middle">\u2022 Swipe up from middle for home</string>
-  <string name="rec_swipe_hold_middle">\u2022 Swipe up from middle and hold for multitasking</string>
+  <string name="rec_set_transparent">\u2022 Manípulo fica completamente transparente</string>
+  <string name="rec_set_y">\u2022 Manípulo é movido para o fundo do ecrã</string>
+  <string name="rec_swipe_left_right">Puxa para cima pela esquerda/direita para retroceder</string>
+  <string name="rec_swipe_middle">Puxa para cima pelo centro para Home</string>
+  <string name="rec_swipe_hold_middle">Puxa para cima pelo centro e segura para multitasking</string>
   <!--Premium-->
-  <string name="prem_stat">Premium Status:</string>
-  <string name="checking">Checking…</string>
-  <string name="not_found">Not Found!</string>
+  <string name="prem_stat">Estado Premium:</string>
+  <string name="checking">Verificando…</string>
+  <string name="not_found">Não encontrado!</string>
   <string name="installed">Instalado!</string>
 </resources>
