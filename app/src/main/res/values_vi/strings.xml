@@ -39,13 +39,13 @@
   <string name="vibration_duration">Độ rung</string>
   <string name="buy_premium">Mua gói nâng cao</string>
   <string name="libraries">Thư viện</string>
-  <string name="qs_tile">Quick Settings Tile</string>
+  <string name="qs_tile">Biểu tượng cài đặt nhanh</string>
   <string name="run_command">Chạy lệnh này trên PC của bạn</string>
   <string name="got_it">Got It</string>
   <string name="need_help">Tôi cần giúp đỡ</string>
   <string name="non_root">Non-Root</string>
   <string name="sorry">Xin lỗi :(</string>
-  <string name="anim_duration">Animation Duration</string>
+  <string name="anim_duration">Mức độ hiệu ứng chuyển động</string>
   <string name="warning">Cảnh báo!</string>
   <string name="pill_color">Màu thanh điều hướng</string>
   <string name="pill_border_color">Màu viền thanh điều hướng</string>
@@ -87,7 +87,7 @@
   <string name="swipe_up_hold_right">Vuốt lên bên phải và giữ</string>
   <string name="use_recommended_settings">Sử dụng cài đặt khuyên dùng?</string>
   <string name="hide_pill_on_keyboard">Ẩn thanh cử chỉ khi bàn phím hiển thị</string>
-  <string name="use_immersive_mode_when_nav_hidden">Enable Immersive Navigation Mode</string>
+  <string name="use_immersive_mode_when_nav_hidden">Kích hoạt chế độ ẩn phím điều hướng</string>
   <string name="nav_imm_enabled">Immersive Navigation Enabled</string>
   <string name="nav_imm_disabled">Immersive Navigation Disabled</string>
   <string name="nav_blacklist">Hiện thanh điều hướng trong các ứng dụng đã chọn</string>
