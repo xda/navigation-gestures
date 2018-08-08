@@ -105,7 +105,7 @@
   <string name="fix_for_other_windows">在其他叠加层应用中显示横条</string>
   <string name="full_overscan">使用全屏拓展</string>
   <string name="dont_keep_overscan_on_lockscreen">不要在锁屏上隐藏导航栏</string>
-  <string name="current_overscan">Current Overscan</string>
+  <string name="current_overscan">当前偏移值</string>
   <!--Descriptions-->
   <string name="gestures_desc">自定义手势操作</string>
   <string name="appearance_desc">自定义导航横条外观</string>
@@ -184,14 +184,14 @@
   <string name="deactivate_before_uninstall">卸载前，请确保 \"隐藏导航栏\" 已关闭！</string>
   <string name="copied_to_clipboard">电子邮件地址已经被复制到剪贴板</string>
   <!--Libraries-->
-  <string name="material_intro">Material Intro (Fork)</string>
-  <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
-  <string name="color_picker">Color Picker (Fork)</string>
-  <string name="circle_progress">Circle Progress</string>
+  <string name="material_intro">材料介绍(分支)</string>
+  <string name="slider_pref">材料搜索栏偏好设置(分支)</string>
+  <string name="color_picker">拾色器(分支)</string>
+  <string name="circle_progress">圆圈进度条</string>
   <string name="rx_java">RxJava/RxAndroid</string>
-  <string name="tasker_plugin">Tasker Plugin Library</string>
-  <string name="edge_sdk">Galaxy Edge SDK</string>
-  <string name="anr_watchdog">ANR-WatchDog</string>
+  <string name="tasker_plugin">任务插件库</string>
+  <string name="edge_sdk">盖世边缘SDK</string>
+  <string name="anr_watchdog">ANR-日志监视器</string>
   <!--Intent Names-->
   <string name="google_music_search">Google Music Search</string>
   <string name="google_weather">Google Weather Results</string>
@@ -201,7 +201,7 @@
   <string name="shazam_it">Shazam It</string>
   <string name="soundhound_it">SoundHound It</string>
   <!--Actions-->
-  <string name="home">Home</string>
+  <string name="home">主屏幕</string>
   <string name="back">Back</string>
   <string name="ohm">Toggle OHM</string>
   <string name="recents">Recent Apps</string>
