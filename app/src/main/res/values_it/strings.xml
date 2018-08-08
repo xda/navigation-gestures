@@ -298,8 +298,8 @@
   <!--Buttons-->
   <string name="no">No</string>
   <!--Split Pill Recommendations-->
-  <string name="rec_set_transparent">\u2022 La Barra diventa completamente trasparente</string>
-  <string name="rec_set_y">\u2022 La Barra si muove in fondo allo schermo</string>
+  <string name="rec_set_transparent">\u2022 La pillola diventa completamente trasparente</string>
+  <string name="rec_set_y">\u2022 La pillola si muove in fondo allo schermo</string>
   <string name="rec_swipe_left_right">\u2022 Scorri in su da sinistra/destra per tornare indietro</string>
   <string name="rec_swipe_middle">\u2022 Scorri in su dal centro per tornare alla home</string>
   <string name="rec_swipe_hold_middle">\u2022 Scorri in Alto dal Centro e Mantieni per il multitasking</string>
