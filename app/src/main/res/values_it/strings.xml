@@ -39,7 +39,7 @@
   <string name="vibration_duration">Durata vibrazione</string>
   <string name="buy_premium">Acquista Versione Premium</string>
   <string name="libraries">Documentazione</string>
-  <string name="qs_tile">Quick Settings Tile</string>
+  <string name="qs_tile">Pannello impostazioni rapide</string>
   <string name="run_command">Esegui questo comando da PC</string>
   <string name="got_it">Capito</string>
   <string name="need_help">Mi serve aiuto</string>
@@ -93,10 +93,10 @@
   <string name="nav_blacklist">Mostra Navigation Bar nelle app selezionate</string>
   <string name="bar_blacklist">Nascondi la Barra nelle App Selezionate</string>
   <string name="imm_blacklist">Esclusioni modalità immersiva</string>
-  <string name="x_threshold">Horizontal (X) Swipe Distance</string>
-  <string name="y_threshold">Vertical (Y) Swipe Distance</string>
-  <string name="hide_after_set_time">Hide Pill After Specified Delay</string>
-  <string name="blacklisting">Blacklisting</string>
+  <string name="x_threshold">Distanza Swipe Orizzontale (X)</string>
+  <string name="y_threshold">Distanza Swipe Verticale (Y)</string>
+  <string name="hide_after_set_time">Nascondi Barra dopo un tempo specifico</string>
+  <string name="blacklisting">Lista Nera</string>
   <string name="look_feel">Look &amp; Feel</string>
   <string name="pill_hiding">Pill Hiding</string>
   <string name="sensitivity">Sensibilità</string>
