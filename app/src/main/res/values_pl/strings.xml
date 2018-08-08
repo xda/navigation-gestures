@@ -36,7 +36,7 @@
   <string name="premium_required">Premium Action!</string>
   <string name="nougat_required">Requires Nougat</string>
   <string name="hold_time">Swipe and Hold Time</string>
-  <string name="vibration_duration">Vibration Duration</string>
+  <string name="vibration_duration">Czas trwania wibracji</string>
   <string name="buy_premium">Kup premium</string>
   <string name="libraries">Biblioteki</string>
   <string name="qs_tile">Quick Settings Tile</string>
@@ -104,7 +104,7 @@
   <string name="experimental_prefs">Ustawienia eksperymentalne</string>
   <string name="fix_for_other_windows">Keep Pill Shown in other Overlay Apps</string>
   <string name="full_overscan">Use Full Overscan</string>
-  <string name="dont_keep_overscan_on_lockscreen">Don\'t Hide NavBar on Lock Screen</string>
+  <string name="dont_keep_overscan_on_lockscreen">Nie ukrywaj paska nawigacyjnego na ekranie blokady</string>
   <string name="current_overscan">Current Overscan</string>
   <!--Descriptions-->
   <string name="gestures_desc">Customize gesture actions</string>
