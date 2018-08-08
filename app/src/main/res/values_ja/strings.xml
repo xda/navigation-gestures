@@ -157,9 +157,10 @@
   <string name="premium_required_desc">このアクションにはプレミアムアドオンが必要です。購入しますか?</string>
   <string name="nougat_required_desc">このアクションにはandroid 7+が必要です。</string>
   <string name="nougat_qs_reminder">Android 7ではクイック設定のカスタマイズができ、ナビゲーションジェスチャーのタイルを追加することができます。ステータスバーを2回下にスワイプして編集ボタンを押してナビゲーションジェスチャーのタイルをドラッグしてください。</string>
-  <string name="accessibility_screen_text">This app uses an Accessibility Service to simulate navigation button presses like the back, home, and multitasking buttons. We do not use it to collect any personal information, and no action will be performed except by the user.</string>
-  <string name="sorry_desc">Because your device is running Android P, this app will not currently work.</string>
-  <string name="warning_desc">Before you uninstall Navigation Gestures, make sure you unhide the software navigation bar using the toggle in the app! You only need to do this if you hide the navigation bar using our app.</string>
+  <string name="accessibility_screen_text">アクセシビリティを使用してホーム、戻る、
+マルチタスクボタンなどの動作を行います。個人情報を収集したり、ユーザーの意思に反して勝手に動作するようなことはありません。</string>
+  <string name="sorry_desc">Android Pではこのアプリは現在使えません。</string>
+  <string name="warning_desc">ナビゲーションジェスチャーをアンインストールする前に、ナビゲーションバーが表示されているかを確認してください! アプリを使用してナビゲーションバーを非表示にした場合に必要があります。</string>
   <string name="white_bar_desc">Using this app you may notice a small white bar at the very bottom of the display. This is not a bug! It is required to prevent much more serious issues. It should not occur on TouchWiz devices.</string>
   <string name="compatibility_desc">While using this app, if you notice that the original navigation bar is present when it shouldn\'t be, head over to Settings&gt;&gt;Compatibility and try the compatibility options there.</string>
   <string name="skip_wss_message">You can always come back to this step by toggling the Hide Navigation Bar switch on in the main screen of this app.</string>
