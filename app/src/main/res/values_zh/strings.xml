@@ -33,11 +33,11 @@
   <string name="root_found">你拥有root权限！</string>
   <string name="use_root">使用root</string>
   <string name="missing_perms">缺少权限!</string>
-  <string name="premium_required">付费功能！</string>
+  <string name="premium_required">高级版功能！</string>
   <string name="nougat_required">需要牛轧糖以上</string>
   <string name="hold_time">滑动并停顿时长</string>
   <string name="vibration_duration">振动时长</string>
-  <string name="buy_premium">购买付费功能</string>
+  <string name="buy_premium">购买高级版</string>
   <string name="libraries">相关库</string>
   <string name="qs_tile">快速设置磁贴</string>
   <string name="run_command">从您的 PC 运行命令行</string>
@@ -75,8 +75,8 @@
   <string name="sectioned_pill">分屏横条</string>
   <string name="toggle_gestures">开关手势</string>
   <string name="toggle_nav">导航栏开关</string>
-  <string name="toggle_gestures_prem">手势开关（付费）</string>
-  <string name="toggle_nav_prem">导航栏开关（付费）</string>
+  <string name="toggle_gestures_prem">手势开关（高级版）</string>
+  <string name="toggle_nav_prem">导航栏开关（高级版）</string>
   <string name="grant_write_settings">需要写入设置权限</string>
   <string name="sections">分区</string>
   <string name="swipe_up_left">于左侧上滑</string>
@@ -155,7 +155,7 @@
   <string name="ready_desc">您已经准备好在该设备上使用导航手势了。</string>
   <string name="root_found_desc">不用担心，您仍然可以使用该应用程序。Root权限会使设置更容易。如果您愿意，我们可以使用 root 访问权限自动授予此权限。否则，您可以选择使用教程/手动方法。</string>
   <string name="missing_perms_desc">看起来像是一个或多个权限授权被拒绝了。不过不用担心，我们会帮你恢复正常工作的。</string>
-  <string name="premium_required_desc">此操作需要付费插件。您想购买它吗？</string>
+  <string name="premium_required_desc">此操作需要高级版插件。您想购买它吗？</string>
   <string name="nougat_required_desc">抱歉，此操作需要运行 Android 牛轧糖或更高版本的设备。</string>
   <string name="nougat_qs_reminder">Android 牛轧糖允许定制快速设置磁贴，我们提供了一个切换导航手势的开关。您可以通过从状态栏向下滑动两次，点击铅笔图标或 \"编辑\" ，之后拖动导航手势开关瓷砖到活动区域。</string>
   <string name="accessibility_screen_text">此应用程序使用无障碍功能服务来模拟导航按钮（如返回、主页和多任务按钮） 。我们不使用它来收集任何个人信息，也不会执行任何操作，除非用户自己操作。</string>
@@ -208,7 +208,7 @@
   <string name="hide">隐藏 Pill</string>
   <string name="assist">助手</string>
   <string name="switch_apps">上一个应用(7.0+)</string>
-  <string name="nothing">No Action</string>
+  <string name="nothing">无操作</string>
   <string name="prem_notif">通知(高级版)</string>
   <string name="prem_qs">快速设置(高级版)</string>
   <string name="prem_power">电源菜单(高级版)</string>
@@ -225,16 +225,16 @@
   <string name="prem_screenshot">截图(高级版)</string>
   <string name="prem_switch_ime">切换键盘(高级版)</string>
   <string name="prem_launch_app">启动应用程序 (高级版) (%s)</string>
-  <string name="prem_launch_app_no_format">Launch App (Premium)</string>
+  <string name="prem_launch_app_no_format">启动应用（付费功能）</string>
   <string name="prem_lock_screen">锁屏 (高级版)</string>
   <string name="prem_launch_activity">启动活动 (高级版) (%s)</string>
-  <string name="prem_launch_activity_no_format">Launch Activity (Premium)</string>
+  <string name="prem_launch_activity_no_format">启动活动（高级版）</string>
   <string name="prem_rot">旋转屏幕 (高级版)</string>
-  <string name="prem_tasker_event">任务事件 (高级版)</string>
-  <string name="prem_flashlight">切换手电筒 (高级版)</string>
+  <string name="prem_tasker_event">Tasker 事件 (高级版)</string>
+  <string name="prem_flashlight">手电筒开关 (高级版)</string>
   <string name="prem_volume_panel">打开音量面板 (高级版)</string>
-  <string name="prem_bluetooth">打开蓝牙开关 (高级版)</string>
-  <string name="prem_wifi">Toggle WiFi (Premium)</string>
+  <string name="prem_bluetooth">蓝牙开关 (高级版)</string>
+  <string name="prem_wifi">WiFi 开关（高级版）</string>
   <string name="prem_intent">Send Intent (Premium) (%s)</string>
   <string name="prem_intent_no_format">Send Intent (Premium)</string>
   <!--Action Values-->
