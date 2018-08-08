@@ -188,29 +188,29 @@
   <string name="color_picker">Color Picker (Fork)</string>
   <string name="circle_progress">Circle Progress</string>
   <string name="rx_java">RxJava/RxAndroid</string>
-  <string name="tasker_plugin">Tasker Plugin Library</string>
+  <string name="tasker_plugin">Librairie plugin pour Tasker</string>
   <string name="edge_sdk">Galaxy Edge SDK</string>
   <string name="anr_watchdog">ANR-WatchDog</string>
   <!--Intent Names-->
   <string name="google_music_search">Google Music Search</string>
   <string name="google_weather">Google Weather Results</string>
   <string name="google_new_calendar_event">New Google Calendar Event</string>
-  <string name="camera_take_photo">Take Photo</string>
-  <string name="camera_take_video">Take Video</string>
-  <string name="shazam_it">Shazam It</string>
-  <string name="soundhound_it">SoundHound It</string>
+  <string name="camera_take_photo">Prendre une Photo</string>
+  <string name="camera_take_video">Prendre une vidéo</string>
+  <string name="shazam_it">Trouve cette chanson avec Shazam</string>
+  <string name="soundhound_it">Trouve cette chanson avec SoundHound</string>
   <!--Actions-->
-  <string name="home">Home</string>
-  <string name="back">Back</string>
+  <string name="home">Écran d\'accueil</string>
+  <string name="back">Retour</string>
   <string name="ohm">Toggle OHM</string>
-  <string name="recents">Recent Apps</string>
-  <string name="hide">Hide Pill</string>
+  <string name="recents">Applications récentes</string>
+  <string name="hide">Cacher la pilule</string>
   <string name="assist">Assistant</string>
-  <string name="switch_apps">Previous App (Nougat+)</string>
-  <string name="nothing">No Action</string>
+  <string name="switch_apps">Application précédente (Nougat +)</string>
+  <string name="nothing">Aucune action</string>
   <string name="prem_notif">Notifications (Premium)</string>
-  <string name="prem_qs">Quick Settings (Premium)</string>
-  <string name="prem_power">Power Menu (Premium)</string>
+  <string name="prem_qs">Paramètres rapides (Premium)</string>
+  <string name="prem_power">Menu Power (Premium)</string>
   <string name="split">Split Screen (Nougat+)</string>
   <string name="prem_prev">Previous Track (Premium)</string>
   <string name="prem_next">Next Track (Premium)</string>
@@ -226,16 +226,16 @@
   <string name="prem_launch_app">Launch App (Premium) (%s)</string>
   <string name="prem_launch_app_no_format">Launch App (Premium)</string>
   <string name="prem_lock_screen">Lock Screen (Premium)</string>
-  <string name="prem_launch_activity">Launch Activity (Premium) (%s)</string>
-  <string name="prem_launch_activity_no_format">Launch Activity (Premium)</string>
-  <string name="prem_rot">Rotate Screen (Premium)</string>
-  <string name="prem_tasker_event">Tasker Event (Premium)</string>
-  <string name="prem_flashlight">Toggle Flashlight (Premium)</string>
-  <string name="prem_volume_panel">Open Volume Panel (Premium)</string>
-  <string name="prem_bluetooth">Toggle Bluetooth (Premium)</string>
-  <string name="prem_wifi">Toggle WiFi (Premium)</string>
-  <string name="prem_intent">Send Intent (Premium) (%s)</string>
-  <string name="prem_intent_no_format">Send Intent (Premium)</string>
+  <string name="prem_launch_activity">Lancement d\'une activité (Premium) (%s)</string>
+  <string name="prem_launch_activity_no_format">Lancement d\'une activité (Premium)</string>
+  <string name="prem_rot">Rotation d’écran (Premium)</string>
+  <string name="prem_tasker_event">Événement Tasker (Premium)</string>
+  <string name="prem_flashlight">Activer/Désactiver la Lampe-Torche (Premium)</string>
+  <string name="prem_volume_panel">Ouvrir le panneau de Volume (Premium)</string>
+  <string name="prem_bluetooth">Activer/Désactiver le Bluetooth (Premium)</string>
+  <string name="prem_wifi">Activer/désactiver le WiFi (Premium)</string>
+  <string name="prem_intent">Envoyer un Intent (Premium) (%s)</string>
+  <string name="prem_intent_no_format">Envoyer un Intent (Premium)</string>
   <!--Action Values-->
   <string name="type_no_action">-1</string>
   <string name="type_back">0</string>
@@ -296,7 +296,7 @@
   <string name="action_up_right">up_right</string>
   <string name="action_up_hold_right">up_hold_right</string>
   <!--Buttons-->
-  <string name="no">No</string>
+  <string name="no">Non</string>
   <!--Split Pill Recommendations-->
   <string name="rec_set_transparent">\u2022 Pill becomes fully transparent</string>
   <string name="rec_set_y">\u2022 Pill moves to the bottom of the screen</string>
