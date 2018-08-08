@@ -9,7 +9,7 @@
   <string name="nav_shown">Barra de navegación mostrada</string>
   <string name="settings">Configuración</string>
   <string name="gestures">Gestos</string>
-  <string name="appearance">Aspecto</string>
+  <string name="appearance">Apariencia</string>
   <string name="behavior">Comportamiento</string>
   <string name="activated">Activar barra de gestos</string>
   <string name="toggle">Cambiar ajuste</string>
@@ -21,7 +21,7 @@
   <string name="swipes">Deslizar</string>
   <string name="version">Versión</string>
   <string name="tutorial_video">Video tutorial</string>
-  <string name="email_us">Envíanos un email</string>
+  <string name="email_us">Envíanos un correo electrónico</string>
   <string name="xda_thread">Hilo en XDA</string>
   <string name="other_apps">Aplicaciones de XDA</string>
   <string name="welcome">¡Bienvenido!</string>
