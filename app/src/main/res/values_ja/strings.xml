@@ -161,8 +161,8 @@
 マルチタスクボタンなどの動作を行います。個人情報を収集したり、ユーザーの意思に反して勝手に動作するようなことはありません。</string>
   <string name="sorry_desc">Android Pではこのアプリは現在使えません。</string>
   <string name="warning_desc">ナビゲーションジェスチャーをアンインストールする前に、ナビゲーションバーが表示されているかを確認してください! アプリを使用してナビゲーションバーを非表示にした場合に必要があります。</string>
-  <string name="white_bar_desc">Using this app you may notice a small white bar at the very bottom of the display. This is not a bug! It is required to prevent much more serious issues. It should not occur on TouchWiz devices.</string>
-  <string name="compatibility_desc">While using this app, if you notice that the original navigation bar is present when it shouldn\'t be, head over to Settings&gt;&gt;Compatibility and try the compatibility options there.</string>
+  <string name="white_bar_desc">このアプリを使用するとディスプレイの一番下に小さく白いバーがあることに気付くかもしれません。これはバグではなく、重大な問題を防ぐためです。TouchWizデバイスでは起こりません。</string>
+  <string name="compatibility_desc">このアプリ使用中に元のナビバーが表示されてしまうことがあるかもしれません。設定&gt;&gt;互換性で互換性オプションを変えてみてください。</string>
   <string name="skip_wss_message">You can always come back to this step by toggling the Hide Navigation Bar switch on in the main screen of this app.</string>
   <string name="feature_not_avail">This feature cannot be used while Navigation Gestures is hiding the navigation bar.</string>
   <!--Gestures-->
