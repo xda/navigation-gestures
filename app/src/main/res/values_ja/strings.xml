@@ -152,10 +152,10 @@
   <string name="write_secure_settings_desc">ナビバーを非表示にするには特別な権限が必要です。下のボタンを押してやり方を見てください。ルート化がされているなら、ルートリクエストを許可してください。ソフトウェアナビバーや他の隠す方法があるならこの作業は不要です。\n\n注意: ADBはルートではありません! これらはデバイスの保証やtrip KNOXに影響を与えません。</string>
   <string name="ready_first_run_desc">ナビゲーションのジェスチャーを使用する準備が整いました! 次ページまたはクイック設定タイルからピルを切り替えることができます (android 7+)。</string>
   <string name="ready_desc">ナビゲーションジェスチャーを使う準備ができました。</string>
-  <string name="root_found_desc">Don\'t worry. You can still use this app. Root actually makes the setup easier. If you like, we can use root access to grant this permission automatically. Otherwise, you can choose to use the tutorial/manual method.</string>
-  <string name="missing_perms_desc">Looks like one or more permissions got revoked somehow. No worries, though. We\'ll help get you back up and running.</string>
-  <string name="premium_required_desc">This action requires the premium add-on. Would you like to purchase it?</string>
-  <string name="nougat_required_desc">This action requires a device running Android Nougat or later. Sorry about that.</string>
+  <string name="root_found_desc">ルート権限は設定を簡単にするだけです。ルートアクセスを自動で使うこともできます。そうでなければ他の方法を使えます。</string>
+  <string name="missing_perms_desc">いくつかの権限が取得できていないようです。権限を再取得してください。</string>
+  <string name="premium_required_desc">このアクションにはプレミアムアドオンが必要です。購入しますか?</string>
+  <string name="nougat_required_desc">このアクションにはandroid 7+が必要です。</string>
   <string name="nougat_qs_reminder">Android Nougat allows for custom quick settings tiles, and we\'ve included one to toggle Navigation Gestures. You can add it by swiping down twice from the status bar, tapping the pencil icon or \"EDIT\" and dragging Navigation Gestures\' tile into the active area.</string>
   <string name="accessibility_screen_text">This app uses an Accessibility Service to simulate navigation button presses like the back, home, and multitasking buttons. We do not use it to collect any personal information, and no action will be performed except by the user.</string>
   <string name="sorry_desc">Because your device is running Android P, this app will not currently work.</string>
