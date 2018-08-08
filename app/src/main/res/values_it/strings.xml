@@ -179,9 +179,9 @@
   <!--Messages-->
   <string name="grant_permission">Hmm. Sembra che manchino i permessi. Assicurati di seguire tutte le istruzioni e riprova.</string>
   <string name="pill_hidden">Barra nascosta. Tocca o Scorri in Alto per Rimostrarla.</string>
-  <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
-  <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
-  <string name="copied_to_clipboard">Email copied to clipboard</string>
+  <string name="accessibility_msg">Trova \"Accessibilità\" e toccalo.</string>
+  <string name="deactivate_before_uninstall">Assicurati che \"Nascondi barra di navigazione\" sia disabilitato prima di disinstallare!</string>
+  <string name="copied_to_clipboard">Email copiata negli appunti</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
@@ -192,17 +192,17 @@
   <string name="edge_sdk">Galaxy Edge SDK</string>
   <string name="anr_watchdog">ANR-WatchDog</string>
   <!--Intent Names-->
-  <string name="google_music_search">Google Music Search</string>
-  <string name="google_weather">Google Weather Results</string>
-  <string name="google_new_calendar_event">New Google Calendar Event</string>
-  <string name="camera_take_photo">Take Photo</string>
-  <string name="camera_take_video">Take Video</string>
-  <string name="shazam_it">Shazam It</string>
-  <string name="soundhound_it">SoundHound It</string>
+  <string name="google_music_search">Ricerca Google Musica</string>
+  <string name="google_weather">Risultati Google Meteo</string>
+  <string name="google_new_calendar_event">Nuovo evento Su Google Calendar</string>
+  <string name="camera_take_photo">Fai una Foto</string>
+  <string name="camera_take_video">Fai un Video</string>
+  <string name="shazam_it">Shazammalo</string>
+  <string name="soundhound_it">SoundHoundalo</string>
   <!--Actions-->
   <string name="home">Home</string>
-  <string name="back">Back</string>
-  <string name="ohm">Toggle OHM</string>
+  <string name="back">Indietro</string>
+  <string name="ohm">on/off OHM</string>
   <string name="recents">Recent Apps</string>
   <string name="hide">Hide Pill</string>
   <string name="assist">Assistant</string>
@@ -229,13 +229,13 @@
   <string name="prem_launch_activity">Launch Activity (Premium) (%s)</string>
   <string name="prem_launch_activity_no_format">Launch Activity (Premium)</string>
   <string name="prem_rot">Rotate Screen (Premium)</string>
-  <string name="prem_tasker_event">Tasker Event (Premium)</string>
-  <string name="prem_flashlight">Toggle Flashlight (Premium)</string>
-  <string name="prem_volume_panel">Open Volume Panel (Premium)</string>
-  <string name="prem_bluetooth">Toggle Bluetooth (Premium)</string>
-  <string name="prem_wifi">Toggle WiFi (Premium)</string>
-  <string name="prem_intent">Send Intent (Premium) (%s)</string>
-  <string name="prem_intent_no_format">Send Intent (Premium)</string>
+  <string name="prem_tasker_event">Evento Tasker (Premium)</string>
+  <string name="prem_flashlight">on/off Torcia (Premium)</string>
+  <string name="prem_volume_panel">Apri Pannello del Volume (Premium)</string>
+  <string name="prem_bluetooth">on/off Bluetooth (Premium)</string>
+  <string name="prem_wifi">on/off WiFi (Premium)</string>
+  <string name="prem_intent">Invia Intento (Premium) (%s)</string>
+  <string name="prem_intent_no_format">Invia Intento (Premium)</string>
   <!--Action Values-->
   <string name="type_no_action">-1</string>
   <string name="type_back">0</string>
