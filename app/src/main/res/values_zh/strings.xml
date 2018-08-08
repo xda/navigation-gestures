@@ -178,11 +178,11 @@
   <string name="right_hold">右滑并停顿</string>
   <string name="down_hold">下滑并停顿</string>
   <!--Messages-->
-  <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
-  <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
-  <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
-  <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
-  <string name="copied_to_clipboard">Email copied to clipboard</string>
+  <string name="grant_permission">嗯，看来这个权限被拒绝了。请确保按照所有说明进行操作，然后重试。</string>
+  <string name="pill_hidden">横条隐藏了，点击或上滑使其重新显示。</string>
+  <string name="accessibility_msg">找到 \"无障碍功能\" 并点击它。</string>
+  <string name="deactivate_before_uninstall">卸载前，请确保 \"隐藏导航栏\" 已关闭！</string>
+  <string name="copied_to_clipboard">电子邮件地址已经被复制到剪贴板</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
