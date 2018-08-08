@@ -150,12 +150,12 @@
   <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
   <string name="accessibility_desc">Diese App verwendet Bedienungshilfe-Dienste um die Aktionen der original Navigationsschaltflächen zu simulieren. Klicke nachfolgend \"Ein\" um den Dienst zu aktivieren.</string>
   <string name="write_secure_settings_desc">We can completely hide your stock navigation bar, but we need access to a special permission to do so. Click the button below to learn how you can grant it. If you are rooted, accept the root prompt. If you don\'t have a software navigation bar, or your phone has another way to hide the software navigation bar, you can skip this step.\n\nNOTE: ADB is not root! It will not void your warranty, trip KNOX, etc.</string>
-  <string name="ready_first_run_desc">You\'re ready to use Navigation Gestures! You can toggle the pill on the following page or from the Quick Settings tile (Nougat and later).</string>
-  <string name="ready_desc">You\’re ready to use navigation gestures on your device.</string>
+  <string name="ready_first_run_desc">Du kannst Navigation Gestures nun verwenden! Du kannst den Pill-Button auf nachfolgender Seite oder in den Schnelleinstellungen (Nougat oder später) aktivieren.</string>
+  <string name="ready_desc">Du kannst nun Navigation Gestures auf deinem Gerät verwenden.</string>
   <string name="root_found_desc">Don\'t worry. You can still use this app. Root actually makes the setup easier. If you like, we can use root access to grant this permission automatically. Otherwise, you can choose to use the tutorial/manual method.</string>
-  <string name="missing_perms_desc">Looks like one or more permissions got revoked somehow. No worries, though. We\'ll help get you back up and running.</string>
-  <string name="premium_required_desc">This action requires the premium add-on. Would you like to purchase it?</string>
-  <string name="nougat_required_desc">This action requires a device running Android Nougat or later. Sorry about that.</string>
+  <string name="missing_perms_desc">Sieht so aus, als wäre eine Genehmigung entzogen worden. Keine Sorge, wir werden dir helfen dies wieder zum Laufen zu bekommen.</string>
+  <string name="premium_required_desc">Diese Aktion erfordert das premium Add-On. Möchtest du es erwerben?</string>
+  <string name="nougat_required_desc">Diese Aktion erforder, dass das Gerät mit Android Nougat oder neuer läuft. Bitte entschuldige dies.</string>
   <string name="nougat_qs_reminder">Android Nougat allows for custom quick settings tiles, and we\'ve included one to toggle Navigation Gestures. You can add it by swiping down twice from the status bar, tapping the pencil icon or \"EDIT\" and dragging Navigation Gestures\' tile into the active area.</string>
   <string name="accessibility_screen_text">This app uses an Accessibility Service to simulate navigation button presses like the back, home, and multitasking buttons. We do not use it to collect any personal information, and no action will be performed except by the user.</string>
   <string name="sorry_desc">Because your device is running Android P, this app will not currently work.</string>
