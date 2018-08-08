@@ -222,13 +222,13 @@
   <string name="prem_vol_up">Volume Su (Root) (Premium)</string>
   <string name="prem_vol_down">Volume Giù (Root) (Premium)</string>
   <string name="prem_screenshot">Cattura schermata (Premium)</string>
-  <string name="prem_switch_ime">Switch Keyboard (Premium)</string>
-  <string name="prem_launch_app">Launch App (Premium) (%s)</string>
-  <string name="prem_launch_app_no_format">Launch App (Premium)</string>
-  <string name="prem_lock_screen">Lock Screen (Premium)</string>
-  <string name="prem_launch_activity">Launch Activity (Premium) (%s)</string>
-  <string name="prem_launch_activity_no_format">Launch Activity (Premium)</string>
-  <string name="prem_rot">Rotate Screen (Premium)</string>
+  <string name="prem_switch_ime">Cambia Tastiera (Premium)</string>
+  <string name="prem_launch_app">Apri Applicazione (Premium) (%s)</string>
+  <string name="prem_launch_app_no_format">Apri Applicazione (Premium)</string>
+  <string name="prem_lock_screen">Blocca Schermo (Premium)</string>
+  <string name="prem_launch_activity">Avvia Attività (Premium) (%s)</string>
+  <string name="prem_launch_activity_no_format">Avvia Attività (Premium)</string>
+  <string name="prem_rot">Ruota Schermo (Premium)</string>
   <string name="prem_tasker_event">Evento Tasker (Premium)</string>
   <string name="prem_flashlight">on/off Torcia (Premium)</string>
   <string name="prem_volume_panel">Apri Pannello del Volume (Premium)</string>
@@ -281,24 +281,24 @@
   <string name="action_down">giù</string>
   <string name="action_double">doppio_tocco</string>
   <string name="action_hold">mantieni</string>
-  <string name="action_tap">tap</string>
-  <string name="action_up_hold">up_hold</string>
-  <string name="action_left_hold">left_hold</string>
-  <string name="action_right_hold">right_hold</string>
-  <string name="action_down_hold">down_hold</string>
+  <string name="action_tap">tocca</string>
+  <string name="action_up_hold">su_mantieni</string>
+  <string name="action_left_hold">sinistra_mantieni</string>
+  <string name="action_right_hold">destra_mantieni</string>
+  <string name="action_down_hold">giù_mantieni</string>
   <!--Center Action Keys-->
-  <string name="action_up_center">up_center</string>
-  <string name="action_up_hold_center">up_hold_center</string>
+  <string name="action_up_center">su_centro</string>
+  <string name="action_up_hold_center">su_mantieni_centro</string>
   <!--Left Action Keys-->
-  <string name="action_up_left">up_left</string>
-  <string name="action_up_hold_left">up_hold_left</string>
+  <string name="action_up_left">su_sinistra</string>
+  <string name="action_up_hold_left">su_mantieni_sinistra</string>
   <!--Right Action Keys-->
-  <string name="action_up_right">up_right</string>
-  <string name="action_up_hold_right">up_hold_right</string>
+  <string name="action_up_right">su_destra</string>
+  <string name="action_up_hold_right">su_mantieni_destra</string>
   <!--Buttons-->
   <string name="no">No</string>
   <!--Split Pill Recommendations-->
-  <string name="rec_set_transparent">\u2022 Pill becomes fully transparent</string>
+  <string name="rec_set_transparent">\u2022 La Barra diventa completamente trasparente</string>
   <string name="rec_set_y">\u2022 Pill moves to the bottom of the screen</string>
   <string name="rec_swipe_left_right">\u2022 Swipe up from left/right for back</string>
   <string name="rec_swipe_middle">\u2022 Swipe up from middle for home</string>
