@@ -178,7 +178,7 @@
   <string name="down_hold">Scorri in Basso e Mantieni</string>
   <!--Messages-->
   <string name="grant_permission">Hmm. Sembra che manchino i permessi. Assicurati di seguire tutte le istruzioni e riprova.</string>
-  <string name="pill_hidden">Barra nascosta. Tocca o Scorri in Alto per Rimostrarla.</string>
+  <string name="pill_hidden">Pillola nascosta. Tocca o Scorri in Alto per Rimostrarla.</string>
   <string name="accessibility_msg">Trova \"Accessibilità\" e toccalo.</string>
   <string name="deactivate_before_uninstall">Assicurati che \"Nascondi barra di navigazione\" sia disabilitato prima di disinstallare!</string>
   <string name="copied_to_clipboard">Email copiata negli appunti</string>
@@ -204,7 +204,7 @@
   <string name="back">Indietro</string>
   <string name="ohm">on/off OHM</string>
   <string name="recents">Applicazioni Recenti</string>
-  <string name="hide">Nascondi Barra</string>
+  <string name="hide">Nascondi pillola</string>
   <string name="assist">Assistente</string>
   <string name="switch_apps">Applicazione Precedente (Nougat+)</string>
   <string name="nothing">Nessuna Azione</string>
