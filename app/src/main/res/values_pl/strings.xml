@@ -275,10 +275,10 @@
   <string name="prem_type_wifi">34</string>
   <string name="prem_type_intent">35</string>
   <!--Main Action Keys-->
-  <string name="action_left">left</string>
-  <string name="action_right">right</string>
-  <string name="action_up">up</string>
-  <string name="action_down">down</string>
+  <string name="action_left">lewo</string>
+  <string name="action_right">prawo</string>
+  <string name="action_up">góra</string>
+  <string name="action_down">dół</string>
   <string name="action_double">double_tap</string>
   <string name="action_hold">hold</string>
   <string name="action_tap">tap</string>
