@@ -104,7 +104,7 @@ or
   <string name="sensitivity">Độ nhạy</string>
   <string name="back_to_default">Đặt lại các cài đặt mặc định chứ?</string>
   <string name="experimental_prefs">Các cài đặt thử nghiệm</string>
-  <string name="fix_for_other_windows">Keep Pill Shown in other Overlay Apps</string>
+  <string name="fix_for_other_windows">Hiện viên điều hướng trong các ứng dụng trên cùng</string>
   <string name="full_overscan">Use Full Overscan</string>
   <string name="dont_keep_overscan_on_lockscreen">Don\'t Hide NavBar on Lock Screen</string>
   <string name="current_overscan">Current Overscan</string>
