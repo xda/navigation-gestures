@@ -98,7 +98,7 @@
   <string name="hide_after_set_time">Nascondi Barra dopo un tempo specifico</string>
   <string name="blacklisting">Lista Nera</string>
   <string name="look_feel">Look &amp; Feel</string>
-  <string name="pill_hiding">Pill Hiding</string>
+  <string name="pill_hiding">Nascondimento della barra</string>
   <string name="sensitivity">Sensibilità</string>
   <string name="back_to_default">Ripristina impostazioni di default?</string>
   <string name="experimental_prefs">Sperimentali</string>
