@@ -139,9 +139,9 @@
   <string name="auto_hide_pill_desc_disabled">When enabled, the pill will automatically hide after the specified delay.</string>
   <string name="auto_hide_pill_desc_enabled">Delay: %sms. Tap to change.</string>
   <string name="back_to_default_desc">Split Pill disabled! Do you want us to set affected settings back to default?</string>
-  <string name="fix_for_other_windows_desc">Choose which apps the pill should be forced to stay on top. Useful for apps like Facebook Messenger chat heads, Drupe, etc.</string>
-  <string name="experimental_warning">THESE FEATURES ARE INCOMPLETE AND MAY NOT WORK ON YOUR DEVICE!</string>
-  <string name="full_overscan_desc">By default, Navigation Gestures leaves 1 pixel of the original navbar visible. Enable this to remove that pixel. WARNING: This will break certain devices!!!</string>
+  <string name="fix_for_other_windows_desc">Scegli in quali applicazioni la barra è tenuta forzatamente in alto. È utile per compatibilità con notifiche fluttuanti (es. Facebook Messenger, Drupe...).</string>
+  <string name="experimental_warning">QUESTE FUNZIONALITÀ SONO IN SVILUPPO E POTREBBERO NON FUNZIONARE SUL TUO DISPOSITIVO!</string>
+  <string name="full_overscan_desc">Come predefinito, l\'applicazione lascia visibile un pixel della barra di navigazione originale. Attiva quest\'opzione per rimuovere quel pixel. ATTENZIONE: questo potrebbe portare alla chiusura forzata su alcuni dispositivi!!!</string>
   <string name="toggle_gestures_desc">Toggle whether or not the gesture pill is displayed onscreen.</string>
   <string name="toggle_nav_desc">Toggle whether or not the device\'s software navigation bar should be hidden.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Enable this to show lock screen shortcuts and to fix issues with items being cut off on the lock screen, ambient display, or always on display.</string>
