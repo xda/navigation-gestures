@@ -41,9 +41,9 @@
   <string name="libraries">Thư viện</string>
   <string name="qs_tile">Biểu tượng cài đặt nhanh</string>
   <string name="run_command">Chạy lệnh này trên PC của bạn</string>
-  <string name="got_it">Got It</string>
+  <string name="got_it">Đã nhận được</string>
   <string name="need_help">Tôi cần giúp đỡ</string>
-  <string name="non_root">Non-Root</string>
+  <string name="non_root">Chưa root</string>
   <string name="sorry">Xin lỗi :(</string>
   <string name="anim_duration">Mức độ hiệu ứng chuyển động</string>
   <string name="warning">Cảnh báo!</string>
@@ -97,7 +97,7 @@
   <string name="y_threshold">Vùng hiệu lực khi vuốt dọc (Y)</string>
   <string name="hide_after_set_time">Ẩn viên điều hướng sau thời gian chờ</string>
   <string name="blacklisting">Đang loại trừ</string>
-  <string name="look_feel">Look &amp; Feel</string>
+  <string name="look_feel">Xem xét &amp; cảm thấy</string>
   <string name="pill_hiding">Ẩn Pill 
 or
 Ẩn viên điều hướng</string>
@@ -139,10 +139,11 @@ or
   <string name="bar_blacklist_desc">Chọn ứng dụng không cho phép hiển thị viên điều hướng.</string>
   <string name="imm_blacklist_desc">Chọn các ứng dụng không sử dụng chế độ toàn cảnh.</string>
   <string name="auto_hide_pill_desc_disabled">Khi kích hoạt, viên điều hướng tự động ẩn sau 1 khoảng thời gian.</string>
-  <string name="auto_hide_pill_desc_enabled">Delay: %sms. Tap to change.</string>
-  <string name="back_to_default_desc">Split Pill disabled! Do you want us to set affected settings back to default?</string>
-  <string name="fix_for_other_windows_desc">Choose which apps the pill should be forced to stay on top. Useful for apps like Facebook Messenger chat heads, Drupe, etc.</string>
-  <string name="experimental_warning">THESE FEATURES ARE INCOMPLETE AND MAY NOT WORK ON YOUR DEVICE!</string>
+  <string name="auto_hide_pill_desc_enabled">Sự chậm trễ: %sms. Nhấn để thay đổi.</string>
+  <string name="back_to_default_desc">Thanh chia bị vô hiệu hóa! Bạn có muốn chúng tôi thiết lập cài đặt bị ảnh hưởng trở lại mặc định?</string>
+  <string name="fix_for_other_windows_desc">Chọn các ứng dụng mà thanh điều hướng nên bị buộc phải ở lại trên đầu trang. Hữu ích cho các ứng dụng như 
+Bong bóng chát Facebook Messenger, Drupe, vv.</string>
+  <string name="experimental_warning">CÁC TÍNH NĂNG NÀY CHƯA ĐẦY ĐỦ VÀ KHÔNG THỂ LÀM VIỆC TRÊN THIẾT BỊ CỦA BẠN!</string>
   <string name="full_overscan_desc">By default, Navigation Gestures leaves 1 pixel of the original navbar visible. Enable this to remove that pixel. WARNING: This will break certain devices!!!</string>
   <string name="toggle_gestures_desc">Toggle whether or not the gesture pill is displayed onscreen.</string>
   <string name="toggle_nav_desc">Toggle whether or not the device\'s software navigation bar should be hidden.</string>
@@ -151,7 +152,7 @@ or
   <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
   <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
   <string name="accessibility_desc">This app uses an Accessibility Service to simulate the original navigation buttons. Click \“Grant\” below to enable access.</string>
-  <string name="write_secure_settings_desc">We can completely hide your stock navigation bar, but we need access to a special permission to do so. Click the button below to learn how you can grant it. If you are rooted, accept the root prompt. If you don\'t have a software navigation bar, or your phone has another way to hide the software navigation bar, you can skip this step.\n\nNOTE: ADB is not root! It will not void your warranty, trip KNOX, etc.</string>
+  <string name="write_secure_settings_desc">Chúng ta hoàn toàn có thể ẩn thanh menu cổ của bạn, nhưng chúng tôi cần truy cập vào một giấy phép đặc biệt để làm như vậy. Nhấp vào nút dưới đây để tìm hiểu làm thế nào bạn có thể cấp cho nó. Nếu bạn đã root máy, chấp nhận lời nhắc root. Nếu bạn không có một thanh điều hướng phần mềm, hoặc điện thoại của bạn có một cách khác để ẩn thanh menu của phần mềm, bạn có thể bỏ qua bước này.\n\nNOTE này: ADB không phải là root máy! Nó sẽ không phá hỏng bảo hành của bạn, như KNOX, vv.</string>
   <string name="ready_first_run_desc">You\'re ready to use Navigation Gestures! You can toggle the pill on the following page or from the Quick Settings tile (Nougat and later).</string>
   <string name="ready_desc">You\’re ready to use navigation gestures on your device.</string>
   <string name="root_found_desc">Don\'t worry. You can still use this app. Root actually makes the setup easier. If you like, we can use root access to grant this permission automatically. Otherwise, you can choose to use the tutorial/manual method.</string>
