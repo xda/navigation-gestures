@@ -163,22 +163,22 @@
   <string name="warning_desc">ナビゲーションジェスチャーをアンインストールする前に、ナビゲーションバーが表示されているかを確認してください! アプリを使用してナビゲーションバーを非表示にした場合に必要があります。</string>
   <string name="white_bar_desc">このアプリを使用するとディスプレイの一番下に小さく白いバーがあることに気付くかもしれません。これはバグではなく、重大な問題を防ぐためです。TouchWizデバイスでは起こりません。</string>
   <string name="compatibility_desc">このアプリ使用中に元のナビバーが表示されてしまうことがあるかもしれません。設定&gt;&gt;互換性で互換性オプションを変えてみてください。</string>
-  <string name="skip_wss_message">You can always come back to this step by toggling the Hide Navigation Bar switch on in the main screen of this app.</string>
-  <string name="feature_not_avail">This feature cannot be used while Navigation Gestures is hiding the navigation bar.</string>
+  <string name="skip_wss_message">いつでもナビゲーションバーの表示を切り替えることができます。</string>
+  <string name="feature_not_avail">この機能は、ナビゲーションバーを非表示中には使用できません。</string>
   <!--Gestures-->
-  <string name="tap">Tap</string>
-  <string name="left">Swipe Left</string>
-  <string name="right">Swipe Right</string>
-  <string name="up">Swipe Up</string>
-  <string name="down">Swipe Down</string>
-  <string name="hold">Long Press</string>
-  <string name="double_tap">Double Tap</string>
-  <string name="swipe_up_hold">Swipe Up and Hold</string>
-  <string name="left_hold">Swipe Left and Hold</string>
-  <string name="right_hold">Swipe Right and Hold</string>
-  <string name="down_hold">Swipe Down and Hold</string>
+  <string name="tap">タップ</string>
+  <string name="left">左にスワイプ</string>
+  <string name="right">右にスワイプ</string>
+  <string name="up">上にスワイプ</string>
+  <string name="down">下にスワイプ</string>
+  <string name="hold">長押し</string>
+  <string name="double_tap">ダブルタップ</string>
+  <string name="swipe_up_hold">上にスワイプしてホールド</string>
+  <string name="left_hold">左にスワイプしてホールド</string>
+  <string name="right_hold">右にスワイプしてホールド</string>
+  <string name="down_hold">下にスワイプしてホールド</string>
   <!--Messages-->
-  <string name="grant_permission">Hmm. It seems this permission wasn\'t granted. Make sure to follow all instructions, and try again.</string>
+  <string name="grant_permission">どうやら権限が取得されていないようです。手順を確認してやり直してください。</string>
   <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
   <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
   <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
