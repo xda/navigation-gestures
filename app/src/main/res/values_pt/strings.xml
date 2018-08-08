@@ -102,16 +102,16 @@
   <string name="sensitivity">Sensibilidade</string>
   <string name="back_to_default">Restaurar configurações Padrão?</string>
   <string name="experimental_prefs">Configurações Experimentais</string>
-  <string name="fix_for_other_windows">Keep Pill Shown in other Overlay Apps</string>
-  <string name="full_overscan">Use Full Overscan</string>
-  <string name="dont_keep_overscan_on_lockscreen">Don\'t Hide NavBar on Lock Screen</string>
-  <string name="current_overscan">Current Overscan</string>
+  <string name="fix_for_other_windows">Mostrar Manípulo em Aplicações Sobrepostas</string>
+  <string name="full_overscan">Usar Ecrã Completo</string>
+  <string name="dont_keep_overscan_on_lockscreen">Não Esconder Barra de Navegação no Ecrã Bloqueado</string>
+  <string name="current_overscan">Overscan Atual</string>
   <!--Descriptions-->
-  <string name="gestures_desc">Customize gesture actions</string>
-  <string name="appearance_desc">Customize appearance of the navigation pill</string>
-  <string name="behavior_desc">Customize how the pill behaves</string>
-  <string name="tutorial_video_desc">Wondering how to use the app? We\'re here to help.</string>
-  <string name="email_us_desc">If you have some feedback, we\'d love to hear it!</string>
+  <string name="gestures_desc">Personalizar as Ações dos Gestos</string>
+  <string name="appearance_desc">Personalizar Aparência do Manípulo de Navegação</string>
+  <string name="behavior_desc">Personalizar Comportamento do Manípulo</string>
+  <string name="tutorial_video_desc">Não sabe como se usa a aplicação? Estamos aqui para ajudar.</string>
+  <string name="email_us_desc">Se tem algum Feeback ficaríamos muitos gratos por ouvi-lo!</string>
   <string name="xda_thread_desc">Have a question about the app? Visit the XDA thread and ask away.</string>
   <string name="other_apps_desc">XDA has other apps too. Check them out!</string>
   <string name="buy_premium_desc">Unlock more functionality with the premium add-on.</string>
