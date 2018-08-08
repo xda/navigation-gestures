@@ -116,7 +116,7 @@
   <string name="other_apps_desc">XDA ha pubblicato altre app oltre questa. Dai un\'occhiata!</string>
   <string name="buy_premium_desc">Sblocca altre funzionalità con la versione premium.</string>
   <string name="run_command_desc">adb shell pm grant com.xda.nobar android.permission.WRITE_SECURE_SETTINGS</string>
-  <string name="foreground_desc">La notifica evita che Android chiuda l\'applicazione. Puoi nasconderla tenendo premuto e premendo su \"Impostazioni\".</string>
+  <string name="foreground_desc">Questa notifica evita che Android chiuda l\'applicazione. Puoi nasconderla tenendo premuto e premendo su \"Impostazioni\".</string>
   <string name="static_pill_desc">Previeni che la Barra si sposti sopra la tastiera.</string>
   <string name="hide_navbar_in_landscape_desc">Alcuni dispositivi mostrano la Navigation Bar a lato in modalità landscape. Attiva qui per evitarlo.</string>
   <string name="hide_navbar_in_upside_down_desc">Alcuni dispositivi ruotando lo schermo quando il dispositivo è capovolto, il che potrebbe causare la presenza della Navigation Bar. Attiva quest\'opzione per assicurarti stia nascosta.</string>
@@ -124,7 +124,7 @@
   <string name="tablet_mode_desc">Molti tablet mostrano forzatamente la Navigation Bar in fondo allo schermo. Attiva quest\'opzione per evitarlo.</string>
   <string name="hide_in_fullscreen_desc">Quando attivata, la barra si nasconderà automaticamente nelle app a schermo intero (e.s video o giochi).</string>
   <string name="compatibility_warning">NON CAMBIARE QUESTE OPZIONI A MENO CHE NON SIA NECESSARIO! POSSONO CAUSARE PROBLEMI INVECE CHE RISOLVERNE!</string>
-  <string name="larger_hitbox_desc">Attivalo per rendere più facile lo swipe sulla Barra.</string>
+  <string name="larger_hitbox_desc">Attivalo per rendere più facile lo swipe sulla pillola.</string>
   <string name="hide_nav_summary">Usare solo se il dispositivo ha una barra di navigazione software.</string>
   <string name="orig_nav_in_immersive_desc">Quando abilitata, la barra di navigazione originaria sarà accessibile con uno swipe nelle app a schermo intero.</string>
   <string name="use_pixels_desc">Impostare dimensione utilizzando il numero di pixel piuttosto che le percentuali.</string>
