@@ -219,9 +219,9 @@
   <string name="forward">Vai Avanti (Root)</string>
   <string name="menu">Apri Menu (Root)</string>
   <string name="sleep">Sleep (Root)</string>
-  <string name="prem_vol_up">Volume Up (Root) (Premium)</string>
-  <string name="prem_vol_down">Volume Down (Root) (Premium)</string>
-  <string name="prem_screenshot">Screenshot (Premium)</string>
+  <string name="prem_vol_up">Volume Su (Root) (Premium)</string>
+  <string name="prem_vol_down">Volume Giù (Root) (Premium)</string>
+  <string name="prem_screenshot">Cattura schermata (Premium)</string>
   <string name="prem_switch_ime">Switch Keyboard (Premium)</string>
   <string name="prem_launch_app">Launch App (Premium) (%s)</string>
   <string name="prem_launch_app_no_format">Launch App (Premium)</string>
