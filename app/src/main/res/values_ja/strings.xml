@@ -179,31 +179,31 @@
   <string name="down_hold">下にスワイプしてホールド</string>
   <!--Messages-->
   <string name="grant_permission">どうやら権限が取得されていないようです。手順を確認してやり直してください。</string>
-  <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
-  <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
-  <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
-  <string name="copied_to_clipboard">Email copied to clipboard</string>
+  <string name="pill_hidden">ピルが非表示です。タップまたは上にスワイプして表示します。</string>
+  <string name="accessibility_msg">アクセシビリティを見つけてタップしてください。</string>
+  <string name="deactivate_before_uninstall">アンインストール前に\"ナビバーを非表示”がオフになっていることを確認してください!</string>
+  <string name="copied_to_clipboard">クリップボードにEメールがコピーされました。</string>
   <!--Libraries-->
-  <string name="material_intro">Material Intro (Fork)</string>
+  <string name="material_intro">マテリアル イントロ (フォーク)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
-  <string name="color_picker">Color Picker (Fork)</string>
-  <string name="circle_progress">Circle Progress</string>
+  <string name="color_picker">カラーピッカー (フォーク)</string>
+  <string name="circle_progress">サークルプログレス</string>
   <string name="rx_java">RxJava/RxAndroid</string>
-  <string name="tasker_plugin">Tasker Plugin Library</string>
+  <string name="tasker_plugin">Taskerプラグインライブラリ</string>
   <string name="edge_sdk">Galaxy Edge SDK</string>
   <string name="anr_watchdog">ANR-WatchDog</string>
   <!--Intent Names-->
   <string name="google_music_search">Google Music Search</string>
-  <string name="google_weather">Google Weather Results</string>
-  <string name="google_new_calendar_event">New Google Calendar Event</string>
-  <string name="camera_take_photo">Take Photo</string>
-  <string name="camera_take_video">Take Video</string>
+  <string name="google_weather">Google天気予報</string>
+  <string name="google_new_calendar_event">新しいGoogleカレンダーイベント</string>
+  <string name="camera_take_photo">写真を撮る</string>
+  <string name="camera_take_video">ビデオを撮る</string>
   <string name="shazam_it">Shazam It</string>
   <string name="soundhound_it">SoundHound It</string>
   <!--Actions-->
-  <string name="home">Home</string>
-  <string name="back">Back</string>
-  <string name="ohm">Toggle OHM</string>
+  <string name="home">ホーム</string>
+  <string name="back">戻る</string>
+  <string name="ohm">OHMを切り替え</string>
   <string name="recents">最近使ったアプリ</string>
   <string name="hide">ピルを非表示にする</string>
   <string name="assist">アシスタント</string>
@@ -276,13 +276,13 @@
   <string name="prem_type_wifi">34</string>
   <string name="prem_type_intent">35</string>
   <!--Main Action Keys-->
-  <string name="action_left">left</string>
-  <string name="action_right">right</string>
-  <string name="action_up">up</string>
-  <string name="action_down">down</string>
-  <string name="action_double">double_tap</string>
-  <string name="action_hold">hold</string>
-  <string name="action_tap">tap</string>
+  <string name="action_left">左</string>
+  <string name="action_right">右</string>
+  <string name="action_up">上</string>
+  <string name="action_down">下</string>
+  <string name="action_double">ダブルタップ</string>
+  <string name="action_hold">ホールド</string>
+  <string name="action_tap">タップ</string>
   <string name="action_up_hold">up_hold</string>
   <string name="action_left_hold">left_hold</string>
   <string name="action_right_hold">right_hold</string>
