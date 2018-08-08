@@ -149,11 +149,12 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <!--Paragraphs-->
   <string name="app_purpose">Esta aplicação traz Navegação por Gestos para qualquer dispositivo Android. Melhor ainda, não precisa de Root! Antes de experimentar esta navegação há algumas coisas que precisamos configurar para usar a aplicação.</string>
   <string name="draw_over_apps_desc">Para que a Navigations Gestures possa mostrar o Manípulo de Navegação, tens de dar permissões para que possa ficar em sobreposição de outras aplicações. Carrega no botão abaixo para esta permissão. Se instalaste através da Play Store está permissão já está garantida.</string>
-  <string name="accessibility_desc">This app uses an Accessibility Service to simulate the original navigation buttons. Click \“Grant\” below to enable access.</string>
-  <string name="write_secure_settings_desc">We can completely hide your stock navigation bar, but we need access to a special permission to do so. Click the button below to learn how you can grant it. If you are rooted, accept the root prompt. If you don\'t have a software navigation bar, or your phone has another way to hide the software navigation bar, you can skip this step.\n\nNOTE: ADB is not root! It will not void your warranty, trip KNOX, etc.</string>
-  <string name="ready_first_run_desc">You\'re ready to use Navigation Gestures! You can toggle the pill on the following page or from the Quick Settings tile (Nougat and later).</string>
-  <string name="ready_desc">You\’re ready to use navigation gestures on your device.</string>
-  <string name="root_found_desc">Don\'t worry. You can still use this app. Root actually makes the setup easier. If you like, we can use root access to grant this permission automatically. Otherwise, you can choose to use the tutorial/manual method.</string>
+  <string name="accessibility_desc">Esta aplicação usa o modo de Acessibilidade para simular a navegação com botões. Click em Garantir em baixo para permitir acesso.</string>
+  <string name="write_secure_settings_desc">Podemos esconder completamente a sua barra de navegação das ações, mas precisamos acessar uma permissão especial para isso. Clique no botão abaixo para saber como você pode concedê-lo. Se você tem root, aceite o prompt root. Se você não tem uma barra de navegação do software, ou o seu telefone tem uma outra maneira de ocultar a barra de navegação do software, você pode ignorar este passo.
+\n\nNOTE: ADB não é root! Isso não irá anular a sua garantia, trip KNOX, etc.</string>
+  <string name="ready_first_run_desc">Você está pronto para usar Gestos de Navegação! Você pode alternar o Manípulo na página seguinte ou de através das Definições Rápidas (Nougat ou mais recente).</string>
+  <string name="ready_desc">Você está pronto para usar Gestos de Navegação no seu dispositivo.</string>
+  <string name="root_found_desc">Não se preocupe. Você ainda pode usar esta aplicação. Ter Root realmente facilita a instalação. Se quiser, podemos usar acesso root para conceder essa permissão automaticamente. Caso contrário, você pode escolher usar o método do tutorial/manual.</string>
   <string name="missing_perms_desc">Parece que uma ou mais permissões foram de alguma maneira bloqueadas. Mas sem preocupações. Nós vamos te ajudar a voltar a correr a aplicação de novo.</string>
   <string name="premium_required_desc">Esta acção necessita da versão paga da aplicação. Gostaria de adquirir a versão paga?</string>
   <string name="nougat_required_desc">This action requires a device running Android Nougat or later. Sorry about that.</string>
@@ -210,14 +211,14 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <string name="switch_apps">Previous App (Nougat+)</string>
   <string name="nothing">No Action</string>
   <string name="prem_notif">Notifications (Premium)</string>
-  <string name="prem_qs">Quick Settings (Premium)</string>
-  <string name="prem_power">Power Menu (Premium)</string>
-  <string name="split">Split Screen (Nougat+)</string>
-  <string name="prem_prev">Previous Track (Premium)</string>
-  <string name="prem_next">Next Track (Premium)</string>
-  <string name="prem_play_pause">Play/Pause (Premium)</string>
+  <string name="prem_qs">Definições Rápidas (Pago)</string>
+  <string name="prem_power">Menu de energia (Pago)</string>
+  <string name="split">Tela dividida (Nougat +)</string>
+  <string name="prem_prev">Faixa Anterior (Pago)</string>
+  <string name="prem_next">Próxima faixa (Pago)</string>
+  <string name="prem_play_pause">Reprodução/Pausa (Pago)</string>
   <string name="hold_back">Hold Back (Root)</string>
-  <string name="forward">Go Forward (Root)</string>
+  <string name="forward">Ir para a frente (Root)</string>
   <string name="menu">Open Menu (Root)</string>
   <string name="sleep">Sleep (Root)</string>
   <string name="prem_vol_up">Volume Up (Root) (Premium)</string>
