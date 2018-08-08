@@ -93,10 +93,10 @@
   <string name="nav_blacklist">Hiện thanh điều hướng trong các ứng dụng đã chọn</string>
   <string name="bar_blacklist">Ẩn thanh cử chỉ trong các ứng dụng đã chọn</string>
   <string name="imm_blacklist">Danh sách loại trừ ẩn phím điều hướng</string>
-  <string name="x_threshold">Horizontal (X) Swipe Distance</string>
-  <string name="y_threshold">Vertical (Y) Swipe Distance</string>
+  <string name="x_threshold">Vùng hiệu lực khi vuốt ngang (X)</string>
+  <string name="y_threshold">Vùng hiệu lực khi vuốt dọc (Y)</string>
   <string name="hide_after_set_time">Ẩn thanh cử chỉ sau khoảng chờ</string>
-  <string name="blacklisting">Blacklisting</string>
+  <string name="blacklisting">Đang loại trừ</string>
   <string name="look_feel">Look &amp; Feel</string>
   <string name="pill_hiding">Pill Hiding</string>
   <string name="sensitivity">Sensitivity</string>
