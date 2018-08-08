@@ -144,9 +144,9 @@
   <string name="full_overscan_desc">デフォルトでは元のナビバーは1ピクセルだけ表示されています。これを有効にするとそのピクセルを非表示にします。警告: この設定はデバイスを壊すかもしれません!</string>
   <string name="toggle_gestures_desc">ピルが表示されるかどうかを切り替えます</string>
   <string name="toggle_nav_desc">デバイスのソフトウェアナビバーを非表示にするかどうかを切り替えます。</string>
-  <string name="dont_keep_overscan_on_lockscreen_desc">Enable this to show lock screen shortcuts and to fix issues with items being cut off on the lock screen, ambient display, or always on display.</string>
+  <string name="dont_keep_overscan_on_lockscreen_desc">これを有効にすると、ロック画面にショートカットを表示してアイテムが非表示になるのを防ぎます。</string>
   <!--Paragraphs-->
-  <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
+  <string name="app_purpose">このアプリでどのデバイスでも非ルートでナビゲーションジェスチャーを使えるようになります! 利用する前にいくつか設定が必要です。</string>
   <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
   <string name="accessibility_desc">This app uses an Accessibility Service to simulate the original navigation buttons. Click \“Grant\” below to enable access.</string>
   <string name="write_secure_settings_desc">We can completely hide your stock navigation bar, but we need access to a special permission to do so. Click the button below to learn how you can grant it. If you are rooted, accept the root prompt. If you don\'t have a software navigation bar, or your phone has another way to hide the software navigation bar, you can skip this step.\n\nNOTE: ADB is not root! It will not void your warranty, trip KNOX, etc.</string>
