@@ -27,7 +27,7 @@
   <string name="welcome">Chào mừng!</string>
   <string name="draw_over_apps">Hiện trên ứng dụng</string>
   <string name="grant">Cấp quyền</string>
-  <string name="accessibility">Khả năng tiếp cận dịch vụ</string>
+  <string name="accessibility">Dịch vụ trợ năng</string>
   <string name="write_secure_settings">Ghi cài đặt bảo mật</string>
   <string name="ready">Tất cả các thiết lập</string>
   <string name="root_found">Bạn đã root máy!</string>
@@ -95,7 +95,7 @@
   <string name="imm_blacklist">Danh sách loại trừ ẩn phím điều hướng</string>
   <string name="x_threshold">Vùng hiệu lực khi vuốt ngang (X)</string>
   <string name="y_threshold">Vùng hiệu lực khi vuốt dọc (Y)</string>
-  <string name="hide_after_set_time">Ẩn thanh cử chỉ sau khoảng chờ</string>
+  <string name="hide_after_set_time">Ẩn viên điều hướng sau thời gian chờ</string>
   <string name="blacklisting">Đang loại trừ</string>
   <string name="look_feel">Look &amp; Feel</string>
   <string name="pill_hiding">Ẩn Pill 
@@ -134,7 +134,7 @@ or
   <string name="enable_in_car_mode_desc">Khi kích hoạt, Navigation Gestures sẽ ko bị vô hiệu trong chế độ xe ô tô. Không kích hoạt trên các thiết bị dùng TouchWiz nếu có thanh điều hướng ảo.</string>
   <string name="grant_write_settings_desc">Bấm OK để cho phép Navigation Gestures sửa các cài đặt hệ thống.</string>
   <string name="use_recommended_settings_desc">Split Pill đã kích hoạt! Bạn có muốn thử các cài đặt khuyến nghị cho chế độ này ko?</string>
-  <string name="use_immersive_mode_when_nav_hidden_desc">Kích hoạt chế độ ẩn điều hướng của Android khi Ẩn Thanh điều hướng đang kích hoạt. Điều này giúp giải quyết các vấn đề trên các thiết bị Samsung như \"Nhấn mạnh phím Home\" không hoạt động.</string>
+  <string name="use_immersive_mode_when_nav_hidden_desc">Kích hoạt Chế độ Ẩn điều hướng của Android khi Ẩn Thanh điều hướng đang kích hoạt. Điều này giúp giải quyết các vấn đề trên các thiết bị Samsung như \"Nhấn mạnh phím Home\" không hoạt động.</string>
   <string name="nav_blacklist_desc">Chọn ứng dụng luôn hiển thị thanh điều hướng gốc.</string>
   <string name="bar_blacklist_desc">Chọn ứng dụng không cho phép hiển thị viên điều hướng.</string>
   <string name="imm_blacklist_desc">Chọn các ứng dụng không sử dụng chế độ toàn cảnh.</string>
@@ -203,7 +203,7 @@ or
   <string name="soundhound_it">SoundHound It</string>
   <!--Actions-->
   <string name="home">Trang chủ</string>
-  <string name="back">Trở về</string>
+  <string name="back">Quay lại</string>
   <string name="ohm">Toggle OHM</string>
   <string name="recents">Recent Apps</string>
   <string name="hide">Ẩn thanh cử chỉ</string>
@@ -300,13 +300,13 @@ or
   <!--Buttons-->
   <string name="no">Không</string>
   <!--Split Pill Recommendations-->
-  <string name="rec_set_transparent">Thanh cử chỉ trong suốt hoàn toàn</string>
-  <string name="rec_set_y">Thanh cử chỉ hạ xuống viền dưới màn hình</string>
-  <string name="rec_swipe_left_right">Vuốt lên ở bên trái/phải để quay về</string>
-  <string name="rec_swipe_middle">Vuốt lên ở giữa để về trang chủ</string>
+  <string name="rec_set_transparent">Viên điều hướng trong suốt hoàn toàn</string>
+  <string name="rec_set_y">Viên điều hướng hạ xuống viền dưới màn hình</string>
+  <string name="rec_swipe_left_right">Vuốt lên ở bên trái/phải để quay lại</string>
+  <string name="rec_swipe_middle">Vuốt lên ở giữa để về trang chính</string>
   <string name="rec_swipe_hold_middle">Vuốt lên ở giữa và giữ để chạy đa nhiệm</string>
   <!--Premium-->
-  <string name="prem_stat">Tình trạng gói nâng cao:</string>
+  <string name="prem_stat">Trạng thái cao cấp:</string>
   <string name="checking">Đang kiểm tra…</string>
   <string name="not_found">Không tìm thấy!</string>
   <string name="installed">Đã cài đặt!</string>
