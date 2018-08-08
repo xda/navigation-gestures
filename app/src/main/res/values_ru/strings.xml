@@ -72,21 +72,21 @@
   <string name="orig_nav_in_immersive">Показать панель навигации в полноэкранном режиме</string>
   <string name="enable_in_car_mode">Show Pill in Car Mode</string>
   <string name="use_pixels">Use Pixels for Dimension</string>
-  <string name="sectioned_pill">Split Pill</string>
-  <string name="toggle_gestures">Toggle Gestures</string>
-  <string name="toggle_nav">Toggle NavBar</string>
-  <string name="toggle_gestures_prem">Toggle Gestures (Premium)</string>
-  <string name="toggle_nav_prem">Toggle NavBar (Premium)</string>
-  <string name="grant_write_settings">Write Settings Permission Required!</string>
-  <string name="sections">Sections</string>
-  <string name="swipe_up_left">Swipe Up from Left</string>
-  <string name="swipe_up_hold_left">Swipe Up and Hold from Left</string>
-  <string name="swipe_up_center">Swipe Up from Center</string>
-  <string name="swipe_up_hold_center">Swipe Up and Hold from Center</string>
-  <string name="swipe_up_right">Swipe Up from Right</string>
-  <string name="swipe_up_hold_right">Swipe Up and Hold from Right</string>
-  <string name="use_recommended_settings">Use Recommended Settings?</string>
-  <string name="hide_pill_on_keyboard">Hide Pill when Keyboard Shown</string>
+  <string name="sectioned_pill">Разделить таблетку</string>
+  <string name="toggle_gestures">Включить/выключить жесты</string>
+  <string name="toggle_nav">Показать/скрыть навигационную панель</string>
+  <string name="toggle_gestures_prem">Включить/выключить жесты (Премиум)</string>
+  <string name="toggle_nav_prem">Показать/скрыть навигационную панель (Премиум)</string>
+  <string name="grant_write_settings">Необходимо разрешение на запись настроек!</string>
+  <string name="sections">Разделы</string>
+  <string name="swipe_up_left">Свайп вверх слева</string>
+  <string name="swipe_up_hold_left">Свайп вверх слева и удержание</string>
+  <string name="swipe_up_center">Свайп вверх из центра</string>
+  <string name="swipe_up_hold_center">Свайп вверх из центра и удержание</string>
+  <string name="swipe_up_right">Свайп вверх справа</string>
+  <string name="swipe_up_hold_right">Свайп вверх справа и удержание</string>
+  <string name="use_recommended_settings">Использовать рекомендованные настройки?</string>
+  <string name="hide_pill_on_keyboard">Скрывать таблетку когда показывается клавиатура</string>
   <string name="use_immersive_mode_when_nav_hidden">Enable Immersive Navigation Mode</string>
   <string name="nav_imm_enabled">Immersive Navigation Enabled</string>
   <string name="nav_imm_disabled">Immersive Navigation Disabled</string>
@@ -207,9 +207,9 @@
   <string name="hide">Hide Pill</string>
   <string name="assist">Assistant</string>
   <string name="switch_apps">Previous App (Nougat+)</string>
-  <string name="nothing">No Action</string>
-  <string name="prem_notif">Notifications (Premium)</string>
-  <string name="prem_qs">Quick Settings (Premium)</string>
+  <string name="nothing">Нет действия</string>
+  <string name="prem_notif">Уведомления (Премиум)</string>
+  <string name="prem_qs">Быстрые настройки (Премиум)</string>
   <string name="prem_power">Power Menu (Premium)</string>
   <string name="split">Split Screen (Nougat+)</string>
   <string name="prem_prev">Previous Track (Premium)</string>
@@ -225,7 +225,7 @@
   <string name="prem_switch_ime">Switch Keyboard (Premium)</string>
   <string name="prem_launch_app">Launch App (Premium) (%s)</string>
   <string name="prem_launch_app_no_format">Launch App (Premium)</string>
-  <string name="prem_lock_screen">Lock Screen (Premium)</string>
+  <string name="prem_lock_screen">Экран блокировки (Премиум)</string>
   <string name="prem_launch_activity">Запуск приложения (Премиум) (%s)</string>
   <string name="prem_launch_activity_no_format">Запуск приложения (Премиум)</string>
   <string name="prem_rot">Поворот экрана (Премиум)</string>
@@ -233,9 +233,9 @@
   <string name="prem_flashlight">Включить/выключить фонарик (Премиум)</string>
   <string name="prem_volume_panel">Открыть панель громкости (Премиум)</string>
   <string name="prem_bluetooth">Включить/выключить Bluetooth (Премиум)</string>
-  <string name="prem_wifi">Toggle WiFi (Premium)</string>
-  <string name="prem_intent">Send Intent (Premium) (%s)</string>
-  <string name="prem_intent_no_format">Send Intent (Premium)</string>
+  <string name="prem_wifi">Включить/выключить WiFi (Премиум)</string>
+  <string name="prem_intent">Отправить Intent (Премиум) (%s)</string>
+  <string name="prem_intent_no_format">Отправить Intent (Премиум)</string>
   <!--Action Values-->
   <string name="type_no_action">-1</string>
   <string name="type_back">0</string>
@@ -278,23 +278,23 @@
   <string name="action_left">left</string>
   <string name="action_right">right</string>
   <string name="action_up">up</string>
-  <string name="action_down">вниз</string>
-  <string name="action_double">двойное_касание</string>
-  <string name="action_hold">удержание</string>
-  <string name="action_tap">касание</string>
-  <string name="action_up_hold">вверх_удержание</string>
-  <string name="action_left_hold">влево_удержание</string>
-  <string name="action_right_hold">вправо_удержание</string>
-  <string name="action_down_hold">вниз_удержание</string>
+  <string name="action_down">down</string>
+  <string name="action_double">double_tap</string>
+  <string name="action_hold">hold</string>
+  <string name="action_tap">tap</string>
+  <string name="action_up_hold">up_hold</string>
+  <string name="action_left_hold">left_hold</string>
+  <string name="action_right_hold">right_hold</string>
+  <string name="action_down_hold">down_hold</string>
   <!--Center Action Keys-->
-  <string name="action_up_center">вверх_центр</string>
-  <string name="action_up_hold_center">вверх_удержание_центр</string>
+  <string name="action_up_center">up_center</string>
+  <string name="action_up_hold_center">up_hold_center</string>
   <!--Left Action Keys-->
-  <string name="action_up_left">вверх_влево</string>
-  <string name="action_up_hold_left">вверх_удержание_влево</string>
+  <string name="action_up_left">up_left</string>
+  <string name="action_up_hold_left">up_hold_left</string>
   <!--Right Action Keys-->
-  <string name="action_up_right">вверх_вправо</string>
-  <string name="action_up_hold_right">вверх_удержание_вправо</string>
+  <string name="action_up_right">up_right</string>
+  <string name="action_up_hold_right">up_hold_right</string>
   <!--Buttons-->
   <string name="no">Нет</string>
   <!--Split Pill Recommendations-->
