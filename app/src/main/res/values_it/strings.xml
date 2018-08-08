@@ -135,9 +135,9 @@
   <string name="use_immersive_mode_when_nav_hidden_desc">Abilita la modalità di navigazione immersiva di Android quando Nascondi barra di navigazione è attivo. Questo risolve problemi legati a Samsung come \"Premere forte il tasto Home\" che non funziona.</string>
   <string name="nav_blacklist_desc">Scegli quali applicazioni dovrebbero mostrare sempre la barra di navigazione.</string>
   <string name="bar_blacklist_desc">Scegli quali applicazioni non dovrebbero mai mostrare la Barra.</string>
-  <string name="imm_blacklist_desc">Choose which apps should not use immersive mode.</string>
+  <string name="imm_blacklist_desc">Scegli quali applicazioni non dovrebbero usare la modalità immersiva.</string>
   <string name="auto_hide_pill_desc_disabled">Quando abilitato, la pillola si nasconderà automaticamente dopo il tempo specificato.</string>
-  <string name="auto_hide_pill_desc_enabled">Delay: %sms. Tap to change.</string>
+  <string name="auto_hide_pill_desc_enabled">Ritardo: %sms. Tocca per modificare.</string>
   <string name="back_to_default_desc">Split Pill disabled! Do you want us to set affected settings back to default?</string>
   <string name="fix_for_other_windows_desc">Scegli in quali applicazioni la barra è tenuta forzatamente in alto. È utile per compatibilità con notifiche fluttuanti (es. Facebook Messenger, Drupe...).</string>
   <string name="experimental_warning">QUESTE FUNZIONALITÀ SONO IN SVILUPPO E POTREBBERO NON FUNZIONARE SUL TUO DISPOSITIVO!</string>
