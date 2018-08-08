@@ -105,12 +105,12 @@ or
   <string name="back_to_default">Đặt lại các cài đặt mặc định chứ?</string>
   <string name="experimental_prefs">Các cài đặt thử nghiệm</string>
   <string name="fix_for_other_windows">Hiện viên điều hướng trong các ứng dụng trên cùng</string>
-  <string name="full_overscan">Use Full Overscan</string>
-  <string name="dont_keep_overscan_on_lockscreen">Don\'t Hide NavBar on Lock Screen</string>
-  <string name="current_overscan">Current Overscan</string>
+  <string name="full_overscan">Dùng che phủ toàn bộ</string>
+  <string name="dont_keep_overscan_on_lockscreen">Không ẩn thanh điều hướng trên màn hình khóa</string>
+  <string name="current_overscan">Độ che phủ hiện tại</string>
   <!--Descriptions-->
-  <string name="gestures_desc">Customize gesture actions</string>
-  <string name="appearance_desc">Customize appearance of the navigation pill</string>
+  <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
+  <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
   <string name="behavior_desc">Customize how the pill behaves</string>
   <string name="tutorial_video_desc">Wondering how to use the app? We\'re here to help.</string>
   <string name="email_us_desc">If you have some feedback, we\'d love to hear it!</string>
