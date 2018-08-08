@@ -214,10 +214,10 @@ or
   <string name="prem_qs">Cài đặt nhanh (Nâng cao)</string>
   <string name="prem_power">Power Menu (Premium)</string>
   <string name="split">Split Screen (Nougat+)</string>
-  <string name="prem_prev">Lùi bài (cao cấp)</string>
-  <string name="prem_next">Next Track (Premium)</string>
-  <string name="prem_play_pause">Play/Pause (Premium)</string>
-  <string name="hold_back">Hold Back (Root)</string>
+  <string name="prem_prev">Lùi bài (Cao cấp)</string>
+  <string name="prem_next">Bài kế tiếp (Cao cấp)</string>
+  <string name="prem_play_pause">Chơi/Tạm dừng (Cao cấp)</string>
+  <string name="hold_back">Giữ Back (Root)</string>
   <string name="forward">Go Forward (Root)</string>
   <string name="menu">Open Menu (Root)</string>
   <string name="sleep">Sleep (Root)</string>
