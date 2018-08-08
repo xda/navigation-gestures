@@ -21,7 +21,7 @@
   <string name="swipes">Deslizes</string>
   <string name="version">Versão</string>
   <string name="tutorial_video">Vídeo Tutorial</string>
-  <string name="email_us">Envia um Email</string>
+  <string name="email_us">Envia-nos um Email</string>
   <string name="xda_thread">Tópico XDA</string>
   <string name="other_apps">Aplicações XDA</string>
   <string name="welcome">Bem vindo!</string>
@@ -37,7 +37,7 @@
   <string name="nougat_required">Requere Nougat</string>
   <string name="hold_time">Tempo de Deslizar e Manter</string>
   <string name="vibration_duration">Duração da Vibração</string>
-  <string name="buy_premium">Compra Premium</string>
+  <string name="buy_premium">Comprar versão Premium</string>
   <string name="libraries">Bibliotecas</string>
   <string name="qs_tile">Tela de Configurações Rápidas</string>
   <string name="run_command">Execute este comando do seu PC</string>
@@ -47,8 +47,8 @@
   <string name="sorry">Desculpe :(</string>
   <string name="anim_duration">Duração da Animação</string>
   <string name="warning">Aviso!</string>
-  <string name="pill_color">Cor da Pílula</string>
-  <string name="pill_border_color">Cor da Borda da Pílula</string>
+  <string name="pill_color">Cor da Barra</string>
+  <string name="pill_border_color">Cor da Borda da Barra</string>
   <string name="show_pill_shadow">Mostrar Sombra da Pílula</string>
   <string name="static_pill">Não Mover a Pílula quando o Teclado estiver Activo</string>
   <string name="hide_navbar_in_landscape">Esconder a Barra de Navegação no Modo Paisagem</string>
@@ -97,7 +97,7 @@
   <string name="y_threshold">Vertical (Y) Distância a Puxar</string>
   <string name="hide_after_set_time">Esconder Manípulo após um Intervalo Específico</string>
   <string name="blacklisting">Excluindo</string>
-  <string name="look_feel">Look &amp; Feel</string>
+  <string name="look_feel">Aparência &amp;</string>
   <string name="pill_hiding">Esconder Manípulo</string>
   <string name="sensitivity">Sensibilidade</string>
   <string name="back_to_default">Restaurar configurações Padrão?</string>
@@ -187,20 +187,20 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
-  <string name="color_picker">Color Picker (Fork)</string>
+  <string name="color_picker">Tela de Cores (Fork)</string>
   <string name="circle_progress">Círculo de Progresso</string>
   <string name="rx_java">RxJava/RxAndroid</string>
-  <string name="tasker_plugin">Tasker Plugin Library</string>
+  <string name="tasker_plugin">Biblioteca de Plugins de Eventos</string>
   <string name="edge_sdk">Galaxy Edge SDK</string>
   <string name="anr_watchdog">ANR-WatchDog</string>
   <!--Intent Names-->
-  <string name="google_music_search">Google Music Search</string>
+  <string name="google_music_search">Google Musica Search</string>
   <string name="google_weather">Resultados Meteorologia Google</string>
-  <string name="google_new_calendar_event">New Google Calendar Event</string>
-  <string name="camera_take_photo">Take Photo</string>
-  <string name="camera_take_video">Take Video</string>
-  <string name="shazam_it">Shazam It</string>
-  <string name="soundhound_it">SoundHound It</string>
+  <string name="google_new_calendar_event">Novo Evento do Calendário Google</string>
+  <string name="camera_take_photo">Tirar Foto</string>
+  <string name="camera_take_video">Gravar Video</string>
+  <string name="shazam_it">Usar Shazam</string>
+  <string name="soundhound_it">Usar SoundHound</string>
   <!--Actions-->
   <string name="home">Home</string>
   <string name="back">Back</string>
@@ -217,7 +217,7 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <string name="prem_prev">Faixa Anterior (Pago)</string>
   <string name="prem_next">Próxima faixa (Pago)</string>
   <string name="prem_play_pause">Reprodução/Pausa (Pago)</string>
-  <string name="hold_back">Hold Back (Root)</string>
+  <string name="hold_back">Segurar Back (Root)</string>
   <string name="forward">Ir para a frente (Root)</string>
   <string name="menu">Abre o Menu (Root)</string>
   <string name="sleep">Sleep (Root)</string>
