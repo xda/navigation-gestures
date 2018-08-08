@@ -87,12 +87,12 @@
   <string name="swipe_up_hold_right">Vuốt lên bên phải và giữ</string>
   <string name="use_recommended_settings">Sử dụng cài đặt khuyên dùng?</string>
   <string name="hide_pill_on_keyboard">Ẩn thanh cử chỉ khi bàn phím hiển thị</string>
-  <string name="use_immersive_mode_when_nav_hidden">Kích hoạt chế độ ẩn phím điều hướng</string>
-  <string name="nav_imm_enabled">Immersive Navigation Enabled</string>
-  <string name="nav_imm_disabled">Immersive Navigation Disabled</string>
+  <string name="use_immersive_mode_when_nav_hidden">Kích hoạt ẩn phím điều hướng</string>
+  <string name="nav_imm_enabled">Ẩn phím điều nước được kích hoạt</string>
+  <string name="nav_imm_disabled">Ẩn phím điều hướng đã hủy kích hoạt</string>
   <string name="nav_blacklist">Hiện thanh điều hướng trong các ứng dụng đã chọn</string>
   <string name="bar_blacklist">Ẩn thanh cử chỉ trong các ứng dụng đã chọn</string>
-  <string name="imm_blacklist">Immersive Blacklist</string>
+  <string name="imm_blacklist">Danh sách loại trừ ẩn phím điều hướng</string>
   <string name="x_threshold">Horizontal (X) Swipe Distance</string>
   <string name="y_threshold">Vertical (Y) Swipe Distance</string>
   <string name="hide_after_set_time">Ẩn thanh cử chỉ sau khoảng chờ</string>
