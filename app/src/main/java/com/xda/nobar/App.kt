@@ -228,7 +228,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val premTypeTaskerEvent by lazy { resources.getString(R.string.prem_type_tasker_event).toInt() }
     val typeToggleNav by lazy { resources.getString(R.string.type_toggle_nav).toInt() }
     val premTypeFlashlight by lazy { resources.getString(R.string.prem_type_flashlight).toInt() }
-    val premTypeVolumePanel by lazy { resources.getString(R.string.prem_volume_panel).toInt() }
+    val premTypeVolumePanel by lazy { resources.getString(R.string.prem_type_volume_panel).toInt() }
     val premTypeBluetooth by lazy { resources.getString(R.string.prem_type_bluetooth).toInt() }
     val premTypeWiFi by lazy { resources.getString(R.string.prem_type_wifi).toInt() }
     val premTypeIntent by lazy { resources.getString(R.string.prem_type_intent).toInt() }
@@ -698,6 +698,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                 && disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)) {
                             showNav()
                         }
+                        if (disabledImmReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)) {
+                            Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
+                        }
                     }
                 }
 
@@ -705,9 +708,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (Utils.enableInCarMode(this@App)) {
                         if (pillShown) bar.params.height = Utils.getCustomHeight(this@App)
                     } else {
-                        if (areGesturesActivated() && !pillShown) addBar()
+                        if (areGesturesActivated()) addBar()
                         if (Utils.shouldUseOverscanMethod(this@App)) {
                             disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
+                        }
+                        if (disabledImmReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)) {
+                            Utils.setNavImmersive(this@App)
                         }
                     }
                 }

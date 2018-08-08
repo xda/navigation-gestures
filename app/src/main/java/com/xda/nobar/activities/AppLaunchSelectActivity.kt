@@ -9,9 +9,9 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
 import com.xda.nobar.R
+import com.xda.nobar.adapters.AppSelectAdapter
 import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.util.AppInfo
-import com.xda.nobar.util.AppSelectAdapter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -19,7 +19,7 @@ import kotlin.collections.ArrayList
  * Selector activity for choosing an app to launch
  * This will be opened when the user chooses the "Launch App" action for a gesture
  */
-class AppLaunchSelectActivity : BaseAppSelectActivity<Any>() {
+class AppLaunchSelectActivity : BaseAppSelectActivity<Any, AppInfo>() {
     companion object {
         const val EXTRA_RESULT_DISPLAY_NAME = "name"
         const val CHECKED_PACKAGE = "checked_package"
@@ -126,4 +126,20 @@ class AppLaunchSelectActivity : BaseAppSelectActivity<Any>() {
     }
 
     private fun isForActivitySelect() = intent.getBooleanExtra(FOR_ACTIVITY_SELECT, false)
+
+    override fun filter(query: String): ArrayList<AppInfo> {
+        val lowercase = query.toLowerCase()
+
+        val filteredList = ArrayList<AppInfo>()
+
+        ArrayList(origAppSet).forEach {
+            val title = it.displayName.toLowerCase()
+            val summary = if (adapter.activity) it.activity else it.packageName
+            if (title.contains(lowercase) || summary.contains(lowercase)) {
+                filteredList.add(it)
+            }
+        }
+
+        return filteredList
+    }
 }

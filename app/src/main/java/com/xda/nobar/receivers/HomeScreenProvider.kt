@@ -10,6 +10,13 @@ import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
+import com.xda.nobar.providers.BaseProvider
+import com.xda.nobar.providers.BaseProvider.Companion.ACTION_PERFORM_TOGGLE
+import com.xda.nobar.providers.BaseProvider.Companion.ACTION_REFRESH
+import com.xda.nobar.providers.BaseProvider.Companion.GEST
+import com.xda.nobar.providers.BaseProvider.Companion.IMM
+import com.xda.nobar.providers.BaseProvider.Companion.NAV
+import com.xda.nobar.providers.BaseProvider.Companion.sendUpdate
 
 class CocktailReceiver : BaseProvider() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -77,7 +84,7 @@ class CocktailReceiver : BaseProvider() {
         }
     }
 
-    private fun onUpdate(context: Context, cocktailManager: SlookCocktailManager, cocktailIds: IntArray) {
+    override fun onUpdate(context: Context, cocktailManager: SlookCocktailManager, cocktailIds: IntArray) {
         val views = handleUpdate(context, R.layout.widget_layout)
 
         val longClickIntent = Intent(context, MainActivity::class.java)
@@ -91,6 +98,4 @@ class CocktailReceiver : BaseProvider() {
             cocktailManager.updateCocktail(id, views)
         }
     }
-
-    fun onVisibilityChanged(context: Context, cocktailId: Int, visibility: Int) = null
 }

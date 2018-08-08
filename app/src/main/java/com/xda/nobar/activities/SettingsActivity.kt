@@ -23,6 +23,11 @@ import java.util.*
  * The configuration activity
  */
 class SettingsActivity : AppCompatActivity() {
+    companion object {
+        const val REQ_APP = 10
+        const val REQ_INTENT = 11
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -197,7 +202,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            if (requestCode == 10) {
+            if (requestCode == REQ_APP) {
                 val key = data?.getStringExtra(BaseAppSelectActivity.EXTRA_KEY)
                 val appName = data?.getStringExtra(AppLaunchSelectActivity.EXTRA_RESULT_DISPLAY_NAME)
                 val forActivity = data?.getBooleanExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, false) == true
@@ -216,6 +221,29 @@ class SettingsActivity : AppCompatActivity() {
                                     it.saveValue(app.typeNoAction.toString())
                                 } else {
                                     it.saveValueWithoutListener((if (forActivity) app.premTypeLaunchActivity else app.premTypeLaunchApp).toString())
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if (requestCode == REQ_INTENT) {
+                val key = data?.getStringExtra(BaseAppSelectActivity.EXTRA_KEY)
+
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        val res = Utils.getIntentKey(activity, key ?: return)
+                        updateIntentSummary(key, res)
+                    }
+
+                    Activity.RESULT_CANCELED -> {
+                        listPrefs.forEach {
+                            if (it.key == key) {
+                                val res = Utils.getIntentKey(activity, key)
+
+                                if (res < 1) {
+                                    it.saveValue(app.typeNoAction.toString())
+                                } else {
+                                    it.saveValueWithoutListener(app.premTypeIntent.toString())
                                 }
                             }
                         }
@@ -305,7 +333,16 @@ class SettingsActivity : AppCompatActivity() {
             listPrefs.forEach {
                 if (key == it.key) {
                     it.summary = String.format(Locale.getDefault(), it.summary.toString(), appName)
-                    return@forEach
+                    return
+                }
+            }
+        }
+
+        private fun updateIntentSummary(key: String, res: Int) {
+            listPrefs.forEach {
+                if (key == it.key) {
+                    it.summary = String.format(Locale.getDefault(), it.summary.toString(), resources.getString(res))
+                    return
                 }
             }
         }
@@ -368,7 +405,13 @@ class SettingsActivity : AppCompatActivity() {
                         intent.putExtra(AppLaunchSelectActivity.CHECKED_ACTIVITY, activity)
                         intent.putExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, forActivity)
 
-                        startActivityForResult(intent, 10)
+                        startActivityForResult(intent, REQ_APP)
+                    } else if (newValue?.toString() == app.premTypeIntent.toString()) {
+                        val intent = Intent(activity, IntentSelectorActivity::class.java)
+
+                        intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
+
+                        startActivityForResult(intent, REQ_INTENT)
                     }
                     true
                 }

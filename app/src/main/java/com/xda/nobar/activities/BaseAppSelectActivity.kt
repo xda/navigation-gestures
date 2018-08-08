@@ -3,6 +3,7 @@ package com.xda.nobar.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -15,35 +16,35 @@ import android.widget.LinearLayout
 import com.github.lzyzsd.circleprogress.ArcProgress
 import com.xda.nobar.App
 import com.xda.nobar.R
-import com.xda.nobar.util.AppInfo
-import com.xda.nobar.util.AppSelectAdapter
+import com.xda.nobar.adapters.BaseSelectAdapter
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 
 /**
  * Base activity for all app selection activities
  * Manages the basic logic of each
  */
-abstract class BaseAppSelectActivity<ListItem : Any> : AppCompatActivity(), SearchView.OnQueryTextListener {
+abstract class BaseAppSelectActivity<ListItem : Any, Info: Parcelable> : AppCompatActivity(), SearchView.OnQueryTextListener {
     internal companion object {
         const val APPINFO = "app_info"
         const val EXTRA_KEY = "key"
     }
 
-    internal abstract val adapter: AppSelectAdapter
+    internal abstract val adapter: BaseSelectAdapter<Info>
 
     internal var isCreated = false
 
     internal val app by lazy { application as App }
 
-    private val origAppSet = ArrayList<AppInfo>()
-    private val list by lazy { findViewById<RecyclerView>(R.id.list) }
-    private val loader by lazy { findViewById<ArcProgress>(R.id.progress) }
+    internal val origAppSet = ArrayList<Info>()
+    internal val list by lazy { findViewById<RecyclerView>(R.id.list) }
+    internal val loader by lazy { findViewById<ArcProgress>(R.id.progress) }
 
-    private lateinit var searchItem: MenuItem
+    internal lateinit var searchItem: MenuItem
 
     internal abstract fun loadAppList(): ArrayList<ListItem>
-    internal abstract fun loadAppInfo(info: ListItem): AppInfo?
+    internal abstract fun loadAppInfo(info: ListItem): Info?
 
     /**
      * Override this to define whether or not the activity should run
@@ -51,7 +52,7 @@ abstract class BaseAppSelectActivity<ListItem : Any> : AppCompatActivity(), Sear
      */
     internal open fun canRun() = true
 
-    internal open fun shouldAddInfo(appInfo: AppInfo) = true
+    internal open fun shouldAddInfo(appInfo: Info) = true
 
     internal open fun showUpAsCheckMark() = true
 
@@ -176,31 +177,17 @@ abstract class BaseAppSelectActivity<ListItem : Any> : AppCompatActivity(), Sear
 
     internal fun getKey() = intent.getStringExtra(EXTRA_KEY)
 
-    internal fun passAppInfo(intent: Intent, info: AppInfo) {
+    internal fun passAppInfo(intent: Intent, info: Info) {
         val bundle = Bundle()
         bundle.putParcelable(APPINFO, info)
         intent.putExtra(APPINFO, bundle)
     }
 
-    internal fun getPassedAppInfo(): AppInfo? = intent.getBundleExtra(APPINFO).getParcelable(APPINFO) as AppInfo?
+    internal fun getPassedAppInfo(): Info? = intent.getBundleExtra(APPINFO).getParcelable(APPINFO) as Info?
 
     /**
      * Filter logic for the search function
      * Matches both display names and package names
      */
-    private fun filter(query: String): ArrayList<AppInfo> {
-        val lowercase = query.toLowerCase()
-
-        val filteredList = ArrayList<AppInfo>()
-
-        ArrayList(origAppSet).forEach {
-            val title = it.displayName.toLowerCase()
-            val summary = if (adapter.activity) it.activity else it.packageName
-            if (title.contains(lowercase) || summary.contains(lowercase)) {
-                filteredList.add(it)
-            }
-        }
-
-        return filteredList
-    }
+    internal abstract fun filter(query: String): ArrayList<Info>
 }

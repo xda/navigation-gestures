@@ -6,9 +6,9 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import com.xda.nobar.R
+import com.xda.nobar.adapters.AppSelectAdapter
 import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.util.AppInfo
-import com.xda.nobar.util.AppSelectAdapter
 import com.xda.nobar.util.Utils
 import java.util.*
 import kotlin.collections.ArrayList
@@ -17,7 +17,7 @@ import kotlin.collections.ArrayList
  * Activity to manage which apps should be blacklisted for a certain function
  * Use the constants in the companion object to specify the function
  */
-class BlacklistSelectorActivity : BaseAppSelectActivity() {
+class BlacklistSelectorActivity : BaseAppSelectActivity<ApplicationInfo, AppInfo>() {
     companion object {
         const val EXTRA_WHICH = "which"
 
@@ -77,9 +77,7 @@ class BlacklistSelectorActivity : BaseAppSelectActivity() {
         return ArrayList(list)
     }
 
-    override fun loadAppInfo(info: Any): AppInfo? {
-        info as ApplicationInfo
-
+    override fun loadAppInfo(info: ApplicationInfo): AppInfo? {
         val appInfo = AppInfo(info.packageName,
                 "",
                 info.loadLabel(packageManager).toString(),
@@ -103,5 +101,21 @@ class BlacklistSelectorActivity : BaseAppSelectActivity() {
             FOR_IMM -> Utils.saveBlacklistedImmPackages(this, currentlyBlacklisted)
             FOR_WIN -> Utils.saveOtherWindowApps(this, currentlyBlacklisted)
         }
+    }
+
+    override fun filter(query: String): ArrayList<AppInfo> {
+        val lowercase = query.toLowerCase()
+
+        val filteredList = ArrayList<AppInfo>()
+
+        ArrayList(origAppSet).forEach {
+            val title = it.displayName.toLowerCase()
+            val summary = if (adapter.activity) it.activity else it.packageName
+            if (title.contains(lowercase) || summary.contains(lowercase)) {
+                filteredList.add(it)
+            }
+        }
+
+        return filteredList
     }
 }

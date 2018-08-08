@@ -11,7 +11,7 @@ import android.os.Parcelable
  * @param displayName the display name of the app
  * @param isChecked whether or not this item should appear as checked in a list
  */
-class AppInfo(val packageName: String, val activity: String, val displayName: String, val icon: Int, var isChecked: Boolean) : Parcelable {
+open class AppInfo(val packageName: String, val activity: String, val displayName: String, val icon: Int, var isChecked: Boolean) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),

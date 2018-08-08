@@ -1,8 +1,8 @@
-package com.xda.nobar.util
+package com.xda.nobar.adapters
 
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.support.v7.util.SortedList
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +11,9 @@ import android.widget.TextView
 import com.rey.material.widget.CheckedImageView
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnAppSelectedListener
+import com.xda.nobar.util.AppInfo
+import com.xda.nobar.util.AppInfoSorterCallback
+import com.xda.nobar.util.Utils
 
 /**
  * For use by BaseAppSelectActivity
@@ -21,16 +24,15 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
                        val showSummary: Boolean,
                        val checkListener: OnAppSelectedListener,
                        val activity: Boolean = false,
-                       val isRemote: Boolean = true)
-    : RecyclerView.Adapter<AppSelectAdapter.VH>() {
-    val apps = SortedList<AppInfo>(AppInfo::class.java, AppInfoSorterCallback(this, activity))
+                       val isRemote: Boolean = true) : BaseSelectAdapter<AppInfo>() {
 
-    override fun getItemCount() = apps.size()
+    override val apps = SortedList<AppInfo>(AppInfo::class.java, AppInfoSorterCallback(this, activity))
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            AppSelectAdapter.VH(LayoutInflater.from(parent.context)
+            VH(LayoutInflater.from(parent.context)
                     .inflate(if (isSingleSelect) R.layout.app_info_single else R.layout.app_info_multi, parent, false))
 
-    override fun onBindViewHolder(holder: AppSelectAdapter.VH, position: Int) {
+    override fun onBindViewHolder(holder: VH, position: Int) {
         val app = apps[position]
         val view = holder.view
 
@@ -45,12 +47,16 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
             summary.visibility = View.GONE
         }
 
-        val remoteResources = if (isRemote) view.context.packageManager.getResourcesForApplication(app.packageName) else view.context.resources
+        val remoteResources = try {
+            if (isRemote) view.context.packageManager.getResourcesForApplication(app.packageName) else view.context.resources
+        } catch (e: PackageManager.NameNotFoundException) {
+            view.context.resources
+        }
         icon.background = try {
             Utils.getBitmapDrawable(remoteResources.getDrawable(app.icon), holder.view.context.resources)
-                    ?: view.context.resources.getDrawable(android.R.drawable.ic_menu_help)
+                    ?: view.context.resources.getDrawable(R.drawable.blank)
         } catch (e: Resources.NotFoundException) {
-            view.context.resources.getDrawable(android.R.drawable.ic_menu_help)
+            view.context.resources.getDrawable(R.drawable.blank)
         }
 
         view.setOnClickListener { _ ->
@@ -74,42 +80,6 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
         check.isChecked = app.isChecked
     }
 
-    fun add(info: AppInfo) {
-        apps.add(info)
-    }
-
-    fun remove(info: AppInfo) {
-        apps.remove(info)
-    }
-
-    fun add(infos: List<AppInfo>) {
-        apps.addAll(infos)
-    }
-
-    fun remove(infos: List<AppInfo>) {
-        infos.forEach {
-            remove(it)
-        }
-    }
-
-    fun replaceAll(models: List<AppInfo>) {
-        apps.beginBatchedUpdates()
-        for (i in apps.size() - 1 downTo 0) {
-            val model = apps.get(i)
-            if (!models.contains(model)) {
-                apps.remove(model)
-            }
-        }
-        apps.addAll(models)
-        apps.endBatchedUpdates()
-    }
-
-    fun clear() {
-        val dataSize = apps.size()
-        apps.clear()
-        notifyItemRangeRemoved(0, dataSize)
-    }
-
     fun setSelectedByPackage(packageName: String) {
         (0 until apps.size())
                 .map { apps[it] }
@@ -119,6 +89,4 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
                     notifyItemChanged(apps.indexOf(it))
                 }
     }
-
-    class VH(val view: View) : RecyclerView.ViewHolder(view)
 }

@@ -16,7 +16,6 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.TypedValue
 import android.view.WindowManager
-import com.crashlytics.android.Crashlytics
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
@@ -130,9 +129,7 @@ object Utils {
             map[app.actionUpHoldCenter] = upHoldCenter
             map[app.actionUpRight] = upRight
             map[app.actionUpHoldRight] = upHoldRight
-        } catch (e: Exception) {
-            Crashlytics.logException(e)
-        }
+        } catch (e: Exception) {}
     }
 
     /**
@@ -808,7 +805,7 @@ object Utils {
                     .putInt("${baseKey}_intent", res)
                     .apply()
 
-    fun getIntentKey(context: Context, baseKey: String) =
+    fun getIntentKey(context: Context, baseKey: String?) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getInt("${baseKey}_intent", 0)
 }

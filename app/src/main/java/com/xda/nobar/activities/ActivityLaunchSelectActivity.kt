@@ -6,11 +6,11 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.preference.PreferenceManager
+import com.xda.nobar.adapters.AppSelectAdapter
 import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.util.AppInfo
-import com.xda.nobar.util.AppSelectAdapter
 
-class ActivityLaunchSelectActivity : BaseAppSelectActivity<ActivityInfo>() {
+class ActivityLaunchSelectActivity : BaseAppSelectActivity<ActivityInfo, AppInfo>() {
     override val adapter = AppSelectAdapter(true, true, OnAppSelectedListener { info ->
         PreferenceManager.getDefaultSharedPreferences(this@ActivityLaunchSelectActivity)
                 .edit()
@@ -55,5 +55,21 @@ class ActivityLaunchSelectActivity : BaseAppSelectActivity<ActivityInfo>() {
         setResult(Activity.RESULT_CANCELED)
 
         super.onBackPressed()
+    }
+
+    override fun filter(query: String): ArrayList<AppInfo> {
+        val lowercase = query.toLowerCase()
+
+        val filteredList = ArrayList<AppInfo>()
+
+        ArrayList(origAppSet).forEach {
+            val title = it.displayName.toLowerCase()
+            val summary = if (adapter.activity) it.activity else it.packageName
+            if (title.contains(lowercase) || summary.contains(lowercase)) {
+                filteredList.add(it)
+            }
+        }
+
+        return filteredList
     }
 }
