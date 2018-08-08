@@ -149,12 +149,13 @@
   <string name="app_purpose">这个应用程序为所有 Android 设备带来了惊人的导航手势。最好的是，它不需要root权限！在您可以使用手势之前，我们必须做一些事情来设置应用程序。</string>
   <string name="draw_over_apps_desc">为了让导航手势显示手势横条，您需要授予权限，使其能够在其他应用上方显示。点击下面的按钮并操作。如果从Play Store中安装，则该权限已被授予。</string>
   <string name="accessibility_desc">此应用程序使用无障碍功能服务来模拟原有导航按钮。单击“授予”以启用访问权限。</string>
-  <string name="write_secure_settings_desc">We can completely hide your stock navigation bar, but we need access to a special permission to do so. Click the button below to learn how you can grant it. If you are rooted, accept the root prompt. If you don\'t have a software navigation bar, or your phone has another way to hide the software navigation bar, you can skip this step.\n\nNOTE: ADB is not root! It will not void your warranty, trip KNOX, etc.</string>
-  <string name="ready_first_run_desc">You\'re ready to use Navigation Gestures! You can toggle the pill on the following page or from the Quick Settings tile (Nougat and later).</string>
-  <string name="ready_desc">You\’re ready to use navigation gestures on your device.</string>
-  <string name="root_found_desc">Don\'t worry. You can still use this app. Root actually makes the setup easier. If you like, we can use root access to grant this permission automatically. Otherwise, you can choose to use the tutorial/manual method.</string>
-  <string name="missing_perms_desc">Looks like one or more permissions got revoked somehow. No worries, though. We\'ll help get you back up and running.</string>
-  <string name="premium_required_desc">This action requires the premium add-on. Would you like to purchase it?</string>
+  <string name="write_secure_settings_desc">我们可以完全隐藏您的原有导航栏，但我们需要获得一个特殊的权限。单击下面的按钮可了解如何授予权限。如果您具有root权限，请接受 root 权限提示。如果您没有虚拟导航栏，或者您的手机有另一种隐藏虚拟导航栏的方法，则可以跳过此步骤。
+注意: ADB不是root！它不会破坏你的保修，trip KNOX等。</string>
+  <string name="ready_first_run_desc">您已经准备好使用导航手势了！您可以在以下页面或快速设置磁贴 (牛轧糖及更高版本) 中切换横条显示。</string>
+  <string name="ready_desc">您已经准备好在该设备上使用导航手势了。</string>
+  <string name="root_found_desc">不用担心，您仍然可以使用该应用程序。Root权限会使设置更容易。如果您愿意，我们可以使用 root 访问权限自动授予此权限。否则，您可以选择使用教程/手动方法。</string>
+  <string name="missing_perms_desc">看起来像是一个或多个权限授权被拒绝了。不过不用担心，我们会帮你恢复正常工作的。</string>
+  <string name="premium_required_desc">此操作需要付费插件。您想购买它吗？</string>
   <string name="nougat_required_desc">This action requires a device running Android Nougat or later. Sorry about that.</string>
   <string name="nougat_qs_reminder">Android Nougat allows for custom quick settings tiles, and we\'ve included one to toggle Navigation Gestures. You can add it by swiping down twice from the status bar, tapping the pencil icon or \"EDIT\" and dragging Navigation Gestures\' tile into the active area.</string>
   <string name="accessibility_screen_text">This app uses an Accessibility Service to simulate navigation button presses like the back, home, and multitasking buttons. We do not use it to collect any personal information, and no action will be performed except by the user.</string>
