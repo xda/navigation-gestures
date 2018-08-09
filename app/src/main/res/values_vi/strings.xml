@@ -147,7 +147,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
   <string name="full_overscan_desc">Theo mặc định, Navigation Gesture sẽ hiển thị 1 pixel của thanh điều hướng gốc. Bật chức năng này để loại bỏ pixel đó. Cảnh báo: một số thiết bị có thể bị hỏng!!!</string>
   <string name="toggle_gestures_desc">Bật/tắt hiển thị viên điều hướng trên màn hình.</string>
   <string name="toggle_nav_desc">Bật/tắt hiển thị thanh điều hướng gốc trên màn hình.</string>
-  <string name="dont_keep_overscan_on_lockscreen_desc">Enable this to show lock screen shortcuts and to fix issues with items being cut off on the lock screen, ambient display, or always on display.</string>
+  <string name="dont_keep_overscan_on_lockscreen_desc">Cho phép để hiển thị phím tắt trên màn hình khóa và sửa lỗi vài thành phần trên màn hình khóa, ambient display, hoặc always-on-display bị cắt ngắn.</string>
   <!--Paragraphs-->
   <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
   <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
