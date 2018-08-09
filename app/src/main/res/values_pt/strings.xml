@@ -159,8 +159,8 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <string name="premium_required_desc">Esta acção necessita da versão paga da aplicação. Gostaria de adquirir a versão paga?</string>
   <string name="nougat_required_desc">Esta ação requer um dispositivo que execute o Android Nougat ou posterior. Lamentamos a inconveniência.</string>
   <string name="nougat_qs_reminder">Nougat Android permite configurações rápidas personalizadas, e nós incluímos um para alternar Gestos de Navegação. Você pode adicioná-lo puxando para baixo duas vezes na barra de status, tocando o ícone de lápis ou \"Editar\" e arrastando o ícone dos Gestos de Navegação na área activa.</string>
-  <string name="accessibility_screen_text">Esta aplicação usa um serviço de acessibilidade para simular a sensação de carregar o botão como the back, home e botões multitasking. Não iremos guardar informações pessoais, e nenhuma acção será executada excepto pelo usuário.</string>
-  <string name="sorry_desc">Porque seu dispositivo está executando Android Pie, este aplicação não vai funcionar de momento.</string>
+  <string name="accessibility_screen_text">Esta aplicação usa um Serviço de Acessibilidade para simular a pressão dos botões de navegação como os botões de retroceder, do inicio e multi-tarefa. Este serviço não é usado para colectar qualquer informação pessoal, e nenhuma acção será executada, excepto por si.</string>
+  <string name="sorry_desc">Como este dispositivo está a executar o Android P, esta aplicação não funciona de momento.</string>
   <string name="warning_desc">Antes de desinstalar o Gestos de Navegação, certifique-se de que você reactivou o software original da barra de navegação usando o botão na aplicação! Você só precisa fazer isso se você ocultar a barra usando a nossa aplicação de navegação.</string>
   <string name="white_bar_desc">Usando esta aplicação você pode notar uma pequena barra branca na parte inferior do visor. Isto não é um bug! É necessário para evitar problemas muito mais graves. Isso não deveria ocorrer em dispositivos TouchWiz.</string>
   <string name="compatibility_desc">Enquanto usando este aplicativo, se você notar que a barra de navegação original está presente quando não deveria ser, diriga-se a configurações&gt;&gt;compatibilidade e experimentar as opções de compatibilidade lá.</string>
@@ -168,10 +168,10 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <string name="feature_not_avail">Esse recurso não pode ser usado enquanto Gestos de Navegação estiver a esconder a barra de navegação.</string>
   <!--Gestures-->
   <string name="tap">Toque</string>
-  <string name="left">Puxar à Esquerda</string>
-  <string name="right">Puxar para a Direita</string>
-  <string name="up">Puxar para Cima</string>
-  <string name="down">Puxar para Baixo</string>
+  <string name="left">Deslizar para a Esquerda</string>
+  <string name="right">Deslizar para a Direita</string>
+  <string name="up">Deslizar para Cima</string>
+  <string name="down">Deslizar para Baixo</string>
   <string name="hold">Pressão Longa</string>
   <string name="double_tap">Duplo Toque</string>
   <string name="swipe_up_hold">Puxar para Cima e Segurar</string>
