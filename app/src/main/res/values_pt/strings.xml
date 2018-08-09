@@ -117,7 +117,7 @@
   <string name="buy_premium_desc">Desbloqueie mais funcionalidades com o complemento Premium.</string>
   <string name="run_command_desc">adb shell pm grant com.xda.nobar android.permission.WRITE_SECURE_SETTINGS</string>
   <string name="foreground_desc">Esta notificação previne que o Android interrompa a aplicação. Esconda-a através de um clique longo e nas suas definições de seguida.</string>
-  <string name="static_pill_desc">Previnir que a Barra se Mova para Acima do Teclado.</string>
+  <string name="static_pill_desc">Evitar que a barra se mova para cima do Teclado.</string>
   <string name="hide_navbar_in_landscape_desc">Certamente aluns Dispositivos mostram a Barra de Navegação no Modo de Paisagem. Activar isto para prevenir esse alteração.</string>
   <string name="hide_navbar_in_upside_down_desc">Alguns dispositivos conseguem rodar o ecrã quando este está invertido na vertical, o que pode levar a que Barra de Navegação apareça. Activar esta opção para garantir que permanece escondida.</string>
   <string name="compatibility_pref_desc">Opções de Compatibilidade</string>
@@ -157,7 +157,7 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <string name="root_found_desc">Não se preocupe. Você ainda pode usar esta aplicação. Ter Root realmente facilita a instalação. Se quiser, podemos usar acesso root para conceder essa permissão automaticamente. Caso contrário, você pode escolher usar o método do tutorial/manual.</string>
   <string name="missing_perms_desc">Parece que uma ou mais permissões foram de alguma maneira bloqueadas. Mas sem preocupações. Nós vamos te ajudar a voltar a correr a aplicação de novo.</string>
   <string name="premium_required_desc">Esta acção necessita da versão paga da aplicação. Gostaria de adquirir a versão paga?</string>
-  <string name="nougat_required_desc">Esta ação requer um dispositivo correndo o Android Nougat ou mais recente Desculpe por isso.</string>
+  <string name="nougat_required_desc">Esta ação requer um dispositivo que execute o Android Nougat ou posterior. Lamentamos a inconveniência.</string>
   <string name="nougat_qs_reminder">Nougat Android permite configurações rápidas personalizadas, e nós incluímos um para alternar Gestos de Navegação. Você pode adicioná-lo puxando para baixo duas vezes na barra de status, tocando o ícone de lápis ou \"Editar\" e arrastando o ícone dos Gestos de Navegação na área activa.</string>
   <string name="accessibility_screen_text">Esta aplicação usa um serviço de acessibilidade para simular a sensação de carregar o botão como the back, home e botões multitasking. Não iremos guardar informações pessoais, e nenhuma acção será executada excepto pelo usuário.</string>
   <string name="sorry_desc">Porque seu dispositivo está executando Android Pie, este aplicação não vai funcionar de momento.</string>
