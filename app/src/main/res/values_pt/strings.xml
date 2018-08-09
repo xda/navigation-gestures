@@ -11,7 +11,7 @@
   <string name="gestures">Gestos</string>
   <string name="appearance">Aparência</string>
   <string name="behavior">Comportamento</string>
-  <string name="activated">Habilitar Gestos da Barra</string>
+  <string name="activated">Activar Barra de Gestos</string>
   <string name="toggle">Alternador</string>
   <string name="width">Largura da Barra</string>
   <string name="height">Altura da Barra</string>
@@ -48,7 +48,7 @@
   <string name="anim_duration">Duração da Animação</string>
   <string name="warning">Aviso!</string>
   <string name="pill_color">Cor da Barra</string>
-  <string name="pill_border_color">Cor da Borda da Barra</string>
+  <string name="pill_border_color">Cor do Limite da Barra</string>
   <string name="show_pill_shadow">Mostrar Sombra da Barra</string>
   <string name="static_pill">Não Mover a Barra quando o Teclado estiver Activo</string>
   <string name="hide_navbar_in_landscape">Esconder a Barra de Navegação no Modo Paisagem</string>
