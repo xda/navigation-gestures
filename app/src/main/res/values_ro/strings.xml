@@ -3,7 +3,7 @@
 <resources>
   <string name="app_name">Navigation Gestures</string>
   <!--Titles-->
-  <string name="gestures_on">Gestures On</string>
+  <string name="gestures_on">Activare gesturi</string>
   <string name="gestures_off">Gestures Off</string>
   <string name="nav_hidden">NavBar Hidden</string>
   <string name="nav_shown">NavBar Shown</string>
