@@ -297,7 +297,7 @@ class Actions : AccessibilityService(), Serializable {
                         app.premTypeMute -> {
                             //TODO: Implement
                         }
-                    }k
+                    }
                 }
                 RequestPermissionsActivity.ACTION_RESULT -> {
                     if (intent.getIntArrayExtra(RequestPermissionsActivity.EXTRA_RESULT_CODE)[0] == PackageManager.PERMISSION_GRANTED) {
