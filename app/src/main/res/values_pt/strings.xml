@@ -174,27 +174,27 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <string name="down">Deslizar para Baixo</string>
   <string name="hold">Pressão Longa</string>
   <string name="double_tap">Duplo Toque</string>
-  <string name="swipe_up_hold">Puxar para Cima e Segurar</string>
-  <string name="left_hold">Puxar para Esquerda e Segurar</string>
-  <string name="right_hold">Puxar para Direita e Segurar</string>
-  <string name="down_hold">Puxar para baixo e Segurar</string>
+  <string name="swipe_up_hold">Deslizar para Cima e Manter</string>
+  <string name="left_hold">Deslizar para a Esquerda e Manter</string>
+  <string name="right_hold">Deslizar para a Direita e Manter</string>
+  <string name="down_hold">Deslizar para Baixo e Manter</string>
   <!--Messages-->
-  <string name="grant_permission">Hmm. Parece que esta permissão ainda não foi garantida, Verifica se seguiste todas as instruções e tenta novamente.</string>
-  <string name="pill_hidden">Barra Escondida, Toque ou Puxe para Cima para mostrar.</string>
+  <string name="grant_permission">Hmm. Parece que esta permissão não foi concedida. Siga todas as instruções e tente novamente.</string>
+  <string name="pill_hidden">Barra Escondida, Toque ou deslize para cima para mostrar novamente.</string>
   <string name="accessibility_msg">Encontre \"Acessibilidade\" e toque.</string>
-  <string name="deactivate_before_uninstall">Verifique que \"Esconder Barra de Navegação\" está desligado antes de desinstalar!</string>
+  <string name="deactivate_before_uninstall">Certifique-se de que \"Esconder a Barra de Navegação\" está desactivado antes de desinstalar!</string>
   <string name="copied_to_clipboard">Email copiado para a área de transferência</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
-  <string name="color_picker">Tela de Cores (Fork)</string>
+  <string name="color_picker">Selector de Cores (Fork)</string>
   <string name="circle_progress">Círculo de Progresso</string>
   <string name="rx_java">RxJava/RxAndroid</string>
-  <string name="tasker_plugin">Biblioteca de Plugins de Eventos</string>
+  <string name="tasker_plugin">Biblioteca de Plugins do Tasker</string>
   <string name="edge_sdk">Galaxy Edge SDK</string>
   <string name="anr_watchdog">ANR-WatchDog</string>
   <!--Intent Names-->
-  <string name="google_music_search">Google Musica Search</string>
+  <string name="google_music_search">Pesquisa de Músicas Google</string>
   <string name="google_weather">Resultados Meteorologia Google</string>
   <string name="google_new_calendar_event">Novo Evento do Calendário Google</string>
   <string name="camera_take_photo">Tirar Foto</string>
