@@ -136,15 +136,14 @@
   <string name="nav_blacklist_desc">Escolha quais as aplicações que devem sempre mostrar a barra de navegação original.</string>
   <string name="bar_blacklist_desc">Escolher quais as aplicações que nunca devem mostrar a Barra.</string>
   <string name="imm_blacklist_desc">Escolher quais as aplicações que não devem usar o modo Imersivo.</string>
-  <string name="auto_hide_pill_desc_disabled">Quando seleccionado, a barra irá se esconder automaticamente a seguir a um determinado tempo.</string>
+  <string name="auto_hide_pill_desc_disabled">Quando activo, a barra irá automaticamente esconder-se depois do atraso especificado.</string>
   <string name="auto_hide_pill_desc_enabled">Atraso: %sms. Toque para alterar.</string>
-  <string name="back_to_default_desc">Divisão da Barra de Gestos desactivada! Pretende que activemos as suas definições para as predefinidas?</string>
-  <string name="fix_for_other_windows_desc">Escolher que aplicações a Barra de Gestos irá ser forçada a ficar a sobrepor. Muito útil para aplicações como Facebook Messenger, Drupe, etc.</string>
-  <string name="experimental_warning">ESTAS FUNCIONALIDADES NAO ESTÃO COMPLETAS E PODERAO NÃO FUNCIONAR NO SEU DISPOSITIVO!</string>
-  <string name="full_overscan_desc">Por predefinição, Navigations Gestures deixa 1 pixel da Barra de Navegação original visível. Activar isto para remover esse pixel. 
-AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
-  <string name="toggle_gestures_desc">Activar se a Barra de Gestos aparece ou não no ecrã.</string>
-  <string name="toggle_nav_desc">Escolhe se a Barra de Navegação do dispositivo deve estar visível ou escondida.</string>
+  <string name="back_to_default_desc">Divisão da Barra desactivada! Você quer repor as configurações afectadas de volta ao padrão?</string>
+  <string name="fix_for_other_windows_desc">Escolha em quais aplicações a barra deve ser forçada a permanecer no topo. Útil para aplicações como Facebook Messenger chat heads, Drupe, etc.</string>
+  <string name="experimental_warning">ESTAS FUNCIONALIDADES ESTÃO INCOMPLETAS E PODEM NÃO FUNCIONAR NO SEU DISPOSITIVO!</string>
+  <string name="full_overscan_desc">Por padrão, o Navigation Gestures deixa 1 pixel da barra de navegação original visível. Active isto para remover esse pixel. AVISO: Isto irá fazer com que certos dispositivos deixem de funcionar!!!</string>
+  <string name="toggle_gestures_desc">Alterne se a barra de gestos é ou não exibida no ecrã.</string>
+  <string name="toggle_nav_desc">Alterne se a barra de navegação de software do dispositivo deve ou não estar oculta.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Activar isto para mostrar atalhos do ecrã de bloqueio e resolver também os problemas de objectos cortados no ecrã de bloqueio, ambientador de ecrã ou de ecrã sempre activado.</string>
   <!--Paragraphs-->
   <string name="app_purpose">Esta aplicação traz Navegação por Gestos para qualquer dispositivo Android. Melhor ainda, não precisa de Root! Antes de experimentar esta navegação há algumas coisas que precisamos configurar para usar a aplicação.</string>
