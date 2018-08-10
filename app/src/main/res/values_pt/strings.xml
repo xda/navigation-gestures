@@ -97,7 +97,7 @@
   <string name="y_threshold">Vertical (Y) Distância a Deslizar</string>
   <string name="hide_after_set_time">Esconder a Barra após Intervalo Especificado</string>
   <string name="blacklisting">Lista Negra</string>
-  <string name="look_feel">Aparência &amp;</string>
+  <string name="look_feel">Aparência &amp; Sensação</string>
   <string name="pill_hiding">Esconder a Barra</string>
   <string name="sensitivity">Sensibilidade</string>
   <string name="back_to_default">Restaurar configurações Padrão?</string>
@@ -116,7 +116,7 @@
   <string name="other_apps_desc">XDA tem outras aplicações. Venha descobri-las!</string>
   <string name="buy_premium_desc">Desbloqueie mais funcionalidades com o complemento Premium.</string>
   <string name="run_command_desc">adb shell pm grant com.xda.nobar android.permission.WRITE_SECURE_SETTINGS</string>
-  <string name="foreground_desc">Esta notificação previne que o Android interrompa a aplicação. Esconda-a através de um clique longo e nas suas definições de seguida.</string>
+  <string name="foreground_desc">Esta notificação impede que o Android pare o aplicativo. Esconda-a pressionando e indo para as Configurações.</string>
   <string name="static_pill_desc">Evitar que a barra se mova para cima do Teclado.</string>
   <string name="hide_navbar_in_landscape_desc">Certamente aluns Dispositivos mostram a Barra de Navegação no Modo de Paisagem. Activar isto para prevenir esse alteração.</string>
   <string name="hide_navbar_in_upside_down_desc">Alguns dispositivos conseguem rodar o ecrã quando este está invertido na vertical, o que pode levar a que Barra de Navegação apareça. Activar esta opção para garantir que permanece escondida.</string>
@@ -231,7 +231,7 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <string name="prem_launch_activity">Iniciar uma Atividade (Pago) (%s)</string>
   <string name="prem_launch_activity_no_format">Iniciar uma Atividade (Pago)</string>
   <string name="prem_rot">Rodar Ecrã (Pago)</string>
-  <string name="prem_tasker_event">Agendar Evento (Pago)</string>
+  <string name="prem_tasker_event">Evento do Tasker (Premium)</string>
   <string name="prem_flashlight">Activar/Desactivar Lanterna (Pago)</string>
   <string name="prem_volume_panel">Abrir Painel de Volume (Pago)</string>
   <string name="prem_bluetooth">Activar/Desactivar Bluetooth (Pago)</string>
@@ -300,8 +300,8 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <!--Buttons-->
   <string name="no">Não</string>
   <!--Split Pill Recommendations-->
-  <string name="rec_set_transparent">\u2022 Manípulo fica completamente transparente</string>
-  <string name="rec_set_y">\u2022 Barra de Gestos é movida para o fundo do ecrã</string>
+  <string name="rec_set_transparent">\u2022 A Barra fica totalmente transparente</string>
+  <string name="rec_set_y">\u2022 A Barra move-se para a parte inferior do ecrã</string>
   <string name="rec_swipe_left_right">\u2022 Deslizar para cima da esquerda/direita para retroceder</string>
   <string name="rec_swipe_middle">Deslizar para cima pelo centro para Ecrã Inicial</string>
   <string name="rec_swipe_hold_middle">\u2022 Deslizar para cima pelo centro e manter para multi-tarefa</string>
