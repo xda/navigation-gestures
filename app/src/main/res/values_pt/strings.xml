@@ -204,22 +204,22 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <!--Actions-->
   <string name="home">Início</string>
   <string name="back">Retroceder</string>
-  <string name="ohm">Activar/Desactivar OHM</string>
+  <string name="ohm">Alternar OHM</string>
   <string name="recents">Aplicações Recentes</string>
   <string name="hide">Esconder Barra de Gestos</string>
   <string name="assist">Assistente</string>
   <string name="switch_apps">Aplicação Anterior (Nougat+)</string>
   <string name="nothing">Sem Acção</string>
-  <string name="prem_notif">Notificações (Pago)</string>
-  <string name="prem_qs">Definições Rápidas (Pago)</string>
-  <string name="prem_power">Menu de energia (Pago)</string>
-  <string name="split">Tela dividida (Nougat +)</string>
-  <string name="prem_prev">Faixa Anterior (Pago)</string>
-  <string name="prem_next">Próxima faixa (Pago)</string>
-  <string name="prem_play_pause">Reprodução/Pausa (Pago)</string>
+  <string name="prem_notif">Notificações (Premium)</string>
+  <string name="prem_qs">Definições Rápidas (Premium)</string>
+  <string name="prem_power">Menu de energia (Premium)</string>
+  <string name="split">Ecrã Dividido (Nougat+)</string>
+  <string name="prem_prev">Faixa anterior (Premium)</string>
+  <string name="prem_next">Próxima faixa (Premium)</string>
+  <string name="prem_play_pause">Reproduzir / Pausar (Premium)</string>
   <string name="hold_back">Segurar Back (Root)</string>
-  <string name="forward">Ir para a frente (Root)</string>
-  <string name="menu">Abre o Menu (Root)</string>
+  <string name="forward">Avançar (Root)</string>
+  <string name="menu">Abrir o Menu (Root)</string>
   <string name="sleep">Apagar Ecrã (Root)</string>
   <string name="prem_vol_up">Aumentar o volume (Root) (Premium)</string>
   <string name="prem_vol_down">Reduzir Volume (Root) (Pago)</string>
@@ -285,18 +285,18 @@ AVISO: Isto não irá funcionar em alguns dispositivos!!!</string>
   <string name="action_hold">manter</string>
   <string name="action_tap">toque</string>
   <string name="action_up_hold">cima_manter</string>
-  <string name="action_left_hold">esquerda_segurar</string>
-  <string name="action_right_hold">direita_segurar</string>
-  <string name="action_down_hold">baixo_segurar</string>
+  <string name="action_left_hold">esquerda_manter</string>
+  <string name="action_right_hold">direita_manter</string>
+  <string name="action_down_hold">baixo_manter</string>
   <!--Center Action Keys-->
-  <string name="action_up_center">cima_segurar</string>
-  <string name="action_up_hold_center">cima_segurar_centro</string>
+  <string name="action_up_center">cima_centro</string>
+  <string name="action_up_hold_center">cima_manter_centro</string>
   <!--Left Action Keys-->
   <string name="action_up_left">cima_esquerda</string>
-  <string name="action_up_hold_left">cima_segurar_esquerda</string>
+  <string name="action_up_hold_left">cima_manter_esquerda</string>
   <!--Right Action Keys-->
   <string name="action_up_right">cima_direita</string>
-  <string name="action_up_hold_right">cima_segurar_direita</string>
+  <string name="action_up_hold_right">cima_manter_direita</string>
   <!--Buttons-->
   <string name="no">Não</string>
   <!--Split Pill Recommendations-->
