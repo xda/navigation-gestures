@@ -147,7 +147,7 @@
   <string name="dont_keep_overscan_on_lockscreen_desc">Enable this to show lock screen shortcuts and to fix issues with items being cut off on the lock screen, ambient display, or always on display.</string>
   <!--Paragraphs-->
   <string name="app_purpose">Cette appli offre de somptueux gestes de navigation pour n\'importe quel appareil Android. Le mieux, elle n\'a pas besoin de root ! Avant de pouvoir utiliser les gestes, quelques paramétrages sont nécessaires.</string>
-  <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
+  <string name="draw_over_apps_desc">Afin d\'afficher la pilule de Navigation Gestures, vous devrez accorder la permission \"Superposer aux autres applis\". Appuyez sur le bouton ci-dessous pour le faire. Si vous avez installé depuis le Play Store, cette permission est déjà accordée.</string>
   <string name="accessibility_desc">This app uses an Accessibility Service to simulate the original navigation buttons. Click \“Grant\” below to enable access.</string>
   <string name="write_secure_settings_desc">We can completely hide your stock navigation bar, but we need access to a special permission to do so. Click the button below to learn how you can grant it. If you are rooted, accept the root prompt. If you don\'t have a software navigation bar, or your phone has another way to hide the software navigation bar, you can skip this step.\n\nNOTE: ADB is not root! It will not void your warranty, trip KNOX, etc.</string>
   <string name="ready_first_run_desc">Vous êtes prêt(e) à utiliser Navigation Gestures ! Vous pouvez activer/désactiver la pilule sur l\'écran suivant ou depuis la tuile des Paramètres rapides (Nougat ou supérieur).</string>
@@ -159,7 +159,7 @@
   <string name="nougat_qs_reminder">Android Nougat permet l\'utilisation de tuiles de paramètres rapides personnalisées et nous en avons inclus une pour activer/désactiver Navigation Gestures. Vous pouvez l\'ajouter en balayant deux fois votre doigt depuis la barre d\'état, puis en appuyant sur le crayon ou \"ÉDITER\" et en déposant la tuile Navigation Gestures dans la zone active.</string>
   <string name="accessibility_screen_text">This app uses an Accessibility Service to simulate navigation button presses like the back, home, and multitasking buttons. We do not use it to collect any personal information, and no action will be performed except by the user.</string>
   <string name="sorry_desc">Votre appareil utilise Android P. Cette application ne fonctionnera pas actuellement.</string>
-  <string name="warning_desc">Before you uninstall Navigation Gestures, make sure you unhide the software navigation bar using the toggle in the app! You only need to do this if you hide the navigation bar using our app.</string>
+  <string name="warning_desc">Avant de désinstaller Navigation Gestures, assuez-vous d\'avoir démasquer la barre de navigation logicielle via le bouton fourni ! Vous avez seulement besoin de le faire si vous avez masquer la barre de navigation en utilisant cette appli.</string>
   <string name="white_bar_desc">Using this app you may notice a small white bar at the very bottom of the display. This is not a bug! It is required to prevent much more serious issues. It should not occur on TouchWiz devices.</string>
   <string name="compatibility_desc">While using this app, if you notice that the original navigation bar is present when it shouldn\'t be, head over to Settings&gt;&gt;Compatibility and try the compatibility options there.</string>
   <string name="skip_wss_message">You can always come back to this step by toggling the Hide Navigation Bar switch on in the main screen of this app.</string>
@@ -202,7 +202,7 @@
   <!--Actions-->
   <string name="home">Écran d\'accueil</string>
   <string name="back">Retour</string>
-  <string name="ohm">Toggle OHM</string>
+  <string name="ohm">Activer/désactiver OHM</string>
   <string name="recents">Applications récentes</string>
   <string name="hide">Cacher la pilule</string>
   <string name="assist">Assistant</string>
@@ -215,7 +215,7 @@
   <string name="prem_prev">Piste précédente (Premium)</string>
   <string name="prem_next">Piste suivante (Premium)</string>
   <string name="prem_play_pause">Play/Pause (Premium)</string>
-  <string name="hold_back">Hold Back (Root)</string>
+  <string name="hold_back">Retour long (Root)</string>
   <string name="forward">Aller en avant (Premium)</string>
   <string name="menu">Ouvrir le Menu (Premium)</string>
   <string name="sleep">Mise en veille (Premium)</string>
