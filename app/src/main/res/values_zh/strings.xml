@@ -235,8 +235,8 @@
   <string name="prem_volume_panel">打开音量面板 (高级版)</string>
   <string name="prem_bluetooth">蓝牙开关 (高级版)</string>
   <string name="prem_wifi">WiFi 开关（高级版）</string>
-  <string name="prem_intent">Send Intent (Premium) (%s)</string>
-  <string name="prem_intent_no_format">Send Intent (Premium)</string>
+  <string name="prem_intent">发送指令（高级版）(%s)</string>
+  <string name="prem_intent_no_format">发送指令（高级版）</string>
   <!--Action Values-->
   <string name="type_no_action">-1</string>
   <string name="type_back">0</string>
