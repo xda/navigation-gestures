@@ -279,22 +279,22 @@
   <string name="action_right">derecha</string>
   <string name="action_up">arriba</string>
   <string name="action_down">abajo</string>
-  <string name="action_double">double_toque</string>
+  <string name="action_double">doble_toque</string>
   <string name="action_hold">mantener</string>
   <string name="action_tap">tocar</string>
-  <string name="action_up_hold">mantener_arriba</string>
-  <string name="action_left_hold">mantener_izquierda</string>
-  <string name="action_right_hold">mantener_derecha</string>
-  <string name="action_down_hold">mantener_abajo</string>
+  <string name="action_up_hold">arriba_mantener</string>
+  <string name="action_left_hold">izquierda_mantener</string>
+  <string name="action_right_hold">derecha_mantener</string>
+  <string name="action_down_hold">abajo_mantener</string>
   <!--Center Action Keys-->
-  <string name="action_up_center">up_center</string>
-  <string name="action_up_hold_center">up_hold_center</string>
+  <string name="action_up_center">arriba_centro</string>
+  <string name="action_up_hold_center">arriba_mantener_centro</string>
   <!--Left Action Keys-->
-  <string name="action_up_left">up_left</string>
-  <string name="action_up_hold_left">up_hold_left</string>
+  <string name="action_up_left">arriba_izquierda</string>
+  <string name="action_up_hold_left">arriba_mantener_izquierda</string>
   <!--Right Action Keys-->
-  <string name="action_up_right">up_right</string>
-  <string name="action_up_hold_right">up_hold_right</string>
+  <string name="action_up_right">arriba_derecha</string>
+  <string name="action_up_hold_right">arriba_mantener_derecha</string>
   <!--Buttons-->
   <string name="no">No</string>
   <!--Split Pill Recommendations-->
