@@ -199,6 +199,14 @@
   <string name="camera_take_video">Tomar Video</string>
   <string name="shazam_it">Shazam</string>
   <string name="soundhound_it">SoundHound</string>
+  <string name="start_bubble_upnp">Iniciar servicio BubbleUPnP</string>
+  <string name="stop_bubble_upnp">Detener servicio BubbleUPnP</string>
+  <string name="update_twilight">Actualizar Twilight</string>
+  <string name="refresh_twilight">Refrescar Twilight</string>
+  <string name="next_twilight_profile">Siguiente perfil de Twilight</string>
+  <string name="toggle_twilight">Activar o desactivar Twilight</string>
+  <string name="start_twilight">Iniciar Twilight</string>
+  <string name="stop_twilight">Detener Twilight</string>
   <!--Actions-->
   <string name="home">Inicio</string>
   <string name="back">Atrás</string>
