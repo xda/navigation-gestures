@@ -153,9 +153,9 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
   <string name="draw_over_apps_desc">Để Navigation Gesture có thể hiểu thị lên viên điều hướng, bạn phải cho phép vẽ đè lên các ứng dụng khác. Ấn nút bên dưới để thực hiện điều này. Nếu ứng dụng được tải từ Play Store, quyền này sẽ được cho cấp sẵn.</string>
   <string name="accessibility_desc">Ứng dụng này dùng dịch vụ tiện dụng để mô phỏng các nút điều hướng gốc. Nhấn \"Grant\" ở dưới để cho phép truy cập.</string>
   <string name="write_secure_settings_desc">Chúng ta hoàn toàn có thể ẩn thanh menu cổ của bạn, nhưng chúng tôi cần truy cập vào một giấy phép đặc biệt để làm như vậy. Nhấp vào nút dưới đây để tìm hiểu làm thế nào bạn có thể cấp cho nó. Nếu bạn đã root máy, chấp nhận lời nhắc root. Nếu bạn không có một thanh điều hướng phần mềm, hoặc điện thoại của bạn có một cách khác để ẩn thanh menu của phần mềm, bạn có thể bỏ qua bước này.\n\nNOTE này: ADB không phải là root máy! Nó sẽ không phá hỏng bảo hành của bạn, như KNOX, vv.</string>
-  <string name="ready_first_run_desc">You\'re ready to use Navigation Gestures! You can toggle the pill on the following page or from the Quick Settings tile (Nougat and later).</string>
-  <string name="ready_desc">You\’re ready to use navigation gestures on your device.</string>
-  <string name="root_found_desc">Don\'t worry. You can still use this app. Root actually makes the setup easier. If you like, we can use root access to grant this permission automatically. Otherwise, you can choose to use the tutorial/manual method.</string>
+  <string name="ready_first_run_desc">Bạn đã sẵn sàng để sử dụng cử chỉ điều hướng! Bạn có thể chuyển Pill Nav ở trang sau hoặc từ cài đặt nhanh (Android 7.0 Nougat hoặc mới hơn).</string>
+  <string name="ready_desc">You\ đã sẵn sàng để sử dụng cử chỉ điều hướng trên thiết bị của bạn.</string>
+  <string name="root_found_desc">Đừng lo lắng. Bạn vẫn có thể sử dụng ứng dụng này. Root trên thực tế làm việc thiết lập dễ dàng hơn. Nếu bạn muốn, chúng tôi có thể sử dụng quyền root để việc cấp phép này diễn ra tự động. Nếu không, bạn có thể chọn để sử dụng theo hướng dẫn.</string>
   <string name="missing_perms_desc">Looks like one or more permissions got revoked somehow. No worries, though. We\'ll help get you back up and running.</string>
   <string name="premium_required_desc">This action requires the premium add-on. Would you like to purchase it?</string>
   <string name="nougat_required_desc">This action requires a device running Android Nougat or later. Sorry about that.</string>
