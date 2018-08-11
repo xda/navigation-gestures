@@ -200,6 +200,14 @@
   <string name="camera_take_video">ビデオを撮る</string>
   <string name="shazam_it">Shazam It</string>
   <string name="soundhound_it">SoundHound It</string>
+  <string name="start_bubble_upnp">Start BubbleUPnP Service</string>
+  <string name="stop_bubble_upnp">Stop BubbleUPnP Service</string>
+  <string name="update_twilight">Update Twilight</string>
+  <string name="refresh_twilight">Refresh Twilight</string>
+  <string name="next_twilight_profile">Next Twilight Profile</string>
+  <string name="toggle_twilight">Toggle Twilight</string>
+  <string name="start_twilight">Start Twilight</string>
+  <string name="stop_twilight">Stop Twilight</string>
   <!--Actions-->
   <string name="home">ホーム</string>
   <string name="back">戻る</string>
