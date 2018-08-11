@@ -13,40 +13,80 @@ import com.xda.nobar.util.Utils
 
 class IntentSelectorActivity : BaseAppSelectActivity<Int, IntentInfo>() {
     companion object {
+        val BROADCAST = "broadcast"
+        val SERVICE = "service"
+        val ACTIVITY = "activity"
+
         val INTENTS = hashMapOf(
-                Pair(R.string.google_music_search,
-                        Intent("com.google.android.googlequicksearchbox.MUSIC_SEARCH")),
-                Pair(R.string.google_weather,
-                        Intent("com.google.android.apps.gsa.velour.DynamicActivityTrampoline").apply {
+                R.string.google_music_search to
+                        TypeIntent("com.google.android.googlequicksearchbox.MUSIC_SEARCH", ACTIVITY),
+                R.string.google_weather to
+                        TypeIntent("com.google.android.apps.gsa.velour.DynamicActivityTrampoline", ACTIVITY).apply {
                             data = Uri.parse("dynact://velour/weather/ProxyActivity")
                             `package` = "com.google.android.googlequicksearchbox"
                             component = ComponentName(
                                     `package`,
                                     "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"
                             )
-                        }
-                ),
-                Pair(R.string.google_new_calendar_event,
-                        Intent(Intent.ACTION_EDIT).apply {
+                        },
+                R.string.google_new_calendar_event to
+                        TypeIntent(Intent.ACTION_EDIT, ACTIVITY).apply {
                             `package` = "com.google.android.calendar"
                             addCategory(Intent.CATEGORY_DEFAULT)
                             type = "vnd.android.cursor.item/event"
-                        }
-                ),
-                Pair(R.string.camera_take_photo,
-                        Intent(MediaStore.ACTION_IMAGE_CAPTURE)),
-                Pair(R.string.camera_take_video,
-                        Intent(MediaStore.ACTION_VIDEO_CAPTURE)),
-                Pair(R.string.shazam_it,
-                        Intent("com.shazam.android.intent.actions.START_TAGGING").apply {
+                        },
+                R.string.camera_take_photo to
+                        TypeIntent(MediaStore.ACTION_IMAGE_CAPTURE, ACTIVITY),
+                R.string.camera_take_video to
+                        TypeIntent(MediaStore.ACTION_VIDEO_CAPTURE, ACTIVITY),
+                R.string.shazam_it to
+                        TypeIntent("com.shazam.android.intent.actions.START_TAGGING", ACTIVITY).apply {
                             addCategory(Intent.CATEGORY_DEFAULT)
-                        }
-                ),
-                Pair(R.string.soundhound_it,
-                        Intent("com.soundhound.android.ID_NOW_EXTERNAL").apply {
+                        },
+                R.string.soundhound_it to
+                        TypeIntent("com.soundhound.android.ID_NOW_EXTERNAL", ACTIVITY).apply {
                             addCategory(Intent.CATEGORY_DEFAULT)
+                        },
+                R.string.start_bubble_upnp to
+                        TypeIntent("com.bubblesoft.android.bubbleupnp.START_SERVICE", BROADCAST),
+                R.string.stop_bubble_upnp to
+                        TypeIntent("com.bubblesoft.android.bubbleupnp.STOP_SERVICE", BROADCAST),
+                R.string.update_twilight to
+                        TypeIntent(SERVICE).apply {
+                            `package` = "com.urbanandroid.lux"
+                            component = ComponentName(`package`, "com.urbandroid.lux.TwilightService")
+                            putExtra("update", "Update")
+                        },
+                R.string.refresh_twilight to
+                        TypeIntent(SERVICE).apply {
+                            `package` = "com.urbanandroid.lux"
+                            component = ComponentName(`package`, "com.urbanandroid.lux.TwilightService")
+                            putExtra("refresh", "Refresh")
+                        },
+                R.string.next_twilight_profile to
+                        TypeIntent(SERVICE).apply {
+                            `package` = "com.urbanandroid.lux"
+                            component = ComponentName(`package`, "com.urbanandroid.lux.TwilightService")
+                            putExtra("profile_next", "Next Profile")
+                        },
+                R.string.toggle_twilight to
+                        TypeIntent(SERVICE).apply {
+                            `package` = "com.urbanandroid.lux"
+                            component = ComponentName(`package`, "com.urbanandroid.lux.TwilightService")
+                            putExtra("toggle", "Toggle")
+                        },
+                R.string.start_twilight to
+                        TypeIntent(SERVICE).apply {
+                            `package` = "com.urbanandroid.lux"
+                            component = ComponentName(`package`, "com.urbanandroid.lux.TwilightService")
+                            putExtra("start", "Start")
+                        },
+                R.string.stop_twilight to
+                        TypeIntent(SERVICE).apply {
+                            `package` = "com.urbanandroid.lux"
+                            component = ComponentName(`package`, "com.urbanandroid.lux.TwilightService")
+                            putExtra("stop", "Stop")
                         }
-                )
         )
     }
 
@@ -75,5 +115,16 @@ class IntentSelectorActivity : BaseAppSelectActivity<Int, IntentInfo>() {
 
     override fun filter(query: String): java.util.ArrayList<IntentInfo> {
         return ArrayList(ArrayList(origAppSet).filter { resources.getString(it.id).toLowerCase().contains(query.toLowerCase()) })
+    }
+
+    class TypeIntent : Intent {
+        var which: String? = null
+
+        constructor(which: String) : super() {
+            this.which = which
+        }
+        constructor(action: String, which: String) : super(action) {
+            this.which = which
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.xda.nobar.services
 
 import android.Manifest
 import android.accessibilityservice.AccessibilityService
+import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.bluetooth.BluetoothAdapter
 import android.content.*
@@ -15,6 +16,7 @@ import android.os.UserHandle
 import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.RecognizerIntent
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.view.KeyEvent
 import android.view.OrientationEventListener
@@ -120,6 +122,7 @@ class Actions : AccessibilityService(), Serializable {
             flashlightController.onCreate()
         }
 
+        @SuppressLint("InlinedApi")
         override fun onReceive(context: Context?, intent: Intent?) {
             when(intent?.action) {
                 ACTION -> {
@@ -273,9 +276,14 @@ class Actions : AccessibilityService(), Serializable {
                         }
                         app.premTypeIntent -> runPremiumAction {
                             val broadcast = IntentSelectorActivity.INTENTS[Utils.getIntentKey(app, gesture)]
+                            val type = broadcast?.which
 
                             try {
-                                app.startActivity(broadcast)
+                                when (type) {
+                                    IntentSelectorActivity.ACTIVITY -> app.startActivity(broadcast)
+                                    IntentSelectorActivity.SERVICE -> ContextCompat.startForegroundService(app, broadcast)
+                                    IntentSelectorActivity.BROADCAST -> app.sendBroadcast(broadcast)
+                                }
                             } catch (e: SecurityException) {
                                 when (broadcast?.action) {
                                     MediaStore.ACTION_VIDEO_CAPTURE,
