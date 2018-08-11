@@ -234,8 +234,8 @@
   <string name="prem_volume_panel">Abrir panel de volumen (Premium)</string>
   <string name="prem_bluetooth">Activar o desactivar Bluetooth (Premium)</string>
   <string name="prem_wifi">Activar o desactivar WiFi (Premium)</string>
-  <string name="prem_intent">Enviar intención (Premium) (%s)</string>
-  <string name="prem_intent_no_format">Send Intent (Premium)</string>
+  <string name="prem_intent">Enviar Intent (Premium) (%s)</string>
+  <string name="prem_intent_no_format">Enviar Intent (Premium)</string>
   <!--Action Values-->
   <string name="type_no_action">-1</string>
   <string name="type_back">0</string>
