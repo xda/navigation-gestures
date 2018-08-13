@@ -13,9 +13,9 @@ import com.xda.nobar.util.Utils
 
 class IntentSelectorActivity : BaseAppSelectActivity<Int, IntentInfo>() {
     companion object {
-        val BROADCAST = "broadcast"
-        val SERVICE = "service"
-        val ACTIVITY = "activity"
+        const val BROADCAST = "broadcast"
+        const val SERVICE = "service"
+        const val ACTIVITY = "activity"
 
         val INTENTS = hashMapOf(
                 R.string.google_music_search to

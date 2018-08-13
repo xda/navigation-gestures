@@ -21,7 +21,6 @@ import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
-import android.widget.Toast
 import com.crashlytics.android.Crashlytics
 import com.github.anrwatchdog.ANRWatchDog
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -336,7 +335,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                 Utils.setNavImmersive(this)
                             }
                         } else {
-                            Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
+                            Utils.removeNavImmersive(this)
                         }
                     } catch (e: SecurityException) {}
                 }
@@ -540,7 +539,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      */
     fun showNav(callListeners: Boolean = true, removeImmersive: Boolean = true) {
         if (IntroActivity.hasWss(this)) {
-            if (removeImmersive && Utils.useImmersiveWhenNavHidden(this)) Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
+            if (removeImmersive && Utils.useImmersiveWhenNavHidden(this)) Utils.removeNavImmersive(this)
 
             handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
 
@@ -699,7 +698,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             showNav()
                         }
                         if (disabledImmReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)) {
-                            Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
+                            Utils.removeNavImmersive(this@App)
                         }
                     }
                 }
@@ -743,7 +742,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         fun register() {
             contentResolver.registerContentObserver(Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL), true, this)
-            contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_color"), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_current_color"), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_use_theme_default"), true, this)
@@ -796,9 +794,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     }
                     onGlobalLayout()
                 }
-            }
 
-            runAsync {
                 val barArray = ArrayList<String>().apply { Utils.loadBlacklistedBarPackages(this@App, this) }
                 if (barArray.contains(pName)) {
                     if (disabledBarReasonManager.add(DisabledReasonManager.PillReasons.BLACKLIST)) {
@@ -811,15 +807,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         if (!pillShown) addBar(false)
                     }
                 }
-            }
 
-            runAsync {
                 val immArray = ArrayList<String>().apply { Utils.loadBlacklistedImmPackages(this@App, this) }
                 if (immArray.contains(pName)) {
                     if (Utils.shouldUseOverscanMethod(this@App)
                             && Utils.useImmersiveWhenNavHidden(this@App)
                             && disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.BLACKLIST)) {
-                        Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
+                        Utils.removeNavImmersive(this@App)
                     }
                 } else {
                     if (Utils.shouldUseOverscanMethod(this@App)
@@ -828,9 +822,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         Utils.setNavImmersive(this@App)
                     }
                 }
-            }
 
-            runAsync {
                 if (pName != packageName) {
                     val windowArray = ArrayList<String>().apply { Utils.loadOtherWindowApps(this@App, this) }
                     if (windowArray.contains(pName)) {
@@ -846,45 +838,41 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         @SuppressLint("WrongConstant")
         override fun onGlobalLayout() {
             if (Utils.checkTouchWiz(this@App)) {
-                runAsync {
-                    try {
-                        val SemCocktailBarManager = Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
+                try {
+                    val SemCocktailBarManager = Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
 
-                        val manager = getSystemService("CocktailBarService")
+                    val manager = getSystemService("CocktailBarService")
 
-                        val getCocktailBarWindowType = SemCocktailBarManager.getMethod("getCocktailBarWindowType")
+                    val getCocktailBarWindowType = SemCocktailBarManager.getMethod("getCocktailBarWindowType")
 
-                        val edgeType = getCocktailBarWindowType.invoke(manager).toString().toInt()
+                    val edgeType = getCocktailBarWindowType.invoke(manager).toString().toInt()
 
-                        if (edgeType == EDGE_TYPE_ACTIVE) {
-                            if (Utils.shouldUseOverscanMethod(this@App)
-                                    && Utils.useImmersiveWhenNavHidden(this@App)
-                                    && disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
-                                Settings.Global.putString(contentResolver, Settings.Global.POLICY_CONTROL, null)
-                            }
-                        } else {
-                            if (Utils.shouldUseOverscanMethod(this@App)
-                                    && Utils.useImmersiveWhenNavHidden(this@App)
-                                    && disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
-                                Utils.setNavImmersive(this@App)
-                            }
+                    if (edgeType == EDGE_TYPE_ACTIVE) {
+                        if (Utils.shouldUseOverscanMethod(this@App)
+                                && Utils.useImmersiveWhenNavHidden(this@App)
+                                && disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
+                            Utils.removeNavImmersive(this@App)
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                    } else {
+                        if (Utils.shouldUseOverscanMethod(this@App)
+                                && Utils.useImmersiveWhenNavHidden(this@App)
+                                && disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
+                            Utils.setNavImmersive(this@App)
+                        }
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
 
             if (!isNavBarHidden() && Utils.shouldUseOverscanMethod(this@App)) hideNav()
 
             if (isPillShown()) {
-                runAsync {
-                    val rot = wm.defaultDisplay.rotation
-                    if (oldRot != rot) {
-                        handleRot()
+                val rot = wm.defaultDisplay.rotation
+                if (oldRot != rot) {
+                    handleRot()
 
-                        oldRot = rot
-                    }
+                    oldRot = rot
                 }
 
                 if (!isActing) {
@@ -949,23 +937,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         bar.immersiveNav = current.contains("nav")
                         handleImmersiveChange(current.contains("full"))
                     }
-                    Settings.Global.getUriFor("navigationbar_hide_bar_enabled") -> {
-                        if (Utils.shouldUseOverscanMethod(this@App) && IntroActivity.hasWss(this@App)) {
-                            try {
-                                val current = Settings.Global.getInt(contentResolver, "navigationbar_hide_bar_enabled")
 
-                                if (current != 0 && !Utils.useImmersiveWhenNavHidden(this@App)) {
-                                    Settings.Global.putInt(contentResolver, "navigationbar_hide_bar_enabled", 0)
-
-                                    handler.post { Toast.makeText(this@App, resources.getText(R.string.feature_not_avail), Toast.LENGTH_SHORT).show() }
-                                }
-                            } catch (e: Settings.SettingNotFoundException) {}
-                        }
-                    }
                     Settings.Global.getUriFor("navigationbar_color"),
                     Settings.Global.getUriFor("navigationbar_current_color"),
-                    Settings.Global.getUriFor("navigationbar_use_theme_default") -> if (isNavBarHidden()
-                            && IntroActivity.hasWss(this@App)) Utils.forceNavBlack(this@App)
+                    Settings.Global.getUriFor("navigationbar_use_theme_default") -> {
+                        if (isNavBarHidden()
+                                && IntroActivity.hasWss(this@App)) Utils.forceNavBlack(this@App)
+                    }
 
                     Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) -> {
                         val contains = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true

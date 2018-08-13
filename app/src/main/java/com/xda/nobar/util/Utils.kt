@@ -368,9 +368,12 @@ object Utils {
             PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("first_run", isFirst).apply()
 
     fun setNavImmersive(context: Context) =
-            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation=*")
-                    || (checkTouchWiz(context)
-                    && forceTouchWizNavNotEnabled(context))
+            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation=*") or
+                    (checkTouchWiz(context) && forceTouchWizNavNotEnabled(context))
+
+    fun removeNavImmersive(context: Context) =
+            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, null) or
+                    (checkTouchWiz(context) && forceTouchWizNavEnabled(context))
 
     /**
      * Check if the current device can use the necessary hidden APIs
@@ -423,8 +426,8 @@ object Utils {
     fun clearBlackNav(context: Context) =
             if (!IntroActivity.needsToRun(context) && shouldUseOverscanMethod(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
                 val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-                Settings.Global.putString(context.contentResolver, "navigationbar_color", prefs.getString("navigationbar_color", null)) ||
-                Settings.Global.putString(context.contentResolver, "navigationbar_current_color", prefs.getString("navigationbar_current_color", null)) ||
+                Settings.Global.putString(context.contentResolver, "navigationbar_color", prefs.getString("navigationbar_color", null)) or
+                Settings.Global.putString(context.contentResolver, "navigationbar_current_color", prefs.getString("navigationbar_current_color", null)) or
                 Settings.Global.putString(context.contentResolver, "navigationbar_use_theme_default", prefs.getString("navigationbar_use_theme_default", null))
             } else {
                 false
