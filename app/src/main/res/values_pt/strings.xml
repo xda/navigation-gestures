@@ -150,7 +150,7 @@
   <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
   <string name="accessibility_desc">This app uses an Accessibility Service to simulate the original navigation buttons. Click \“Grant\” below to enable access.</string>
   <string name="write_secure_settings_desc">We can completely hide your stock navigation bar, but we need access to a special permission to do so. Click the button below to learn how you can grant it. If you are rooted, accept the root prompt. If you don\'t have a software navigation bar, or your phone has another way to hide the software navigation bar, you can skip this step.\n\nNOTE: ADB is not root! It will not void your warranty, trip KNOX, etc.</string>
-  <string name="ready_first_run_desc">You\'re ready to use Navigation Gestures! You can toggle the pill on the following page or from the Quick Settings tile (Nougat and later).</string>
+  <string name="ready_first_run_desc">Você está pronto para usar os Gestos de Navegação! Você pode alternar a pílula na página seguinte ou nas Configurações Rápidas (Nougat em diante).</string>
   <string name="ready_desc">You\’re ready to use navigation gestures on your device.</string>
   <string name="root_found_desc">Don\'t worry. You can still use this app. Root actually makes the setup easier. If you like, we can use root access to grant this permission automatically. Otherwise, you can choose to use the tutorial/manual method.</string>
   <string name="missing_perms_desc">Looks like one or more permissions got revoked somehow. No worries, though. We\'ll help get you back up and running.</string>
@@ -166,7 +166,7 @@
   <string name="feature_not_avail">This feature cannot be used while Navigation Gestures is hiding the navigation bar.</string>
   <!--Gestures-->
   <string name="tap">Tap</string>
-  <string name="left">Swipe Left</string>
+  <string name="left">Deslize para a esquerda</string>
   <string name="right">Swipe Right</string>
   <string name="up">Swipe Up</string>
   <string name="down">Swipe Down</string>
