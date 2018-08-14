@@ -95,7 +95,7 @@
   <string name="imm_blacklist">Чёрный список режима погружения</string>
   <string name="x_threshold">Horizontal (X) Swipe Distance</string>
   <string name="y_threshold">Vertical (Y) Swipe Distance</string>
-  <string name="hide_after_set_time">Почитать таблетку после определённой задержки</string>
+  <string name="hide_after_set_time">Скрыть таблетку после задержки</string>
   <string name="blacklisting">Чёрный список</string>
   <string name="look_feel">Внешний вид и наполение</string>
   <string name="pill_hiding">Скрытие таблетки</string>
