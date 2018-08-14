@@ -52,9 +52,9 @@
   <string name="show_pill_shadow">Pill Shadow Weergeven</string>
   <string name="static_pill">Pill Niet Verplaatsen wanneer Toetsenbord weergegeven</string>
   <string name="hide_navbar_in_landscape">Navigatiebalk Verbergen in Landschap</string>
-  <string name="hide_navbar_in_upside_down">Hide NavBar when Upside Down</string>
-  <string name="white_bar">White Bar</string>
-  <string name="tablet_mode">Hide Navigation Bar on Tablets</string>
+  <string name="hide_navbar_in_upside_down">Verberg NavBar wanneer ondersteboven</string>
+  <string name="white_bar">Witte Balk</string>
+  <string name="tablet_mode">Navigatiebalk Verbergen op Tablets</string>
   <string name="compatibility">Compatibility</string>
   <string name="foreground">Navigation Gestures is Active</string>
   <string name="pill_corner_radius">Pill Corner Radius</string>
