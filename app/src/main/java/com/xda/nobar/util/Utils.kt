@@ -303,6 +303,9 @@ object Utils {
      * @return true if the pill should NOT move (should stay at the bottom of the screen
      */
     fun dontMoveForKeyboard(context: Context) =
+            dontMoveForKeyboardInternal(context)
+
+    private fun dontMoveForKeyboardInternal(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("static_pill", context.resources.getBoolean(R.bool.static_pill_default))
 
@@ -508,6 +511,9 @@ object Utils {
      * Fixes alignment issues and Force Touch on TouchWiz
      */
     fun useImmersiveWhenNavHidden(context: Context) =
+            useImmersiveWhenNavHiddenInternal(context)
+
+    private fun useImmersiveWhenNavHiddenInternal(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("use_immersive_mode_when_nav_hidden", context.resources.getBoolean(R.bool.immersive_nav_default))
 

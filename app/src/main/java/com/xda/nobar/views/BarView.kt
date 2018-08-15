@@ -232,7 +232,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 params.flags = params.flags or
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
                         WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
             } else {
                 params.flags = params.flags or
                         WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM and

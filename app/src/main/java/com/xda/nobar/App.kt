@@ -414,7 +414,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         flags = flags or
                                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
                                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                        softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+                        softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
                     }
 
                     if (Utils.largerHitbox(this@App)) {
@@ -773,7 +773,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_use_theme_default"), true, this)
             contentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, this)
 
-            bar.immersiveNav = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)?.contains("navigation") ?: false
+            bar.immersiveNav = immersiveHelperView.isNavImmersive()
 
             asDidContainApp = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
         }
@@ -915,7 +915,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         val isKeyboardProbablyShown = rect.bottom <
                                 if (IWindowManager.hasNavigationBar()) screenHeight - Utils.getNavBarHeight(this@App) else screenHeight
 
-                        bar.immersiveNav = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL)?.contains("navigation") ?: false
+                        if (isKeyboardProbablyShown) immersiveHelperView.enterNavImmersive()
+                        else if (!Utils.useImmersiveWhenNavHidden(this@App)) immersiveHelperView.exitNavImmersive()
+
+                        bar.immersiveNav = immersiveHelperView.isNavImmersive()
                                 && !isKeyboardProbablyShown
 
                         if (Utils.hidePillWhenKeyboardShown(this@App) && !bar.isCarryingOutTouchAction) {
@@ -924,9 +927,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                 bar.showPill(HiddenPillReasonManager.KEYBOARD)
                             }
                         }
-
-                        val insets = Rect()
-                        IWindowManager.getStableInsetsForDefaultDisplay(insets)
 
                         val height = Point(screenRes.x - rect.left - rect.right,
                                 screenRes.y - rect.top - rect.bottom)
@@ -948,8 +948,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         override fun onSystemUiVisibilityChange(visibility: Int) {
-            handleImmersiveChange(visibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0
-                    || visibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
+            handleImmersiveChange(visibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
                     || visibility and View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN != 0
                     || visibility and 7 != 0)
         }
@@ -958,10 +957,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             runAsync {
                 when (uri) {
                     Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL) -> {
-                        val current = Settings.Global.getString(contentResolver, Settings.Global.POLICY_CONTROL) ?: ""
-
-                        bar.immersiveNav = current.contains("nav")
-                        handleImmersiveChange(current.contains("full"))
+                        handleImmersiveChange(immersiveHelperView.isFullImmersive())
                     }
 
                     Settings.Global.getUriFor("navigationbar_color"),
