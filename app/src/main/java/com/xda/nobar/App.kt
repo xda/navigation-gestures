@@ -277,7 +277,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 || Utils.useRot180Fix(this)) uiHandler.handleRot()
 
         if (!IntroActivity.needsToRun(this)) {
-            wm.addView(immersiveHelperView, immersiveHelperView.params)
+            addImmersiveHelper()
             uiHandler.onGlobalLayout()
             immersiveHelperView.viewTreeObserver.addOnGlobalLayoutListener(uiHandler)
         }
@@ -332,10 +332,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     try {
                         if (Utils.useImmersiveWhenNavHidden(this)) {
                             if (disabledImmReasonManager.isEmpty()) {
-                                Utils.setNavImmersive(this)
+                                immersiveHelperView.enterNavImmersive()
                             }
                         } else {
-                            Utils.removeNavImmersive(this)
+                            immersiveHelperView.exitNavImmersive()
                         }
                     } catch (e: SecurityException) {}
                 }
@@ -432,6 +432,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
     }
 
+    fun addImmersiveHelper() {
+        try {
+            wm.removeView(immersiveHelperView)
+        } catch (e: Exception) {}
+
+        try {
+            wm.addView(immersiveHelperView, immersiveHelperView.params)
+        } catch (e: Exception) {}
+    }
+
     /**
      * Remove the pill from the screen
      */
@@ -450,13 +460,20 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 override fun onAnimationEnd(animation: Animator?) {
                     try {
                         wm.removeView(bar)
-                    } catch (e: Exception) {
-                    }
+                    } catch (e: Exception) {}
+
+                    if (!navHidden) removeImmersiveHelper()
                 }
             })
 
             if (!navHidden) stopService(Intent(this, ForegroundService::class.java))
         }
+    }
+
+    fun removeImmersiveHelper() {
+        try {
+            wm.removeView(immersiveHelperView)
+        } catch (e: Exception) {}
     }
 
     fun toggleGestureBar() {
@@ -513,7 +530,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         if (Utils.shouldUseOverscanMethod(this)
                 && disabledNavReasonManager.isEmpty()
                 && IntroActivity.hasWss(this)) {
-            if (Utils.useImmersiveWhenNavHidden(this)) Utils.setNavImmersive(this)
+            if (Utils.useImmersiveWhenNavHidden(this)) immersiveHelperView.enterNavImmersive()
 
             if (!Utils.useRot270Fix(this)
                     && !Utils.useTabletMode(this)
@@ -531,6 +548,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             navHidden = true
 
             ContextCompat.startForegroundService(this, Intent(this, ForegroundService::class.java))
+
+            addImmersiveHelper()
         }
     }
 
@@ -539,7 +558,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      */
     fun showNav(callListeners: Boolean = true, removeImmersive: Boolean = true) {
         if (IntroActivity.hasWss(this)) {
-            if (removeImmersive && Utils.useImmersiveWhenNavHidden(this)) Utils.removeNavImmersive(this)
+            if (removeImmersive && Utils.useImmersiveWhenNavHidden(this)) immersiveHelperView.exitNavImmersive()
 
             handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
 
@@ -552,7 +571,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             navHidden = false
 
-            if (!areGesturesActivated()) stopService(Intent(this, ForegroundService::class.java))
+            if (!areGesturesActivated()) {
+                stopService(Intent(this, ForegroundService::class.java))
+                removeImmersiveHelper()
+            }
+
+            if (!pillShown) removeImmersiveHelper()
         }
     }
 
@@ -594,6 +618,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         bar.show(null)
+
+        addImmersiveHelper()
     }
 
     fun runAsync(action: () -> Unit) {
@@ -698,7 +724,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             showNav()
                         }
                         if (disabledImmReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)) {
-                            Utils.removeNavImmersive(this@App)
+                            immersiveHelperView.exitNavImmersive()
                         }
                     }
                 }
@@ -712,7 +738,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         }
                         if (disabledImmReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)) {
-                            Utils.setNavImmersive(this@App)
+                            immersiveHelperView.enterNavImmersive()
                         }
                     }
                 }
@@ -813,13 +839,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (Utils.shouldUseOverscanMethod(this@App)
                             && Utils.useImmersiveWhenNavHidden(this@App)
                             && disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.BLACKLIST)) {
-                        Utils.removeNavImmersive(this@App)
+                        immersiveHelperView.exitNavImmersive()
                     }
                 } else {
                     if (Utils.shouldUseOverscanMethod(this@App)
                             && Utils.useImmersiveWhenNavHidden(this@App)
                             && disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.BLACKLIST)) {
-                        Utils.setNavImmersive(this@App)
+                        immersiveHelperView.enterNavImmersive()
                     }
                 }
 
@@ -851,13 +877,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         if (Utils.shouldUseOverscanMethod(this@App)
                                 && Utils.useImmersiveWhenNavHidden(this@App)
                                 && disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
-                            Utils.removeNavImmersive(this@App)
+                            immersiveHelperView.exitNavImmersive()
                         }
                     } else {
                         if (Utils.shouldUseOverscanMethod(this@App)
                                 && Utils.useImmersiveWhenNavHidden(this@App)
                                 && disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.EDGE_SCREEN)) {
-                            Utils.setNavImmersive(this@App)
+                            immersiveHelperView.enterNavImmersive()
                         }
                     }
                 } catch (e: Exception) {
