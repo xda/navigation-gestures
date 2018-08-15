@@ -71,12 +71,12 @@
   <string name="loading">Laden…</string>
   <string name="orig_nav_in_immersive">Navigatie Bar weergeven in Fullscreen</string>
   <string name="enable_in_car_mode">Pill weergeven in Car Mode</string>
-  <string name="use_pixels">Use Pixels for Dimension</string>
+  <string name="use_pixels">Pixels gebruiken voor afmeting</string>
   <string name="sectioned_pill">Split Pill</string>
   <string name="toggle_gestures">Toggle Gestures</string>
-  <string name="toggle_nav">Toggle NavBar</string>
+  <string name="toggle_nav">Toggle Navigatie Bar</string>
   <string name="toggle_gestures_prem">Toggle Gestures (Premium)</string>
-  <string name="toggle_nav_prem">Toggle NavBar (Premium)</string>
+  <string name="toggle_nav_prem">Toggle Navigatie Bar (Premium)</string>
   <string name="grant_write_settings">Write Settings Permission Required!</string>
   <string name="sections">Sections</string>
   <string name="swipe_up_left">Swipe Up from Left</string>
