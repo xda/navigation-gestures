@@ -76,7 +76,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var yHomeAnimator: ValueAnimator? = null
     var lastTouchTime = 0L
 
-    val params: WindowManager.LayoutParams = WindowManager.LayoutParams()
+    val params = WindowManager.LayoutParams()
 
     val hiddenPillReasons = HiddenPillReasonManager()
 
@@ -104,10 +104,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var isPillHidingOrShowing = false
     var isImmersive = false
     var immersiveNav: Boolean = false
+    var isUpdatingLayout = false
 
     private var needsScheduledHide = false
 
     private val hideLock = Any()
+
+    private var oldHeight = 0
+    private var oldWidth = 0
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet?) : super(context, attributeSet)
@@ -153,9 +157,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             pill.layoutParams = this
         }
 
-        layoutParams.width = getCustomWidth(context)
-        layoutParams.height = getCustomHeight(context)
-        layoutParams = layoutParams
+        params.width = getCustomWidth(context)
+        params.height = getCustomHeight(context)
+        updateLayout(params)
 
         isSoundEffectsEnabled = Utils.feedbackSound(context)
 
@@ -278,6 +282,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         prefs.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        val newDimens = oldHeight != params.height || oldWidth != params.width
+        if (!isUpdatingLayout || newDimens) {
+            super.onLayout(changed, l, t, r, b)
+            oldHeight = params.height
+            oldWidth = params.width
+        }
+        else isUpdatingLayout = false
     }
 
     /**
@@ -544,6 +558,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
     
     fun updateLayout(params: WindowManager.LayoutParams) {
+        isUpdatingLayout = true
         app.handler.post {
             try {
                 wm.updateViewLayout(this, params)
