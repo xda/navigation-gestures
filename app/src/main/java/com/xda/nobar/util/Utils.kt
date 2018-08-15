@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.text.TextUtils
 import android.util.TypedValue
 import android.view.WindowManager
 import com.xda.nobar.App
@@ -368,12 +369,15 @@ object Utils {
             PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("first_run", isFirst).apply()
 
     fun setNavImmersive(context: Context) =
-            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation=*") or
+            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, TextUtils.join(",", getImmersive(context).apply { add("immersive.navigation=*") })) or
                     (checkTouchWiz(context) && forceTouchWizNavNotEnabled(context))
 
     fun removeNavImmersive(context: Context) =
-            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, null) or
+            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, TextUtils.join(",", getImmersive(context).apply { remove("immersive.navigation=*") })) or
                     (checkTouchWiz(context) && forceTouchWizNavEnabled(context))
+
+    fun getImmersive(context: Context) =
+            TreeSet((Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL) ?: "").split(","))
 
     /**
      * Check if the current device can use the necessary hidden APIs
