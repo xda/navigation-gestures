@@ -202,15 +202,15 @@
   <string name="start_bubble_upnp">Starte BubbleUPnP Service</string>
   <string name="stop_bubble_upnp">Stoppe BubbleUPnP Service</string>
   <string name="update_twilight">Aktualisiere Twilight</string>
-  <string name="refresh_twilight">Refresh Twilight</string>
-  <string name="next_twilight_profile">Next Twilight Profile</string>
-  <string name="toggle_twilight">Toggle Twilight</string>
-  <string name="start_twilight">Start Twilight</string>
-  <string name="stop_twilight">Stop Twilight</string>
+  <string name="refresh_twilight">Twilight auffrischen</string>
+  <string name="next_twilight_profile">Nächstes Twilight Profil</string>
+  <string name="toggle_twilight">Ein/aus Twilight</string>
+  <string name="start_twilight">Starte Twilight</string>
+  <string name="stop_twilight">Stoppe Twilight</string>
   <!--Actions-->
   <string name="home">Start</string>
   <string name="back">Zurück</string>
-  <string name="ohm">Toggle OHM</string>
+  <string name="ohm">Ein/Aus OHM</string>
   <string name="recents">Zuletzt verwendete Apps</string>
   <string name="hide">Pille ausblenden</string>
   <string name="assist">Assistent</string>
@@ -242,8 +242,8 @@
   <string name="prem_volume_panel">Lautstärkeleiste öffnen (Premium)</string>
   <string name="prem_bluetooth">Bluetooth-Schalter (Premium)</string>
   <string name="prem_wifi">WLAN-Schalter (Premium)</string>
-  <string name="prem_intent">Send Intent (Premium) (%s)</string>
-  <string name="prem_intent_no_format">Send Intent (Premium)</string>
+  <string name="prem_intent">Beabsichtigung senden (Premium) (%s)</string>
+  <string name="prem_intent_no_format">Beabsichtigung senden (Premium)</string>
   <!--Action Values-->
   <string name="type_no_action">-1</string>
   <string name="type_back">0</string>
