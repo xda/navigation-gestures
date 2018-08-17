@@ -11,7 +11,7 @@
   <string name="gestures">Gesti</string>
   <string name="appearance">Aspetto</string>
   <string name="behavior">Comportamento</string>
-  <string name="activated">Attiva pillola gestures</string>
+  <string name="activated">Abilita gesti barra</string>
   <string name="toggle">on/off</string>
   <string name="width">Larghezza barra</string>
   <string name="height">Altezza barra</string>
@@ -51,7 +51,7 @@
   <string name="pill_border_color">Colore bordo barra</string>
   <string name="show_pill_shadow">Mostra ombra barra</string>
   <string name="static_pill">Non spostare la barra durante la digitazione</string>
-  <string name="hide_navbar_in_landscape">Nascondi Barra di Navigazione in orizzontale</string>
+  <string name="hide_navbar_in_landscape">Nascondi Barra di Navigazione in Landscape</string>
   <string name="hide_navbar_in_upside_down">Nascondi barra di navigazione quando capovolto</string>
   <string name="white_bar">Barra bianca</string>
   <string name="tablet_mode">Nascondi Navigation Bar su tablet</string>
@@ -117,7 +117,7 @@
   <string name="buy_premium_desc">Sblocca altre funzionalità con la versione premium.</string>
   <string name="run_command_desc">adb shell pm grant com.xda.nobar android.permission.WRITE_SECURE_SETTINGS</string>
   <string name="foreground_desc">Questa notifica evita che Android chiuda l\'applicazione. Puoi nasconderla tenendo premuto e premendo su \"Impostazioni\".</string>
-  <string name="static_pill_desc">Previeni che la pillola si sposti sopra la tastiera.</string>
+  <string name="static_pill_desc">Previeni che la barra si sposti sopra la tastiera.</string>
   <string name="hide_navbar_in_landscape_desc">Alcuni dispositivi mostrano la Navigation Bar a lato in modalità landscape. Attiva qui per evitarlo.</string>
   <string name="hide_navbar_in_upside_down_desc">Alcuni dispositivi ruotando lo schermo quando il dispositivo è capovolto, il che potrebbe causare la presenza della Navigation Bar. Attiva quest\'opzione per assicurarti stia nascosta.</string>
   <string name="compatibility_pref_desc">Opzioni di compatibilità</string>
