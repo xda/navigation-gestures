@@ -157,11 +157,11 @@
   <string name="premium_required_desc">Diese Aktion erfordert das premium Add-On. Möchtest du es erwerben?</string>
   <string name="nougat_required_desc">Diese Aktion erforder, dass das Gerät mit Android Nougat oder neuer läuft. Bitte entschuldige dies.</string>
   <string name="nougat_qs_reminder">Android Nougat erlaubt Quick Settings Kacheln und wir fügen eine hinzu um Navigation Gestures an und aus zu machen. Du kannst die Kachel hinzufügen, indem du von der Statusleiste zwei Mal nach unten wischt, das Stift Symbol oder \"EDIT\" antippst und die Navigation Gesture Kachel in die Active Area verschiebst.</string>
-  <string name="accessibility_screen_text">This app uses an Accessibility Service to simulate navigation button presses like the back, home, and multitasking buttons. We do not use it to collect any personal information, and no action will be performed except by the user.</string>
+  <string name="accessibility_screen_text">Diese App nutzt den Eingabehilfe Service, um die Navigationstasten wie Zurück, Home und Multitasking zu simulieren. Wir nutzen es nicht um persönliche Informationen zu sammeln und keine Aktion wird durchgeführt, außer von dem Nutzer.</string>
   <string name="sorry_desc">Diese App funktioniert nicht mit Android P.</string>
-  <string name="warning_desc">Before you uninstall Navigation Gestures, make sure you unhide the software navigation bar using the toggle in the app! You only need to do this if you hide the navigation bar using our app.</string>
-  <string name="white_bar_desc">Using this app you may notice a small white bar at the very bottom of the display. This is not a bug! It is required to prevent much more serious issues. It should not occur on TouchWiz devices.</string>
-  <string name="compatibility_desc">While using this app, if you notice that the original navigation bar is present when it shouldn\'t be, head over to Settings&gt;&gt;Compatibility and try the compatibility options there.</string>
+  <string name="warning_desc">Bevor du Navigation Gesture deinstallierst, stell sicher, dass du in der App die Funktion zum Verstecken der Software Navigationsleiste deaktiviert hast. Du brauchst dies nur zu tun, wenn du die Navigationsleiste in unserer App versteckt hast.</string>
+  <string name="white_bar_desc">Beim nutzen dieser App ist die vielleicht eine kleine weiße Leiste am unteren Bildschirmrand aufgefallen. Das ist kein Bug! Das ist nötig um ernste Probleme zu verhindern. Es sollte nicht auf TouchWiz Geräten auftreten.</string>
+  <string name="compatibility_desc">Falls dir beim nutzen der App die originale Navigationsleiste erschienen ist, wo sie hätte nicht sein sollen, geh in die Einstellung&gt;&gt;Kompatibilität und probier die Kompatibilitätseinstellungen.</string>
   <string name="skip_wss_message">Du kannst jederzeit zu diesem Schritt zurückkommen indem du den \"Navigationsleiste ausblenden\"-Schalter im Hauptmenü dieser App aktivierst.</string>
   <string name="feature_not_avail">Dieses Feature kann nicht verwendet werden während Navigation Gestures die Navigationsleiste versteckt.</string>
   <!--Gestures-->
@@ -186,7 +186,7 @@
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
   <string name="color_picker">Color Picker (Fork)</string>
-  <string name="circle_progress">Circle Progress</string>
+  <string name="circle_progress">Kreis Fortschritt</string>
   <string name="rx_java">RxJava/RxAndroid</string>
   <string name="tasker_plugin">Tasker Plug-in-Bibliothek</string>
   <string name="edge_sdk">Galaxy Edge SDK</string>
@@ -199,9 +199,9 @@
   <string name="camera_take_video">Video aufnehmen</string>
   <string name="shazam_it">Shazam es</string>
   <string name="soundhound_it">SoundHound es</string>
-  <string name="start_bubble_upnp">Start BubbleUPnP Service</string>
-  <string name="stop_bubble_upnp">Stop BubbleUPnP Service</string>
-  <string name="update_twilight">Update Twilight</string>
+  <string name="start_bubble_upnp">Starte BubbleUPnP Service</string>
+  <string name="stop_bubble_upnp">Stoppe BubbleUPnP Service</string>
+  <string name="update_twilight">Aktualisiere Twilight</string>
   <string name="refresh_twilight">Refresh Twilight</string>
   <string name="next_twilight_profile">Next Twilight Profile</string>
   <string name="toggle_twilight">Toggle Twilight</string>
