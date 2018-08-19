@@ -754,7 +754,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 if (pName != "com.android.systemui" || info.className?.contains("TextView") == false) {
                     runNewNodeInfo(pName)
                 } else if (Utils.shouldUseOverscanMethod(this@App)
-                        && Utils.useImmersiveWhenNavHidden(this@App)) immersiveHelperView.enterNavImmersive()
+                        && Utils.useImmersiveWhenNavHidden(this@App)) {
+                    immersiveHelperView.enterNavImmersive()
+                }
             }
         }
 

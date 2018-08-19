@@ -4,12 +4,10 @@ import android.content.Context
 import android.graphics.PixelFormat
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.checkTouchWiz
-import org.apache.commons.lang3.exception.ExceptionUtils
 
 class ImmersiveHelperView(context: Context) : View(context) {
     val params = WindowManager.LayoutParams().apply {
@@ -31,7 +29,9 @@ class ImmersiveHelperView(context: Context) : View(context) {
     fun enterNavImmersive() {
         if (!isFlagNavImmersive()) {
             app.handler.post {
-                systemUiVisibility = systemUiVisibility or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                systemUiVisibility = systemUiVisibility or
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 
                 if (checkTouchWiz(context)) Utils.forceTouchWizNavNotEnabled(context)
             }
@@ -41,7 +41,9 @@ class ImmersiveHelperView(context: Context) : View(context) {
     fun exitNavImmersive() {
         if (isFlagNavImmersive()) {
             app.handler.post {
-                systemUiVisibility = systemUiVisibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv()
+                systemUiVisibility = systemUiVisibility and
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv() and
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
 
                 if (checkTouchWiz(context)) Utils.forceTouchWizNavEnabled(context)
             }
