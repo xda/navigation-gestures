@@ -752,10 +752,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 oldPName = pName
 
                 if (pName != "com.android.systemui" || info.className?.contains("TextView") == false) {
+                    if (Utils.shouldUseOverscanMethod(this@App)
+                            && Utils.useImmersiveWhenNavHidden(this@App)) {
+                        if (info.className?.contains("Recents") == true) {
+                            immersiveHelperView.tempForcePolicyControlForRecents()
+                        } else {
+                            immersiveHelperView.putBackOldImmersive()
+                        }
+                    }
                     runNewNodeInfo(pName)
-                } else if (Utils.shouldUseOverscanMethod(this@App)
-                        && Utils.useImmersiveWhenNavHidden(this@App)) {
-                    immersiveHelperView.enterNavImmersive()
                 }
             }
         }

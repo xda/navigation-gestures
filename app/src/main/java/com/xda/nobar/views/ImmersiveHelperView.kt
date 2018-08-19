@@ -50,6 +50,22 @@ class ImmersiveHelperView(context: Context) : View(context) {
         }
     }
 
+    private var oldImm: String? = null
+    private var hasRunForcedImm = false
+
+    fun tempForcePolicyControlForRecents() {
+        oldImm = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)
+        Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation=*")
+        hasRunForcedImm = true
+    }
+
+    fun putBackOldImmersive() {
+        if (hasRunForcedImm) {
+            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, oldImm)
+            hasRunForcedImm = false
+        }
+    }
+
     fun isFlagNavImmersive() = systemUiVisibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0
 
     fun isNavImmersive(): Boolean {
