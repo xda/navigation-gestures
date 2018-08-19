@@ -840,7 +840,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 MotionEvent.ACTION_DOWN -> {
                     lastTouchTime = System.currentTimeMillis()
                     wasHidden = isHidden
-                    app.uiHandler.onGlobalLayout()
                     oldY = ev.rawY
                     oldX = ev.rawX
                     origX = ev.rawX

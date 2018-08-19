@@ -555,7 +555,7 @@ object Utils {
                     .apply()
 
     /**
-     * Save the list of appps where immersive navigation should be disabled
+     * Save the list of apps where immersive navigation should be disabled
      */
     fun saveBlacklistedImmPackages(context: Context, packages: ArrayList<String>) =
             PreferenceManager.getDefaultSharedPreferences(context).edit()

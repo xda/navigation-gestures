@@ -4,10 +4,12 @@ import android.content.Context
 import android.graphics.PixelFormat
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.checkTouchWiz
+import org.apache.commons.lang3.exception.ExceptionUtils
 
 class ImmersiveHelperView(context: Context) : View(context) {
     val params = WindowManager.LayoutParams().apply {
@@ -20,31 +22,33 @@ class ImmersiveHelperView(context: Context) : View(context) {
         x = 0
         y = 0
     }
+    val app = Utils.getHandler(context)
 
     init {
         alpha = 0f
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        if (Utils.useImmersiveWhenNavHidden(context)) enterNavImmersive()
-    }
-
     fun enterNavImmersive() {
-        handler?.post {
-            systemUiVisibility = systemUiVisibility or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        if (!isFlagNavImmersive()) {
+            app.handler.post {
+                systemUiVisibility = systemUiVisibility or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 
-            if (checkTouchWiz(context)) Utils.forceTouchWizNavNotEnabled(context)
+                if (checkTouchWiz(context)) Utils.forceTouchWizNavNotEnabled(context)
+            }
         }
     }
 
     fun exitNavImmersive() {
-        handler?.post {
-            systemUiVisibility = systemUiVisibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv()
+        if (isFlagNavImmersive()) {
+            app.handler.post {
+                systemUiVisibility = systemUiVisibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv()
 
-            if (checkTouchWiz(context)) Utils.forceTouchWizNavEnabled(context)
+                if (checkTouchWiz(context)) Utils.forceTouchWizNavEnabled(context)
+            }
         }
     }
+
+    fun isFlagNavImmersive() = systemUiVisibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0
 
     fun isNavImmersive(): Boolean {
         val imm = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)
