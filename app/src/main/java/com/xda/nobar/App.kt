@@ -645,13 +645,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         Intent.ACTION_REBOOT,
                         Intent.ACTION_SHUTDOWN,
                         Intent.ACTION_SCREEN_OFF -> {
-                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
+                            if (Utils.shouldntKeepOverscanOnLock(this@App)) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
                         }
                         Intent.ACTION_SCREEN_ON,
                         Intent.ACTION_BOOT_COMPLETED,
                         Intent.ACTION_LOCKED_BOOT_COMPLETED -> {
                             if (Utils.isOnKeyguard(this@App)) {
-                                disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
+                                if (Utils.shouldntKeepOverscanOnLock(this@App)) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             } else {
                                 disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             }
