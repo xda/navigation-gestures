@@ -57,6 +57,8 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
                     ?: view.context.resources.getDrawable(R.drawable.blank)
         } catch (e: Resources.NotFoundException) {
             view.context.resources.getDrawable(R.drawable.blank)
+        } catch (e: IllegalStateException) {
+            view.context.resources.getDrawable(R.drawable.blank)
         }
 
         view.setOnClickListener { _ ->
