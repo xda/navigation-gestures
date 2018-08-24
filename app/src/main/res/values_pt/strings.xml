@@ -182,6 +182,7 @@
   <string name="accessibility_msg">Encontre \"Acessibilidade\" e toque.</string>
   <string name="deactivate_before_uninstall">Certifique-se de que \"Esconder a Barra de Navegação\" está desactivado antes de desinstalar!</string>
   <string name="copied_to_clipboard">Email copiado para a área de transferência</string>
+  <string name="unable_to_launch">Unable to launch target.</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
