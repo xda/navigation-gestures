@@ -47,6 +47,16 @@ object Utils {
         return size
     }
 
+    fun getScreenSize(context: Context): Point {
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display = windowManager.defaultDisplay
+        val size = Point()
+
+        display.getSize(size)
+
+        return size
+    }
+
     /**
      * Convert a certain DP value to its equivalent in px
      * @param context context object

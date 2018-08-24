@@ -11,7 +11,6 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.ContentObserver
 import android.graphics.PixelFormat
-import android.graphics.Point
 import android.graphics.Rect
 import android.net.Uri
 import android.os.*
@@ -39,7 +38,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.*
-import kotlin.math.absoluteValue
 
 
 /**
@@ -87,6 +85,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     var navHidden = false
     var pillShown = false
+    var keyboardShown = false
 
     private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
     private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()
@@ -748,6 +747,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private fun handleNewEvent(info: AccessibilityEvent) {
             val pName = info.packageName?.toString()
 
+            if (pName != packageName) keyboardShown = info.className.contains("SoftInput")
+
             if (pName != oldPName) {
                 oldPName = pName
 
@@ -838,42 +839,37 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     isActing = true
                     runAsync {
                         try {
-                            val screenRes = Utils.getRealScreenSize(this@App)
-                            val overscan = getOverscan()
-
-                            val rect = Rect()
-                            immersiveHelperView.getWindowVisibleDisplayFrame(rect)
-
-                            val screenHeight = Utils.getRealScreenSize(this@App).y
-
-                            val isKeyboardProbablyShown = rect.bottom <
-                                    if (IWindowManager.hasNavigationBar()) screenHeight - Utils.getNavBarHeight(this@App) else screenHeight
+//                            val realScreenRes = Utils.getRealScreenSize(this@App)
+//                            val realScreenHeight = realScreenRes.y
+//
+//                            val overscan = getOverscan()
+//
+//                            val rect = Rect()
+//                            immersiveHelperView.getWindowVisibleDisplayFrame(rect)
+//
+//                            val height = Point(realScreenRes.x - rect.left - rect.right,
+//                                    realScreenRes.y - rect.top - rect.bottom)
+//
+//                            val totalOverscan = overscan.left + overscan.top + overscan.right + overscan.bottom
+//
+//                            val hidden = when {
+//                                (wm.defaultDisplay.rotation == Surface.ROTATION_270
+//                                        || wm.defaultDisplay.rotation == Surface.ROTATION_90)
+//                                        && !Utils.useTabletMode(this@App) -> height.x.absoluteValue == totalOverscan.absoluteValue
+//                                else -> height.y.absoluteValue == totalOverscan.absoluteValue
+//                            }
+//
+//                            handleImmersiveChange(hidden)
+//
 
                             if (!Utils.useImmersiveWhenNavHidden(this@App)) immersiveHelperView.exitNavImmersive()
 
-                            bar.immersiveNav = immersiveHelperView.isNavImmersive()
-                                    && !isKeyboardProbablyShown
+                            bar.immersiveNav = immersiveHelperView.isNavImmersive() && !keyboardShown
 
-                            if (Utils.hidePillWhenKeyboardShown(this@App) && !bar.isCarryingOutTouchAction) {
-                                if (isKeyboardProbablyShown) bar.hidePill(true, HiddenPillReasonManager.KEYBOARD)
-                                else if (bar.hiddenPillReasons.onlyContains(HiddenPillReasonManager.KEYBOARD)) {
-                                    bar.showPill(HiddenPillReasonManager.KEYBOARD)
-                                }
+                            if (Utils.hidePillWhenKeyboardShown(this@App)) {
+                                if (keyboardShown) bar.hidePill(true, HiddenPillReasonManager.KEYBOARD)
+                                else if (bar.hiddenPillReasons.onlyContains(HiddenPillReasonManager.KEYBOARD)) bar.showPill(HiddenPillReasonManager.KEYBOARD)
                             }
-
-                            val height = Point(screenRes.x - rect.left - rect.right,
-                                    screenRes.y - rect.top - rect.bottom)
-
-                            val totalOverscan = overscan.left + overscan.top + overscan.right + overscan.bottom
-
-                            val hidden = when {
-                                (wm.defaultDisplay.rotation == Surface.ROTATION_270
-                                        || wm.defaultDisplay.rotation == Surface.ROTATION_90)
-                                        && !Utils.useTabletMode(this@App) -> height.x.absoluteValue == totalOverscan.absoluteValue
-                                else -> height.y.absoluteValue == totalOverscan.absoluteValue
-                            }
-
-                            handleImmersiveChange(hidden)
 
                             if (disabledImmReasonManager.isEmpty()) {
                                 if (Utils.shouldUseOverscanMethod(this@App)
@@ -953,7 +949,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 if (isImmersive) {
                     if (hideInFullScreen) bar.hidePill(true, HiddenPillReasonManager.FULLSCREEN)
                 } else {
-                    bar.hiddenPillReasons.remove(HiddenPillReasonManager.FULLSCREEN)
+                    bar.showPill(HiddenPillReasonManager.FULLSCREEN)
                 }
             }
         }
