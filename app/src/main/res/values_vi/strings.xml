@@ -185,6 +185,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
   <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
   <string name="deactivate_before_uninstall">Đảm bảo rằng \"Ẩn thanh điều hướng\" được tắt trước khi gỡ bỏ cài đặt!</string>
   <string name="copied_to_clipboard">Email đã sao chép vào clipboard</string>
+  <string name="unable_to_launch">Unable to launch target.</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
