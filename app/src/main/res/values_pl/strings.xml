@@ -182,6 +182,7 @@
   <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
   <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
   <string name="copied_to_clipboard">Adres e-mail skopiowany do schowka</string>
+  <string name="unable_to_launch">Unable to launch target.</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
