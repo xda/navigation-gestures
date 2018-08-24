@@ -23,8 +23,10 @@ import android.view.OrientationEventListener
 import android.view.Surface
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import com.joaomgcd.taskerpluginlibrary.extensions.requestQuery
 import com.xda.nobar.App
+import com.xda.nobar.R
 import com.xda.nobar.activities.IntentSelectorActivity
 import com.xda.nobar.activities.LockScreenActivity
 import com.xda.nobar.activities.RequestPermissionsActivity
@@ -294,6 +296,8 @@ class Actions : AccessibilityService(), Serializable {
                                                 ComponentName(app, ActionHandler::class.java))
                                     }
                                 }
+                            } catch (e: ActivityNotFoundException) {
+                                Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
                             }
                         }
                         app.premTypeVibe -> {
