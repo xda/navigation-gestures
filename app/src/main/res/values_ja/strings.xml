@@ -183,6 +183,7 @@
   <string name="accessibility_msg">アクセシビリティを見つけてタップしてください。</string>
   <string name="deactivate_before_uninstall">アンインストール前に\"ナビバーを非表示”がオフになっていることを確認してください!</string>
   <string name="copied_to_clipboard">クリップボードにEメールがコピーされました。</string>
+  <string name="unable_to_launch">Unable to launch target.</string>
   <!--Libraries-->
   <string name="material_intro">マテリアル イントロ (フォーク)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
