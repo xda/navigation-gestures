@@ -34,12 +34,14 @@ class FlashlightControllerMarshmallow(override val context: Context) : Flashligh
         @Throws(CameraAccessException::class)
         get() {
             for (id in manager.cameraIdList) {
-                val c = manager.getCameraCharacteristics(id)
-                val flashAvailable = c.get(CameraCharacteristics.FLASH_INFO_AVAILABLE)
-                val lensFacing = c.get(CameraCharacteristics.LENS_FACING)
-                if (flashAvailable != null && flashAvailable && lensFacing != null && lensFacing == 1) {
-                    return id
-                }
+                try {
+                    val c = manager.getCameraCharacteristics(id)
+                    val flashAvailable = c.get(CameraCharacteristics.FLASH_INFO_AVAILABLE)
+                    val lensFacing = c.get(CameraCharacteristics.LENS_FACING)
+                    if (flashAvailable != null && flashAvailable && lensFacing != null && lensFacing == 1) {
+                        return id
+                    }
+                } catch (e: Exception) {}
             }
             return null
         }
