@@ -52,9 +52,7 @@ class Actions : AccessibilityService(), Serializable {
     }
 
     private val receiver by lazy { ActionHandler(app, this) }
-    private val handler = Handler(Looper.getMainLooper())
     private val app by lazy { applicationContext as App }
-
 
     override fun onCreate() {
         receiver.register()

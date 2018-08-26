@@ -747,7 +747,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private fun handleNewEvent(info: AccessibilityEvent) {
             val pName = info.packageName?.toString()
 
-            if (pName != packageName) keyboardShown = info.className.contains("SoftInput")
+            if (pName != packageName) {
+                keyboardShown = info.className?.contains("SoftInput") == true
+            }
 
             if (pName != oldPName) {
                 oldPName = pName
@@ -860,7 +862,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 //                            }
 //
 //                            handleImmersiveChange(hidden)
-//
 
                             if (!Utils.useImmersiveWhenNavHidden(this@App)) immersiveHelperView.exitNavImmersive()
 
