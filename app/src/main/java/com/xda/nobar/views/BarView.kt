@@ -75,6 +75,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var pillFlash: LinearLayout = pill.findViewById(R.id.pill_tap_flash)
     var yHomeAnimator: ValueAnimator? = null
     var lastTouchTime = 0L
+    var shouldReAddOnDetach = false
 
     val params = WindowManager.LayoutParams()
 
@@ -93,9 +94,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             field = value
             if (!value) {
                 if (needsScheduledHide) {
-                    app.runAsync {
-                        scheduleHide()
-                    }
+                    scheduleHide()
                     needsScheduledHide = false
                 }
             }
@@ -104,14 +103,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var isPillHidingOrShowing = false
     var isImmersive = false
     var immersiveNav: Boolean = false
-    var isUpdatingLayout = false
 
     private var needsScheduledHide = false
 
     private val hideLock = Any()
-
-    private var oldHeight = 0
-    private var oldWidth = 0
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet?) : super(context, attributeSet)
@@ -122,16 +117,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         alpha = ALPHA_GONE
 
         gestureDetector.loadActionMap()
-    }
-
-    /**
-     * Perform setup
-     */
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-
-        gestureDetector.loadActionMap()
         prefs.registerOnSharedPreferenceChangeListener(this)
+        isSoundEffectsEnabled = Utils.feedbackSound(context)
 
         val layers = pill.background as LayerDrawable
         (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
@@ -156,12 +143,21 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             pill.layoutParams = this
         }
+    }
 
-        params.width = getCustomWidth(context)
-        params.height = getCustomHeight(context)
-        updateLayout(params)
+    /**
+     * Perform setup
+     */
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
 
-        isSoundEffectsEnabled = Utils.feedbackSound(context)
+        app.pillShown = true
+//
+//        params.width = getCustomWidth(context)
+//        params.height = getCustomHeight(context)
+//        updateLayout(params)
+
+        show(null)
 
         if (Utils.autoHide(context)) {
             hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
@@ -281,17 +277,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        prefs.unregisterOnSharedPreferenceChangeListener(this)
-    }
 
-    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val newDimens = oldHeight != params.height || oldWidth != params.width
-        if (!isUpdatingLayout || newDimens) {
-            super.onLayout(changed, l, t, r, b)
-            oldHeight = params.height
-            oldWidth = params.width
+        if (shouldReAddOnDetach) {
+            app.addBarInternal(false)
+            shouldReAddOnDetach = false
+        } else {
+            prefs.unregisterOnSharedPreferenceChangeListener(this)
         }
-        else isUpdatingLayout = false
     }
 
     /**
@@ -558,8 +550,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
     
     fun updateLayout(params: WindowManager.LayoutParams) {
-        isUpdatingLayout = true
-        app.handler.post {
+        handler?.post {
             try {
                 wm.updateViewLayout(this, params)
             } catch (e: Exception) {}
@@ -853,149 +844,147 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 MotionEvent.ACTION_UP -> {
                     beingTouched = false
 
-                    app.runAsync {
-                        if (wasHidden) {
-                            isSwipeUp = false
-                        }
-
-                        app.handler.post {
-                            upHoldHandle?.cancel(false)
-                            upHoldHandle = null
-                        }
-
-                        app.handler.post {
-                            leftHoldHandle?.cancel(false)
-                            leftHoldHandle = null
-                        }
-
-                        app.handler.post {
-                            rightHoldHandle?.cancel(true)
-                            rightHoldHandle = null
-                        }
-
-                        app.handler.post {
-                            downHoldHandle?.cancel(true)
-                            downHoldHandle = null
-                        }
-
-                        if (isSwipeUp || (isRunningLongUp &&  getSectionedUpHoldAction(origAdjX) == app.typeNoAction)) {
-                            sendAction(app.actionUp)
-                        }
-
-                        if (isSwipeLeft || (isRunningLongLeft && actionMap[app.actionLeftHold] == app.typeNoAction)) {
-                            sendAction(app.actionLeft)
-                        }
-
-                        if (isSwipeRight || (isRunningLongRight && actionMap[app.actionRightHold] == app.typeNoAction)) {
-                            sendAction(app.actionRight)
-                        }
-
-                        if (isSwipeDown || (isRunningLongDown && actionMap[app.actionDown] == app.typeNoAction)) {
-                            sendAction(app.actionDown)
-                        }
-
-                        app.handler.postDelayed({
-                            if (pill.translationX != 0f) {
-                                app.handler.post {
-                                    pill.animate()
-                                            .translationX(0f)
-                                            .setDuration(getAnimationDurationMs())
-                                            .withEndAction {
-                                                if (params.x == getAdjustedHomeX()) {
-                                                    isActing = false
-                                                    isSwipeLeft = false
-                                                    isSwipeRight = false
-                                                }
-                                            }
-                                            .start()
-                                }
-                            }
-
-                            if (pill.translationY != 0f && !isHidden && !isPillHidingOrShowing) {
-                                app.handler.post {
-                                    pill.animate()
-                                            .translationY(0f)
-                                            .setDuration(getAnimationDurationMs())
-                                            .withEndAction {
-                                                if (params.y == getAdjustedHomeY()) {
-                                                    isActing = false
-                                                    isSwipeDown = false
-                                                    isSwipeUp = false
-                                                }
-                                            }
-                                            .start()
-                                }
-                            }
-
-                            when {
-                                params.y != getAdjustedHomeY() && !isHidden && !isPillHidingOrShowing -> {
-                                    val distance = (params.y - getAdjustedHomeY()).absoluteValue
-                                    if (yHomeAnimator != null) {
-                                        app.handler.post {
-                                            yHomeAnimator?.cancel()
-                                            yHomeAnimator = null
-                                        }
-                                    }
-                                    yHomeAnimator = ValueAnimator.ofInt(params.y, getAdjustedHomeY())
-                                    yHomeAnimator?.interpolator = DecelerateInterpolator()
-                                    yHomeAnimator?.addUpdateListener {
-                                        params.y = it.animatedValue.toString().toInt()
-                                        updateLayout(params)
-                                    }
-                                    yHomeAnimator?.addListener(object : AnimatorListenerAdapter() {
-                                        override fun onAnimationEnd(animation: Animator?) {
-                                            isActing = false
-                                            isSwipeUp = false
-                                            isSwipeDown = false
-                                            isCarryingOutTouchAction = false
-
-                                            yHomeAnimator = null
-                                        }
-
-                                        override fun onAnimationCancel(animation: Animator?) {
-                                            onAnimationEnd(animation)
-                                        }
-                                    })
-                                    yHomeAnimator?.duration = (time * distance / 100f).toLong()
-                                    app.handler.post { yHomeAnimator?.start() }
-                                }
-                                params.x < getAdjustedHomeX() || params.x > getAdjustedHomeX() -> {
-                                    val distance = (params.x - getAdjustedHomeX()).absoluteValue
-                                    val animator = ValueAnimator.ofInt(params.x, getAdjustedHomeX())
-                                    animator.interpolator = DecelerateInterpolator()
-                                    animator.addUpdateListener {
-                                        params.x = it.animatedValue.toString().toInt()
-                                        updateLayout(params)
-                                    }
-                                    animator.addListener(object : AnimatorListenerAdapter() {
-                                        override fun onAnimationEnd(animation: Animator?) {
-                                            isActing = false
-                                            isSwipeLeft = false
-                                            isSwipeRight = false
-                                            isCarryingOutTouchAction = false
-                                        }
-                                    })
-                                    animator.duration = (time * distance / 100f).toLong()
-                                    app.handler.post { animator.start() }
-                                }
-                                else -> {
-                                    isActing = false
-                                    isSwipeUp = false
-                                    isSwipeLeft = false
-                                    isSwipeRight = false
-                                    isSwipeDown = false
-                                    isCarryingOutTouchAction = false
-                                }
-                            }
-
-                            isRunningLongRight = false
-                            isRunningLongLeft = false
-                            isRunningLongUp = false
-                            isRunningLongDown = false
-                        }, 50)
-
-                        wasHidden = isHidden
+                    if (wasHidden) {
+                        isSwipeUp = false
                     }
+
+                    app.handler.post {
+                        upHoldHandle?.cancel(false)
+                        upHoldHandle = null
+                    }
+
+                    app.handler.post {
+                        leftHoldHandle?.cancel(false)
+                        leftHoldHandle = null
+                    }
+
+                    app.handler.post {
+                        rightHoldHandle?.cancel(true)
+                        rightHoldHandle = null
+                    }
+
+                    app.handler.post {
+                        downHoldHandle?.cancel(true)
+                        downHoldHandle = null
+                    }
+
+                    if (isSwipeUp || (isRunningLongUp &&  getSectionedUpHoldAction(origAdjX) == app.typeNoAction)) {
+                        sendAction(app.actionUp)
+                    }
+
+                    if (isSwipeLeft || (isRunningLongLeft && actionMap[app.actionLeftHold] == app.typeNoAction)) {
+                        sendAction(app.actionLeft)
+                    }
+
+                    if (isSwipeRight || (isRunningLongRight && actionMap[app.actionRightHold] == app.typeNoAction)) {
+                        sendAction(app.actionRight)
+                    }
+
+                    if (isSwipeDown || (isRunningLongDown && actionMap[app.actionDown] == app.typeNoAction)) {
+                        sendAction(app.actionDown)
+                    }
+
+                    app.handler.postDelayed({
+                        if (pill.translationX != 0f) {
+                            app.handler.post {
+                                pill.animate()
+                                        .translationX(0f)
+                                        .setDuration(getAnimationDurationMs())
+                                        .withEndAction {
+                                            if (params.x == getAdjustedHomeX()) {
+                                                isActing = false
+                                                isSwipeLeft = false
+                                                isSwipeRight = false
+                                            }
+                                        }
+                                        .start()
+                            }
+                        }
+
+                        if (pill.translationY != 0f && !isHidden && !isPillHidingOrShowing) {
+                            app.handler.post {
+                                pill.animate()
+                                        .translationY(0f)
+                                        .setDuration(getAnimationDurationMs())
+                                        .withEndAction {
+                                            if (params.y == getAdjustedHomeY()) {
+                                                isActing = false
+                                                isSwipeDown = false
+                                                isSwipeUp = false
+                                            }
+                                        }
+                                        .start()
+                            }
+                        }
+
+                        when {
+                            params.y != getAdjustedHomeY() && !isHidden && !isPillHidingOrShowing -> {
+                                val distance = (params.y - getAdjustedHomeY()).absoluteValue
+                                if (yHomeAnimator != null) {
+                                    app.handler.post {
+                                        yHomeAnimator?.cancel()
+                                        yHomeAnimator = null
+                                    }
+                                }
+                                yHomeAnimator = ValueAnimator.ofInt(params.y, getAdjustedHomeY())
+                                yHomeAnimator?.interpolator = DecelerateInterpolator()
+                                yHomeAnimator?.addUpdateListener {
+                                    params.y = it.animatedValue.toString().toInt()
+                                    updateLayout(params)
+                                }
+                                yHomeAnimator?.addListener(object : AnimatorListenerAdapter() {
+                                    override fun onAnimationEnd(animation: Animator?) {
+                                        isActing = false
+                                        isSwipeUp = false
+                                        isSwipeDown = false
+                                        isCarryingOutTouchAction = false
+
+                                        yHomeAnimator = null
+                                    }
+
+                                    override fun onAnimationCancel(animation: Animator?) {
+                                        onAnimationEnd(animation)
+                                    }
+                                })
+                                yHomeAnimator?.duration = (time * distance / 100f).toLong()
+                                app.handler.post { yHomeAnimator?.start() }
+                            }
+                            params.x < getAdjustedHomeX() || params.x > getAdjustedHomeX() -> {
+                                val distance = (params.x - getAdjustedHomeX()).absoluteValue
+                                val animator = ValueAnimator.ofInt(params.x, getAdjustedHomeX())
+                                animator.interpolator = DecelerateInterpolator()
+                                animator.addUpdateListener {
+                                    params.x = it.animatedValue.toString().toInt()
+                                    updateLayout(params)
+                                }
+                                animator.addListener(object : AnimatorListenerAdapter() {
+                                    override fun onAnimationEnd(animation: Animator?) {
+                                        isActing = false
+                                        isSwipeLeft = false
+                                        isSwipeRight = false
+                                        isCarryingOutTouchAction = false
+                                    }
+                                })
+                                animator.duration = (time * distance / 100f).toLong()
+                                app.handler.post { animator.start() }
+                            }
+                            else -> {
+                                isActing = false
+                                isSwipeUp = false
+                                isSwipeLeft = false
+                                isSwipeRight = false
+                                isSwipeDown = false
+                                isCarryingOutTouchAction = false
+                            }
+                        }
+
+                        isRunningLongRight = false
+                        isRunningLongLeft = false
+                        isRunningLongUp = false
+                        isRunningLongDown = false
+                    }, 50)
+
+                    wasHidden = isHidden
                 }
                 MotionEvent.ACTION_MOVE -> {
                     ultimateReturn = handlePotentialSwipe(ev)

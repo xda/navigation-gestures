@@ -55,8 +55,16 @@ class IntroActivity : IntroActivity() {
         }
     }
 
+    private var didntNeedToRun = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!needsToRun(this) && hasWss(this)) {
+            didntNeedToRun = true
+            finish()
+            return
+        }
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
@@ -248,7 +256,7 @@ class IntroActivity : IntroActivity() {
         super.onDestroy()
 
         Utils.setFirstRun(this, false)
-        MainActivity.start(this)
+        if (!didntNeedToRun) MainActivity.start(this)
     }
 
     private fun nonRootDialog() {
