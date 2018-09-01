@@ -174,8 +174,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * Listen for relevant changes in the SharedPreferences
      */
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (gestureDetector.actionMap.keys.contains(key)) {
-            gestureDetector.loadActionMap()
+        app.logicHandler.post {
+            if (gestureDetector.actionMap.keys.contains(key)) {
+                gestureDetector.loadActionMap()
+            }
         }
         if (key != null && key.contains("use_pixels")) {
             params.width = getCustomWidth(context)
@@ -310,30 +312,28 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param alpha desired alpha level (0-1)
      */
     fun animate(listener: Animator.AnimatorListener?, alpha: Float) {
-        app.handler.post {
-            animate().alpha(alpha).setDuration(getAnimationDurationMs())
-                    .setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationCancel(animation: Animator?) {
-                            listener?.onAnimationCancel(animation)
-                        }
-
-                        override fun onAnimationEnd(animation: Animator?) {
-                            listener?.onAnimationEnd(animation)
-                        }
-
-                        override fun onAnimationRepeat(animation: Animator?) {
-                            listener?.onAnimationRepeat(animation)
-                        }
-
-                        override fun onAnimationStart(animation: Animator?) {
-                            listener?.onAnimationStart(animation)
-                        }
-                    })
-                    .withEndAction {
-                        this@BarView.alpha = alpha
+        animate().alpha(alpha).setDuration(getAnimationDurationMs())
+                .setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationCancel(animation: Animator?) {
+                        listener?.onAnimationCancel(animation)
                     }
-                    .start()
-        }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        listener?.onAnimationEnd(animation)
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator?) {
+                        listener?.onAnimationRepeat(animation)
+                    }
+
+                    override fun onAnimationStart(animation: Animator?) {
+                        listener?.onAnimationStart(animation)
+                    }
+                })
+                .withEndAction {
+                    this@BarView.alpha = alpha
+                }
+                .start()
     }
 
     private var hideHandle: ScheduledFuture<*>? = null
@@ -346,62 +346,56 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
 
         if ((!beingTouched && !isCarryingOutTouchAction) || overrideBeingTouched) {
-            app.handler.post {
-                if (app.isPillShown()) {
-                    isPillHidingOrShowing = true
+            if (app.isPillShown()) {
+                isPillHidingOrShowing = true
 
-                    val navHeight = getZeroY()
+                val navHeight = getZeroY()
 
-                    val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-                    val time = (getAnimationDurationMs() * animDurScale)
-                    val distance = (params.y - navHeight).absoluteValue
+                val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+                val time = (getAnimationDurationMs() * animDurScale)
+                val distance = (params.y - navHeight).absoluteValue
 
-                    if (distance == 0) {
-                        animateHide()
-                    } else {
-                        val animator = ValueAnimator.ofInt(params.y, navHeight)
-                        animator.interpolator = DecelerateInterpolator()
-                        animator.addUpdateListener {
-                            params.y = it.animatedValue.toString().toInt()
-                            updateLayout(params)
-                        }
-                        animator.addListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator?) {
-                                animateHide()
-                            }
-                        })
-                        animator.duration = (time * distance / 100f).toLong()
-                        animator.start()
+                if (distance == 0) {
+                    animateHide()
+                } else {
+                    val animator = ValueAnimator.ofInt(params.y, navHeight)
+                    animator.interpolator = DecelerateInterpolator()
+                    animator.addUpdateListener {
+                        params.y = it.animatedValue.toString().toInt()
+                        updateLayout(params)
                     }
-
-                    showHiddenToast()
+                    animator.addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator?) {
+                            animateHide()
+                        }
+                    })
+                    animator.duration = (time * distance / 100f).toLong()
+                    animator.start()
                 }
+
+                showHiddenToast()
             }
         } else {
             needsScheduledHide = true
-            app.handler.post {
-                hideHandle?.cancel(true)
-                hideHandle = null
-            }
+            hideHandle?.cancel(true)
+            hideHandle = null
         }
     }
 
     private fun animateHide() {
-        app.handler.post {
-            pill.animate()
-                    .translationY(pill.height.toFloat() / 2f)
-                    .alpha(ALPHA_HIDDEN)
-                    .setInterpolator(ENTER_INTERPOLATOR)
-                    .setDuration(getAnimationDurationMs())
-                    .withEndAction {
-                        pill.translationY = pill.height.toFloat() / 2f
+        pill.animate()
+                .translationY(pill.height.toFloat() / 2f)
+                .alpha(ALPHA_HIDDEN)
+                .setInterpolator(ENTER_INTERPOLATOR)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    pill.translationY = pill.height.toFloat() / 2f
 
-                        isHidden = true
+                    isHidden = true
 
-                        isPillHidingOrShowing = false
-                    }
-                    .start()
-        }
+                    isPillHidingOrShowing = false
+                }
+                .start()
     }
 
     private fun scheduleHide(time: Long? = parseHideTime()) {
@@ -433,68 +427,64 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     fun showPill(autoReasonToRemove: String?) {
         if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
-        app.handler.post {
-            if (app.isPillShown()) {
-                isPillHidingOrShowing = true
-                synchronized(hideLock) {
-                    val reallyForceNotAuto = hiddenPillReasons.isEmpty()
+        if (app.isPillShown()) {
+            isPillHidingOrShowing = true
+            synchronized(hideLock) {
+                val reallyForceNotAuto = hiddenPillReasons.isEmpty()
 
-                    if ((reallyForceNotAuto) && hideHandle != null) {
-                        hideHandle?.cancel(true)
-                        hideHandle = null
-                    }
-
-                    if (!reallyForceNotAuto) {
-                        scheduleHide()
-                    }
-
-                    pill.animate()
-                            .translationY(0f)
-                            .alpha(ALPHA_ACTIVE)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .withEndAction {
-                                pill.translationY = 0f
-
-                                animateShow()
-                            }
-                            .start()
+                if ((reallyForceNotAuto) && hideHandle != null) {
+                    hideHandle?.cancel(true)
+                    hideHandle = null
                 }
+
+                if (!reallyForceNotAuto) {
+                    scheduleHide()
+                }
+
+                pill.animate()
+                        .translationY(0f)
+                        .alpha(ALPHA_ACTIVE)
+                        .setInterpolator(EXIT_INTERPOLATOR)
+                        .setDuration(getAnimationDurationMs())
+                        .withEndAction {
+                            pill.translationY = 0f
+
+                            animateShow()
+                        }
+                        .start()
             }
         }
     }
 
     private fun animateShow() {
-        app.handler.post {
-            val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-            val time = (getAnimationDurationMs() * animDurScale)
+        val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+        val time = (getAnimationDurationMs() * animDurScale)
 
-            val navHeight = getAdjustedHomeY()
-            val distance = (navHeight - params.y).absoluteValue
-            val animator = ValueAnimator.ofInt(params.y, navHeight)
+        val navHeight = getAdjustedHomeY()
+        val distance = (navHeight - params.y).absoluteValue
+        val animator = ValueAnimator.ofInt(params.y, navHeight)
 
-            if (distance == 0) {
-                app.handler.postDelayed(Runnable {
-                    isHidden = false
-                    isPillHidingOrShowing = false
-                }, (if (getAnimationDurationMs() < 12) 12 else 0))
-            } else {
-                animator.interpolator = DecelerateInterpolator()
-                animator.addUpdateListener {
-                    params.y = it.animatedValue.toString().toInt()
-                    updateLayout(params)
-                }
-                animator.addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        app.handler.postDelayed(Runnable {
-                            isHidden = false
-                            isPillHidingOrShowing = false
-                        }, (if (getAnimationDurationMs() < 12) 12 else 0))
-                    }
-                })
-                animator.duration = (time * distance / 100f).toLong()
-                animator.start()
+        if (distance == 0) {
+            handler?.postDelayed(Runnable {
+                isHidden = false
+                isPillHidingOrShowing = false
+            }, (if (getAnimationDurationMs() < 12) 12 else 0))
+        } else {
+            animator.interpolator = DecelerateInterpolator()
+            animator.addUpdateListener {
+                params.y = it.animatedValue.toString().toInt()
+                updateLayout(params)
             }
+            animator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    handler?.postDelayed(Runnable {
+                        isHidden = false
+                        isPillHidingOrShowing = false
+                    }, (if (getAnimationDurationMs() < 12) 12 else 0))
+                }
+            })
+            animator.duration = (time * distance / 100f).toLong()
+            animator.start()
         }
     }
 
@@ -505,7 +495,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             marginStart = margins.left
             marginEnd = margins.right
 
-            app.handler.post { pill.layoutParams = pill.layoutParams }
+            pill.layoutParams = pill.layoutParams
         }
     }
 
@@ -585,68 +575,62 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * The animation for a single tap on the pill
      */
     private fun jiggleTap() {
-        app.handler.post {
-            animate()
-                    .scaleX(SCALE_MID)
-                    .setInterpolator(ENTER_INTERPOLATOR)
-                    .setDuration(getAnimationDurationMs())
-                    .withEndAction {
-                        animate()
-                                .scaleX(SCALE_NORMAL)
-                                .setInterpolator(EXIT_INTERPOLATOR)
-                                .setDuration(getAnimationDurationMs())
-                                .start()
-                        animateActiveLayer(BRIGHTEN_INACTIVE)
-                    }
-                    .start()
-            animateActiveLayer(BRIGHTEN_ACTIVE)
-        }
+        animate()
+                .scaleX(SCALE_MID)
+                .setInterpolator(ENTER_INTERPOLATOR)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    animate()
+                            .scaleX(SCALE_NORMAL)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
+                }
+                .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     /**
      * The animation for a swipe-left and hold on the pill
      */
     private fun jiggleLeftHold() {
-        app.handler.post {
-            animate()
-                    .scaleX(SCALE_SMALL)
-                    .x(-width * (1 - SCALE_SMALL) / 2)
-                    .setInterpolator(ENTER_INTERPOLATOR)
-                    .setDuration(getAnimationDurationMs())
-                    .withEndAction {
-                        animate()
-                                .scaleX(SCALE_NORMAL)
-                                .x(0f)
-                                .setInterpolator(EXIT_INTERPOLATOR)
-                                .setDuration(getAnimationDurationMs())
-                                .start()
-                        animateActiveLayer(BRIGHTEN_INACTIVE)
-                    }
-            animateActiveLayer(BRIGHTEN_ACTIVE)
-        }
+        animate()
+                .scaleX(SCALE_SMALL)
+                .x(-width * (1 - SCALE_SMALL) / 2)
+                .setInterpolator(ENTER_INTERPOLATOR)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    animate()
+                            .scaleX(SCALE_NORMAL)
+                            .x(0f)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
+                }
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     /**
      * The animation for a swipe-right and hold on the pill
      */
     private fun jiggleRightHold() {
-        app.handler.post {
-            animate()
-                    .scaleX(SCALE_SMALL)
-                    .x(width * (1 - SCALE_SMALL) / 2)
-                    .setInterpolator(ENTER_INTERPOLATOR)
-                    .setDuration(getAnimationDurationMs())
-                    .withEndAction {
-                        animate()
-                                .scaleX(SCALE_NORMAL)
-                                .x(0f)
-                                .setInterpolator(EXIT_INTERPOLATOR)
-                                .setDuration(getAnimationDurationMs())
-                                .start()
-                        animateActiveLayer(BRIGHTEN_INACTIVE)
-                    }
-            animateActiveLayer(BRIGHTEN_ACTIVE)
-        }
+        animate()
+                .scaleX(SCALE_SMALL)
+                .x(width * (1 - SCALE_SMALL) / 2)
+                .setInterpolator(ENTER_INTERPOLATOR)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    animate()
+                            .scaleX(SCALE_NORMAL)
+                            .x(0f)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
+                }
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     private fun jiggleDownHold() {
@@ -672,89 +656,81 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * The animation for a long-press on the pill
      */
     private fun jiggleHold() {
-        app.handler.post {
-            animate()
-                    .scaleX(SCALE_SMALL)
-                    .setInterpolator(ENTER_INTERPOLATOR)
-                    .setDuration(getAnimationDurationMs())
-                    .withEndAction {
-                        animate()
-                                .scaleX(SCALE_NORMAL)
-                                .setInterpolator(EXIT_INTERPOLATOR)
-                                .setDuration(getAnimationDurationMs())
-                                .start()
-                        animateActiveLayer(BRIGHTEN_INACTIVE)
-                    }
-                    .start()
-            animateActiveLayer(BRIGHTEN_ACTIVE)
-        }
+        animate()
+                .scaleX(SCALE_SMALL)
+                .setInterpolator(ENTER_INTERPOLATOR)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    animate()
+                            .scaleX(SCALE_NORMAL)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
+                }
+                .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     /**
      * The animation for an up-swipe and hold on the pill
      */
     private fun jiggleHoldUp() {
-        app.handler.post {
-            animate()
-                    .scaleY(SCALE_SMALL)
-                    .y(-height * (1 - SCALE_SMALL) / 2)
-                    .setInterpolator(ENTER_INTERPOLATOR)
-                    .setDuration(getAnimationDurationMs())
-                    .withEndAction {
-                        animate()
-                                .scaleY(SCALE_NORMAL)
-                                .y(0f)
-                                .setInterpolator(EXIT_INTERPOLATOR)
-                                .setDuration(getAnimationDurationMs())
-                                .start()
-                        animateActiveLayer(BRIGHTEN_INACTIVE)
-                    }
-                    .start()
-            animateActiveLayer(BRIGHTEN_ACTIVE)
-        }
+        animate()
+                .scaleY(SCALE_SMALL)
+                .y(-height * (1 - SCALE_SMALL) / 2)
+                .setInterpolator(ENTER_INTERPOLATOR)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    animate()
+                            .scaleY(SCALE_NORMAL)
+                            .y(0f)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .start()
+                    animateActiveLayer(BRIGHTEN_INACTIVE)
+                }
+                .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     /**
      * The animation for a double-tap on the pill
      */
     private fun jiggleDoubleTap() {
-        app.handler.post {
-            animate()
-                    .scaleX(SCALE_MID)
-                    .setInterpolator(AccelerateInterpolator())
-                    .setDuration(getAnimationDurationMs())
-                    .withEndAction {
-                        animate()
-                                .scaleX(SCALE_SMALL)
-                                .setInterpolator(ENTER_INTERPOLATOR)
-                                .setDuration(getAnimationDurationMs())
-                                .withEndAction {
-                                    animate()
-                                            .scaleX(SCALE_NORMAL)
-                                            .setInterpolator(EXIT_INTERPOLATOR)
-                                            .setDuration(getAnimationDurationMs())
-                                            .start()
-                                    animateActiveLayer(BRIGHTEN_INACTIVE)
-                                }
-                                .start()
-                    }
-                    .start()
-            animateActiveLayer(BRIGHTEN_ACTIVE)
-        }
+        animate()
+                .scaleX(SCALE_MID)
+                .setInterpolator(AccelerateInterpolator())
+                .setDuration(getAnimationDurationMs())
+                .withEndAction {
+                    animate()
+                            .scaleX(SCALE_SMALL)
+                            .setInterpolator(ENTER_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .withEndAction {
+                                animate()
+                                        .scaleX(SCALE_NORMAL)
+                                        .setInterpolator(EXIT_INTERPOLATOR)
+                                        .setDuration(getAnimationDurationMs())
+                                        .start()
+                                animateActiveLayer(BRIGHTEN_INACTIVE)
+                            }
+                            .start()
+                }
+                .start()
+        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     /**
      * This is called twice to "flash" the pill when an action is performed
      */
     fun animateActiveLayer(alpha: Float) {
-        app.handler.post {
-            pillFlash.apply {
-                val alphaRatio = Color.alpha(Utils.getPillBGColor(context)).toFloat() / 255f
-                animate()
-                        .setDuration(getAnimationDurationMs())
-                        .alpha(alpha * alphaRatio)
-                        .start()
-            }
+        pillFlash.apply {
+            val alphaRatio = Color.alpha(Utils.getPillBGColor(context)).toFloat() / 255f
+            animate()
+                    .setDuration(getAnimationDurationMs())
+                    .alpha(alpha * alphaRatio)
+                    .start()
         }
     }
 
@@ -763,20 +739,18 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param duration the desired duration
      */
     fun vibrate(duration: Long) {
-        app.handler.post {
-            if (duration > 0) {
-                val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (duration > 0) {
+            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
-                } else {
-                    vibrator.vibrate(duration)
-                }
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+                vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                vibrator.vibrate(duration)
             }
+        }
 
-            if (isSoundEffectsEnabled) {
-                playSoundEffect(SoundEffectConstants.CLICK)
-            }
+        if (isSoundEffectsEnabled) {
+            playSoundEffect(SoundEffectConstants.CLICK)
         }
     }
 
@@ -848,25 +822,17 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         isSwipeUp = false
                     }
 
-                    app.handler.post {
-                        upHoldHandle?.cancel(false)
-                        upHoldHandle = null
-                    }
+                    upHoldHandle?.cancel(false)
+                    upHoldHandle = null
 
-                    app.handler.post {
-                        leftHoldHandle?.cancel(false)
-                        leftHoldHandle = null
-                    }
+                    leftHoldHandle?.cancel(false)
+                    leftHoldHandle = null
 
-                    app.handler.post {
-                        rightHoldHandle?.cancel(true)
-                        rightHoldHandle = null
-                    }
+                    rightHoldHandle?.cancel(true)
+                    rightHoldHandle = null
 
-                    app.handler.post {
-                        downHoldHandle?.cancel(true)
-                        downHoldHandle = null
-                    }
+                    downHoldHandle?.cancel(true)
+                    downHoldHandle = null
 
                     if (isSwipeUp || (isRunningLongUp &&  getSectionedUpHoldAction(origAdjX) == app.typeNoAction)) {
                         sendAction(app.actionUp)
@@ -884,105 +850,97 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         sendAction(app.actionDown)
                     }
 
-                    app.handler.postDelayed({
-                        if (pill.translationX != 0f) {
-                            app.handler.post {
-                                pill.animate()
-                                        .translationX(0f)
-                                        .setDuration(getAnimationDurationMs())
-                                        .withEndAction {
-                                            if (params.x == getAdjustedHomeX()) {
-                                                isActing = false
-                                                isSwipeLeft = false
-                                                isSwipeRight = false
-                                            }
-                                        }
-                                        .start()
-                            }
-                        }
-
-                        if (pill.translationY != 0f && !isHidden && !isPillHidingOrShowing) {
-                            app.handler.post {
-                                pill.animate()
-                                        .translationY(0f)
-                                        .setDuration(getAnimationDurationMs())
-                                        .withEndAction {
-                                            if (params.y == getAdjustedHomeY()) {
-                                                isActing = false
-                                                isSwipeDown = false
-                                                isSwipeUp = false
-                                            }
-                                        }
-                                        .start()
-                            }
-                        }
-
-                        when {
-                            params.y != getAdjustedHomeY() && !isHidden && !isPillHidingOrShowing -> {
-                                val distance = (params.y - getAdjustedHomeY()).absoluteValue
-                                if (yHomeAnimator != null) {
-                                    app.handler.post {
-                                        yHomeAnimator?.cancel()
-                                        yHomeAnimator = null
-                                    }
-                                }
-                                yHomeAnimator = ValueAnimator.ofInt(params.y, getAdjustedHomeY())
-                                yHomeAnimator?.interpolator = DecelerateInterpolator()
-                                yHomeAnimator?.addUpdateListener {
-                                    params.y = it.animatedValue.toString().toInt()
-                                    updateLayout(params)
-                                }
-                                yHomeAnimator?.addListener(object : AnimatorListenerAdapter() {
-                                    override fun onAnimationEnd(animation: Animator?) {
-                                        isActing = false
-                                        isSwipeUp = false
-                                        isSwipeDown = false
-                                        isCarryingOutTouchAction = false
-
-                                        yHomeAnimator = null
-                                    }
-
-                                    override fun onAnimationCancel(animation: Animator?) {
-                                        onAnimationEnd(animation)
-                                    }
-                                })
-                                yHomeAnimator?.duration = (time * distance / 100f).toLong()
-                                app.handler.post { yHomeAnimator?.start() }
-                            }
-                            params.x < getAdjustedHomeX() || params.x > getAdjustedHomeX() -> {
-                                val distance = (params.x - getAdjustedHomeX()).absoluteValue
-                                val animator = ValueAnimator.ofInt(params.x, getAdjustedHomeX())
-                                animator.interpolator = DecelerateInterpolator()
-                                animator.addUpdateListener {
-                                    params.x = it.animatedValue.toString().toInt()
-                                    updateLayout(params)
-                                }
-                                animator.addListener(object : AnimatorListenerAdapter() {
-                                    override fun onAnimationEnd(animation: Animator?) {
+                    if (pill.translationX != 0f) {
+                        pill.animate()
+                                .translationX(0f)
+                                .setDuration(getAnimationDurationMs())
+                                .withEndAction {
+                                    if (params.x == getAdjustedHomeX()) {
                                         isActing = false
                                         isSwipeLeft = false
                                         isSwipeRight = false
-                                        isCarryingOutTouchAction = false
                                     }
-                                })
-                                animator.duration = (time * distance / 100f).toLong()
-                                app.handler.post { animator.start() }
-                            }
-                            else -> {
-                                isActing = false
-                                isSwipeUp = false
-                                isSwipeLeft = false
-                                isSwipeRight = false
-                                isSwipeDown = false
-                                isCarryingOutTouchAction = false
-                            }
-                        }
+                                }
+                                .start()
+                    }
 
-                        isRunningLongRight = false
-                        isRunningLongLeft = false
-                        isRunningLongUp = false
-                        isRunningLongDown = false
-                    }, 50)
+                    if (pill.translationY != 0f && !isHidden && !isPillHidingOrShowing) {
+                        pill.animate()
+                                .translationY(0f)
+                                .setDuration(getAnimationDurationMs())
+                                .withEndAction {
+                                    if (params.y == getAdjustedHomeY()) {
+                                        isActing = false
+                                        isSwipeDown = false
+                                        isSwipeUp = false
+                                    }
+                                }
+                                .start()
+                    }
+
+                    when {
+                        params.y != getAdjustedHomeY() && !isHidden && !isPillHidingOrShowing -> {
+                            val distance = (params.y - getAdjustedHomeY()).absoluteValue
+                            if (yHomeAnimator != null) {
+                                yHomeAnimator?.cancel()
+                                yHomeAnimator = null
+                            }
+                            yHomeAnimator = ValueAnimator.ofInt(params.y, getAdjustedHomeY())
+                            yHomeAnimator?.interpolator = DecelerateInterpolator()
+                            yHomeAnimator?.addUpdateListener {
+                                params.y = it.animatedValue.toString().toInt()
+                                updateLayout(params)
+                            }
+                            yHomeAnimator?.addListener(object : AnimatorListenerAdapter() {
+                                override fun onAnimationEnd(animation: Animator?) {
+                                    isActing = false
+                                    isSwipeUp = false
+                                    isSwipeDown = false
+                                    isCarryingOutTouchAction = false
+
+                                    yHomeAnimator = null
+                                }
+
+                                override fun onAnimationCancel(animation: Animator?) {
+                                    onAnimationEnd(animation)
+                                }
+                            })
+                            yHomeAnimator?.duration = (time * distance / 100f).toLong()
+                            yHomeAnimator?.start()
+                        }
+                        params.x < getAdjustedHomeX() || params.x > getAdjustedHomeX() -> {
+                            val distance = (params.x - getAdjustedHomeX()).absoluteValue
+                            val animator = ValueAnimator.ofInt(params.x, getAdjustedHomeX())
+                            animator.interpolator = DecelerateInterpolator()
+                            animator.addUpdateListener {
+                                params.x = it.animatedValue.toString().toInt()
+                                updateLayout(params)
+                            }
+                            animator.addListener(object : AnimatorListenerAdapter() {
+                                override fun onAnimationEnd(animation: Animator?) {
+                                    isActing = false
+                                    isSwipeLeft = false
+                                    isSwipeRight = false
+                                    isCarryingOutTouchAction = false
+                                }
+                            })
+                            animator.duration = (time * distance / 100f).toLong()
+                            animator.start()
+                        }
+                        else -> {
+                            isActing = false
+                            isSwipeUp = false
+                            isSwipeLeft = false
+                            isSwipeRight = false
+                            isSwipeDown = false
+                            isCarryingOutTouchAction = false
+                        }
+                    }
+
+                    isRunningLongRight = false
+                    isRunningLongLeft = false
+                    isRunningLongUp = false
+                    isRunningLongDown = false
 
                     wasHidden = isHidden
                 }
@@ -1002,12 +960,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                         if (upHoldHandle == null) {
                             upHoldHandle = pool.schedule({
-                                app.handler.post {
-                                    isRunningLongUp = true
-                                    sendAction(app.actionUpHold)
-                                    isSwipeUp = false
-                                    upHoldHandle = null
-                                }
+                                isRunningLongUp = true
+                                sendAction(app.actionUpHold)
+                                isSwipeUp = false
+                                upHoldHandle = null
                             }, getHoldTime().toLong(), TimeUnit.MILLISECONDS)
                         }
                     }
@@ -1023,12 +979,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                         if (downHoldHandle == null) {
                             downHoldHandle = pool.schedule({
-                                app.handler.post {
-                                    isRunningLongDown = true
-                                    sendAction(app.actionDownHold)
-                                    isSwipeDown = false
-                                    downHoldHandle = null
-                                }
+                                isRunningLongDown = true
+                                sendAction(app.actionDownHold)
+                                isSwipeDown = false
+                                downHoldHandle = null
                             }, getHoldTime().toLong(), TimeUnit.MILLISECONDS)
                         }
                     }
@@ -1059,12 +1013,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         if (isSwipeLeft) {
                             if (leftHoldHandle == null) {
                                 leftHoldHandle = pool.schedule({
-                                    app.handler.post {
-                                        isRunningLongLeft = true
-                                        sendAction(app.actionLeftHold)
-                                        isSwipeLeft = false
-                                        leftHoldHandle = null
-                                    }
+                                    isRunningLongLeft = true
+                                    sendAction(app.actionLeftHold)
+                                    isSwipeLeft = false
+                                    leftHoldHandle = null
                                 }, getHoldTime().toLong(), TimeUnit.MILLISECONDS)
                             }
                         }
@@ -1072,12 +1024,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         if (isSwipeRight) {
                             if (rightHoldHandle == null) {
                                 rightHoldHandle = pool.schedule({
-                                    app.handler.post {
-                                        isRunningLongRight = true
-                                        sendAction(app.actionRightHold)
-                                        isSwipeRight = false
-                                        rightHoldHandle = null
-                                    }
+                                    isRunningLongRight = true
+                                    sendAction(app.actionRightHold)
+                                    isSwipeRight = false
+                                    rightHoldHandle = null
                                 }, getHoldTime().toLong(), TimeUnit.MILLISECONDS)
                             }
                         }
@@ -1181,14 +1131,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             vibrate(getVibrationDuration().toLong())
 
-            if (key == app.actionDouble) app.handler.postDelayed({ vibrate(getVibrationDuration().toLong()) }, getVibrationDuration().toLong())
+            if (key == app.actionDouble) handler?.postDelayed({ vibrate(getVibrationDuration().toLong()) }, getVibrationDuration().toLong())
 
             if (which == app.typeHide) {
                 if (key == app.actionUp || key == app.actionUpHold) {
-                    app.handler.post {
-                        yHomeAnimator?.cancel()
-                        yHomeAnimator = null
-                    }
+                    yHomeAnimator?.cancel()
+                    yHomeAnimator = null
                 }
                 hidePill(false, null, true)
                 return

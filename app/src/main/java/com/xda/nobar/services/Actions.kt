@@ -10,8 +10,6 @@ import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.net.wifi.WifiManager
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.os.UserHandle
 import android.provider.MediaStore
 import android.provider.Settings
@@ -78,7 +76,7 @@ class Actions : AccessibilityService(), Serializable {
         private val imm by lazy { app.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
         private val wifiManager by lazy { app.getSystemService(Context.WIFI_SERVICE) as WifiManager }
 
-        private val handler = Handler(Looper.getMainLooper())
+        private val handler = app.logicHandler
 
         private val flashlightController by lazy {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) FlashlightControllerMarshmallow(app)
@@ -113,217 +111,223 @@ class Actions : AccessibilityService(), Serializable {
             }
 
         fun register() {
-            val filter = IntentFilter()
-            filter.addAction(ACTION)
-            filter.addAction(RequestPermissionsActivity.ACTION_RESULT)
+            handler.post {
+                val filter = IntentFilter()
+                filter.addAction(ACTION)
+                filter.addAction(RequestPermissionsActivity.ACTION_RESULT)
 
-            LocalBroadcastManager.getInstance(app).registerReceiver(this, filter)
+                LocalBroadcastManager.getInstance(app).registerReceiver(this, filter)
 
-            flashlightController.onCreate()
+                flashlightController.onCreate()
+            }
         }
 
         @SuppressLint("InlinedApi")
         override fun onReceive(context: Context?, intent: Intent?) {
-            when(intent?.action) {
-                ACTION -> {
-                    val gesture = intent.getStringExtra(EXTRA_GESTURE)
-                    when (intent.getIntExtra(EXTRA_ACTION, app.typeNoAction)) {
-                        app.typeHome -> actions.performGlobalAction(GLOBAL_ACTION_HOME)
-                        app.typeRecents -> actions.performGlobalAction(GLOBAL_ACTION_RECENTS)
-                        app.typeBack -> actions.performGlobalAction(GLOBAL_ACTION_BACK)
-                        app.typeSwitch -> runNougatAction {
-                            actions.performGlobalAction(GLOBAL_ACTION_RECENTS)
-                            handler.postDelayed({ actions.performGlobalAction(GLOBAL_ACTION_RECENTS) }, 100)
-                        }
-                        app.typeSplit -> runNougatAction { actions.performGlobalAction(GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN) }
-                        app.premTypeNotif -> runPremiumAction { actions.performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) }
-                        app.premTypeQs -> runPremiumAction { actions.performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) }
-                        app.premTypePower -> runPremiumAction { actions.performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }
-                        app.typeAssist -> {
-                            val assist = Intent(RecognizerIntent.ACTION_WEB_SEARCH)
-                            assist.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-
-                            try {
-                                app.startActivity(assist)
-                            } catch (e: Exception) {
-                                assist.action = RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE
+            handler.post {
+                when(intent?.action) {
+                    ACTION -> {
+                        val gesture = intent.getStringExtra(EXTRA_GESTURE)
+                        when (intent.getIntExtra(EXTRA_ACTION, app.typeNoAction)) {
+                            app.typeHome -> actions.performGlobalAction(GLOBAL_ACTION_HOME)
+                            app.typeRecents -> actions.performGlobalAction(GLOBAL_ACTION_RECENTS)
+                            app.typeBack -> actions.performGlobalAction(GLOBAL_ACTION_BACK)
+                            app.typeSwitch -> runNougatAction {
+                                actions.performGlobalAction(GLOBAL_ACTION_RECENTS)
+                                handler.postDelayed({ actions.performGlobalAction(GLOBAL_ACTION_RECENTS) }, 100)
+                            }
+                            app.typeSplit -> runNougatAction { actions.performGlobalAction(GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN) }
+                            app.premTypeNotif -> runPremiumAction { actions.performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) }
+                            app.premTypeQs -> runPremiumAction { actions.performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) }
+                            app.premTypePower -> runPremiumAction { actions.performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }
+                            app.typeAssist -> {
+                                val assist = Intent(RecognizerIntent.ACTION_WEB_SEARCH)
+                                assist.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
                                 try {
                                     app.startActivity(assist)
                                 } catch (e: Exception) {
-                                    assist.action = Intent.ACTION_VOICE_ASSIST
+                                    assist.action = RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE
 
                                     try {
                                         app.startActivity(assist)
                                     } catch (e: Exception) {
-                                        assist.action = Intent.ACTION_VOICE_COMMAND
+                                        assist.action = Intent.ACTION_VOICE_ASSIST
 
                                         try {
                                             app.startActivity(assist)
                                         } catch (e: Exception) {
-                                            assist.action = Intent.ACTION_ASSIST
+                                            assist.action = Intent.ACTION_VOICE_COMMAND
 
                                             try {
                                                 app.startActivity(assist)
                                             } catch (e: Exception) {
-                                                val searchMan = app.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+                                                assist.action = Intent.ACTION_ASSIST
 
-                                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-                                                    try {
-                                                        searchMan.launchAssist(null)
-                                                    } catch (e: Exception) {
+                                                try {
+                                                    app.startActivity(assist)
+                                                } catch (e: Exception) {
+                                                    val searchMan = app.getSystemService(Context.SEARCH_SERVICE) as SearchManager
 
-                                                        searchMan.launchLegacyAssist(null, UserHandle.USER_CURRENT, null)
+                                                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                                                        try {
+                                                            searchMan.launchAssist(null)
+                                                        } catch (e: Exception) {
+
+                                                            searchMan.launchLegacyAssist(null, UserHandle.USER_CURRENT, null)
+                                                        }
+                                                    } else {
+                                                        val launchAssistAction = searchMan::class.java
+                                                                .getMethod("launchAssistAction", Int::class.java, String::class.java, Int::class.java)
+                                                        launchAssistAction.invoke(searchMan, 1, null, UserHandle.USER_CURRENT)
                                                     }
-                                                } else {
-                                                    val launchAssistAction = searchMan::class.java
-                                                            .getMethod("launchAssistAction", Int::class.java, String::class.java, Int::class.java)
-                                                    launchAssistAction.invoke(searchMan, 1, null, UserHandle.USER_CURRENT)
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
-                        }
-                        app.typeOhm -> {
-                            val ohm = Intent("com.xda.onehandedmode.intent.action.TOGGLE_OHM")
-                            ohm.setClassName("com.xda.onehandedmode", "com.xda.onehandedmode.receivers.OHMReceiver")
-                            app.sendBroadcast(ohm)
-                        }
-                        app.premTypePlayPause -> runPremiumAction {
-                            audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
-                            audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
-                        }
-                        app.premTypePrev -> runPremiumAction {
-                            audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-                            audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-                        }
-                        app.premTypeNext -> runPremiumAction {
-                            audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
-                            audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
-                        }
-                        app.premTypeSwitchIme -> runPremiumAction {
-                            imm.showInputMethodPicker()
-                        }
-                        app.premTypeLaunchApp -> runPremiumAction {
-                            val key = "${gesture}_package"
-                            val launchPackage = app.prefs.getString(key, null)
+                            app.typeOhm -> {
+                                val ohm = Intent("com.xda.onehandedmode.intent.action.TOGGLE_OHM")
+                                ohm.setClassName("com.xda.onehandedmode", "com.xda.onehandedmode.receivers.OHMReceiver")
+                                app.sendBroadcast(ohm)
+                            }
+                            app.premTypePlayPause -> runPremiumAction {
+                                audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
+                                audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
+                            }
+                            app.premTypePrev -> runPremiumAction {
+                                audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+                                audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+                            }
+                            app.premTypeNext -> runPremiumAction {
+                                audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
+                                audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
+                            }
+                            app.premTypeSwitchIme -> runPremiumAction {
+                                imm.showInputMethodPicker()
+                            }
+                            app.premTypeLaunchApp -> runPremiumAction {
+                                val key = "${gesture}_package"
+                                val launchPackage = app.prefs.getString(key, null)
 
-                            if (launchPackage != null) {
-                                val launch = Intent(Intent.ACTION_MAIN)
-                                launch.addCategory(Intent.CATEGORY_LAUNCHER)
-                                launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                launch.`package` = launchPackage.split("/")[0]
-                                launch.component = ComponentName(launch.`package`, launchPackage.split("/")[1])
+                                if (launchPackage != null) {
+                                    val launch = Intent(Intent.ACTION_MAIN)
+                                    launch.addCategory(Intent.CATEGORY_LAUNCHER)
+                                    launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    launch.`package` = launchPackage.split("/")[0]
+                                    launch.component = ComponentName(launch.`package`, launchPackage.split("/")[1])
+
+                                    try {
+                                        app.startActivity(launch)
+                                    } catch (e: Exception) {
+                                    }
+                                }
+                            }
+                            app.premTypeLaunchActivity -> runPremiumAction {
+                                val key = "${gesture}_activity"
+                                val activity = app.prefs.getString(key, null) ?: return@runPremiumAction
+
+                                val p = activity.split("/")[0]
+                                val c = activity.split("/")[1]
+
+                                val launch = Intent()
+                                launch.component = ComponentName(p, c)
 
                                 try {
                                     app.startActivity(launch)
                                 } catch (e: Exception) {
                                 }
                             }
-                        }
-                        app.premTypeLaunchActivity -> runPremiumAction {
-                            val key = "${gesture}_activity"
-                            val activity = app.prefs.getString(key, null) ?: return@runPremiumAction
-
-                            val p = activity.split("/")[0]
-                            val c = activity.split("/")[1]
-
-                            val launch = Intent()
-                            launch.component = ComponentName(p, c)
-
-                            try {
-                                app.startActivity(launch)
-                            } catch (e: Exception) {
-                            }
-                        }
-                        app.premTypeLockScreen -> runPremiumAction {
-                            runSystemSettingsAction {
-                                val lock = Intent(app, LockScreenActivity::class.java)
-                                lock.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                app.startActivity(lock)
-                            }
-                        }
-                        app.premTypeScreenshot -> runPremiumAction {
-                            val screenshot = Intent(app, ScreenshotActivity::class.java)
-                            screenshot.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            app.startActivity(screenshot)
-                        }
-                        app.premTypeRot -> runPremiumAction {
-                            runSystemSettingsAction {
-                                orientationEventListener.enable()
-                            }
-                        }
-                        app.premTypeTaskerEvent -> runPremiumAction {
-                            EventConfigureActivity::class.java.requestQuery(app, EventUpdate(gesture))
-                        }
-                        app.typeToggleNav -> {
-                            app.toggleNavState()
-                        }
-                        app.premTypeFlashlight -> runPremiumAction {
-                            flashlightController.flashlightEnabled = !flashlightController.flashlightEnabled
-                        }
-                        app.premTypeVolumePanel -> runPremiumAction {
-                            audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
-                        }
-                        app.premTypeBluetooth -> runPremiumAction {
-                            val adapter = BluetoothAdapter.getDefaultAdapter()
-                            if (adapter.isEnabled) adapter.disable() else adapter.enable()
-                        }
-                        app.premTypeWiFi -> runPremiumAction {
-                            wifiManager.isWifiEnabled = !wifiManager.isWifiEnabled
-                        }
-                        app.premTypeIntent -> runPremiumAction {
-                            val broadcast = IntentSelectorActivity.INTENTS[Utils.getIntentKey(app, gesture)]
-                            val type = broadcast?.which
-
-                            try {
-                                when (type) {
-                                    IntentSelectorActivity.ACTIVITY -> app.startActivity(broadcast)
-                                    IntentSelectorActivity.SERVICE -> ContextCompat.startForegroundService(app, broadcast)
-                                    IntentSelectorActivity.BROADCAST -> app.sendBroadcast(broadcast)
+                            app.premTypeLockScreen -> runPremiumAction {
+                                runSystemSettingsAction {
+                                    val lock = Intent(app, LockScreenActivity::class.java)
+                                    lock.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    app.startActivity(lock)
                                 }
-                            } catch (e: SecurityException) {
-                                when (broadcast?.action) {
-                                    MediaStore.ACTION_VIDEO_CAPTURE,
-                                    MediaStore.ACTION_IMAGE_CAPTURE -> {
-                                        RequestPermissionsActivity.createAndStart(app,
-                                                arrayOf(Manifest.permission.CAMERA),
-                                                intent.extras,
-                                                ComponentName(app, ActionHandler::class.java))
+                            }
+                            app.premTypeScreenshot -> runPremiumAction {
+                                val screenshot = Intent(app, ScreenshotActivity::class.java)
+                                screenshot.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                app.startActivity(screenshot)
+                            }
+                            app.premTypeRot -> runPremiumAction {
+                                runSystemSettingsAction {
+                                    orientationEventListener.enable()
+                                }
+                            }
+                            app.premTypeTaskerEvent -> runPremiumAction {
+                                EventConfigureActivity::class.java.requestQuery(app, EventUpdate(gesture))
+                            }
+                            app.typeToggleNav -> {
+                                app.toggleNavState()
+                            }
+                            app.premTypeFlashlight -> runPremiumAction {
+                                flashlightController.flashlightEnabled = !flashlightController.flashlightEnabled
+                            }
+                            app.premTypeVolumePanel -> runPremiumAction {
+                                audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
+                            }
+                            app.premTypeBluetooth -> runPremiumAction {
+                                val adapter = BluetoothAdapter.getDefaultAdapter()
+                                if (adapter.isEnabled) adapter.disable() else adapter.enable()
+                            }
+                            app.premTypeWiFi -> runPremiumAction {
+                                wifiManager.isWifiEnabled = !wifiManager.isWifiEnabled
+                            }
+                            app.premTypeIntent -> runPremiumAction {
+                                val broadcast = IntentSelectorActivity.INTENTS[Utils.getIntentKey(app, gesture)]
+                                val type = broadcast?.which
+
+                                try {
+                                    when (type) {
+                                        IntentSelectorActivity.ACTIVITY -> app.startActivity(broadcast)
+                                        IntentSelectorActivity.SERVICE -> ContextCompat.startForegroundService(app, broadcast)
+                                        IntentSelectorActivity.BROADCAST -> app.sendBroadcast(broadcast)
                                     }
+                                } catch (e: SecurityException) {
+                                    when (broadcast?.action) {
+                                        MediaStore.ACTION_VIDEO_CAPTURE,
+                                        MediaStore.ACTION_IMAGE_CAPTURE -> {
+                                            RequestPermissionsActivity.createAndStart(app,
+                                                    arrayOf(Manifest.permission.CAMERA),
+                                                    intent.extras,
+                                                    ComponentName(app, ActionHandler::class.java))
+                                        }
+                                    }
+                                } catch (e: ActivityNotFoundException) {
+                                    Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
                                 }
-                            } catch (e: ActivityNotFoundException) {
-                                Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
                             }
-                        }
-                        app.premTypeVibe -> {
-                            //TODO: Implement
-                        }
-                        app.premTypeSilent -> {
-                            //TODO: Implement
-                        }
-                        app.premTypeMute -> {
-                            //TODO: Implement
+                            app.premTypeVibe -> {
+                                //TODO: Implement
+                            }
+                            app.premTypeSilent -> {
+                                //TODO: Implement
+                            }
+                            app.premTypeMute -> {
+                                //TODO: Implement
+                            }
                         }
                     }
-                }
-                RequestPermissionsActivity.ACTION_RESULT -> {
-                    if (intent.getIntArrayExtra(RequestPermissionsActivity.EXTRA_RESULT_CODE)[0] == PackageManager.PERMISSION_GRANTED) {
-                        intent.action = ACTION
-                        onReceive(context, intent)
+                    RequestPermissionsActivity.ACTION_RESULT -> {
+                        if (intent.getIntArrayExtra(RequestPermissionsActivity.EXTRA_RESULT_CODE)[0] == PackageManager.PERMISSION_GRANTED) {
+                            intent.action = ACTION
+                            onReceive(context, intent)
+                        }
                     }
                 }
             }
         }
 
         fun destroy() {
-            try {
-                LocalBroadcastManager.getInstance(app).unregisterReceiver(this)
-            } catch (e: Exception) {}
+            handler.post {
+                try {
+                    LocalBroadcastManager.getInstance(app).unregisterReceiver(this)
+                } catch (e: Exception) {}
 
-            flashlightController.onDestroy()
+                flashlightController.onDestroy()
+            }
         }
 
         private fun runNougatAction(action: () -> Unit) = Utils.runNougatAction(app, action)
