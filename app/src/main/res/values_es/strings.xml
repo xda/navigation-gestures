@@ -106,6 +106,7 @@
   <string name="full_overscan">Utilizar overscan completo</string>
   <string name="dont_keep_overscan_on_lockscreen">No ocultar barra de navegación en pantalla de bloqueo</string>
   <string name="current_overscan">Overscan actual</string>
+  <string name="screen_timeout">Screen Timeout</string>
   <!--Descriptions-->
   <string name="gestures_desc">Personalizar acciones de gestos</string>
   <string name="appearance_desc">Personalizar el aspecto de la barra de gestos</string>
@@ -183,6 +184,7 @@
   <string name="deactivate_before_uninstall">¡Asegúrate de que la opción \"Ocultar barra de navegación\" esté desactivada antes de desinstalar esta aplicación!</string>
   <string name="copied_to_clipboard">Correo electrónico copiado al portapapeles</string>
   <string name="unable_to_launch">Unable to launch target.</string>
+  <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
@@ -208,102 +210,6 @@
   <string name="toggle_twilight">Activar o desactivar Twilight</string>
   <string name="start_twilight">Iniciar Twilight</string>
   <string name="stop_twilight">Detener Twilight</string>
-  <!--Actions-->
-  <string name="home">Inicio</string>
-  <string name="back">Atrás</string>
-  <string name="ohm">Activar o desactivar OHM</string>
-  <string name="recents">Aplicaciones recientes</string>
-  <string name="hide">Ocultar barra de gestos</string>
-  <string name="assist">Asistente</string>
-  <string name="switch_apps">Aplicación anterior (Nougat+)</string>
-  <string name="nothing">Ninguna acción</string>
-  <string name="prem_notif">Notificaciones (Premium)</string>
-  <string name="prem_qs">Configuración rápida (Premium)</string>
-  <string name="prem_power">Menú de apagado (Premium)</string>
-  <string name="split">Pantalla dividida (Nougat+)</string>
-  <string name="prem_prev">Pista anterior (Premium)</string>
-  <string name="prem_next">Pista siguiente (Premium)</string>
-  <string name="prem_play_pause">Reproducir/Pausar (Premium)</string>
-  <string name="hold_back">Mantener pulsado atrás (Root)</string>
-  <string name="forward">Avanzar (Root)</string>
-  <string name="menu">Abrir menú (Root)</string>
-  <string name="sleep">Dormir (Root)</string>
-  <string name="prem_vol_up">Subir volumen (Root) (Premium)</string>
-  <string name="prem_vol_down">Bajar volumen (Root) (Premium)</string>
-  <string name="prem_screenshot">Captura de pantalla (Premium)</string>
-  <string name="prem_switch_ime">Cambiar el teclado (Premium)</string>
-  <string name="prem_launch_app">Iniciar aplicación (Premium) (%s)</string>
-  <string name="prem_launch_app_no_format">Iniciar aplicación (Premium)</string>
-  <string name="prem_lock_screen">Pantalla de bloqueo (Premium)</string>
-  <string name="prem_launch_activity">Iniciar actividad (Premium) (%s)</string>
-  <string name="prem_launch_activity_no_format">Iniciar actividad (Premium)</string>
-  <string name="prem_rot">Girar pantalla (Premium)</string>
-  <string name="prem_tasker_event">Evento de Tasker (Premium)</string>
-  <string name="prem_flashlight">Activar o desactivar linterna (Premium)</string>
-  <string name="prem_volume_panel">Abrir panel de volumen (Premium)</string>
-  <string name="prem_bluetooth">Activar o desactivar Bluetooth (Premium)</string>
-  <string name="prem_wifi">Activar o desactivar WiFi (Premium)</string>
-  <string name="prem_intent">Enviar Intent (Premium) (%s)</string>
-  <string name="prem_intent_no_format">Enviar Intent (Premium)</string>
-  <!--Action Values-->
-  <string name="type_no_action">-1</string>
-  <string name="type_back">0</string>
-  <string name="type_ohm">1</string>
-  <string name="type_recents">2</string>
-  <string name="type_hide">3</string>
-  <string name="type_switch">4</string>
-  <string name="type_assist">5</string>
-  <string name="type_home">6</string>
-  <string name="prem_type_notif">7</string>
-  <string name="prem_type_qs">8</string>
-  <string name="prem_type_power">9</string>
-  <string name="type_split">10</string>
-  <string name="prem_type_vibe">11</string>
-  <string name="prem_type_silent">12</string>
-  <string name="prem_type_mute">13</string>
-  <string name="prem_type_play_pause">14</string>
-  <string name="prem_type_prev">15</string>
-  <string name="prem_type_next">16</string>
-  <string name="type_hold_back">17</string>
-  <string name="type_forward">18</string>
-  <string name="type_menu">19</string>
-  <string name="type_sleep">20</string>
-  <string name="type_vol_up">21</string>
-  <string name="type_vol_down">22</string>
-  <string name="prem_type_screenshot">23</string>
-  <string name="prem_type_switch_ime">24</string>
-  <string name="prem_type_launch_app">25</string>
-  <string name="prem_type_lock_screen">26</string>
-  <string name="prem_type_launch_activity">27</string>
-  <string name="prem_type_rot">28</string>
-  <string name="prem_type_tasker_event">29</string>
-  <string name="type_toggle_nav">30</string>
-  <string name="prem_type_flashlight">31</string>
-  <string name="prem_type_volume_panel">32</string>
-  <string name="prem_type_bluetooth">33</string>
-  <string name="prem_type_wifi">34</string>
-  <string name="prem_type_intent">35</string>
-  <!--Main Action Keys-->
-  <string name="action_left">izquierda</string>
-  <string name="action_right">derecha</string>
-  <string name="action_up">arriba</string>
-  <string name="action_down">abajo</string>
-  <string name="action_double">doble_toque</string>
-  <string name="action_hold">mantener</string>
-  <string name="action_tap">tocar</string>
-  <string name="action_up_hold">arriba_mantener</string>
-  <string name="action_left_hold">izquierda_mantener</string>
-  <string name="action_right_hold">derecha_mantener</string>
-  <string name="action_down_hold">abajo_mantener</string>
-  <!--Center Action Keys-->
-  <string name="action_up_center">arriba_centro</string>
-  <string name="action_up_hold_center">arriba_mantener_centro</string>
-  <!--Left Action Keys-->
-  <string name="action_up_left">arriba_izquierda</string>
-  <string name="action_up_hold_left">arriba_mantener_izquierda</string>
-  <!--Right Action Keys-->
-  <string name="action_up_right">arriba_derecha</string>
-  <string name="action_up_hold_right">arriba_mantener_derecha</string>
   <!--Buttons-->
   <string name="no">No</string>
   <!--Split Pill Recommendations-->
