@@ -105,6 +105,7 @@
     <string name="full_overscan">Use Full Overscan</string>
     <string name="dont_keep_overscan_on_lockscreen">Don\'t Hide NavBar on Lock Screen</string>
     <string name="current_overscan">Current Overscan</string>
+    <string name="screen_timeout">Screen Timeout</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -186,6 +187,7 @@
     <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
     <string name="copied_to_clipboard">Email copied to clipboard</string>
     <string name="unable_to_launch">Unable to launch target.</string>
+    <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
 
     <!--Libraries-->
     <string name="material_intro">Material Intro (Fork)</string>

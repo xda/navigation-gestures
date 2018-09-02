@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.PixelFormat
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import android.view.Gravity
 import android.view.Surface
 import android.view.View
@@ -105,6 +104,19 @@ class ImmersiveHelperView(context: Context) : View(context) {
         val imm = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)
         return imm?.contains("immersive.full") == true
                 || systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
+    }
+
+    fun toggleScreenOn(): Boolean {
+        val hasScreenOn = params.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON == WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+
+        if (hasScreenOn) params.flags = params.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON.inv()
+        else params.flags = params.flags or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+
+        handler?.post {
+            app.wm.updateViewLayout(this, params)
+        }
+
+        return !hasScreenOn
     }
 
     private fun getProperScreenHeightForRotation(): Int {

@@ -299,6 +299,15 @@ class Actions : AccessibilityService(), Serializable {
                                     Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
                                 }
                             }
+                            app.premTypeBatterySaver -> {
+                                runPremiumAction {
+                                    val current = Settings.Global.getInt(app.contentResolver, Settings.Global.LOW_POWER_MODE, 0)
+                                    Settings.Global.putInt(app.contentResolver, Settings.Global.LOW_POWER_MODE, if (current == 0) 1 else 0)
+                                }
+                            }
+                            app.premTypeScreenTimeout -> {
+                                runPremiumAction { app.toggleScreenOn() }
+                            }
                             app.premTypeVibe -> {
                                 //TODO: Implement
                             }

@@ -3,9 +3,7 @@ package com.xda.nobar
 import android.Manifest
 import android.animation.Animator
 import android.annotation.SuppressLint
-import android.app.AppOpsManager
-import android.app.Application
-import android.app.UiModeManager
+import android.app.*
 import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -16,6 +14,7 @@ import android.net.Uri
 import android.os.*
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
@@ -47,6 +46,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val wm by lazy { getSystemService(Context.WINDOW_SERVICE) as WindowManager }
     val um by lazy { getSystemService(Context.UI_MODE_SERVICE) as UiModeManager }
     val appOps by lazy { getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager }
+    val nm by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
 
     private val stateHandler = ScreenStateHandler()
     private val carModeHandler = CarModeHandler()
@@ -231,6 +231,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val premTypeBluetooth by lazy { resources.getString(R.string.prem_type_bluetooth).toInt() }
     val premTypeWiFi by lazy { resources.getString(R.string.prem_type_wifi).toInt() }
     val premTypeIntent by lazy { resources.getString(R.string.prem_type_intent).toInt() }
+    val premTypeBatterySaver by lazy { resources.getString(R.string.prem_type_battery_saver).toInt() }
+    val premTypeScreenTimeout by lazy { resources.getString(R.string.prem_type_screen_timeout).toInt() }
 
     val typeRootHoldBack by lazy { resources.getString(R.string.type_hold_back).toInt() }
     val typeRootForward by lazy { resources.getString(R.string.type_forward).toInt() }
@@ -621,6 +623,27 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
     }
 
+    private val screenOnNotif by lazy {
+        NotificationCompat.Builder(this, "nobar-screen-on")
+                .setContentTitle(resources.getText(R.string.screen_timeout))
+                .setContentText(resources.getText(R.string.screen_timeout_msg))
+                .setSmallIcon(R.drawable.ic_navgest)
+                .setPriority(if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) NotificationCompat.PRIORITY_MIN else NotificationCompat.PRIORITY_LOW)
+    }
+
+    fun toggleScreenOn() {
+        val hasScreenOn = immersiveHelperView.toggleScreenOn()
+
+        if (hasScreenOn) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+                nm.createNotificationChannel(NotificationChannel("nobar-screen-on", resources.getString(R.string.screen_timeout), NotificationManager.IMPORTANCE_LOW))
+            }
+
+            nm.notify(100, screenOnNotif.build())
+        } else {
+            nm.cancel(100)
+        }
+    }
     private fun addBarInternalUnconditionally() {
         try {
             wm.addView(bar, bar.params)
