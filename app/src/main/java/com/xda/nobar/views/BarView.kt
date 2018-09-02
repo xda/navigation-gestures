@@ -751,18 +751,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param duration the desired duration
      */
     fun vibrate(duration: Long) {
-        if (duration > 0) {
-            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        handler?.post {
+            if (duration > 0) {
+                val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-                vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
-            } else {
-                vibrator.vibrate(duration)
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
+                } else {
+                    vibrator.vibrate(duration)
+                }
             }
-        }
 
-        if (isSoundEffectsEnabled) {
-            playSoundEffect(SoundEffectConstants.CLICK)
+            if (isSoundEffectsEnabled) {
+                playSoundEffect(SoundEffectConstants.CLICK)
+            }
         }
     }
 
