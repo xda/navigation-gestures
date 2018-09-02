@@ -527,6 +527,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         return getHomeX(context) - if (immersiveNav) (diff / 2f).toInt() else 0
     }
 
+    fun toggleScreenOn(): Boolean {
+        val hasScreenOn = params.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON == WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+
+        if (hasScreenOn) params.flags = params.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON.inv()
+        else params.flags = params.flags or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+
+        return try {
+            app.wm.updateViewLayout(this, params)
+            !hasScreenOn
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     /**
      * Show a toast when the pill is hidden. Only shows once.
      */

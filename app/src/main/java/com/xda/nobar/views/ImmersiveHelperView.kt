@@ -106,19 +106,6 @@ class ImmersiveHelperView(context: Context) : View(context) {
                 || systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
     }
 
-    fun toggleScreenOn(): Boolean {
-        val hasScreenOn = params.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON == WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-
-        if (hasScreenOn) params.flags = params.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON.inv()
-        else params.flags = params.flags or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-
-        handler?.post {
-            app.wm.updateViewLayout(this, params)
-        }
-
-        return !hasScreenOn
-    }
-
     private fun getProperScreenHeightForRotation(): Int {
         val rotation = app.wm.defaultDisplay.rotation
         val screenHeight = Utils.getRealScreenSize(context).y

@@ -629,19 +629,22 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 .setContentText(resources.getText(R.string.screen_timeout_msg))
                 .setSmallIcon(R.drawable.ic_navgest)
                 .setPriority(if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) NotificationCompat.PRIORITY_MIN else NotificationCompat.PRIORITY_LOW)
+                .setOngoing(true)
     }
 
     fun toggleScreenOn() {
-        val hasScreenOn = immersiveHelperView.toggleScreenOn()
+        bar.handler?.post {
+            val hasScreenOn = bar.toggleScreenOn()
 
-        if (hasScreenOn) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-                nm.createNotificationChannel(NotificationChannel("nobar-screen-on", resources.getString(R.string.screen_timeout), NotificationManager.IMPORTANCE_LOW))
+            if (hasScreenOn) {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+                    nm.createNotificationChannel(NotificationChannel("nobar-screen-on", resources.getString(R.string.screen_timeout), NotificationManager.IMPORTANCE_LOW))
+                }
+
+                nm.notify(100, screenOnNotif.build())
+            } else {
+                nm.cancel(100)
             }
-
-            nm.notify(100, screenOnNotif.build())
-        } else {
-            nm.cancel(100)
         }
     }
     private fun addBarInternalUnconditionally() {
