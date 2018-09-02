@@ -106,6 +106,7 @@
   <string name="full_overscan">Full Overscan 사용</string>
   <string name="dont_keep_overscan_on_lockscreen">잠금화면에서 NavBar 숨기지 않음</string>
   <string name="current_overscan">Current Overscan</string>
+  <string name="screen_timeout">Screen Timeout</string>
   <!--Descriptions-->
   <string name="gestures_desc">제스처 동작 사용자 지정</string>
   <string name="appearance_desc">Pill의 외관 사용자 지정</string>
@@ -183,6 +184,7 @@
   <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
   <string name="copied_to_clipboard">Email copied to clipboard</string>
   <string name="unable_to_launch">Unable to launch target.</string>
+  <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
