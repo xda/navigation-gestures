@@ -106,6 +106,7 @@
   <string name="full_overscan">Use Full Overscan</string>
   <string name="dont_keep_overscan_on_lockscreen">Ne pas masquer la barre de navigation sur l’écran de verrouillage</string>
   <string name="current_overscan">Current Overscan</string>
+  <string name="screen_timeout">Screen Timeout</string>
   <!--Descriptions-->
   <string name="gestures_desc">Personnaliser les actions de geste</string>
   <string name="appearance_desc">Personnaliser l’apparence de la pilule de navigation</string>
@@ -183,6 +184,7 @@
   <string name="deactivate_before_uninstall">Assuez-vous que \"Cacher la barre de navigation\" soit désactivé avant de désinstaller l\'application!</string>
   <string name="copied_to_clipboard">Email copié dans le presse-papier</string>
   <string name="unable_to_launch">Unable to launch target.</string>
+  <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
@@ -208,102 +210,6 @@
   <string name="toggle_twilight">Toggle Twilight</string>
   <string name="start_twilight">Start Twilight</string>
   <string name="stop_twilight">Stop Twilight</string>
-  <!--Actions-->
-  <string name="home">Écran d\'accueil</string>
-  <string name="back">Retour</string>
-  <string name="ohm">Activer/désactiver OHM</string>
-  <string name="recents">Applications récentes</string>
-  <string name="hide">Cacher la pilule</string>
-  <string name="assist">Assistant</string>
-  <string name="switch_apps">Application précédente (Nougat +)</string>
-  <string name="nothing">Aucune action</string>
-  <string name="prem_notif">Notifications (Premium)</string>
-  <string name="prem_qs">Paramètres rapides (Premium)</string>
-  <string name="prem_power">Menu Power (Premium)</string>
-  <string name="split">Écran coupé en 2 (Nougat+)</string>
-  <string name="prem_prev">Piste précédente (Premium)</string>
-  <string name="prem_next">Piste suivante (Premium)</string>
-  <string name="prem_play_pause">Play/Pause (Premium)</string>
-  <string name="hold_back">Retour long (Root)</string>
-  <string name="forward">Aller en avant (Premium)</string>
-  <string name="menu">Ouvrir le Menu (Premium)</string>
-  <string name="sleep">Mise en veille (Premium)</string>
-  <string name="prem_vol_up">Volume + (Root) (Premium)</string>
-  <string name="prem_vol_down">Volume - (Root) (Premium)</string>
-  <string name="prem_screenshot">Capture d\'écran (Premium)</string>
-  <string name="prem_switch_ime">Changement de clavier (Premium)</string>
-  <string name="prem_launch_app">Lancement d\'une application (Premium) (%s)</string>
-  <string name="prem_launch_app_no_format">Lancement d\'une application (Premium)</string>
-  <string name="prem_lock_screen">Verrouillage de l\'écran (Premium)</string>
-  <string name="prem_launch_activity">Lancement d\'une activité (Premium) (%s)</string>
-  <string name="prem_launch_activity_no_format">Lancement d\'une activité (Premium)</string>
-  <string name="prem_rot">Rotation d’écran (Premium)</string>
-  <string name="prem_tasker_event">Événement Tasker (Premium)</string>
-  <string name="prem_flashlight">Activer/Désactiver la Lampe-Torche (Premium)</string>
-  <string name="prem_volume_panel">Ouvrir le panneau de Volume (Premium)</string>
-  <string name="prem_bluetooth">Activer/Désactiver le Bluetooth (Premium)</string>
-  <string name="prem_wifi">Activer/désactiver le WiFi (Premium)</string>
-  <string name="prem_intent">Envoyer un Intent (Premium) (%s)</string>
-  <string name="prem_intent_no_format">Envoyer un Intent (Premium)</string>
-  <!--Action Values-->
-  <string name="type_no_action">-1</string>
-  <string name="type_back">0</string>
-  <string name="type_ohm">1</string>
-  <string name="type_recents">2</string>
-  <string name="type_hide">3</string>
-  <string name="type_switch">4</string>
-  <string name="type_assist">5</string>
-  <string name="type_home">6</string>
-  <string name="prem_type_notif">7</string>
-  <string name="prem_type_qs">8</string>
-  <string name="prem_type_power">9</string>
-  <string name="type_split">10</string>
-  <string name="prem_type_vibe">11</string>
-  <string name="prem_type_silent">12</string>
-  <string name="prem_type_mute">13</string>
-  <string name="prem_type_play_pause">14</string>
-  <string name="prem_type_prev">15</string>
-  <string name="prem_type_next">16</string>
-  <string name="type_hold_back">17</string>
-  <string name="type_forward">18</string>
-  <string name="type_menu">19</string>
-  <string name="type_sleep">20</string>
-  <string name="type_vol_up">21</string>
-  <string name="type_vol_down">22</string>
-  <string name="prem_type_screenshot">23</string>
-  <string name="prem_type_switch_ime">24</string>
-  <string name="prem_type_launch_app">25</string>
-  <string name="prem_type_lock_screen">26</string>
-  <string name="prem_type_launch_activity">27</string>
-  <string name="prem_type_rot">28</string>
-  <string name="prem_type_tasker_event">29</string>
-  <string name="type_toggle_nav">30</string>
-  <string name="prem_type_flashlight">31</string>
-  <string name="prem_type_volume_panel">32</string>
-  <string name="prem_type_bluetooth">33</string>
-  <string name="prem_type_wifi">34</string>
-  <string name="prem_type_intent">35</string>
-  <!--Main Action Keys-->
-  <string name="action_left">gauche</string>
-  <string name="action_right">droite</string>
-  <string name="action_up">haut</string>
-  <string name="action_down">bas</string>
-  <string name="action_double">appui_double</string>
-  <string name="action_hold">maintien</string>
-  <string name="action_tap">appui</string>
-  <string name="action_up_hold">haut_maintien</string>
-  <string name="action_left_hold">gauche_maintien</string>
-  <string name="action_right_hold">droite_maintien</string>
-  <string name="action_down_hold">bas_maintien</string>
-  <!--Center Action Keys-->
-  <string name="action_up_center">haut_centre</string>
-  <string name="action_up_hold_center">haut_maintien_centre</string>
-  <!--Left Action Keys-->
-  <string name="action_up_left">haut_gauche</string>
-  <string name="action_up_hold_left">haut_maintien_gauche</string>
-  <!--Right Action Keys-->
-  <string name="action_up_right">haut_droite</string>
-  <string name="action_up_hold_right">haut_maintien_droite</string>
   <!--Buttons-->
   <string name="no">Non</string>
   <!--Split Pill Recommendations-->
