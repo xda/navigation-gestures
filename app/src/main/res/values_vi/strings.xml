@@ -108,6 +108,7 @@ or
   <string name="full_overscan">Dùng che phủ toàn bộ</string>
   <string name="dont_keep_overscan_on_lockscreen">Không ẩn thanh điều hướng trên màn hình khóa</string>
   <string name="current_overscan">Độ che phủ hiện tại</string>
+  <string name="screen_timeout">Screen Timeout</string>
   <!--Descriptions-->
   <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
   <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
@@ -186,6 +187,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
   <string name="deactivate_before_uninstall">Đảm bảo rằng \"Ẩn thanh điều hướng\" được tắt trước khi gỡ bỏ cài đặt!</string>
   <string name="copied_to_clipboard">Email đã sao chép vào clipboard</string>
   <string name="unable_to_launch">Unable to launch target.</string>
+  <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
   <!--Libraries-->
   <string name="material_intro">Material Intro (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
