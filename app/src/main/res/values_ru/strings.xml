@@ -106,6 +106,7 @@
   <string name="full_overscan">Use Full Overscan</string>
   <string name="dont_keep_overscan_on_lockscreen">Don\'t Hide NavBar on Lock Screen</string>
   <string name="current_overscan">Использовать полное перекрытие</string>
+  <string name="screen_timeout">Screen Timeout</string>
   <!--Descriptions-->
   <string name="gestures_desc">Customize gesture actions</string>
   <string name="appearance_desc">Customize appearance of the navigation pill</string>
@@ -183,6 +184,7 @@
   <string name="deactivate_before_uninstall">Убедитесь, что опция \"Скрывать панель навигации\" отключена перед удалением!</string>
   <string name="copied_to_clipboard">Письмо скопировано в буфер обмена</string>
   <string name="unable_to_launch">Unable to launch target.</string>
+  <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
   <!--Libraries-->
   <string name="material_intro">Интро (Fork)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
@@ -208,102 +210,6 @@
   <string name="toggle_twilight">Toggle Twilight</string>
   <string name="start_twilight">Start Twilight</string>
   <string name="stop_twilight">Stop Twilight</string>
-  <!--Actions-->
-  <string name="home">Домой</string>
-  <string name="back">Назад</string>
-  <string name="ohm">Переключить OHM</string>
-  <string name="recents">Недавние приложения</string>
-  <string name="hide">Скрыть таблетку</string>
-  <string name="assist">Ассистент</string>
-  <string name="switch_apps">Предыдущее приложение (Nougat+)</string>
-  <string name="nothing">Нет действия</string>
-  <string name="prem_notif">Уведомления (Премиум)</string>
-  <string name="prem_qs">Быстрые настройки (Премиум)</string>
-  <string name="prem_power">Меню питания устройства (Премиум)</string>
-  <string name="split">Мультиоконность (Премиум)</string>
-  <string name="prem_prev">Предыдущая дорожка (Премиум)</string>
-  <string name="prem_next">Следующая дорожка (Премиум)</string>
-  <string name="prem_play_pause">Пуск/пауза (Премиум)</string>
-  <string name="hold_back">Удержание \"Назад\" (Root)</string>
-  <string name="forward">Вперёд (Root)</string>
-  <string name="menu">Открыть меню (Root)</string>
-  <string name="sleep">Сон (Root)</string>
-  <string name="prem_vol_up">Увеличить громкость (Root) (Премиум)</string>
-  <string name="prem_vol_down">Уменьшить громкость (Root) (Премиум)</string>
-  <string name="prem_screenshot">Снимок экрана (Премиум)</string>
-  <string name="prem_switch_ime">Переключить клавиатуру (Премиум)</string>
-  <string name="prem_launch_app">Запустить приложение (Премиум) (%s)</string>
-  <string name="prem_launch_app_no_format">Запустить приложение (Премиум)</string>
-  <string name="prem_lock_screen">Экран блокировки (Премиум)</string>
-  <string name="prem_launch_activity">Запуск приложения (Премиум) (%s)</string>
-  <string name="prem_launch_activity_no_format">Запуск приложения (Премиум)</string>
-  <string name="prem_rot">Поворот экрана (Премиум)</string>
-  <string name="prem_tasker_event">Событие Tasker (Премиум)</string>
-  <string name="prem_flashlight">Включить/выключить фонарик (Премиум)</string>
-  <string name="prem_volume_panel">Открыть панель громкости (Премиум)</string>
-  <string name="prem_bluetooth">Включить/выключить Bluetooth (Премиум)</string>
-  <string name="prem_wifi">Включить/выключить WiFi (Премиум)</string>
-  <string name="prem_intent">Отправить Intent (Премиум) (%s)</string>
-  <string name="prem_intent_no_format">Отправить Intent (Премиум)</string>
-  <!--Action Values-->
-  <string name="type_no_action">-1</string>
-  <string name="type_back">0</string>
-  <string name="type_ohm">1</string>
-  <string name="type_recents">2</string>
-  <string name="type_hide">3</string>
-  <string name="type_switch">4</string>
-  <string name="type_assist">5</string>
-  <string name="type_home">6</string>
-  <string name="prem_type_notif">7</string>
-  <string name="prem_type_qs">8</string>
-  <string name="prem_type_power">9</string>
-  <string name="type_split">10</string>
-  <string name="prem_type_vibe">11</string>
-  <string name="prem_type_silent">12</string>
-  <string name="prem_type_mute">13</string>
-  <string name="prem_type_play_pause">14</string>
-  <string name="prem_type_prev">15</string>
-  <string name="prem_type_next">16</string>
-  <string name="type_hold_back">17</string>
-  <string name="type_forward">18</string>
-  <string name="type_menu">19</string>
-  <string name="type_sleep">20</string>
-  <string name="type_vol_up">21</string>
-  <string name="type_vol_down">22</string>
-  <string name="prem_type_screenshot">23</string>
-  <string name="prem_type_switch_ime">24</string>
-  <string name="prem_type_launch_app">25</string>
-  <string name="prem_type_lock_screen">26</string>
-  <string name="prem_type_launch_activity">27</string>
-  <string name="prem_type_rot">28</string>
-  <string name="prem_type_tasker_event">29</string>
-  <string name="type_toggle_nav">30</string>
-  <string name="prem_type_flashlight">31</string>
-  <string name="prem_type_volume_panel">32</string>
-  <string name="prem_type_bluetooth">33</string>
-  <string name="prem_type_wifi">34</string>
-  <string name="prem_type_intent">35</string>
-  <!--Main Action Keys-->
-  <string name="action_left">left</string>
-  <string name="action_right">right</string>
-  <string name="action_up">up</string>
-  <string name="action_down">down</string>
-  <string name="action_double">double_tap</string>
-  <string name="action_hold">hold</string>
-  <string name="action_tap">tap</string>
-  <string name="action_up_hold">up_hold</string>
-  <string name="action_left_hold">left_hold</string>
-  <string name="action_right_hold">right_hold</string>
-  <string name="action_down_hold">down_hold</string>
-  <!--Center Action Keys-->
-  <string name="action_up_center">up_center</string>
-  <string name="action_up_hold_center">up_hold_center</string>
-  <!--Left Action Keys-->
-  <string name="action_up_left">up_left</string>
-  <string name="action_up_hold_left">up_hold_left</string>
-  <!--Right Action Keys-->
-  <string name="action_up_right">up_right</string>
-  <string name="action_up_hold_right">up_hold_right</string>
   <!--Buttons-->
   <string name="no">Нет</string>
   <!--Split Pill Recommendations-->
