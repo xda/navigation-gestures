@@ -106,6 +106,7 @@
   <string name="full_overscan">フルオーバースキャンを使う</string>
   <string name="dont_keep_overscan_on_lockscreen">ロック画面でナビバーを表示する</string>
   <string name="current_overscan">現在のオーバースキャン</string>
+  <string name="screen_timeout">Screen Timeout</string>
   <!--Descriptions-->
   <string name="gestures_desc">ジェスチャーアクションのカスタマイズ</string>
   <string name="appearance_desc">ピルの外観をカスタマイズする</string>
@@ -184,6 +185,7 @@
   <string name="deactivate_before_uninstall">アンインストール前に\"ナビバーを非表示”がオフになっていることを確認してください!</string>
   <string name="copied_to_clipboard">クリップボードにEメールがコピーされました。</string>
   <string name="unable_to_launch">Unable to launch target.</string>
+  <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
   <!--Libraries-->
   <string name="material_intro">マテリアル イントロ (フォーク)</string>
   <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
@@ -209,102 +211,6 @@
   <string name="toggle_twilight">Toggle Twilight</string>
   <string name="start_twilight">Start Twilight</string>
   <string name="stop_twilight">Stop Twilight</string>
-  <!--Actions-->
-  <string name="home">ホーム</string>
-  <string name="back">戻る</string>
-  <string name="ohm">OHMを切り替え</string>
-  <string name="recents">最近使ったアプリ</string>
-  <string name="hide">ピルを非表示にする</string>
-  <string name="assist">アシスタント</string>
-  <string name="switch_apps">前に使っていたアプリ (android 7+)</string>
-  <string name="nothing">アクションなし</string>
-  <string name="prem_notif">通知 (プレミアム)</string>
-  <string name="prem_qs">クイック設定 (プレミアム)</string>
-  <string name="prem_power">電源メニュー (プレミアム)</string>
-  <string name="split">分割スクリーン (android 7+)</string>
-  <string name="prem_prev">前のトラック (プレミアム)</string>
-  <string name="prem_next">次のトラック (プレミアム)</string>
-  <string name="prem_play_pause">再生/一時停止 (プレミアム)</string>
-  <string name="hold_back">戻る長押し (ルート)</string>
-  <string name="forward">前 (ルート)</string>
-  <string name="menu">メニューを開く (ルート)</string>
-  <string name="sleep">スリープ (ルート)</string>
-  <string name="prem_vol_up">ボリュームアップ (ルート) (プレミアム)</string>
-  <string name="prem_vol_down">ボリュームダウン (ルート) (プレミアム)</string>
-  <string name="prem_screenshot">スクリーンショット (プレミアム)</string>
-  <string name="prem_switch_ime">キーボード切り替え (プレミアム)</string>
-  <string name="prem_launch_app">アプリ起動 (Premium) (%s)</string>
-  <string name="prem_launch_app_no_format">アプリ起動 (Premium)</string>
-  <string name="prem_lock_screen">ロック画面 (プレミアム)</string>
-  <string name="prem_launch_activity">アクティビティを起動 (Premium) (%s)</string>
-  <string name="prem_launch_activity_no_format">アクティビティを起動 (Premium)</string>
-  <string name="prem_rot">画面を回転 (プレミアム)</string>
-  <string name="prem_tasker_event">Tasker イベント (プレミアム)</string>
-  <string name="prem_flashlight">フラッシュライト切り替え (プレミアム)</string>
-  <string name="prem_volume_panel">ボリュームパネルを開く (プレミアム)</string>
-  <string name="prem_bluetooth">Bluetooth切り替え (プレミアム)</string>
-  <string name="prem_wifi">WiFi切り替え (プレミアム)</string>
-  <string name="prem_intent">インテントを送る (プレミアム) (%s)</string>
-  <string name="prem_intent_no_format">インテントを送る (プレミアム)</string>
-  <!--Action Values-->
-  <string name="type_no_action">-1</string>
-  <string name="type_back">0</string>
-  <string name="type_ohm">1</string>
-  <string name="type_recents">2</string>
-  <string name="type_hide">3</string>
-  <string name="type_switch">4</string>
-  <string name="type_assist">5</string>
-  <string name="type_home">6</string>
-  <string name="prem_type_notif">7</string>
-  <string name="prem_type_qs">8</string>
-  <string name="prem_type_power">9</string>
-  <string name="type_split">10</string>
-  <string name="prem_type_vibe">11</string>
-  <string name="prem_type_silent">12</string>
-  <string name="prem_type_mute">13</string>
-  <string name="prem_type_play_pause">14</string>
-  <string name="prem_type_prev">15</string>
-  <string name="prem_type_next">16</string>
-  <string name="type_hold_back">17</string>
-  <string name="type_forward">18</string>
-  <string name="type_menu">19</string>
-  <string name="type_sleep">20</string>
-  <string name="type_vol_up">21</string>
-  <string name="type_vol_down">22</string>
-  <string name="prem_type_screenshot">23</string>
-  <string name="prem_type_switch_ime">24</string>
-  <string name="prem_type_launch_app">25</string>
-  <string name="prem_type_lock_screen">26</string>
-  <string name="prem_type_launch_activity">27</string>
-  <string name="prem_type_rot">28</string>
-  <string name="prem_type_tasker_event">29</string>
-  <string name="type_toggle_nav">30</string>
-  <string name="prem_type_flashlight">31</string>
-  <string name="prem_type_volume_panel">32</string>
-  <string name="prem_type_bluetooth">33</string>
-  <string name="prem_type_wifi">34</string>
-  <string name="prem_type_intent">35</string>
-  <!--Main Action Keys-->
-  <string name="action_left">左</string>
-  <string name="action_right">右</string>
-  <string name="action_up">上</string>
-  <string name="action_down">下</string>
-  <string name="action_double">ダブルタップ</string>
-  <string name="action_hold">ホールド</string>
-  <string name="action_tap">タップ</string>
-  <string name="action_up_hold">上でホールド</string>
-  <string name="action_left_hold">左でホールド</string>
-  <string name="action_right_hold">右でホールド</string>
-  <string name="action_down_hold">下でホールド</string>
-  <!--Center Action Keys-->
-  <string name="action_up_center">中央から上にスワイプ</string>
-  <string name="action_up_hold_center">中央から上にスワイプしてホールド</string>
-  <!--Left Action Keys-->
-  <string name="action_up_left">左上にスワイプ</string>
-  <string name="action_up_hold_left">左上にスワイプしてホールド</string>
-  <!--Right Action Keys-->
-  <string name="action_up_right">右上にスワイプ</string>
-  <string name="action_up_hold_right">右上スワイプしてホールド</string>
   <!--Buttons-->
   <string name="no">No</string>
   <!--Split Pill Recommendations-->
