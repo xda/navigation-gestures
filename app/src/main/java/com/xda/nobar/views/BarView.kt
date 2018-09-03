@@ -19,7 +19,6 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.content.LocalBroadcastManager
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -30,7 +29,6 @@ import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.services.Actions
 import com.xda.nobar.util.HiddenPillReasonManager
-import com.xda.nobar.util.NavigationBarSideManager
 import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.getCustomHeight
 import com.xda.nobar.util.Utils.getCustomWidth
@@ -85,7 +83,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private val gestureDetector = GestureManager()
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    private val navigationBarSideManager = NavigationBarSideManager(context)
 
     private val pool = Executors.newScheduledThreadPool(1)
 
@@ -523,7 +520,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         val diff = try {
             val screenSize = Utils.getRealScreenSize(context)
             val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
-            Log.e("NoBar", frame.toString())
             (frame.left + frame.right) - screenSize.x
         } catch (e: Exception) {
             0
