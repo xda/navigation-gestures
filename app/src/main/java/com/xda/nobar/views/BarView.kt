@@ -19,6 +19,7 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.content.LocalBroadcastManager
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -519,12 +520,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun getAdjustedHomeX(): Int {
-        val screenSize = Utils.getRealScreenSize(context)
-        val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
+        val diff = try {
+            val screenSize = Utils.getRealScreenSize(context)
+            val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
+            Log.e("NoBar", frame.toString())
+            (frame.left + frame.right) - screenSize.x
+        } catch (e: Exception) {
+            0
+        }
 
-        val diff = (frame.left + frame.right) - screenSize.x
-
-        return getHomeX(context) - if (immersiveNav) (diff / 2f).toInt() else 0
+        return getHomeX(context) - if (immersiveNav && !Utils.useTabletMode(context)) (diff / 2f).toInt() else 0
     }
 
     fun toggleScreenOn(): Boolean {
