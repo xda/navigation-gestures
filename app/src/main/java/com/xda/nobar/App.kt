@@ -67,7 +67,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     private val rootServiceIntent by lazy { Intent(this, RootService::class.java) }
 
     val immersiveHelperView by lazy { ImmersiveHelperView(this) }
-    val prefs by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+    val prefs: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
 
     private var isInOtherWindowApp = false
 
