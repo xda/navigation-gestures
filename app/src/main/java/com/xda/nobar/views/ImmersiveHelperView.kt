@@ -52,26 +52,22 @@ class ImmersiveHelperView(context: Context) : View(context) {
     }
 
     fun enterNavImmersive() {
-        if (!isFlagNavImmersive()) {
-            app.handler.post {
-                systemUiVisibility = systemUiVisibility or
-                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        app.handler.post {
+            systemUiVisibility = systemUiVisibility or
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 
-                if (checkTouchWiz(context)) Utils.forceTouchWizNavNotEnabled(context)
-            }
+            if (checkTouchWiz(context)) Utils.forceTouchWizNavNotEnabled(context)
         }
     }
 
     fun exitNavImmersive() {
-        if (isFlagNavImmersive()) {
-            app.handler.post {
-                systemUiVisibility = systemUiVisibility and
-                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv() and
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
+        app.handler.post {
+            systemUiVisibility = systemUiVisibility and
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv() and
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
 
-                if (checkTouchWiz(context)) Utils.forceTouchWizNavEnabled(context)
-            }
+            if (checkTouchWiz(context)) Utils.forceTouchWizNavEnabled(context)
         }
     }
 

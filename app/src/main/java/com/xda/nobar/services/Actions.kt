@@ -58,7 +58,8 @@ class Actions : AccessibilityService(), Serializable {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         try {
-            app.uiHandler.setNodeInfoAndUpdate(event)
+            val newEvent = AccessibilityEvent.obtain(event)
+            app.uiHandler.setNodeInfoAndUpdate(newEvent)
         } catch (e: NullPointerException) {}
     }
 

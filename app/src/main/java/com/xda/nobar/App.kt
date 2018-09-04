@@ -16,8 +16,11 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
+import android.view.inputmethod.InputMethodManager
 import com.crashlytics.android.Crashlytics
 import com.github.anrwatchdog.ANRWatchDog
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -47,6 +50,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val um by lazy { getSystemService(Context.UI_MODE_SERVICE) as UiModeManager }
     val appOps by lazy { getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager }
     val nm by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
+    val imm by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
 
     private val stateHandler = ScreenStateHandler()
     private val carModeHandler = CarModeHandler()
@@ -784,54 +788,55 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         @SuppressLint("WrongConstant")
         private fun handleNewEvent(info: AccessibilityEvent) {
-            val pName = info.packageName?.toString()
-
-            if (pName != packageName) {
-                keyboardShown = info.className?.contains("SoftInput") == true
-            }
+            val source: AccessibilityNodeInfo? = info.source
+            val pName = source?.packageName?.toString()
 
             if (pName != oldPName) {
                 oldPName = pName
 
-                if (pName != "com.android.systemui" || info.className?.contains("TextView") == false) {
+                if (pName == "com.android.systemui" && info.className?.contains("TextView") == false) {
                     if (Utils.shouldUseOverscanMethod(this@App)
                             && Utils.useImmersiveWhenNavHidden(this@App)) {
-                        if (info.className?.contains("Recents") == true) {
-                            immersiveHelperView.tempForcePolicyControlForRecents()
-                        } else {
-                            immersiveHelperView.putBackOldImmersive()
-                        }
+                        immersiveHelperView.tempForcePolicyControlForRecents()
                     }
-                    runNewNodeInfo(pName)
+                } else {
+                    if (Utils.shouldUseOverscanMethod(this@App)
+                            && Utils.useImmersiveWhenNavHidden(this@App)) {
+                        immersiveHelperView.putBackOldImmersive()
+                    }
                 }
+                runNewNodeInfo(pName)
             } else {
                 onGlobalLayout()
             }
+
+            source?.recycle()
         }
 
         private fun runNewNodeInfo(pName: String?) {
-            val navArray = ArrayList<String>().apply { Utils.loadBlacklistedNavPackages(this@App, this) }
-            if (navArray.contains(pName)) {
-                disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
-            } else {
-                disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
-            }
+            if (pName != null && pName != packageName) {
+                val navArray = ArrayList<String>().apply { Utils.loadBlacklistedNavPackages(this@App, this) }
+                if (navArray.contains(pName)) {
+                    disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
+                } else {
+                    disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
+                }
 
-            val barArray = ArrayList<String>().apply { Utils.loadBlacklistedBarPackages(this@App, this) }
-            if (barArray.contains(pName)) {
-                disabledBarReasonManager.add(DisabledReasonManager.PillReasons.BLACKLIST)
-            } else {
-                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.BLACKLIST)
-            }
+                val barArray = ArrayList<String>().apply { Utils.loadBlacklistedBarPackages(this@App, this) }
+                if (barArray.contains(pName)) {
+                    disabledBarReasonManager.add(DisabledReasonManager.PillReasons.BLACKLIST)
+                } else {
+                    disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.BLACKLIST)
+                }
 
-            val immArray = ArrayList<String>().apply { Utils.loadBlacklistedImmPackages(this@App, this) }
-            if (immArray.contains(pName)) {
-                disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.BLACKLIST)
-            } else {
-                disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.BLACKLIST)
-            }
 
-            if (pName != packageName) {
+                val immArray = ArrayList<String>().apply { Utils.loadBlacklistedImmPackages(this@App, this) }
+                if (immArray.contains(pName)) {
+                    disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.BLACKLIST)
+                } else {
+                    disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.BLACKLIST)
+                }
+
                 val windowArray = ArrayList<String>().apply { Utils.loadOtherWindowApps(this@App, this) }
                 if (windowArray.contains(pName)) {
                     if (!isInOtherWindowApp) {
@@ -854,6 +859,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         @SuppressLint("WrongConstant")
         override fun onGlobalLayout() {
+            keyboardShown = imm.inputMethodWindowVisibleHeight > 0
+
             logicHandler.post {
                 if (Utils.checkTouchWiz(this@App)) {
                     try {
@@ -893,28 +900,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     isActing = true
                     if (isPillShown()) {
                         try {
-//                            val realScreenRes = Utils.getRealScreenSize(this@App)
-//                            val realScreenHeight = realScreenRes.y
-//
-//                            val overscan = getOverscan()
-//
-//                            val rect = Rect()
-//                            immersiveHelperView.getWindowVisibleDisplayFrame(rect)
-//
-//                            val height = Point(realScreenRes.x - rect.left - rect.right,
-//                                    realScreenRes.y - rect.top - rect.bottom)
-//
-//                            val totalOverscan = overscan.left + overscan.top + overscan.right + overscan.bottom
-//
-//                            val hidden = when {
-//                                (wm.defaultDisplay.rotation == Surface.ROTATION_270
-//                                        || wm.defaultDisplay.rotation == Surface.ROTATION_90)
-//                                        && !Utils.useTabletMode(this@App) -> height.x.absoluteValue == totalOverscan.absoluteValue
-//                                else -> height.y.absoluteValue == totalOverscan.absoluteValue
-//                            }
-//
-//                            handleImmersiveChange(hidden)
-
                             if (!Utils.useImmersiveWhenNavHidden(this@App)) immersiveHelperView.exitNavImmersive()
 
                             bar.immersiveNav = immersiveHelperView.isNavImmersive() && !keyboardShown
