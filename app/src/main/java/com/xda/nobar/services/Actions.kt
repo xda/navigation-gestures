@@ -53,7 +53,7 @@ class Actions : AccessibilityService(), Serializable {
     private val app by lazy { applicationContext as App }
 
     override fun onCreate() {
-        receiver.register()
+        app.logicHandler.post { receiver.register() }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -69,7 +69,7 @@ class Actions : AccessibilityService(), Serializable {
     override fun onInterrupt() {}
 
     override fun onDestroy() {
-        receiver.destroy()
+        app.logicHandler.post { receiver.destroy() }
     }
 
     /**
