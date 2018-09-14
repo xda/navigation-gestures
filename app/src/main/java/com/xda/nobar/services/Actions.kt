@@ -19,7 +19,6 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.KeyEvent
 import android.view.OrientationEventListener
 import android.view.Surface
@@ -126,8 +125,6 @@ class Actions : AccessibilityService(), Serializable {
 
         @SuppressLint("InlinedApi")
         fun onReceive(context: Context?, intent: Intent?) {
-            Log.e("NoBar", "onReceive $intent")
-
             when(intent?.action) {
                 ACTION -> {
                     val gesture = intent.getStringExtra(EXTRA_GESTURE)
