@@ -71,6 +71,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     val immersiveHelperView by lazy { ImmersiveHelperView(this) }
     val prefs: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+    val screenOffHelper by lazy { ScreenOffHelper(this) }
 
     private var isInOtherWindowApp = false
 

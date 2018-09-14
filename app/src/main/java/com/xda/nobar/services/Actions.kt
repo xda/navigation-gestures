@@ -26,7 +26,6 @@ import com.joaomgcd.taskerpluginlibrary.extensions.requestQuery
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.IntentSelectorActivity
-import com.xda.nobar.activities.LockScreenActivity
 import com.xda.nobar.activities.RequestPermissionsActivity
 import com.xda.nobar.activities.ScreenshotActivity
 import com.xda.nobar.tasker.activities.EventConfigureActivity
@@ -243,9 +242,7 @@ class Actions : AccessibilityService(), Serializable {
                             }
                             app.premTypeLockScreen -> runPremiumAction {
                                 runSystemSettingsAction {
-                                    val lock = Intent(app, LockScreenActivity::class.java)
-                                    lock.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    app.startActivity(lock)
+                                    app.screenOffHelper.create()
                                 }
                             }
                             app.premTypeScreenshot -> runPremiumAction {
