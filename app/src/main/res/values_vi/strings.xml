@@ -109,6 +109,7 @@ or
   <string name="dont_keep_overscan_on_lockscreen">Không ẩn thanh điều hướng trên màn hình khóa</string>
   <string name="current_overscan">Độ che phủ hiện tại</string>
   <string name="screen_timeout">Screen Timeout</string>
+  <string name="alternate_home">Alternate Home Action</string>
   <!--Descriptions-->
   <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
   <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
@@ -149,6 +150,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
   <string name="toggle_gestures_desc">Bật/tắt hiển thị viên điều hướng trên màn hình.</string>
   <string name="toggle_nav_desc">Bật/tắt hiển thị thanh điều hướng gốc trên màn hình.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Cho phép để hiển thị phím tắt trên màn hình khóa và sửa lỗi vài thành phần trên màn hình khóa, ambient display, hoặc always-on-display bị cắt ngắn.</string>
+  <string name="alternate_home_desc">Certain devices (OnePlus) may have an issue where the \"Home\" action doesn\'t work. Enable this to use a workaround for that.</string>
   <!--Paragraphs-->
   <string name="app_purpose">Ứng dụng mang đến cử chỉ điều hướng tuyệt vời đến bất kì thiết bị Android. Tốt hơn cả, nó không cần có root! Trước khi bạn có thể sử dụng cử chỉ, có vài thứ cần làm để thiết lập ứng dụng.</string>
   <string name="draw_over_apps_desc">Để Navigation Gesture có thể hiểu thị lên viên điều hướng, bạn phải cho phép vẽ đè lên các ứng dụng khác. Ấn nút bên dưới để thực hiện điều này. Nếu ứng dụng được tải từ Play Store, quyền này sẽ được cho cấp sẵn.</string>
