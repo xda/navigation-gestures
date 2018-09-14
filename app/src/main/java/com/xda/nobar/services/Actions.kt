@@ -60,9 +60,7 @@ class Actions : AccessibilityService(), Serializable {
         val newEvent = AccessibilityEvent.obtain(event)
 
         app.logicHandler.post {
-            try {
-                app.uiHandler.setNodeInfoAndUpdate(newEvent)
-            } catch (e: NullPointerException) {}
+            app.uiHandler.setNodeInfoAndUpdate(newEvent)
         }
     }
 

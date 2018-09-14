@@ -1140,7 +1140,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
          * @param key one of app.action*
          */
         private fun sendActionInternal(key: String) {
-            handler?.post {
+            app.logicHandler?.post {
                 val which = actionMap[key] ?: return@post
 
                 if (which == app.typeNoAction) return@post

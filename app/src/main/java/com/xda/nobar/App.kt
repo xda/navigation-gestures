@@ -779,7 +779,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
             logicHandler.post {
-                handleNewEvent(info ?: return@post)
+                try {
+                    handleNewEvent(info ?: return@post)
+                } catch (e: NullPointerException) {}
             }
         }
 
