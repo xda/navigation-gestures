@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.ActivityManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -17,7 +18,6 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.preference.PreferenceManager
 import android.provider.Settings
-import android.support.v4.content.LocalBroadcastManager
 import android.util.AttributeSet
 import android.view.*
 import android.view.animation.AccelerateInterpolator
@@ -1140,7 +1140,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
          * @param key one of app.action*
          */
         private fun sendActionInternal(key: String) {
-            app.logicHandler.post {
+            app.actionHandler.post {
                 val which = actionMap[key] ?: return@post
 
                 if (which == app.typeNoAction) return@post
@@ -1177,8 +1177,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 val intent = Intent(Actions.ACTION)
                 intent.putExtra(Actions.EXTRA_ACTION, which)
                 intent.putExtra(Actions.EXTRA_GESTURE, key)
+                intent.component = ComponentName(context, Actions::class.java)
 
-                LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+                context.startService(intent)
 
                 if (Utils.shouldUseRootCommands(context)) {
                     app.rootBinder?.handle(which)

@@ -90,7 +90,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val handler = Handler(Looper.getMainLooper())
 
     val logicThread = HandlerThread("NoBar-Logic").apply { start() }
+    val actionThread = HandlerThread("NoBar-Actions").apply { start() }
+
     val logicHandler = Handler(logicThread.looper)
+    val actionHandler = Handler(actionThread.looper)
 
     val uiHandler = UIHandler()
 

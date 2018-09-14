@@ -42,6 +42,7 @@ class ScreenOffHelper(private val app: App) {
     private var destroying = false
 
     fun create() {
+        destroying = false
         lockView.add()
         app.registerReceiver(screenOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
 
