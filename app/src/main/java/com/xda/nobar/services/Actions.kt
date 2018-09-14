@@ -129,7 +129,16 @@ class Actions : AccessibilityService(), Serializable {
                 ACTION -> {
                     val gesture = intent.getStringExtra(EXTRA_GESTURE)
                     when (intent.getIntExtra(EXTRA_ACTION, app.typeNoAction)) {
-                        app.typeHome -> actions.performGlobalAction(GLOBAL_ACTION_HOME)
+                        app.typeHome -> {
+                            if (Utils.useAlternateHome(actions)) {
+                                val homeIntent = Intent(Intent.ACTION_MAIN)
+                                homeIntent.addCategory(Intent.CATEGORY_HOME)
+                                homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                actions.startActivity(homeIntent)
+                            } else {
+                                actions.performGlobalAction(GLOBAL_ACTION_HOME)
+                            }
+                        }
                         app.typeRecents -> actions.performGlobalAction(GLOBAL_ACTION_RECENTS)
                         app.typeBack -> actions.performGlobalAction(GLOBAL_ACTION_BACK)
                         app.typeSwitch -> runNougatAction {

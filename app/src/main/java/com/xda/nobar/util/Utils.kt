@@ -777,4 +777,8 @@ object Utils {
     fun getIntentKey(context: Context, baseKey: String?) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getInt("${baseKey}_intent", 0)
+
+    fun useAlternateHome(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("alternate_home", context.resources.getBoolean(R.bool.alternate_home_default))
 }
