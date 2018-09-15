@@ -286,6 +286,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
+    override fun equals(other: Any?): Boolean {
+        return other is BarView
+    }
+
     /**
      * Animate the pill to invisibility
      * Used during deactivation

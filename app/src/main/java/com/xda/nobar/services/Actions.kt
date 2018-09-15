@@ -229,8 +229,7 @@ class Actions : AccessibilityService(), Serializable {
 
                                 try {
                                     actions.startActivity(launch)
-                                } catch (e: Exception) {
-                                }
+                                } catch (e: Exception) {}
                             }
                         }
                         app.premTypeLaunchActivity -> runPremiumAction {
@@ -242,6 +241,7 @@ class Actions : AccessibilityService(), Serializable {
 
                             val launch = Intent()
                             launch.component = ComponentName(p, c)
+                            launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
                             try {
                                 actions.startActivity(launch)
@@ -254,7 +254,7 @@ class Actions : AccessibilityService(), Serializable {
                             }
                         }
                         app.premTypeScreenshot -> runPremiumAction {
-                            val screenshot = Intent(app, ScreenshotActivity::class.java)
+                            val screenshot = Intent(actions, ScreenshotActivity::class.java)
                             screenshot.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             actions.startActivity(screenshot)
                         }
@@ -288,7 +288,10 @@ class Actions : AccessibilityService(), Serializable {
 
                             try {
                                 when (type) {
-                                    IntentSelectorActivity.ACTIVITY -> actions.startActivity(broadcast)
+                                    IntentSelectorActivity.ACTIVITY -> {
+                                        broadcast.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        actions.startActivity(broadcast)
+                                    }
                                     IntentSelectorActivity.SERVICE -> ContextCompat.startForegroundService(actions, broadcast)
                                     IntentSelectorActivity.BROADCAST -> actions.sendBroadcast(broadcast)
                                 }
@@ -296,10 +299,10 @@ class Actions : AccessibilityService(), Serializable {
                                 when (broadcast?.action) {
                                     MediaStore.ACTION_VIDEO_CAPTURE,
                                     MediaStore.ACTION_IMAGE_CAPTURE -> {
-                                        RequestPermissionsActivity.createAndStart(app,
+                                        RequestPermissionsActivity.createAndStart(actions,
                                                 arrayOf(Manifest.permission.CAMERA),
                                                 intent.extras,
-                                                ComponentName(app, Actions::class.java))
+                                                ComponentName(actions, Actions::class.java))
                                     }
                                 }
                             } catch (e: ActivityNotFoundException) {
@@ -339,8 +342,8 @@ class Actions : AccessibilityService(), Serializable {
             flashlightController.onDestroy()
         }
 
-        private fun runNougatAction(action: () -> Unit) = Utils.runNougatAction(app, action)
-        private fun runPremiumAction(action: () -> Unit) = Utils.runPremiumAction(app, action)
-        private fun runSystemSettingsAction(action: () -> Unit) = Utils.runSystemSettingsAction(app, action)
+        private fun runNougatAction(action: () -> Unit) = Utils.runNougatAction(actions, action)
+        private fun runPremiumAction(action: () -> Unit) = Utils.runPremiumAction(actions, action)
+        private fun runSystemSettingsAction(action: () -> Unit) = Utils.runSystemSettingsAction(actions, action)
     }
 }

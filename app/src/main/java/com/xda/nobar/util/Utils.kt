@@ -700,34 +700,34 @@ object Utils {
      * Check for valid premium and run the action if possible
      * Otherwise show a warning dialog
      */
-    fun runPremiumAction(app: App, action: () -> Unit): Boolean {
-        if (app.isValidPremium) action.invoke()
+    fun runPremiumAction(context: Context, action: () -> Unit): Boolean {
+        if ((context.applicationContext as App).isValidPremium) action.invoke()
         else {
-            DialogActivity.Builder(app).apply {
+            DialogActivity.Builder(context).apply {
                 title = R.string.premium_required
                 message = R.string.premium_required_desc
                 yesAction = DialogInterface.OnClickListener { _, _ ->
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data = Uri.parse("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    app.startActivity(intent)
+                    context.startActivity(intent)
                 }
                 start()
             }
         }
 
-        return app.isValidPremium
+        return (context.applicationContext as App).isValidPremium
     }
 
     /**
      * Run action if device is on Nougat or later
      * Otherwise show a warning dialog
      */
-    fun runNougatAction(app: App, action: () -> Unit): Boolean {
+    fun runNougatAction(context: Context, action: () -> Unit): Boolean {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             action.invoke()
         } else {
-            DialogActivity.Builder(app).apply {
+            DialogActivity.Builder(context).apply {
                 title = R.string.nougat_required
                 message = R.string.nougat_required_desc
                 yesRes = android.R.string.ok
@@ -742,11 +742,11 @@ object Utils {
      * Run an action that requires WRITE_SETTINGS
      * Otherwise show a dialog prompting for permission
      */
-    fun runSystemSettingsAction(app: App, action: () -> Unit): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(app)) {
+    fun runSystemSettingsAction(context: Context, action: () -> Unit): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(context)) {
             action.invoke()
         } else {
-            DialogActivity.Builder(app).apply {
+            DialogActivity.Builder(context).apply {
                 title = R.string.grant_write_settings
                 message = R.string.grant_write_settings_desc
                 yesRes = android.R.string.ok
@@ -754,16 +754,16 @@ object Utils {
 
                 yesAction = DialogInterface.OnClickListener { _, _ ->
                     val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-                    intent.data = Uri.parse("package:${app.packageName}")
+                    intent.data = Uri.parse("package:${context.packageName}")
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    app.startActivity(intent)
+                    context.startActivity(intent)
                 }
 
                 start()
             }
         }
 
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(app)
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(context)
     }
 
     fun shouldntKeepOverscanOnLock(context: Context) = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("lockscreen_overscan", false)
