@@ -107,6 +107,7 @@
   <string name="dont_keep_overscan_on_lockscreen">NavBar nicht auf dem Sperrbildschirm ausblenden</string>
   <string name="current_overscan">Aktueller Overscan</string>
   <string name="screen_timeout">Screen Timeout</string>
+  <string name="alternate_home">Alternate Home Action</string>
   <!--Descriptions-->
   <string name="gestures_desc">Gestenaktionen anpassen</string>
   <string name="appearance_desc">Aussehen der Navigation-Pille anpassen</string>
@@ -146,6 +147,7 @@
   <string name="toggle_gestures_desc">Onscreenzeige von gesture pill aktivieren oder deaktivieren.</string>
   <string name="toggle_nav_desc">Software-Navigationleiste der Gerätesoftware aktivieren / deaktivieren.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Aktiviere diese Option um die Verkünpfungen auf dem Sperrbildschirm anzuzeigen und um zu fixen, dass die Symbole auf dem Sperrbildschirm, Ambietbildschirm oder Always on Bildschirm abgeschnitten sind.</string>
+  <string name="alternate_home_desc">Certain devices (OnePlus) may have an issue where the \"Home\" action doesn\'t work. Enable this to use a workaround for that.</string>
   <!--Paragraphs-->
   <string name="app_purpose">Diese App bringt großartige Gestennavigation auf jedes Android Gerät. Und das Beste ist, man benötigt hierfür keinen Root-Zugriff. Bevor du die Gestennavigation nutzen kann gibt es ein paar Sachen, die noch eingestellt werden müssen.</string>
   <string name="draw_over_apps_desc">Damit Navigation Gestures den Pill-Nav anzeigen kann, musst du der App Berechtigung geben, damit es über anderen Apps angezeigt werden kann. Tippe den unteren Knopf um dies zu tun. Wenn du die App über den Play Store installiert hat, wurde die berechtigung schon gewährt.</string>
