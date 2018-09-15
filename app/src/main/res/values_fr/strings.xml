@@ -107,6 +107,7 @@
   <string name="dont_keep_overscan_on_lockscreen">Ne pas masquer la barre de navigation sur l’écran de verrouillage</string>
   <string name="current_overscan">Current Overscan</string>
   <string name="screen_timeout">Screen Timeout</string>
+  <string name="alternate_home">Alternate Home Action</string>
   <!--Descriptions-->
   <string name="gestures_desc">Personnaliser les actions de geste</string>
   <string name="appearance_desc">Personnaliser l’apparence de la pilule de navigation</string>
@@ -146,6 +147,7 @@
   <string name="toggle_gestures_desc">Toggle whether or not the gesture pill is displayed onscreen.</string>
   <string name="toggle_nav_desc">Toggle whether or not the device\'s software navigation bar should be hidden.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Enable this to show lock screen shortcuts and to fix issues with items being cut off on the lock screen, ambient display, or always on display.</string>
+  <string name="alternate_home_desc">Certain devices (OnePlus) may have an issue where the \"Home\" action doesn\'t work. Enable this to use a workaround for that.</string>
   <!--Paragraphs-->
   <string name="app_purpose">Cette appli offre de somptueux gestes de navigation pour n\'importe quel appareil Android. Le mieux, elle n\'a pas besoin de root ! Avant de pouvoir utiliser les gestes, quelques paramétrages sont nécessaires.</string>
   <string name="draw_over_apps_desc">Afin d\'afficher la pilule de Navigation Gestures, vous devrez accorder la permission \"Superposer aux autres applis\". Appuyez sur le bouton ci-dessous pour le faire. Si vous avez installé depuis le Play Store, cette permission est déjà accordée.</string>
