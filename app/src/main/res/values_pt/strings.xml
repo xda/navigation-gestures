@@ -107,6 +107,7 @@
   <string name="dont_keep_overscan_on_lockscreen">Não Esconder Barra de Navegação no Ecrã Bloqueado</string>
   <string name="current_overscan">Overscan Atual</string>
   <string name="screen_timeout">Screen Timeout</string>
+  <string name="alternate_home">Alternate Home Action</string>
   <!--Descriptions-->
   <string name="gestures_desc">Personalizar Acções dos Gestos</string>
   <string name="appearance_desc">Personalizar Aparência da Barra de Navegação</string>
@@ -146,6 +147,7 @@
   <string name="toggle_gestures_desc">Alterne se a barra de gestos é ou não exibida no ecrã.</string>
   <string name="toggle_nav_desc">Alterne se a barra de navegação de software do dispositivo deve ou não estar oculta.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Active isto para mostrar os atalhos no ecrã de bloqueio e para corrigir problemas com itens sendo cortados na ecrã de bloqueio, exibição de ecrã ambiente, ou no ecrã sempre ligado.</string>
+  <string name="alternate_home_desc">Certain devices (OnePlus) may have an issue where the \"Home\" action doesn\'t work. Enable this to use a workaround for that.</string>
   <!--Paragraphs-->
   <string name="app_purpose">Este aplicativo traz gestos de navegação impressionantes para qualquer dispositivo Android. O melhor de tudo, não precisa de root! Antes de usar os gestos, há algumas coisas que precisamos fazer para preparar a aplicação.</string>
   <string name="draw_over_apps_desc">Para que os Gestos de Navegação mostrem a navegação de barra, precisa de conceder permissão para sobreposição sobre outras aplicações. Toque no botão em baixo para fazer isso. Se instalou a partir da Play Store, essa permissão já está concedida.</string>
