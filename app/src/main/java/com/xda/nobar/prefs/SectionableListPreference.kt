@@ -6,7 +6,6 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Typeface
 import android.preference.DialogPreference
-import android.preference.Preference
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -18,6 +17,7 @@ import android.widget.TextView
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnItemChosenListener
+import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.Utils
 import com.xda.nobar.views.ItemView
 
@@ -157,7 +157,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     override fun onGetDefaultValue(a: TypedArray, index: Int): String {
-        val def = a.getString(index) ?: app.typeNoAction.toString()
+        val def = a.getString(index) ?: ActionHolder.getInstance(context).typeNoAction.toString()
         defaultValue = def
         return def
     }

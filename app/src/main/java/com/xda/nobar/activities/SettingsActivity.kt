@@ -16,6 +16,7 @@ import com.xda.nobar.R
 import com.xda.nobar.prefs.CustomPreferenceCategory
 import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.prefs.SeekBarSwitchPreference
+import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.Utils
 import java.util.*
 
@@ -110,8 +111,8 @@ class SettingsActivity : AppCompatActivity() {
      */
     class GestureFragment : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
         private val listPrefs = ArrayList<SectionableListPreference>()
+        private val actionHolder by lazy { ActionHolder.getInstance(activity) }
 
-        private val app by lazy { Utils.getHandler(activity) }
         private val sectionedScreen by lazy { preferenceManager.inflateFromResource(activity, R.xml.prefs_sectioned, null) }
         private val sectionedCategory by lazy { sectionedScreen.findPreference("section_gestures") as PreferenceCategory }
         private val sectionedCategoryHolder by lazy { findPreference("sectioned_pill_cat") as CustomPreferenceCategory }
@@ -218,9 +219,9 @@ class SettingsActivity : AppCompatActivity() {
                                 val pack = preferenceManager.sharedPreferences.getString(
                                         "${key}_${if (forActivity) "activity" else "package"}", null)
                                 if (pack == null) {
-                                    it.saveValue(app.typeNoAction.toString())
+                                    it.saveValue(actionHolder.typeNoAction.toString())
                                 } else {
-                                    it.saveValueWithoutListener((if (forActivity) app.premTypeLaunchActivity else app.premTypeLaunchApp).toString())
+                                    it.saveValueWithoutListener((if (forActivity) actionHolder.premTypeLaunchActivity else actionHolder.premTypeLaunchApp).toString())
                                 }
                             }
                         }
@@ -241,9 +242,9 @@ class SettingsActivity : AppCompatActivity() {
                                 val res = Utils.getIntentKey(activity, key)
 
                                 if (res < 1) {
-                                    it.saveValue(app.typeNoAction.toString())
+                                    it.saveValue(actionHolder.typeNoAction.toString())
                                 } else {
-                                    it.saveValueWithoutListener(app.premTypeIntent.toString())
+                                    it.saveValueWithoutListener(actionHolder.premTypeIntent.toString())
                                 }
                             }
                         }
@@ -277,16 +278,16 @@ class SettingsActivity : AppCompatActivity() {
                 putInt("anim_duration", 0)
                 putInt("hold_time", 500)
 
-                putString(app.actionTap, app.typeNoAction.toString())
-                putString(app.actionDouble, app.typeNoAction.toString())
-                putString(app.actionHold, app.typeNoAction.toString())
-                putString(app.actionDown, app.typeNoAction.toString())
-                putString(app.actionLeft, app.typeNoAction.toString())
-                putString(app.actionLeftHold, app.typeNoAction.toString())
-                putString(app.actionRight, app.typeNoAction.toString())
-                putString(app.actionRightHold, app.typeNoAction.toString())
-                putString(app.actionUp, app.typeNoAction.toString())
-                putString(app.actionUpHold, app.typeNoAction.toString())
+                putString(actionHolder.actionTap, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionDouble, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionHold, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionDown, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionLeft, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionLeftHold, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionRight, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionRightHold, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionUp, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionUpHold, actionHolder.typeNoAction.toString())
             }.apply()
 
             updateSummaries()
@@ -313,16 +314,16 @@ class SettingsActivity : AppCompatActivity() {
                 remove("anim_duration")
                 remove("hold_time")
 
-                remove(app.actionTap)
-                remove(app.actionDouble)
-                remove(app.actionHold)
-                remove(app.actionDown)
-                remove(app.actionLeft)
-                remove(app.actionLeftHold)
-                remove(app.actionRight)
-                remove(app.actionRightHold)
-                remove(app.actionUp)
-                remove(app.actionUpHold)
+                remove(actionHolder.actionTap)
+                remove(actionHolder.actionDouble)
+                remove(actionHolder.actionHold)
+                remove(actionHolder.actionDown)
+                remove(actionHolder.actionLeft)
+                remove(actionHolder.actionLeftHold)
+                remove(actionHolder.actionRight)
+                remove(actionHolder.actionRightHold)
+                remove(actionHolder.actionUp)
+                remove(actionHolder.actionUpHold)
             }.apply()
 
             updateSummaries()
@@ -351,15 +352,15 @@ class SettingsActivity : AppCompatActivity() {
             listPrefs.forEach {
                 it.updateSummary(it.getSavedValue())
 
-                if (it.getSavedValue() == app.premTypeLaunchApp.toString() || it.getSavedValue() == app.premTypeLaunchActivity.toString()) {
-                    val forActivity = it.getSavedValue() == app.premTypeLaunchActivity.toString()
+                if (it.getSavedValue() == actionHolder.premTypeLaunchApp.toString() || it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()) {
+                    val forActivity = it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()
                     val packageInfo = preferenceManager.sharedPreferences.getString(
                             "${it.key}_${if (forActivity) "activity" else "package"}", null) ?: return@forEach
 
                     it.summary = String.format(Locale.getDefault(),
                             resources.getString(if (forActivity) R.string.prem_launch_activity else R.string.prem_launch_app),
                             preferenceManager.sharedPreferences.getString("${it.key}_displayname", packageInfo.split("/")[0]))
-                } else if (it.getSavedValue() == app.premTypeIntent.toString()) {
+                } else if (it.getSavedValue() == actionHolder.premTypeIntent.toString()) {
                     val res = Utils.getIntentKey(activity, it.key)
                     it.summary = String.format(Locale.getDefault(),
                             resources.getString(R.string.prem_intent),
@@ -389,8 +390,8 @@ class SettingsActivity : AppCompatActivity() {
         private fun setListeners() {
             listPrefs.forEach {
                 it.setOnPreferenceChangeListener { _, newValue ->
-                    if (newValue?.toString() == app.premTypeLaunchApp.toString() || newValue?.toString() == app.premTypeLaunchActivity.toString()) {
-                        val forActivity = newValue.toString() == app.premTypeLaunchActivity.toString()
+                    if (newValue?.toString() == actionHolder.premTypeLaunchApp.toString() || newValue?.toString() == actionHolder.premTypeLaunchActivity.toString()) {
+                        val forActivity = newValue.toString() == actionHolder.premTypeLaunchActivity.toString()
                         val intent = Intent(activity, AppLaunchSelectActivity::class.java)
 
                         var pack = preferenceManager.sharedPreferences.getString("${it.key}_${if (forActivity) "activity" else "package"}", null)
@@ -406,7 +407,7 @@ class SettingsActivity : AppCompatActivity() {
                         intent.putExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, forActivity)
 
                         startActivityForResult(intent, REQ_APP)
-                    } else if (newValue?.toString() == app.premTypeIntent.toString()) {
+                    } else if (newValue?.toString() == actionHolder.premTypeIntent.toString()) {
                         val intent = Intent(activity, IntentSelectorActivity::class.java)
 
                         intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)

@@ -96,45 +96,45 @@ object Utils {
     fun getActionsList(context: Context, map: HashMap<String, Int>) {
         try {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            val app = getHandler(context)
+            val actionHolder = ActionHolder.getInstance(context)
 
-            val left = prefs.getString(app.actionLeft, app.typeBack.toString()).toInt()
-            val right = prefs.getString(app.actionRight, app.typeRecents.toString()).toInt()
-            val tap = prefs.getString(app.actionTap, app.typeHome.toString()).toInt()
-            val hold = prefs.getString(app.actionHold, app.typeAssist.toString()).toInt()
-            val up = prefs.getString(app.actionUp, app.typeNoAction.toString()).toInt()
-            val down = prefs.getString(app.actionDown, app.typeHide.toString()).toInt()
-            val double = prefs.getString(app.actionDouble, app.typeNoAction.toString()).toInt()
-            val holdUp = prefs.getString(app.actionUpHold, app.typeNoAction.toString()).toInt()
-            val holdLeft = prefs.getString(app.actionLeftHold, app.typeNoAction.toString()).toInt()
-            val holdRight = prefs.getString(app.actionRightHold, app.typeNoAction.toString()).toInt()
-            val holdDown = prefs.getString(app.actionDownHold, app.typeNoAction.toString()).toInt()
+            val left = prefs.getString(actionHolder.actionLeft, actionHolder.typeBack.toString()).toInt()
+            val right = prefs.getString(actionHolder.actionRight, actionHolder.typeRecents.toString()).toInt()
+            val tap = prefs.getString(actionHolder.actionTap, actionHolder.typeHome.toString()).toInt()
+            val hold = prefs.getString(actionHolder.actionHold, actionHolder.typeAssist.toString()).toInt()
+            val up = prefs.getString(actionHolder.actionUp, actionHolder.typeNoAction.toString()).toInt()
+            val down = prefs.getString(actionHolder.actionDown, actionHolder.typeHide.toString()).toInt()
+            val double = prefs.getString(actionHolder.actionDouble, actionHolder.typeNoAction.toString()).toInt()
+            val holdUp = prefs.getString(actionHolder.actionUpHold, actionHolder.typeNoAction.toString()).toInt()
+            val holdLeft = prefs.getString(actionHolder.actionLeftHold, actionHolder.typeNoAction.toString()).toInt()
+            val holdRight = prefs.getString(actionHolder.actionRightHold, actionHolder.typeNoAction.toString()).toInt()
+            val holdDown = prefs.getString(actionHolder.actionDownHold, actionHolder.typeNoAction.toString()).toInt()
 
-            val upLeft = prefs.getString(app.actionUpLeft, app.typeBack.toString()).toInt()
-            val upHoldLeft = prefs.getString(app.actionUpHoldLeft, app.typeNoAction.toString()).toInt()
-            val upCenter = prefs.getString(app.actionUpCenter, app.typeHome.toString()).toInt()
-            val upHoldCenter = prefs.getString(app.actionUpHoldCenter, app.typeRecents.toString()).toInt()
-            val upRight = prefs.getString(app.actionUpRight, app.typeBack.toString()).toInt()
-            val upHoldRight = prefs.getString(app.actionUpHoldRight, app.typeNoAction.toString()).toInt()
+            val upLeft = prefs.getString(actionHolder.actionUpLeft, actionHolder.typeBack.toString()).toInt()
+            val upHoldLeft = prefs.getString(actionHolder.actionUpHoldLeft, actionHolder.typeNoAction.toString()).toInt()
+            val upCenter = prefs.getString(actionHolder.actionUpCenter, actionHolder.typeHome.toString()).toInt()
+            val upHoldCenter = prefs.getString(actionHolder.actionUpHoldCenter, actionHolder.typeRecents.toString()).toInt()
+            val upRight = prefs.getString(actionHolder.actionUpRight, actionHolder.typeBack.toString()).toInt()
+            val upHoldRight = prefs.getString(actionHolder.actionUpHoldRight, actionHolder.typeNoAction.toString()).toInt()
 
-            map[app.actionLeft] = left
-            map[app.actionRight] = right
-            map[app.actionTap] = tap
-            map[app.actionHold] = hold
-            map[app.actionUp] = up
-            map[app.actionDown] = down
-            map[app.actionDouble] = double
-            map[app.actionUpHold] = holdUp
-            map[app.actionLeftHold] = holdLeft
-            map[app.actionRightHold] = holdRight
-            map[app.actionDownHold] = holdDown
+            map[actionHolder.actionLeft] = left
+            map[actionHolder.actionRight] = right
+            map[actionHolder.actionTap] = tap
+            map[actionHolder.actionHold] = hold
+            map[actionHolder.actionUp] = up
+            map[actionHolder.actionDown] = down
+            map[actionHolder.actionDouble] = double
+            map[actionHolder.actionUpHold] = holdUp
+            map[actionHolder.actionLeftHold] = holdLeft
+            map[actionHolder.actionRightHold] = holdRight
+            map[actionHolder.actionDownHold] = holdDown
 
-            map[app.actionUpLeft] = upLeft
-            map[app.actionUpHoldLeft] = upHoldLeft
-            map[app.actionUpCenter] = upCenter
-            map[app.actionUpHoldCenter] = upHoldCenter
-            map[app.actionUpRight] = upRight
-            map[app.actionUpHoldRight] = upHoldRight
+            map[actionHolder.actionUpLeft] = upLeft
+            map[actionHolder.actionUpHoldLeft] = upHoldLeft
+            map[actionHolder.actionUpCenter] = upCenter
+            map[actionHolder.actionUpHoldCenter] = upHoldCenter
+            map[actionHolder.actionUpRight] = upRight
+            map[actionHolder.actionUpHoldRight] = upHoldRight
         } catch (e: Exception) {}
     }
 
@@ -144,8 +144,14 @@ object Utils {
      * @return true if device has a navigation bar and is below P
      */
     fun shouldUseOverscanMethod(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context).
+            PreferenceManager.getDefaultSharedPreferences(context.applicationContext).
                     getBoolean("hide_nav", false)
+
+    fun setShouldUseOverscanMethod(context: Context, use: Boolean) =
+            PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
+                    .edit()
+                    .putBoolean("hide_nav", use)
+                    .commit()
 
     /**
      * Make sure the TouchWiz navbar is not hidden

@@ -237,6 +237,9 @@
                 android:name="com.samsung.android.cocktail.provider"
                 android:resource="@xml/cocktail" />
         </receiver>
+        <receiver android:name=".receivers.ActionReceiver"
+            android:enabled="true"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"

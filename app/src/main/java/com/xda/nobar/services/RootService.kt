@@ -8,6 +8,7 @@ import android.view.KeyEvent
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
+import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.SuUtils
 import java.io.DataOutputStream
 
@@ -39,15 +40,16 @@ class RootService : Service() {
 
     class RootBinder(val service: RootService) : Binder() {
         private val app = service.application as App
+        private val actionHolder = ActionHolder.getInstance(service)
 
         fun handle(which: Int) {
             when (which) {
-                app.typeRootHoldBack -> goHoldBack()
-                app.typeRootForward -> goForward()
-                app.typeRootMenu -> goMenu()
-                app.typeRootSleep -> goScreenOff()
-                app.typeRootVolDown -> goPremiumVolDown()
-                app.typeRootVolUp -> goPremiumVolUp()
+                actionHolder.typeRootHoldBack -> goHoldBack()
+                actionHolder.typeRootForward -> goForward()
+                actionHolder.typeRootMenu -> goMenu()
+                actionHolder.typeRootSleep -> goScreenOff()
+                actionHolder.typeRootVolDown -> goPremiumVolDown()
+                actionHolder.typeRootVolUp -> goPremiumVolUp()
             }
         }
 

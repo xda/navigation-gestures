@@ -9,6 +9,7 @@ import com.xda.nobar.adapters.AppSelectAdapter
 import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.tasker.inputs.EventInput
 import com.xda.nobar.tasker.runners.EventRunner
+import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.AppInfo
 
 class EventConfigureActivity : BaseAppSelectActivity<String, AppInfo>(), TaskerPluginConfig<EventInput> {
@@ -29,6 +30,8 @@ class EventConfigureActivity : BaseAppSelectActivity<String, AppInfo>(), TaskerP
         }
     }
 
+    private val actionHolder by lazy { ActionHolder.getInstance(this) }
+
     override fun assignFromInput(input: TaskerInput<EventInput>) {
         gesture = input.regular.gesture
         adapter.setSelectedByPackage(gesture ?: return)
@@ -38,14 +41,14 @@ class EventConfigureActivity : BaseAppSelectActivity<String, AppInfo>(), TaskerP
         return AppInfo(
                 info,
                 "",
-                app.name(info)!!,
-                app.icon(info),
+                actionHolder.name(info)!!,
+                actionHolder.icon(info),
                 info == gesture
         )
     }
 
     override fun loadAppList(): ArrayList<String> {
-        return app.actionsList
+        return actionHolder.actionsList
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

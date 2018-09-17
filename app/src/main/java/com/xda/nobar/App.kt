@@ -112,140 +112,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val disabledNavReasonManager = DisabledReasonManager()
     val disabledBarReasonManager = DisabledReasonManager()
     val disabledImmReasonManager = DisabledReasonManager()
-
-    /**
-     * Actions and Types
-     * *********************************************************
-     */
-    val actionLeft: String by lazy { resources.getString(R.string.action_left) }
-    val actionRight: String by lazy { resources.getString(R.string.action_right) }
-    val actionUp: String by lazy { resources.getString(R.string.action_up) }
-    val actionDown: String by lazy { resources.getString(R.string.action_down) }
-    val actionDouble: String by lazy { resources.getString(R.string.action_double) }
-    val actionHold: String by lazy { resources.getString(R.string.action_hold) }
-    val actionTap: String by lazy { resources.getString(R.string.action_tap) }
-    val actionUpHold: String by lazy { resources.getString(R.string.action_up_hold) }
-    val actionLeftHold: String by lazy { resources.getString(R.string.action_left_hold) }
-    val actionRightHold: String by lazy { resources.getString(R.string.action_right_hold) }
-    val actionDownHold: String by lazy { resources.getString(R.string.action_down_hold) }
-
-    val actionUpLeft: String by lazy { resources.getString(R.string.action_up_left) }
-    val actionUpHoldLeft: String by lazy { resources.getString(R.string.action_up_hold_left) }
-
-    val actionUpCenter: String by lazy { resources.getString(R.string.action_up_center) }
-    val actionUpHoldCenter: String by lazy { resources.getString(R.string.action_up_hold_center) }
-
-    val actionUpRight: String by lazy { resources.getString(R.string.action_up_right) }
-    val actionUpHoldRight: String by lazy { resources.getString(R.string.action_up_hold_right) }
-
-    val actionsList by lazy { arrayListOf(
-            actionLeft,
-            actionRight,
-            actionUp,
-            actionDown,
-            actionDouble,
-            actionHold,
-            actionTap,
-            actionUpHold,
-            actionLeftHold,
-            actionRightHold,
-            actionDownHold,
-            actionUpLeft,
-            actionUpHoldLeft,
-            actionUpCenter,
-            actionUpHoldCenter,
-            actionUpRight,
-            actionUpHoldRight
-    ) }
-    
-    fun name(action: String): String? {
-        val res = when(action) {
-            actionLeft -> R.string.left
-            actionRight -> R.string.right
-            actionUp -> R.string.up
-            actionDown -> R.string.down
-            actionDouble -> R.string.double_tap
-            actionHold -> R.string.hold
-            actionTap -> R.string.tap
-            actionUpHold -> R.string.swipe_up_hold
-            actionLeftHold -> R.string.left_hold
-            actionRightHold -> R.string.right_hold
-            actionDownHold -> R.string.down_hold
-            actionUpLeft -> R.string.swipe_up_left
-            actionUpHoldLeft -> R.string.swipe_up_hold_left
-            actionUpCenter -> R.string.swipe_up_center
-            actionUpHoldCenter -> R.string.swipe_up_hold_center
-            actionUpRight -> R.string.swipe_up_right
-            actionUpHoldRight -> R.string.swipe_up_hold_right
-            else -> 0
-        }
-        return if (res != 0) resources.getString(res)
-        else null
-    }
-    
-    fun icon(action: String): Int {
-        return when(action) {
-            actionLeft -> R.drawable.swipe_left
-            actionRight -> R.drawable.swipe_right
-            actionUp -> R.drawable.swipe_up
-            actionDown -> R.drawable.swipe_down
-            actionDouble -> R.drawable.double_tap
-            actionHold -> R.drawable.tap_hold
-            actionTap -> R.drawable.tap
-            actionUpHold -> R.drawable.swipe_up_hold
-            actionLeftHold -> R.drawable.swipe_left
-            actionRightHold -> R.drawable.swipe_right
-            actionDownHold -> R.drawable.swipe_down
-            actionUpLeft -> R.drawable.swipe_up
-            actionUpHoldLeft -> R.drawable.swipe_up_hold
-            actionUpCenter -> R.drawable.swipe_up
-            actionUpHoldCenter -> R.drawable.swipe_up_hold
-            actionUpRight -> R.drawable.swipe_up
-            actionUpHoldRight -> R.drawable.swipe_up_hold
-            else -> 0
-        }
-    }
-
-    val typeNoAction by lazy { resources.getString(R.string.type_no_action).toInt() }
-    val typeBack by lazy { resources.getString(R.string.type_back).toInt() }
-    val typeOhm by lazy { resources.getString(R.string.type_ohm).toInt() }
-    val typeRecents by lazy { resources.getString(R.string.type_recents).toInt() }
-    val typeHide by lazy { resources.getString(R.string.type_hide).toInt() }
-    val typeSwitch by lazy { resources.getString(R.string.type_switch).toInt() }
-    val typeAssist by lazy { resources.getString(R.string.type_assist).toInt() }
-    val typeHome by lazy { resources.getString(R.string.type_home).toInt() }
-    val premTypeNotif by lazy { resources.getString(R.string.prem_type_notif).toInt() }
-    val premTypeQs by lazy { resources.getString(R.string.prem_type_qs).toInt() }
-    val premTypePower by lazy { resources.getString(R.string.prem_type_power).toInt() }
-    val typeSplit by lazy { resources.getString(R.string.type_split).toInt() }
-    val premTypeVibe by lazy { resources.getString(R.string.prem_type_vibe).toInt() }
-    val premTypeSilent by lazy { resources.getString(R.string.prem_type_silent).toInt() }
-    val premTypeMute by lazy { resources.getString(R.string.prem_type_mute).toInt() }
-    val premTypePlayPause by lazy { resources.getString(R.string.prem_type_play_pause).toInt() }
-    val premTypePrev by lazy { resources.getString(R.string.prem_type_prev).toInt() }
-    val premTypeNext by lazy { resources.getString(R.string.prem_type_next).toInt() }
-    val premTypeSwitchIme by lazy { resources.getString(R.string.prem_type_switch_ime).toInt() }
-    val premTypeLaunchApp by lazy { resources.getString(R.string.prem_type_launch_app).toInt() }
-    val premTypeLockScreen by lazy { resources.getString(R.string.prem_type_lock_screen).toInt() }
-    val premTypeScreenshot by lazy { resources.getString(R.string.prem_type_screenshot).toInt() }
-    val premTypeLaunchActivity by lazy { resources.getString(R.string.prem_type_launch_activity).toInt() }
-    val premTypeRot by lazy { resources.getString(R.string.prem_type_rot).toInt() }
-    val premTypeTaskerEvent by lazy { resources.getString(R.string.prem_type_tasker_event).toInt() }
-    val typeToggleNav by lazy { resources.getString(R.string.type_toggle_nav).toInt() }
-    val premTypeFlashlight by lazy { resources.getString(R.string.prem_type_flashlight).toInt() }
-    val premTypeVolumePanel by lazy { resources.getString(R.string.prem_type_volume_panel).toInt() }
-    val premTypeBluetooth by lazy { resources.getString(R.string.prem_type_bluetooth).toInt() }
-    val premTypeWiFi by lazy { resources.getString(R.string.prem_type_wifi).toInt() }
-    val premTypeIntent by lazy { resources.getString(R.string.prem_type_intent).toInt() }
-    val premTypeBatterySaver by lazy { resources.getString(R.string.prem_type_battery_saver).toInt() }
-    val premTypeScreenTimeout by lazy { resources.getString(R.string.prem_type_screen_timeout).toInt() }
-
-    val typeRootHoldBack by lazy { resources.getString(R.string.type_hold_back).toInt() }
-    val typeRootForward by lazy { resources.getString(R.string.type_forward).toInt() }
-    val typeRootMenu by lazy { resources.getString(R.string.type_menu).toInt() }
-    val typeRootSleep by lazy { resources.getString(R.string.type_sleep).toInt() }
-    val typeRootVolUp by lazy { resources.getString(R.string.type_vol_up).toInt() }
-    val typeRootVolDown by lazy { resources.getString(R.string.type_vol_down).toInt() }
+    val actionHolder by lazy { ActionHolder.getInstance(this) }
 
     /**
      * ***************************************************************
@@ -604,7 +471,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      */
     fun setGestureState(activated: Boolean) = prefs.edit().putBoolean("is_active", activated).apply()
 
-    fun setNavState(hidden: Boolean) = prefs.edit().putBoolean("hide_nav", hidden).apply()
+    fun setNavState(hidden: Boolean) {
+        Utils.setShouldUseOverscanMethod(this, hidden)
+    }
 
     fun getAdjustedNavBarHeight() =
             Utils.getNavBarHeight(this) - if (Utils.useFullOverscan(this)) 0 else 1
@@ -929,6 +798,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                 } else {
                                     showNav()
                                 }
+                            } else {
+                                showNav()
                             }
 
                             if (disabledBarReasonManager.isEmpty()) {

@@ -15,6 +15,7 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Handler
 import android.os.UserHandle
+import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.RecognizerIntent
@@ -26,13 +27,14 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.joaomgcd.taskerpluginlibrary.extensions.requestQuery
-import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.IntentSelectorActivity
 import com.xda.nobar.activities.RequestPermissionsActivity
 import com.xda.nobar.activities.ScreenshotActivity
+import com.xda.nobar.receivers.ActionReceiver
 import com.xda.nobar.tasker.activities.EventConfigureActivity
 import com.xda.nobar.tasker.updates.EventUpdate
+import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.FlashlighControllerLollipop
 import com.xda.nobar.util.FlashlightControllerMarshmallow
 import com.xda.nobar.util.Utils
@@ -51,8 +53,7 @@ class Actions : AccessibilityService(), Serializable {
         const val EXTRA_GESTURE = "gesture"
     }
 
-    private val receiver by lazy { ActionHandler(app, this) }
-    private val app by lazy { applicationContext as App }
+    private val receiver by lazy { ActionHandler(this) }
 
     override fun onCreate() {
         receiver.register()
@@ -61,9 +62,7 @@ class Actions : AccessibilityService(), Serializable {
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         val newEvent = AccessibilityEvent.obtain(event)
 
-        app.logicHandler.post {
-            app.uiHandler.setNodeInfoAndUpdate(newEvent)
-        }
+        ActionReceiver.handleEvent(this, newEvent)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -80,20 +79,21 @@ class Actions : AccessibilityService(), Serializable {
     /**
      * Special BroadcastReceiver to handle actions sent to this service by {@link com.xda.nobar.views.BarView}
      */
-    class ActionHandler(private val app: App, private val actions: Actions) {
+    class ActionHandler(private val actions: Actions) {
         private val audio by lazy { actions.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
         private val imm by lazy { actions.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
         private val wifiManager by lazy { actions.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager }
+        private val prefs by lazy { PreferenceManager.getDefaultSharedPreferences(actions.applicationContext) }
 
         private val handler = Handler()
 
         private val flashlightController by lazy {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) FlashlightControllerMarshmallow(app)
-            else FlashlighControllerLollipop(app)
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) FlashlightControllerMarshmallow(actions)
+            else FlashlighControllerLollipop(actions)
         }
 
         private val orientationEventListener by lazy {
-            object : OrientationEventListener(app) {
+            object : OrientationEventListener(actions) {
                 override fun onOrientationChanged(orientation: Int) {
                     currentDegree = orientation
                 }
@@ -128,8 +128,9 @@ class Actions : AccessibilityService(), Serializable {
             when(intent?.action) {
                 ACTION -> {
                     val gesture = intent.getStringExtra(EXTRA_GESTURE)
-                    when (intent.getIntExtra(EXTRA_ACTION, app.typeNoAction)) {
-                        app.typeHome -> {
+                    val actionHolder = ActionHolder.getInstance(actions)
+                    when (intent.getIntExtra(EXTRA_ACTION, actionHolder.typeNoAction)) {
+                        actionHolder.typeHome -> {
                             if (Utils.useAlternateHome(actions)) {
                                 val homeIntent = Intent(Intent.ACTION_MAIN)
                                 homeIntent.addCategory(Intent.CATEGORY_HOME)
@@ -139,17 +140,17 @@ class Actions : AccessibilityService(), Serializable {
                                 actions.performGlobalAction(GLOBAL_ACTION_HOME)
                             }
                         }
-                        app.typeRecents -> actions.performGlobalAction(GLOBAL_ACTION_RECENTS)
-                        app.typeBack -> actions.performGlobalAction(GLOBAL_ACTION_BACK)
-                        app.typeSwitch -> runNougatAction {
+                        actionHolder.typeRecents -> actions.performGlobalAction(GLOBAL_ACTION_RECENTS)
+                        actionHolder.typeBack -> actions.performGlobalAction(GLOBAL_ACTION_BACK)
+                        actionHolder.typeSwitch -> runNougatAction {
                             actions.performGlobalAction(GLOBAL_ACTION_RECENTS)
                             handler.postDelayed({ actions.performGlobalAction(GLOBAL_ACTION_RECENTS) }, 100)
                         }
-                        app.typeSplit -> runNougatAction { actions.performGlobalAction(GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN) }
-                        app.premTypeNotif -> runPremiumAction { actions.performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) }
-                        app.premTypeQs -> runPremiumAction { actions.performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) }
-                        app.premTypePower -> runPremiumAction { actions.performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }
-                        app.typeAssist -> {
+                        actionHolder.typeSplit -> runNougatAction { actions.performGlobalAction(GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN) }
+                        actionHolder.premTypeNotif -> runPremiumAction { actions.performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) }
+                        actionHolder.premTypeQs -> runPremiumAction { actions.performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) }
+                        actionHolder.premTypePower -> runPremiumAction { actions.performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }
+                        actionHolder.typeAssist -> {
                             val assist = Intent(RecognizerIntent.ACTION_WEB_SEARCH)
                             assist.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
@@ -196,29 +197,29 @@ class Actions : AccessibilityService(), Serializable {
                                 }
                             }
                         }
-                        app.typeOhm -> {
+                        actionHolder.typeOhm -> {
                             val ohm = Intent("com.xda.onehandedmode.intent.action.TOGGLE_OHM")
                             ohm.setClassName("com.xda.onehandedmode", "com.xda.onehandedmode.receivers.OHMReceiver")
                             actions.sendBroadcast(ohm)
                         }
-                        app.premTypePlayPause -> runPremiumAction {
+                        actionHolder.premTypePlayPause -> runPremiumAction {
                             audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
                             audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
                         }
-                        app.premTypePrev -> runPremiumAction {
+                        actionHolder.premTypePrev -> runPremiumAction {
                             audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
                             audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
                         }
-                        app.premTypeNext -> runPremiumAction {
+                        actionHolder.premTypeNext -> runPremiumAction {
                             audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
                             audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
                         }
-                        app.premTypeSwitchIme -> runPremiumAction {
+                        actionHolder.premTypeSwitchIme -> runPremiumAction {
                             imm.showInputMethodPicker()
                         }
-                        app.premTypeLaunchApp -> runPremiumAction {
+                        actionHolder.premTypeLaunchApp -> runPremiumAction {
                             val key = "${gesture}_package"
-                            val launchPackage = app.prefs.getString(key, null)
+                            val launchPackage = prefs.getString(key, null)
 
                             if (launchPackage != null) {
                                 val launch = Intent(Intent.ACTION_MAIN)
@@ -232,9 +233,9 @@ class Actions : AccessibilityService(), Serializable {
                                 } catch (e: Exception) {}
                             }
                         }
-                        app.premTypeLaunchActivity -> runPremiumAction {
+                        actionHolder.premTypeLaunchActivity -> runPremiumAction {
                             val key = "${gesture}_activity"
-                            val activity = app.prefs.getString(key, null) ?: return@runPremiumAction
+                            val activity = prefs.getString(key, null) ?: return@runPremiumAction
 
                             val p = activity.split("/")[0]
                             val c = activity.split("/")[1]
@@ -248,42 +249,42 @@ class Actions : AccessibilityService(), Serializable {
                             } catch (e: Exception) {
                             }
                         }
-                        app.premTypeLockScreen -> runPremiumAction {
+                        actionHolder.premTypeLockScreen -> runPremiumAction {
                             runSystemSettingsAction {
-                                app.screenOffHelper.create()
+                                ActionReceiver.turnScreenOff(actions)
                             }
                         }
-                        app.premTypeScreenshot -> runPremiumAction {
+                        actionHolder.premTypeScreenshot -> runPremiumAction {
                             val screenshot = Intent(actions, ScreenshotActivity::class.java)
                             screenshot.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             actions.startActivity(screenshot)
                         }
-                        app.premTypeRot -> runPremiumAction {
+                        actionHolder.premTypeRot -> runPremiumAction {
                             runSystemSettingsAction {
                                 orientationEventListener.enable()
                             }
                         }
-                        app.premTypeTaskerEvent -> runPremiumAction {
-                            EventConfigureActivity::class.java.requestQuery(app, EventUpdate(gesture))
+                        actionHolder.premTypeTaskerEvent -> runPremiumAction {
+                            EventConfigureActivity::class.java.requestQuery(actions, EventUpdate(gesture))
                         }
-                        app.typeToggleNav -> {
-                            app.toggleNavState()
+                        actionHolder.typeToggleNav -> {
+                            ActionReceiver.toggleNav(actions)
                         }
-                        app.premTypeFlashlight -> runPremiumAction {
+                        actionHolder.premTypeFlashlight -> runPremiumAction {
                             flashlightController.flashlightEnabled = !flashlightController.flashlightEnabled
                         }
-                        app.premTypeVolumePanel -> runPremiumAction {
+                        actionHolder.premTypeVolumePanel -> runPremiumAction {
                             audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
                         }
-                        app.premTypeBluetooth -> runPremiumAction {
+                        actionHolder.premTypeBluetooth -> runPremiumAction {
                             val adapter = BluetoothAdapter.getDefaultAdapter()
                             if (adapter.isEnabled) adapter.disable() else adapter.enable()
                         }
-                        app.premTypeWiFi -> runPremiumAction {
+                        actionHolder.premTypeWiFi -> runPremiumAction {
                             wifiManager.isWifiEnabled = !wifiManager.isWifiEnabled
                         }
-                        app.premTypeIntent -> runPremiumAction {
-                            val broadcast = IntentSelectorActivity.INTENTS[Utils.getIntentKey(app, gesture)]
+                        actionHolder.premTypeIntent -> runPremiumAction {
+                            val broadcast = IntentSelectorActivity.INTENTS[Utils.getIntentKey(actions, gesture)]
                             val type = broadcast?.which
 
                             try {
@@ -309,22 +310,22 @@ class Actions : AccessibilityService(), Serializable {
                                 Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
                             }
                         }
-                        app.premTypeBatterySaver -> {
+                        actionHolder.premTypeBatterySaver -> {
                             runPremiumAction {
                                 val current = Settings.Global.getInt(actions.contentResolver, Settings.Global.LOW_POWER_MODE, 0)
                                 Settings.Global.putInt(actions.contentResolver, Settings.Global.LOW_POWER_MODE, if (current == 0) 1 else 0)
                             }
                         }
-                        app.premTypeScreenTimeout -> {
-                            runPremiumAction { app.toggleScreenOn() }
+                        actionHolder.premTypeScreenTimeout -> {
+                            runPremiumAction { ActionReceiver.toggleScreenOn(actions) }
                         }
-                        app.premTypeVibe -> {
+                        actionHolder.premTypeVibe -> {
                             //TODO: Implement
                         }
-                        app.premTypeSilent -> {
+                        actionHolder.premTypeSilent -> {
                             //TODO: Implement
                         }
-                        app.premTypeMute -> {
+                        actionHolder.premTypeMute -> {
                             //TODO: Implement
                         }
                     }
