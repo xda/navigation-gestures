@@ -121,45 +121,57 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     override fun onCreate() {
         super.onCreate()
 
-        val watchDog = ANRWatchDog()
-        watchDog.setReportMainThreadOnly()
-        watchDog.start()
-        watchDog.setANRListener {
-            Crashlytics.logException(it)
+        if (isRightProcess()) {
+            val watchDog = ANRWatchDog()
+            watchDog.setReportMainThreadOnly()
+            watchDog.start()
+            watchDog.setANRListener {
+                Crashlytics.logException(it)
+            }
+
+            if (!Utils.canRunHiddenCommands(this) || IntroActivity.needsToRun(this)) {
+                IntroActivity.start(this)
+            }
+
+            stateHandler.register()
+            uiHandler.register()
+            carModeHandler.register()
+            premiumInstallListener.register()
+
+            isValidPremium = prefs.getBoolean("valid_prem", false)
+
+            prefs.registerOnSharedPreferenceChangeListener(this)
+
+            refreshPremium()
+
+            if (areGesturesActivated() && !IntroActivity.needsToRun(this)) {
+                addBar()
+            }
+
+            if (Utils.useRot270Fix(this)
+                    || Utils.useTabletMode(this)
+                    || Utils.useRot180Fix(this)) uiHandler.handleRot()
+
+            if (!IntroActivity.needsToRun(this)) {
+                addImmersiveHelper()
+                uiHandler.onGlobalLayout()
+                immersiveHelperView.viewTreeObserver.addOnGlobalLayoutListener(uiHandler)
+                immersiveHelperView.setOnSystemUiVisibilityChangeListener(uiHandler)
+                immersiveHelperView.immersiveListener = uiHandler
+            }
+
+            appOps.startWatchingMode(AppOpsManager.OP_SYSTEM_ALERT_WINDOW, packageName, this)
         }
+    }
 
-        if (!Utils.canRunHiddenCommands(this) || IntroActivity.needsToRun(this)) {
-            IntroActivity.start(this)
-        }
+    private fun isRightProcess(): Boolean {
+        var procName = ""
+        val pid = Process.myPid()
+        val am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 
-        stateHandler.register()
-        uiHandler.register()
-        carModeHandler.register()
-        premiumInstallListener.register()
+        am.runningAppProcesses.filter { it.pid == pid }.forEach { procName = it.processName }
 
-        isValidPremium = prefs.getBoolean("valid_prem", false)
-
-        prefs.registerOnSharedPreferenceChangeListener(this)
-
-        refreshPremium()
-
-        if (areGesturesActivated() && !IntroActivity.needsToRun(this)) {
-            addBar()
-        }
-
-        if (Utils.useRot270Fix(this)
-                || Utils.useTabletMode(this)
-                || Utils.useRot180Fix(this)) uiHandler.handleRot()
-
-        if (!IntroActivity.needsToRun(this)) {
-            addImmersiveHelper()
-            uiHandler.onGlobalLayout()
-            immersiveHelperView.viewTreeObserver.addOnGlobalLayoutListener(uiHandler)
-            immersiveHelperView.setOnSystemUiVisibilityChangeListener(uiHandler)
-            immersiveHelperView.immersiveListener = uiHandler
-        }
-
-        appOps.startWatchingMode(AppOpsManager.OP_SYSTEM_ALERT_WINDOW, packageName, this)
+        return !procName.contains("action")
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {

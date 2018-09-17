@@ -19,6 +19,7 @@ import android.os.Vibrator
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
