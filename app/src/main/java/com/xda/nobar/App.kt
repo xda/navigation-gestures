@@ -748,8 +748,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
-        private var countOfGlobal = 0
-
         @SuppressLint("WrongConstant")
         override fun onGlobalLayout() {
             keyboardShown = imm.inputMethodWindowVisibleHeight > 0
@@ -784,53 +782,46 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     oldRot = rot
                 }
 
-                if (countOfGlobal == 0) {
-                    removeImmersiveHelper(true)
-                    countOfGlobal++
-                } else if (countOfGlobal > 1) countOfGlobal = 0
+                removeImmersiveHelper(true)
 
-                if (!isActing) {
-                    isActing = true
-                    if (isPillShown()) {
-                        try {
-                            if (!Utils.useImmersiveWhenNavHidden(this@App)) immersiveHelperView.exitNavImmersive()
+                if (isPillShown()) {
+                    try {
+                        if (!Utils.useImmersiveWhenNavHidden(this@App)) immersiveHelperView.exitNavImmersive()
 
-                            bar.immersiveNav = immersiveHelperView.isNavImmersive() && !keyboardShown
+                        bar.immersiveNav = immersiveHelperView.isNavImmersive() && !keyboardShown
 
-                            handler.post {
-                                if (Utils.hidePillWhenKeyboardShown(this@App)) {
-                                    if (keyboardShown) bar.hidePill(true, HiddenPillReasonManager.KEYBOARD)
-                                    else if (bar.hiddenPillReasons.onlyContains(HiddenPillReasonManager.KEYBOARD)) bar.showPill(HiddenPillReasonManager.KEYBOARD)
-                                }
+                        handler.post {
+                            if (Utils.hidePillWhenKeyboardShown(this@App)) {
+                                if (keyboardShown) bar.hidePill(true, HiddenPillReasonManager.KEYBOARD)
+                                else if (bar.hiddenPillReasons.onlyContains(HiddenPillReasonManager.KEYBOARD)) bar.showPill(HiddenPillReasonManager.KEYBOARD)
                             }
+                        }
 
-                            if (disabledImmReasonManager.isEmpty()) {
-                                if (Utils.shouldUseOverscanMethod(this@App)
-                                        && Utils.useImmersiveWhenNavHidden(this@App)) immersiveHelperView.enterNavImmersive()
-                            } else {
-                                immersiveHelperView.exitNavImmersive()
-                            }
+                        if (disabledImmReasonManager.isEmpty()) {
+                            if (Utils.shouldUseOverscanMethod(this@App)
+                                    && Utils.useImmersiveWhenNavHidden(this@App)) immersiveHelperView.enterNavImmersive()
+                        } else {
+                            immersiveHelperView.exitNavImmersive()
+                        }
 
-                            if (Utils.shouldUseOverscanMethod(this@App)) {
-                                if (disabledNavReasonManager.isEmpty()) {
-                                    hideNav()
-                                } else {
-                                    showNav()
-                                }
+                        if (Utils.shouldUseOverscanMethod(this@App)) {
+                            if (disabledNavReasonManager.isEmpty()) {
+                                hideNav()
                             } else {
                                 showNav()
                             }
+                        } else {
+                            showNav()
+                        }
 
-                            if (disabledBarReasonManager.isEmpty()) {
-                                if (areGesturesActivated()
-                                        && !pillShown) addBar(false)
-                            } else {
-                                removeBar(false)
-                            }
+                        if (disabledBarReasonManager.isEmpty()) {
+                            if (areGesturesActivated()
+                                    && !pillShown) addBar(false)
+                        } else {
+                            removeBar(false)
+                        }
 
-                        } catch (e: NullPointerException) {}
-                    }
-                    isActing = false
+                    } catch (e: NullPointerException) {}
                 }
             }
         }

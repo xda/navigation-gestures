@@ -7,7 +7,6 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Handler
-import android.os.ServiceSpecificException
 
 @TargetApi(Build.VERSION_CODES.M)
 class FlashlightControllerMarshmallow(override val context: Context) : FlashlightControllerBase(context) {
@@ -16,9 +15,7 @@ class FlashlightControllerMarshmallow(override val context: Context) : Flashligh
             field = value
             try {
                 manager.setTorchMode(cameraId ?: return, value)
-            } catch (e: CameraAccessException) {
-
-            } catch (e: ServiceSpecificException) {}
+            } catch (e: Exception) {}
         }
 
     private val manager by lazy { context.getSystemService(Context.CAMERA_SERVICE) as CameraManager }

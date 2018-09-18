@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.Surface
 import android.view.View
 import android.view.WindowManager
+import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.checkTouchWiz
 import kotlin.math.absoluteValue
@@ -76,13 +77,13 @@ class ImmersiveHelperView(context: Context) : View(context) {
 
     fun tempForcePolicyControlForRecents() {
         oldImm = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)
-        Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation=*")
+        if (IntroActivity.hasWss(context)) Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation=*")
         hasRunForcedImm = true
     }
 
     fun putBackOldImmersive() {
         if (hasRunForcedImm) {
-            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, oldImm)
+            if (IntroActivity.hasWss(context)) Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, oldImm)
             hasRunForcedImm = false
         }
     }

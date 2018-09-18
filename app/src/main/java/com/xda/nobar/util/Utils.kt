@@ -158,13 +158,13 @@ object Utils {
      * @param context a context object
      */
     fun forceTouchWizNavEnabled(context: Context) =
-            Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0)
+            if (IntroActivity.hasWss(context)) Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 0) else false
 
     fun forceTouchWizNavNotEnabled(context: Context) =
-            Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 1)
+            if (IntroActivity.hasWss(context)) Settings.Global.putInt(context.contentResolver, "navigationbar_hide_bar_enabled", 1) else false
 
     fun undoForceTouchWizNavEnabled(context: Context) =
-            Settings.Global.putString(context.contentResolver, "navigationbar_hide_bar_enabled", null)
+            if (IntroActivity.hasWss(context)) Settings.Global.putString(context.contentResolver, "navigationbar_hide_bar_enabled", null) else false
 
     /**
      * Get the user-defined or default vertical position of the pill

@@ -19,7 +19,6 @@ import android.os.Vibrator
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -1147,50 +1146,48 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
          * @param key one of app.action*
          */
         private fun sendActionInternal(key: String) {
-            app.actionHandler.post {
-                val which = actionMap[key] ?: return@post
+            val which = actionMap[key] ?: return
 
-                if (which == actionHolder.typeNoAction) return@post
+            if (which == actionHolder.typeNoAction) return
 
-                if (isHidden || isPillHidingOrShowing) return@post
+            if (isHidden || isPillHidingOrShowing) return
 
-                vibrate(getVibrationDuration().toLong())
+            vibrate(getVibrationDuration().toLong())
 
-                if (key == actionHolder.actionDouble) handler?.postDelayed({ vibrate(getVibrationDuration().toLong()) }, getVibrationDuration().toLong())
+            if (key == actionHolder.actionDouble) handler?.postDelayed({ vibrate(getVibrationDuration().toLong()) }, getVibrationDuration().toLong())
 
-                if (which == actionHolder.typeHide) {
-                    if (key == actionHolder.actionUp || key == actionHolder.actionUpHold) {
-                        yHomeAnimator?.cancel()
-                        yHomeAnimator = null
-                    }
-                    hidePill(false, null, true)
-                    return@post
+            if (which == actionHolder.typeHide) {
+                if (key == actionHolder.actionUp || key == actionHolder.actionUpHold) {
+                    yHomeAnimator?.cancel()
+                    yHomeAnimator = null
                 }
+                hidePill(false, null, true)
+                return
+            }
 
-                when (key) {
-                    actionHolder.actionDouble -> jiggleDoubleTap()
-                    actionHolder.actionHold -> jiggleHold()
-                    actionHolder.actionTap -> jiggleTap()
-                    actionHolder.actionUpHold -> jiggleHoldUp()
-                    actionHolder.actionLeftHold -> jiggleLeftHold()
-                    actionHolder.actionRightHold -> jiggleRightHold()
-                    actionHolder.actionDownHold -> jiggleDownHold()
-                }
+            when (key) {
+                actionHolder.actionDouble -> jiggleDoubleTap()
+                actionHolder.actionHold -> jiggleHold()
+                actionHolder.actionTap -> jiggleTap()
+                actionHolder.actionUpHold -> jiggleHoldUp()
+                actionHolder.actionLeftHold -> jiggleLeftHold()
+                actionHolder.actionRightHold -> jiggleRightHold()
+                actionHolder.actionDownHold -> jiggleDownHold()
+            }
 
-                if (key == actionHolder.actionUp || key == actionHolder.actionLeft || key == actionHolder.actionRight) {
-                    animate(null, ALPHA_ACTIVE)
-                }
+            if (key == actionHolder.actionUp || key == actionHolder.actionLeft || key == actionHolder.actionRight) {
+                animate(null, ALPHA_ACTIVE)
+            }
 
-                val intent = Intent(Actions.ACTION)
-                intent.putExtra(Actions.EXTRA_ACTION, which)
-                intent.putExtra(Actions.EXTRA_GESTURE, key)
-                intent.component = ComponentName(context, Actions::class.java)
+            val intent = Intent(Actions.ACTION)
+            intent.putExtra(Actions.EXTRA_ACTION, which)
+            intent.putExtra(Actions.EXTRA_GESTURE, key)
+            intent.component = ComponentName(context, Actions::class.java)
 
-                context.startService(intent)
+            context.startService(intent)
 
-                if (Utils.shouldUseRootCommands(context)) {
-                    app.rootBinder?.handle(which)
-                }
+            if (Utils.shouldUseRootCommands(context)) {
+                app.rootBinder?.handle(which)
             }
         }
 
