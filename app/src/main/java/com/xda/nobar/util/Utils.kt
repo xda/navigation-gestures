@@ -706,8 +706,8 @@ object Utils {
      * Check for valid premium and run the action if possible
      * Otherwise show a warning dialog
      */
-    fun runPremiumAction(context: Context, action: () -> Unit): Boolean {
-        if ((context.applicationContext as App).isValidPremium) action.invoke()
+    fun runPremiumAction(context: Context, validPrem: Boolean, action: () -> Unit): Boolean {
+        if (validPrem) action.invoke()
         else {
             DialogActivity.Builder(context).apply {
                 title = R.string.premium_required
@@ -722,7 +722,7 @@ object Utils {
             }
         }
 
-        return (context.applicationContext as App).isValidPremium
+        return validPrem
     }
 
     /**

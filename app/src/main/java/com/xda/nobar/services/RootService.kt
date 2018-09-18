@@ -95,7 +95,7 @@ class RootService : Service() {
         }
 
         private fun runPremiumAction(action: () -> Unit) {
-            if (app.isValidPremium) action.invoke()
+            if (App.isValidPremium) action.invoke()
             else {
                 DialogActivity.Builder(service).apply {
                     title = R.string.premium_required

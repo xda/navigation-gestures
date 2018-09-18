@@ -39,7 +39,9 @@ class ActionReceiver : BroadcastReceiver() {
             intent.action = action
             if (extras != null) intent.putExtras(extras)
 
-            context.sendBroadcast(intent)
+            try {
+                context.sendBroadcast(intent)
+            } catch (e: Exception) {}
         }
     }
 

@@ -28,6 +28,7 @@ import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.providers.BaseProvider
+import com.xda.nobar.services.Actions
 import com.xda.nobar.services.ForegroundService
 import com.xda.nobar.services.RootService
 import com.xda.nobar.util.*
@@ -43,6 +44,8 @@ import java.util.*
 class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
     companion object {
         const val EDGE_TYPE_ACTIVE = 2
+
+        var isValidPremium: Boolean = false
     }
 
     val wm by lazy { getSystemService(Context.WINDOW_SERVICE) as WindowManager }
@@ -64,6 +67,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         prefs.edit().putBoolean("valid_prem", valid).apply()
 
         licenseCheckListeners.forEach { it.onResult(valid, reason) }
+
+        val updateActions = Intent(this, Actions::class.java)
+        updateActions.action = Actions.PREMIUM_UPDATE
+        updateActions.putExtra(Actions.EXTRA_PREM, isValidPremium)
+        startService(updateActions)
     })}
 
     private val premiumInstallListener = PremiumInstallListener()
@@ -75,7 +83,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     private var isInOtherWindowApp = false
 
-    var isValidPremium: Boolean = false
     var rootBinder: RootService.RootBinder? = null
 
     var navHidden = false

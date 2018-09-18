@@ -48,9 +48,11 @@ class Actions : AccessibilityService(), Serializable {
     companion object {
         const val BASE = "com.xda.nobar.action"
         const val ACTION = "$BASE.ACTION"
+        const val PREMIUM_UPDATE = "$BASE.PREM_UPDATE"
 
         const val EXTRA_ACTION = "action"
         const val EXTRA_GESTURE = "gesture"
+        const val EXTRA_PREM = "premium"
     }
 
     private val receiver by lazy { ActionHandler(this) }
@@ -118,6 +120,8 @@ class Actions : AccessibilityService(), Serializable {
                     }
                 }, 20)
             }
+
+        private var validPremium = false
 
         fun register() {
             flashlightController.onCreate()
@@ -336,6 +340,9 @@ class Actions : AccessibilityService(), Serializable {
                         onReceive(context, intent)
                     }
                 }
+                PREMIUM_UPDATE -> {
+                    validPremium = intent.getBooleanExtra(EXTRA_PREM, validPremium)
+                }
             }
         }
 
@@ -344,7 +351,7 @@ class Actions : AccessibilityService(), Serializable {
         }
 
         private fun runNougatAction(action: () -> Unit) = Utils.runNougatAction(actions, action)
-        private fun runPremiumAction(action: () -> Unit) = Utils.runPremiumAction(actions, action)
+        private fun runPremiumAction(action: () -> Unit) = Utils.runPremiumAction(actions, validPremium, action)
         private fun runSystemSettingsAction(action: () -> Unit) = Utils.runSystemSettingsAction(actions, action)
     }
 }
