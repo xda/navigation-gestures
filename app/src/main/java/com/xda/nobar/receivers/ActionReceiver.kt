@@ -31,7 +31,7 @@ class ActionReceiver : BroadcastReceiver() {
         fun handleEvent(context: Context, event: AccessibilityEvent) {
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_EVENT, event)
-            sendIntent(context, ACTION_HANDLE_EVENT)
+            sendIntent(context, ACTION_HANDLE_EVENT, bundle)
         }
 
         private fun sendIntent(context: Context, action: String, extras: Bundle? = null) {
