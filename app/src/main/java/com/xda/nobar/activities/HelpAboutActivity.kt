@@ -4,11 +4,14 @@ import android.content.*
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceFragment
+import android.preference.SwitchPreference
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.Toast
+import com.crashlytics.android.Crashlytics
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.R
+import com.xda.nobar.util.Utils
 
 /**
  * Information about the app
@@ -53,6 +56,7 @@ class HelpAboutActivity : AppCompatActivity() {
             addOtherAppsListener()
             addPremiumListener()
             addLibListener()
+            crashlyticsStuff()
         }
 
         private fun fillInVersion() {
@@ -69,11 +73,11 @@ class HelpAboutActivity : AppCompatActivity() {
         }
 
         private fun fillInOverscan() {
-            val pref = findPreference("current_overscan")
+//            val pref = findPreference("current_overscan")
 
 //            pref.summary = Rect().apply { activity.display.getOverscanInsets(this) }.toShortString()
 
-            preferenceScreen.removePreference(pref)
+//            preferenceScreen.removePreference(pref)
         }
 
         private fun addTutorialListener() {
@@ -152,6 +156,36 @@ class HelpAboutActivity : AppCompatActivity() {
                 startActivity(intent)
                 true
             }
+        }
+
+        private fun crashlyticsStuff() {
+            val switch = findPreference("enable_crashlytics_id") as SwitchPreference
+            val id = findPreference("crashlytics_id")
+
+            switch.setOnPreferenceChangeListener { _, newValue ->
+                updateCrashlyticsId(newValue.toString().toBoolean())
+
+                true
+            }
+
+            id.setOnPreferenceClickListener {
+                if (!it.summary.isNullOrBlank()) {
+                    val cm = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val data = ClipData.newPlainText(id.title, id.summary)
+                    cm.primaryClip = data
+
+                    Toast.makeText(activity, resources.getText(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
+                }
+
+                true
+            }
+        }
+
+        private fun updateCrashlyticsId(enabled: Boolean) {
+            val id = findPreference("crashlytics_id")
+
+            id.summary = if (enabled) Utils.getCrashlyticsId(activity) else ""
+            Crashlytics.setUserIdentifier(id.summary.toString())
         }
     }
 }

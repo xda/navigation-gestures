@@ -787,4 +787,21 @@ object Utils {
     fun useAlternateHome(context: Context) =
             PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean("alternate_home", context.resources.getBoolean(R.bool.alternate_home_default))
+
+    fun getCrashlyticsId(context: Context): String {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val id = prefs.getString("crashlytics_id", null)
+
+        if (id == null) {
+            val newId = System.currentTimeMillis().toString()
+            prefs.edit().putString("crashlytics_id", newId).apply()
+            return newId
+        }
+
+        return id
+    }
+
+    fun isCrashlyticsIdEnabled(context: Context) =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("enable_crashlytics_id", false)
 }

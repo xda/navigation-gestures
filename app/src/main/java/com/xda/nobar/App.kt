@@ -129,6 +129,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         super.onCreate()
 
         if (isRightProcess()) {
+            if (Utils.isCrashlyticsIdEnabled(this)) Crashlytics.setUserIdentifier(Utils.getCrashlyticsId(this))
+
             val watchDog = ANRWatchDog()
             watchDog.setReportMainThreadOnly()
             watchDog.start()

@@ -34,8 +34,18 @@
         android:title="@string/libraries"
         android:key="libraries" />
 
+    <!--<Preference-->
+        <!--android:title="@string/current_overscan"-->
+        <!--android:key="current_overscan" />-->
+
+    <SwitchPreference
+        android:title="@string/crashlytics_id_switch"
+        android:summary="@string/crashlytics_id_switch_desc"
+        android:key="enable_crashlytics_id" />
+
     <Preference
-        android:title="@string/current_overscan"
-        android:key="current_overscan" />
+        android:title="@string/crashlytics_id_field"
+        android:key="crashlytics_id"
+        android:dependency="enable_crashlytics_id" />
 
 </PreferenceScreen>
