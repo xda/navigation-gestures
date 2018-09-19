@@ -110,6 +110,8 @@ or
   <string name="current_overscan">Độ che phủ hiện tại</string>
   <string name="screen_timeout">Screen Timeout</string>
   <string name="alternate_home">Alternate Home Action</string>
+  <string name="crashlytics_id_switch">Enable Crashlytics ID</string>
+  <string name="crashlytics_id_field">Crashlytics ID</string>
   <!--Descriptions-->
   <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
   <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
@@ -151,6 +153,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
   <string name="toggle_nav_desc">Bật/tắt hiển thị thanh điều hướng gốc trên màn hình.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Cho phép để hiển thị phím tắt trên màn hình khóa và sửa lỗi vài thành phần trên màn hình khóa, ambient display, hoặc always-on-display bị cắt ngắn.</string>
   <string name="alternate_home_desc">Certain devices (OnePlus) may have an issue where the \"Home\" action doesn\'t work. Enable this to use a workaround for that.</string>
+  <string name="crashlytics_id_switch_desc">To help us debug Navigation Gestures, you can enable this option. By doing so, a random ID will be generated for you and associated with any crash logs we receive in Firebase. If you\'re having issues with the app crashing, simply describe the situation, and give us your ID. No need to capture your own logs.</string>
   <!--Paragraphs-->
   <string name="app_purpose">Ứng dụng mang đến cử chỉ điều hướng tuyệt vời đến bất kì thiết bị Android. Tốt hơn cả, nó không cần có root! Trước khi bạn có thể sử dụng cử chỉ, có vài thứ cần làm để thiết lập ứng dụng.</string>
   <string name="draw_over_apps_desc">Để Navigation Gesture có thể hiểu thị lên viên điều hướng, bạn phải cho phép vẽ đè lên các ứng dụng khác. Ấn nút bên dưới để thực hiện điều này. Nếu ứng dụng được tải từ Play Store, quyền này sẽ được cho cấp sẵn.</string>
@@ -187,7 +190,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
   <string name="pill_hidden">Viên thuốc đang ẩn. Nhấn hoặc vuốt lên để hiện.</string>
   <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
   <string name="deactivate_before_uninstall">Đảm bảo rằng \"Ẩn thanh điều hướng\" được tắt trước khi gỡ bỏ cài đặt!</string>
-  <string name="copied_to_clipboard">Email đã sao chép vào clipboard</string>
+  <string name="copied_to_clipboard">Copied to clipboard</string>
   <string name="unable_to_launch">Unable to launch target.</string>
   <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
   <!--Libraries-->
