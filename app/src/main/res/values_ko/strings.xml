@@ -108,6 +108,8 @@
   <string name="current_overscan">Current Overscan</string>
   <string name="screen_timeout">Screen Timeout</string>
   <string name="alternate_home">Alternate Home Action</string>
+  <string name="crashlytics_id_switch">Enable Crashlytics ID</string>
+  <string name="crashlytics_id_field">Crashlytics ID</string>
   <!--Descriptions-->
   <string name="gestures_desc">제스처 동작 사용자 지정</string>
   <string name="appearance_desc">Pill의 외관 사용자 지정</string>
@@ -148,6 +150,7 @@
   <string name="toggle_nav_desc">Toggle whether or not the device\'s software navigation bar should be hidden.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Enable this to show lock screen shortcuts and to fix issues with items being cut off on the lock screen, ambient display, or always on display.</string>
   <string name="alternate_home_desc">Certain devices (OnePlus) may have an issue where the \"Home\" action doesn\'t work. Enable this to use a workaround for that.</string>
+  <string name="crashlytics_id_switch_desc">To help us debug Navigation Gestures, you can enable this option. By doing so, a random ID will be generated for you and associated with any crash logs we receive in Firebase. If you\'re having issues with the app crashing, simply describe the situation, and give us your ID. No need to capture your own logs.</string>
   <!--Paragraphs-->
   <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
   <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
@@ -184,7 +187,7 @@
   <string name="pill_hidden">Pill hidden. Tap or swipe up to reshow.</string>
   <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
   <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
-  <string name="copied_to_clipboard">Email copied to clipboard</string>
+  <string name="copied_to_clipboard">Copied to clipboard</string>
   <string name="unable_to_launch">Unable to launch target.</string>
   <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
   <!--Libraries-->
