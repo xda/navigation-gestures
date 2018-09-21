@@ -6,11 +6,10 @@ import android.text.TextUtils
 import com.xda.nobar.R
 import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.Utils
-import com.xda.nobar.util.Utils.usePixelsX
-import com.xda.nobar.util.Utils.usePixelsY
 import net.grandcentrix.tray.TrayPreferences
 import net.grandcentrix.tray.core.SharedPreferencesImport
 import java.lang.ref.WeakReference
+import java.util.ArrayList
 import java.util.HashMap
 import kotlin.collections.HashSet
 import kotlin.collections.set
@@ -103,7 +102,7 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
         get() = getBoolean(ENABLE_CRASHLYTICS_ID, false)
     val useAlternateHome: Boolean
         get() = getBoolean(ALTERNATE_HOME, context.resources.getBoolean(R.bool.alternate_home_default))
-    val shouldntKeepOverscanOnlock: Boolean
+    val shouldntKeepOverscanOnLock: Boolean
         get() = getBoolean(LOCKSCREEN_OVERSCAN, false)
     val useFullOverscan: Boolean
         get() = getBoolean(FULL_OVERSCAN, false)
@@ -130,7 +129,7 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
             put(FIRST_RUN, value)
         }
     var useRoot: Boolean = false
-    val hideInFullScreen: Boolean
+    val hideInFullscreen: Boolean
         get() = getBoolean(HIDE_IN_FULLSCREEN, context.resources.getBoolean(R.bool.hide_in_fullscreen_default))
     val largerHitbox: Boolean
         get() = getBoolean(LARGER_HITBOX, context.resources.getBoolean(R.bool.large_hitbox_default))
@@ -138,6 +137,37 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
         get() = getBoolean(ORIG_NAV_IN_IMMERSIVE, context.resources.getBoolean(R.bool.orig_nav_in_immersive_default))
     val enableInCarMode: Boolean
         get() = getBoolean(ENABLE_IN_CAR_MODE, context.resources.getBoolean(R.bool.car_mode_default))
+    val usePixelsW: Boolean
+        get() = getBoolean(USE_PIXELS_WIDTH, context.resources.getBoolean(R.bool.use_pixels_width_default))
+    val usePixelsH: Boolean
+        get() = getBoolean(USE_PIXELS_HEIGHT, context.resources.getBoolean(R.bool.use_pixels_height_default))
+    val usePixelsX: Boolean
+        get() = getBoolean(USE_PIXELS_X, context.resources.getBoolean(R.bool.use_pixels_x_default))
+    val usePixelsY: Boolean
+        get() = getBoolean(USE_PIXELS_Y, context.resources.getBoolean(R.bool.use_pixels_y_default))
+    val sectionedPill: Boolean
+        get() = getBoolean(SECTIONED_PILL, context.resources.getBoolean(R.bool.sectioned_pill_default))
+    val hidePillWhenKeyboardShown: Boolean
+        get() = getBoolean(HIDE_PILL_ON_KEYBOARD, context.resources.getBoolean(R.bool.hide_on_keyboard_default))
+    var useImmersiveWhenNavHidden: Boolean
+        get() = getBoolean(USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN, context.resources.getBoolean(R.bool.immersive_nav_default))
+        set(value) {
+            put(USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN, value)
+        }
+    val autoHide: Boolean
+        get() = getBoolean(AUTO_HIDE_PILL, context.resources.getBoolean(R.bool.auto_hide_default))
+    var validPrem: Boolean
+        get() = getBoolean(VALID_PREM, false)
+        set(value) {
+            put(VALID_PREM, value)
+        }
+    var isActive: Boolean
+        get() = getBoolean(IS_ACTIVE, false)
+        set(value) {
+            put(IS_ACTIVE, value)
+        }
+    val navHidden: Boolean
+        get() = getBoolean(HIDE_NAV, false)
 
     /**
      * Get the user-defined or default pill color
@@ -155,6 +185,79 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
         get() = getInt(PILL_CORNER_RADIUS, context.resources.getInteger(R.integer.default_corner_radius_dp))
     val pillCornerRadiusPx: Int
         get() = Utils.dpAsPx(context, pillCornerRadiusDp)
+    val animationDurationMs: Int
+        get() = getInt(ANIM_DURATION, context.resources.getInteger(R.integer.default_anim_duration))
+    val xThresholdDp: Int
+        get() = getInt(X_THRESHOLD, context.resources.getInteger(R.integer.default_x_threshold_dp))
+    val yThresholdDp: Int
+        get() = getInt(Y_THRESHOLD, context.resources.getInteger(R.integer.default_y_threshold_dp))
+    val xThresholdPx: Int
+        get() = Utils.dpAsPx(context, xThresholdDp)
+    val yThresholdPx: Int
+        get() = Utils.dpAsPx(context, yThresholdDp)
+    val autoHideTime: Int
+        get() = getInt(AUTO_HIDE_PILL_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
+    val hideInFullscreenTime: Int
+        get() = getInt(HIDE_IN_FULLSCREEN_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
+    val hideOnKeyboardTime: Int
+        get() = getInt(HIDE_PILL_ON_KEYBOARD_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
+    val homeY: Int
+        get() {
+            val percent = (homeYPercent / 100f)
+
+            return if (usePixelsY)
+                getInt(CUSTOM_Y, defaultY)
+            else
+                (percent * Utils.getRealScreenSize(context).y).toInt()
+        }
+    val homeYPercent: Int
+        get() = (getInt(CUSTOM_Y_PERCENT, defaultYPercent) * 0.05f).toInt()
+    val homeX: Int
+        get() {
+            val percent = (homeXPercent / 100f)
+            val screenWidthHalf = Utils.getRealScreenSize(context).x / 2f - customWidth / 2f
+
+            return if (usePixelsX)
+                getInt(CUSTOM_X, 0)
+            else
+                (percent * screenWidthHalf).toInt()
+        }
+    val homeXPercent: Int
+        get() = (getInt(CUSTOM_X_PERCENT, context.resources.getInteger(R.integer.default_pill_x_pos_percent)) / 10f).toInt()
+    val customWidth: Int
+        get() {
+            val percent = (customWidthPercent / 100f)
+            val screenWidth = Utils.getRealScreenSize(context).x
+
+            return if (usePixelsW)
+                getInt(CUSTOM_WIDTH, context.resources.getDimensionPixelSize(R.dimen.pill_width_default))
+            else
+                (percent * screenWidth).toInt()
+        }
+    val customWidthPercent: Int
+        get() = (getInt(CUSTOM_WIDTH_PERCENT, context.resources.getInteger(R.integer.default_pill_width_percent)) / 10f).toInt()
+    val customHeight: Int
+        get() {
+            var defHeight = customHeightWithoutHitbox
+            if (largerHitbox) defHeight += context.resources.getDimensionPixelSize(R.dimen.pill_large_hitbox_height_increase)
+
+            return defHeight
+        }
+    val customHeightWithoutHitbox: Int
+        get() {
+            val percent = (customHeightPercent / 100f)
+
+            return if (usePixelsH)
+                getInt(CUSTOM_HEIGHT, context.resources.getDimensionPixelSize(R.dimen.pill_height_default))
+            else
+                (percent * Utils.getRealScreenSize(context).y).toInt()
+        }
+    val customHeightPercent: Int
+        get() = (getInt(CUSTOM_HEIGHT_PERCENT, context.resources.getInteger(R.integer.default_pill_height_percent)) / 10f).toInt()
+    val defaultYPercent: Int
+        get() = ((Utils.getNavBarHeight(context) / 2f - customHeight / 2f) / Utils.getRealScreenSize(context).y * 2000f).toInt()
+    val defaultY: Int
+        get() = ((Utils.getNavBarHeight(context) / 2f - customHeight / 2f)).toInt()
 
     val crashlyticsId: String?
         get() = getString(CRASHLYTICS_ID, null)
@@ -594,27 +697,26 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
      */
     fun getActionsList(map: HashMap<String, Int>) {
         try {
-            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
             val actionHolder = ActionHolder.getInstance(context)
 
-            val left = prefs.getString(actionHolder.actionLeft, actionHolder.typeBack.toString()).toInt()
-            val right = prefs.getString(actionHolder.actionRight, actionHolder.typeRecents.toString()).toInt()
-            val tap = prefs.getString(actionHolder.actionTap, actionHolder.typeHome.toString()).toInt()
-            val hold = prefs.getString(actionHolder.actionHold, actionHolder.typeAssist.toString()).toInt()
-            val up = prefs.getString(actionHolder.actionUp, actionHolder.typeNoAction.toString()).toInt()
-            val down = prefs.getString(actionHolder.actionDown, actionHolder.typeHide.toString()).toInt()
-            val double = prefs.getString(actionHolder.actionDouble, actionHolder.typeNoAction.toString()).toInt()
-            val holdUp = prefs.getString(actionHolder.actionUpHold, actionHolder.typeNoAction.toString()).toInt()
-            val holdLeft = prefs.getString(actionHolder.actionLeftHold, actionHolder.typeNoAction.toString()).toInt()
-            val holdRight = prefs.getString(actionHolder.actionRightHold, actionHolder.typeNoAction.toString()).toInt()
-            val holdDown = prefs.getString(actionHolder.actionDownHold, actionHolder.typeNoAction.toString()).toInt()
+            val left = getString(actionHolder.actionLeft, actionHolder.typeBack.toString())!!.toInt()
+            val right = getString(actionHolder.actionRight, actionHolder.typeRecents.toString())!!.toInt()
+            val tap = getString(actionHolder.actionTap, actionHolder.typeHome.toString())!!.toInt()
+            val hold = getString(actionHolder.actionHold, actionHolder.typeAssist.toString())!!.toInt()
+            val up = getString(actionHolder.actionUp, actionHolder.typeNoAction.toString())!!.toInt()
+            val down = getString(actionHolder.actionDown, actionHolder.typeHide.toString())!!.toInt()
+            val double = getString(actionHolder.actionDouble, actionHolder.typeNoAction.toString())!!.toInt()
+            val holdUp = getString(actionHolder.actionUpHold, actionHolder.typeNoAction.toString())!!.toInt()
+            val holdLeft = getString(actionHolder.actionLeftHold, actionHolder.typeNoAction.toString())!!.toInt()
+            val holdRight = getString(actionHolder.actionRightHold, actionHolder.typeNoAction.toString())!!.toInt()
+            val holdDown = getString(actionHolder.actionDownHold, actionHolder.typeNoAction.toString())!!.toInt()
 
-            val upLeft = prefs.getString(actionHolder.actionUpLeft, actionHolder.typeBack.toString()).toInt()
-            val upHoldLeft = prefs.getString(actionHolder.actionUpHoldLeft, actionHolder.typeNoAction.toString()).toInt()
-            val upCenter = prefs.getString(actionHolder.actionUpCenter, actionHolder.typeHome.toString()).toInt()
-            val upHoldCenter = prefs.getString(actionHolder.actionUpHoldCenter, actionHolder.typeRecents.toString()).toInt()
-            val upRight = prefs.getString(actionHolder.actionUpRight, actionHolder.typeBack.toString()).toInt()
-            val upHoldRight = prefs.getString(actionHolder.actionUpHoldRight, actionHolder.typeNoAction.toString()).toInt()
+            val upLeft = getString(actionHolder.actionUpLeft, actionHolder.typeBack.toString())!!.toInt()
+            val upHoldLeft = getString(actionHolder.actionUpHoldLeft, actionHolder.typeNoAction.toString())!!.toInt()
+            val upCenter = getString(actionHolder.actionUpCenter, actionHolder.typeHome.toString())!!.toInt()
+            val upHoldCenter = getString(actionHolder.actionUpHoldCenter, actionHolder.typeRecents.toString())!!.toInt()
+            val upRight = getString(actionHolder.actionUpRight, actionHolder.typeBack.toString())!!.toInt()
+            val upHoldRight = getString(actionHolder.actionUpHoldRight, actionHolder.typeNoAction.toString())!!.toInt()
 
             map[actionHolder.actionLeft] = left
             map[actionHolder.actionRight] = right
@@ -638,87 +740,52 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
     }
 
     /**
-     * Get the user-defined or default vertical position of the pill
-     * @return the position, in pixels, from the bottom of the screen
+     * Load the list of apps that should keep the navbar shown
      */
-    fun getHomeY(): Int {
-        val percent = (getHomeYPercent() / 100f)
-
-        return if (usePixelsY(context))
-            PreferenceManager.getDefaultSharedPreferences(context).getInt(CUSTOM_Y, getDefaultY())
-        else
-            (percent * Utils.getRealScreenSize(context).y).toInt()
-    }
-
-    fun getHomeYPercent() =
-            (getInt(CUSTOM_Y_PERCENT, getDefaultYPercent()) * 0.05f)
+    fun loadBlacklistedNavPackages(packages: ArrayList<String>) =
+            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_nav_apps", HashSet<String>()))
 
     /**
-     * Get the user-defined or default horizontal position of the pill
-     * @param context a context object
-     * @return the position, in pixels, from the horizontal center of the screen
+     * Load the list of apps where the pill shouldn't be shown
      */
-    fun getHomeX(): Int {
-        val percent = ((getHomeXPercent()) / 100f)
-        val screenWidthHalf = Utils.getRealScreenSize(context).x / 2f - getCustomWidth() / 2f
-
-        return if (usePixelsX(context))
-            getInt(CUSTOM_X, 0)
-        else
-            (percent * screenWidthHalf).toInt()
-    }
-
-    fun getHomeXPercent() =
-            (getInt(CUSTOM_X_PERCENT, context.resources.getInteger(R.integer.default_pill_x_pos_percent)) / 10f)
+    fun loadBlacklistedBarPackages(packages: ArrayList<String>) =
+            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_bar_apps", HashSet<String>()))
 
     /**
-     * Get the user-defined or default width of the pill
-     * @return the width, in pixels
+     * Load the list of apps where immersive navigation should be disabled
      */
-    fun getCustomWidth(): Int {
-        val percent = (getCustomWidthPercent() / 100f)
-        val screenWidth = Utils.getRealScreenSize(context).x
+    fun loadBlacklistedImmPackages(packages: ArrayList<String>) =
+            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_imm_apps", HashSet<String>()))
 
-        return if (Utils.usePixelsW(context))
-            getInt(CUSTOM_WIDTH, context.resources.getDimensionPixelSize(R.dimen.pill_width_default))
-        else
-            (percent * screenWidth).toInt()
-    }
-
-    fun getCustomWidthPercent() =
-            getInt(CUSTOM_WIDTH_PERCENT, context.resources.getInteger(R.integer.default_pill_width_percent)) / 10f
+    fun loadOtherWindowApps(packages: ArrayList<String>) =
+            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("other_window_apps", HashSet<String>()))
 
     /**
-     * Get the user-defined or default height of the pill
-     * @param context a context object
-     * @return the height, in pixels
+     * Save the list of apps that should keep the navbar shown
      */
-    fun getCustomHeight(): Int {
-        var defHeight = getCustomHeightWithoutHitbox()
-        if (Utils.largerHitbox(context)) defHeight += context.resources.getDimensionPixelSize(R.dimen.pill_large_hitbox_height_increase)
-
-        return defHeight
-    }
-
-    fun getCustomHeightWithoutHitbox(): Int {
-        val percent = (getCustomHeightPercent() / 100f)
-
-        return if (Utils.usePixelsH(context))
-            getInt(CUSTOM_HEIGHT, context.resources.getDimensionPixelSize(R.dimen.pill_height_default))
-        else
-            (percent * Utils.getRealScreenSize(context).y).toInt()
-    }
-
-    fun getCustomHeightPercent() =
-            (getInt(CUSTOM_HEIGHT_PERCENT, context.resources.getInteger(R.integer.default_pill_height_percent)) / 10f)
+    fun saveBlacklistedNavPackageList(packages: ArrayList<String>) =
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    .putStringSet("blacklisted_nav_apps", HashSet<String>(packages))
+                    .apply()
 
     /**
-     * Get the default vertical position
-     * @return the default position, in pixels, from the bottom of the screen
+     * Save the list of apps where the pill shouldn't be shown
      */
-    fun getDefaultYPercent() =
-            ((Utils.getNavBarHeight(context) / 2f - getCustomHeight() / 2f) / Utils.getRealScreenSize(context).y * 2000f).toInt()
+    fun saveBlacklistedBarPackages(packages: ArrayList<String>) =
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    .putStringSet("blacklisted_bar_apps", HashSet<String>(packages))
+                    .apply()
 
-    fun getDefaultY() =
-            ((Utils.getNavBarHeight(context) / 2f - getCustomHeight() / 2f)).toInt()
+    /**
+     * Save the list of apps where immersive navigation should be disabled
+     */
+    fun saveBlacklistedImmPackages(packages: ArrayList<String>) =
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    .putStringSet("blacklisted_imm_apps", HashSet<String>(packages))
+                    .apply()
+
+    fun saveOtherWindowApps(packages: ArrayList<String>) =
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    .putStringSet("other_window_apps", HashSet<String>(packages))
+                    .apply()
 }

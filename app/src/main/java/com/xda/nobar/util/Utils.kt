@@ -12,7 +12,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
-import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.TypedValue
 import android.view.WindowManager
@@ -21,8 +20,6 @@ import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
 import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.prefs.PrefManager
-import java.util.*
-import kotlin.collections.HashSet
 
 
 /**
@@ -84,7 +81,8 @@ object Utils {
      */
     fun getNavBarHeight(context: Context): Int {
         val uim = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        return if (uim.currentModeType == Configuration.UI_MODE_TYPE_CAR && enableInCarMode(context)) {
+        val prefManager = PrefManager.getInstance(context)
+        return if (uim.currentModeType == Configuration.UI_MODE_TYPE_CAR && prefManager.enableInCarMode) {
             context.resources.getDimensionPixelSize(context.resources.getIdentifier("navigation_bar_height_car_mode", "dimen", "android"))
         } else context.resources.getDimensionPixelSize(context.resources.getIdentifier("navigation_bar_height", "dimen", "android"))
     }
@@ -163,108 +161,6 @@ object Utils {
         }
     }
 
-    /**
-     * Whether the pill should use the pixel dimension value
-     * False for percentages
-     */
-    fun usePixelsW(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("use_pixels_width", context.resources.getBoolean(R.bool.use_pixels_width_default))
-
-    fun usePixelsH(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("use_pixels_height", context.resources.getBoolean(R.bool.use_pixels_height_default))
-
-    fun usePixelsX(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("use_pixels_x", context.resources.getBoolean(R.bool.use_pixels_x_default))
-
-    fun usePixelsY(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("use_pixels_y", context.resources.getBoolean(R.bool.use_pixels_y_default))
-
-    /**
-     * Whether the user has enabled Split Pill
-     */
-    fun sectionedPill(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("sectioned_pill", context.resources.getBoolean(R.bool.sectioned_pill_default))
-
-    /**
-     * Whether the pill should enter "hide" mode when the keyboard is shown
-     */
-    fun hidePillWhenKeyboardShown(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("hide_pill_on_keyboard", context.resources.getBoolean(R.bool.hide_on_keyboard_default))
-                    && !autoHide(context)
-
-    /**
-     * Whether immersive navigation should be enabled when overscan is active
-     * Fixes alignment issues and Force Touch on TouchWiz
-     */
-    fun useImmersiveWhenNavHidden(context: Context) =
-            useImmersiveWhenNavHiddenInternal(context)
-
-    private fun useImmersiveWhenNavHiddenInternal(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("use_immersive_mode_when_nav_hidden", context.resources.getBoolean(R.bool.immersive_nav_default))
-
-    /**
-     * Load the list of apps that should keep the navbar shown
-     */
-    fun loadBlacklistedNavPackages(context: Context, packages: ArrayList<String>) =
-            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_nav_apps", HashSet<String>()))
-
-    /**
-     * Load the list of apps where the pill shouldn't be shown
-     */
-    fun loadBlacklistedBarPackages(context: Context, packages: ArrayList<String>) =
-            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_bar_apps", HashSet<String>()))
-
-    /**
-     * Load the list of apps where immersive navigation should be disabled
-     */
-    fun loadBlacklistedImmPackages(context: Context, packages: ArrayList<String>) =
-            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_imm_apps", HashSet<String>()))
-
-    fun loadOtherWindowApps(context: Context, packages: ArrayList<String>) =
-            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("other_window_apps", HashSet<String>()))
-
-    /**
-     * Save the list of apps that should keep the navbar shown
-     */
-    fun saveBlacklistedNavPackageList(context: Context, packages: ArrayList<String>) =
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
-                    .putStringSet("blacklisted_nav_apps", HashSet<String>(packages))
-                    .apply()
-
-    /**
-     * Save the list of apps where the pill shouldn't be shown
-     */
-    fun saveBlacklistedBarPackages(context: Context, packages: ArrayList<String>) =
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
-                    .putStringSet("blacklisted_bar_apps", HashSet<String>(packages))
-                    .apply()
-
-    /**
-     * Save the list of apps where immersive navigation should be disabled
-     */
-    fun saveBlacklistedImmPackages(context: Context, packages: ArrayList<String>) =
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
-                    .putStringSet("blacklisted_imm_apps", HashSet<String>(packages))
-                    .apply()
-
-    fun saveOtherWindowApps(context: Context, packages: ArrayList<String>) =
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
-                    .putStringSet("other_window_apps", HashSet<String>(packages))
-                    .apply()
-
-    /**
-     * Get the user-defined (or default) animation duration in ms
-     */
-    fun getAnimationDurationMs(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("anim_duration", context.resources.getInteger(R.integer.default_anim_duration)).toLong()
 
     /**
      * Check if the device is on the KeyGuard (lockscreen)
@@ -300,34 +196,6 @@ object Utils {
         }
     }
 
-    fun getXThresholdDp(context: Context) =
-            (PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("x_threshold", context.resources.getInteger(R.integer.default_x_threshold_dp)))
-
-    fun getYThresholdDp(context: Context) =
-            (PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("y_threshold", context.resources.getInteger(R.integer.default_y_threshold_dp)))
-
-    fun getXThresholdPx(context: Context) = dpAsPx(context, getXThresholdDp(context))
-
-    fun getYThresholdPx(context: Context) = dpAsPx(context, getYThresholdDp(context))
-
-    fun autoHide(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("auto_hide_pill", context.resources.getBoolean(R.bool.auto_hide_default))
-
-    fun autoHideTime(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("auto_hide_pill_progress", context.resources.getInteger(R.integer.default_auto_hide_time)).toLong()
-
-    fun hideInFullscreenTime(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("hide_in_fullscreen_progress", context.resources.getInteger(R.integer.default_auto_hide_time)).toLong()
-
-    fun hideOnKeyboardTime(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("hide_pill_on_keyboard_progress", context.resources.getInteger(R.integer.default_auto_hide_time)).toLong()
-
     fun minPillWidthPx(context: Context) =
             dpAsPx(context, minPillWidthDp(context))
 
@@ -340,8 +208,10 @@ object Utils {
     fun minPillHeightDp(context: Context) =
             context.resources.getInteger(R.integer.min_pill_height_dp)
 
-    fun minPillXPx(context: Context) =
-            -(getRealScreenSize(context).x.toFloat() / 2f - getCustomWidth(context).toFloat() / 2f).toInt()
+    fun minPillXPx(context: Context): Int {
+        val prefManager = PrefManager.getInstance(context)
+        return -(getRealScreenSize(context).x.toFloat() / 2f - prefManager.customWidth.toFloat() / 2f).toInt()
+    }
 
     fun minPillYPx(context: Context) =
             dpAsPx(context, minPillYDp(context))

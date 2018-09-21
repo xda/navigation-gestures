@@ -12,7 +12,6 @@ import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.net.Uri
 import android.os.*
-import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
@@ -27,6 +26,7 @@ import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
+import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.providers.BaseProvider
 import com.xda.nobar.services.Actions
 import com.xda.nobar.services.ForegroundService
@@ -35,13 +35,15 @@ import com.xda.nobar.util.*
 import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.ImmersiveHelperView
+import net.grandcentrix.tray.core.OnTrayPreferenceChangeListener
+import net.grandcentrix.tray.core.TrayItem
 import java.util.*
 
 
 /**
  * Centralize important stuff in the App class, so we can be sure to have an instance of it
  */
-class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
+class App : Application(), OnTrayPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
     companion object {
         const val EDGE_TYPE_ACTIVE = 2
 
@@ -64,7 +66,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         FirebaseAnalytics.getInstance(this).logEvent("license_event", bundle)
 
         isValidPremium = valid
-        prefs.edit().putBoolean("valid_prem", valid).apply()
+        prefManager.validPrem = valid
 
         licenseCheckListeners.forEach { it.onResult(valid, reason) }
 
@@ -78,7 +80,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     private val rootServiceIntent by lazy { Intent(this, RootService::class.java) }
 
     val immersiveHelperView by lazy { ImmersiveHelperView(this) }
-    val prefs: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+    val prefManager by lazy { PrefManager.getInstance(this) }
     val screenOffHelper by lazy { ScreenOffHelper(this) }
 
     private var isInOtherWindowApp = false
@@ -97,10 +99,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val handler = Handler(Looper.getMainLooper())
 
     val logicThread = HandlerThread("NoBar-Logic").apply { start() }
-    val actionThread = HandlerThread("NoBar-Actions").apply { start() }
 
     val logicHandler = Handler(logicThread.looper)
-    val actionHandler = Handler(actionThread.looper)
 
     val uiHandler = UIHandler()
 
@@ -119,7 +119,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val disabledNavReasonManager = DisabledReasonManager()
     val disabledBarReasonManager = DisabledReasonManager()
     val disabledImmReasonManager = DisabledReasonManager()
-    val actionHolder by lazy { ActionHolder.getInstance(this) }
 
     /**
      * ***************************************************************
@@ -129,7 +128,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         super.onCreate()
 
         if (isRightProcess()) {
-            if (Utils.isCrashlyticsIdEnabled(this)) Crashlytics.setUserIdentifier(Utils.getCrashlyticsId(this))
+            if (prefManager.crashlyticsIdEnabled) Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
 
             val watchDog = ANRWatchDog()
             watchDog.setReportMainThreadOnly()
@@ -147,9 +146,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             carModeHandler.register()
             premiumInstallListener.register()
 
-            isValidPremium = prefs.getBoolean("valid_prem", false)
+            isValidPremium = prefManager.validPrem
 
-            prefs.registerOnSharedPreferenceChangeListener(this)
+            prefManager.registerOnTrayPreferenceChangeListener(this)
 
             refreshPremium()
 
@@ -157,9 +156,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 addBar()
             }
 
-            if (Utils.useRot270Fix(this)
-                    || Utils.useTabletMode(this)
-                    || Utils.useRot180Fix(this)) uiHandler.handleRot()
+            if (prefManager.useRot270Fix
+                    || prefManager.useRot180Fix
+                    || prefManager.useTabletMode) uiHandler.handleRot()
 
             if (!IntroActivity.needsToRun(this)) {
                 addImmersiveHelper()
@@ -183,51 +182,53 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         return !procName.contains("action")
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        when (key) {
-            "is_active" -> {
-                gestureListeners.forEach { it.onGestureStateChange(bar, sharedPreferences.getBoolean(key, false)) }
-            }
-            "hide_nav" -> {
-                navbarListeners.forEach { it.onNavStateChange(sharedPreferences.getBoolean(key, false)) }
-            }
-            "use_root" -> {
-                if (Utils.shouldUseRootCommands(this)) {
-                    startService(rootServiceIntent)
-                    ensureRootServiceBound()
-                } else {
-                    stopService(rootServiceIntent)
+    override fun onTrayPreferenceChanged(items: MutableCollection<TrayItem>?) {
+        items?.forEach {item ->
+            when (item.key()) {
+                PrefManager.IS_ACTIVE -> {
+                    gestureListeners.forEach { it.onGestureStateChange(bar, prefManager.isActive) }
                 }
-            }
-            "rot270_fix" -> {
-                if (Utils.useRot270Fix(this)) uiHandler.handleRot()
-            }
-            "rot180_fix" -> {
-                if (Utils.useRot180Fix(this)) uiHandler.handleRot()
-            }
-            "tablet_mode" -> {
-                if (Utils.useTabletMode(this)) uiHandler.handleRot()
-            }
-            "enable_in_car_mode" -> {
-                val enabled = Utils.enableInCarMode(this)
-                if (um.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
-                    if (enabled) {
-                        disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                        if (areGesturesActivated() && !pillShown) addBar(false)
+                PrefManager.HIDE_NAV -> {
+                    navbarListeners.forEach { it.onNavStateChange(prefManager.navHidden) }
+                }
+                PrefManager.USE_ROOT -> {
+                    if (prefManager.useRoot) {
+                        startService(rootServiceIntent)
+                        ensureRootServiceBound()
                     } else {
-                        disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                        if (areGesturesActivated() && !pillShown) removeBar(false)
+                        stopService(rootServiceIntent)
                     }
                 }
-            }
-            "use_immersive_mode_when_nav_hidden" -> {
-                BaseProvider.sendUpdate(this)
-            }
-            "hide_pill_on_keyboard" -> {
-                uiHandler.onGlobalLayout()
-            }
-            "full_overscan" -> {
-                if (Utils.shouldUseOverscanMethod(this)) hideNav(false)
+                PrefManager.ROT270_FIX -> {
+                    if (prefManager.useRot270Fix) uiHandler.handleRot()
+                }
+                PrefManager.ROT180_FIX -> {
+                    if (prefManager.useRot180Fix) uiHandler.handleRot()
+                }
+                "tablet_mode" -> {
+                    if (prefManager.useTabletMode) uiHandler.handleRot()
+                }
+                "enable_in_car_mode" -> {
+                    val enabled = prefManager.enableInCarMode
+                    if (um.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
+                        if (enabled) {
+                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
+                            if (areGesturesActivated() && !pillShown) addBar(false)
+                        } else {
+                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
+                            if (areGesturesActivated() && !pillShown) removeBar(false)
+                        }
+                    }
+                }
+                "use_immersive_mode_when_nav_hidden" -> {
+                    BaseProvider.sendUpdate(this)
+                }
+                "hide_pill_on_keyboard" -> {
+                    uiHandler.onGlobalLayout()
+                }
+                "full_overscan" -> {
+                    if (prefManager.shouldUseOverscanMethod) hideNav(false)
+                }
             }
         }
     }
@@ -278,8 +279,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             handler.post {
                 bar.params.apply {
                     x = bar.getAdjustedHomeX()
-                    width = Utils.getCustomWidth(this@App)
-                    height = Utils.getCustomHeight(this@App)
+                    width = prefManager.customWidth
+                    height = prefManager.customHeight
                     gravity = Gravity.CENTER or Gravity.TOP
                     y = bar.getAdjustedHomeY()
                     type =
@@ -292,14 +293,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     format = PixelFormat.TRANSLUCENT
                     softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 
-                    if (Utils.dontMoveForKeyboard(this@App)) {
+                    if (prefManager.dontMoveForKeyboard) {
                         flags = flags or
                                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
                                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
                         softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
                     }
 
-                    if (Utils.largerHitbox(this@App)) {
+                    if (prefManager.largerHitbox) {
                         val margins = bar.getPillMargins()
                         margins.top = resources.getDimensionPixelSize(R.dimen.pill_margin_top_large_hitbox)
                         bar.changePillMargins(margins)
@@ -380,7 +381,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
     }
 
-    fun toggleNavState(hidden: Boolean = Utils.shouldUseOverscanMethod(this)) {
+    fun toggleNavState(hidden: Boolean = prefManager.shouldUseOverscanMethod) {
         if (IntroActivity.hasWss(this)) {
             setNavState(!hidden)
 
@@ -394,15 +395,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     fun toggleImmersiveWhenNavHidden() {
-        val enabled = Utils.useImmersiveWhenNavHidden(this)
-        prefs.edit().putBoolean("use_immersive_mode_when_nav_hidden", !enabled).apply()
+        prefManager.useImmersiveWhenNavHidden = !prefManager.useImmersiveWhenNavHidden
     }
 
     /**
      * Check if NoBar is currently active
      * @return true if active
      */
-    fun areGesturesActivated() = prefs.getBoolean("is_active", false)
+    fun areGesturesActivated() = prefManager.isActive
 
     fun isPillShown() = areGesturesActivated() && pillShown
 
@@ -421,20 +421,20 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      */
     fun hideNav(callListeners: Boolean = true) {
         logicHandler.post {
-            if (Utils.shouldUseOverscanMethod(this)
+            if (prefManager.shouldUseOverscanMethod
                     && disabledNavReasonManager.isEmpty()
                     && IntroActivity.hasWss(this)) {
                 addImmersiveHelper()
 
-                if (!Utils.useRot270Fix(this)
-                        && !Utils.useTabletMode(this)
-                        && !Utils.useRot180Fix(this))
+                if (!prefManager.useRot270Fix
+                        && !prefManager.useTabletMode
+                        && !prefManager.useRot180Fix)
                     IWindowManager.setOverscan(0, 0, 0, -getAdjustedNavBarHeight())
                 else {
                     uiHandler.handleRot()
                 }
                 Utils.forceNavBlack(this)
-                if (Utils.checkTouchWiz(this) && !Utils.useImmersiveWhenNavHidden(this)) {
+                if (Utils.checkTouchWiz(this) && !prefManager.useImmersiveWhenNavHidden) {
                     Utils.forceTouchWizNavEnabled(this)
                 }
 
@@ -451,7 +451,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      */
     fun showNav(callListeners: Boolean = true, removeImmersive: Boolean = true) {
         if (IntroActivity.hasWss(this)) {
-            if (removeImmersive && Utils.useImmersiveWhenNavHidden(this)) immersiveHelperView.exitNavImmersive()
+            if (removeImmersive && prefManager.useImmersiveWhenNavHidden) immersiveHelperView.exitNavImmersive()
 
             handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
 
@@ -490,14 +490,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     /**
      * Save the current NoBar gesture state to preferences
      */
-    fun setGestureState(activated: Boolean) = prefs.edit().putBoolean("is_active", activated).apply()
+    fun setGestureState(activated: Boolean) {
+        prefManager.isActive = activated
+    }
 
     fun setNavState(hidden: Boolean) {
-        Utils.setShouldUseOverscanMethod(this, hidden)
+        prefManager.shouldUseOverscanMethod = hidden
     }
 
     fun getAdjustedNavBarHeight() =
-            Utils.getNavBarHeight(this) - if (Utils.useFullOverscan(this)) 0 else 1
+            Utils.getNavBarHeight(this) - if (prefManager.useFullOverscan) 0 else 1
 
     fun addBarInternal(isRefresh: Boolean = true) {
         handler.post {
@@ -512,7 +514,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             addImmersiveHelper()
             ContextCompat.startForegroundService(this, Intent(this, ForegroundService::class.java))
 
-            if (Utils.shouldUseRootCommands(this)) {
+            if (prefManager.useRoot) {
                 startService(rootServiceIntent)
                 ensureRootServiceBound()
             }
@@ -576,13 +578,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         Intent.ACTION_REBOOT,
                         Intent.ACTION_SHUTDOWN,
                         Intent.ACTION_SCREEN_OFF -> {
-                            if (Utils.shouldntKeepOverscanOnLock(this@App)) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
+                            if (prefManager.shouldntKeepOverscanOnLock) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
                         }
                         Intent.ACTION_SCREEN_ON,
                         Intent.ACTION_BOOT_COMPLETED,
                         Intent.ACTION_LOCKED_BOOT_COMPLETED -> {
                             if (Utils.isOnKeyguard(this@App)) {
-                                if (Utils.shouldntKeepOverscanOnLock(this@App)) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
+                                if (prefManager.shouldntKeepOverscanOnLock) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             } else {
                                 disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             }
@@ -615,8 +617,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 UiModeManager.ACTION_ENTER_CAR_MODE -> {
-                    if (Utils.enableInCarMode(this@App)) {
-                        if (pillShown) bar.params.height = Utils.getCustomHeight(this@App) * 2
+                    if (prefManager.enableInCarMode) {
+                        if (pillShown) bar.params.height = prefManager.customHeight * 2
                     } else {
                         if (pillShown) removeBar()
                         disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
@@ -625,8 +627,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
 
                 UiModeManager.ACTION_EXIT_CAR_MODE -> {
-                    if (Utils.enableInCarMode(this@App)) {
-                        if (pillShown) bar.params.height = Utils.getCustomHeight(this@App)
+                    if (prefManager.enableInCarMode) {
+                        if (pillShown) bar.params.height = prefManager.customHeight
                     } else {
                         if (areGesturesActivated()) addBar()
                         disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
@@ -639,8 +641,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 bar.updateLayout(bar.params)
             }
 
-            if (Utils.shouldUseOverscanMethod(this@App)) {
-                if (Utils.enableInCarMode(this@App)) hideNav()
+            if (prefManager.shouldUseOverscanMethod) {
+                if (prefManager.enableInCarMode) hideNav()
             }
         }
     }
@@ -690,13 +692,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 oldPName = pName
 
                 if (pName == "com.android.systemui" && info.className?.contains("TextView") == false) {
-                    if (Utils.shouldUseOverscanMethod(this@App)
-                            && Utils.useImmersiveWhenNavHidden(this@App)) {
+                    if (prefManager.shouldUseOverscanMethod
+                            && prefManager.useImmersiveWhenNavHidden) {
                         immersiveHelperView.tempForcePolicyControlForRecents()
                     }
                 } else {
-                    if (Utils.shouldUseOverscanMethod(this@App)
-                            && Utils.useImmersiveWhenNavHidden(this@App)) {
+                    if (prefManager.shouldUseOverscanMethod
+                            && prefManager.useImmersiveWhenNavHidden) {
                         immersiveHelperView.putBackOldImmersive()
                     }
                 }
@@ -710,14 +712,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         private fun runNewNodeInfo(pName: String?) {
             if (pName != null && pName != packageName) {
-                val navArray = ArrayList<String>().apply { Utils.loadBlacklistedNavPackages(this@App, this) }
+                val navArray = ArrayList<String>().apply { prefManager.loadBlacklistedNavPackages(this) }
                 if (navArray.contains(pName)) {
                     disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
                 } else {
                     disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
                 }
 
-                val barArray = ArrayList<String>().apply { Utils.loadBlacklistedBarPackages(this@App, this) }
+                val barArray = ArrayList<String>().apply { prefManager.loadBlacklistedBarPackages(this) }
                 if (barArray.contains(pName)) {
                     disabledBarReasonManager.add(DisabledReasonManager.PillReasons.BLACKLIST)
                 } else {
@@ -725,14 +727,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
 
 
-                val immArray = ArrayList<String>().apply { Utils.loadBlacklistedImmPackages(this@App, this) }
+                val immArray = ArrayList<String>().apply { prefManager.loadBlacklistedImmPackages(this) }
                 if (immArray.contains(pName)) {
                     disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.BLACKLIST)
                 } else {
                     disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.BLACKLIST)
                 }
 
-                val windowArray = ArrayList<String>().apply { Utils.loadOtherWindowApps(this@App, this) }
+                val windowArray = ArrayList<String>().apply { prefManager.loadOtherWindowApps(this) }
                 if (windowArray.contains(pName)) {
                     if (!isInOtherWindowApp) {
                         addBar(false)
@@ -775,7 +777,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     }
                 }
 
-                if (!isNavBarHidden() && Utils.shouldUseOverscanMethod(this@App)) hideNav()
+                if (!isNavBarHidden() && prefManager.shouldUseOverscanMethod) hideNav()
 
                 val rot = wm.defaultDisplay.rotation
                 if (oldRot != rot) {
@@ -788,25 +790,25 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                 if (isPillShown()) {
                     try {
-                        if (!Utils.useImmersiveWhenNavHidden(this@App)) immersiveHelperView.exitNavImmersive()
+                        if (!prefManager.useImmersiveWhenNavHidden) immersiveHelperView.exitNavImmersive()
 
                         bar.immersiveNav = immersiveHelperView.isNavImmersive() && !keyboardShown
 
                         handler.post {
-                            if (Utils.hidePillWhenKeyboardShown(this@App)) {
+                            if (prefManager.hidePillWhenKeyboardShown) {
                                 if (keyboardShown) bar.hidePill(true, HiddenPillReasonManager.KEYBOARD)
                                 else if (bar.hiddenPillReasons.onlyContains(HiddenPillReasonManager.KEYBOARD)) bar.showPill(HiddenPillReasonManager.KEYBOARD)
                             }
                         }
 
                         if (disabledImmReasonManager.isEmpty()) {
-                            if (Utils.shouldUseOverscanMethod(this@App)
-                                    && Utils.useImmersiveWhenNavHidden(this@App)) immersiveHelperView.enterNavImmersive()
+                            if (prefManager.shouldUseOverscanMethod
+                                    && prefManager.useImmersiveWhenNavHidden) immersiveHelperView.enterNavImmersive()
                         } else {
                             immersiveHelperView.exitNavImmersive()
                         }
 
-                        if (Utils.shouldUseOverscanMethod(this@App)) {
+                        if (prefManager.shouldUseOverscanMethod) {
                             if (disabledNavReasonManager.isEmpty()) {
                                 hideNav()
                             } else {
@@ -874,7 +876,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (!IntroActivity.needsToRun(this@App)) {
                 handler.post {
                     bar.isImmersive = isImmersive
-                    val hideInFullScreen = Utils.hideInFullscreen(this@App)
+                    val hideInFullScreen = prefManager.hideInFullscreen
                     if (isImmersive) {
                         if (hideInFullScreen) bar.hidePill(true, HiddenPillReasonManager.FULLSCREEN)
                     } else {
@@ -890,16 +892,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     try {
                         bar.params.x = bar.getAdjustedHomeX()
                         bar.params.y = bar.getAdjustedHomeY()
-                        bar.params.width = Utils.getCustomWidth(this@App)
-                        bar.params.height = Utils.getCustomHeight(this@App)
+                        bar.params.width = prefManager.customWidth
+                        bar.params.height = prefManager.customHeight
                         bar.updateLayout(bar.params)
                     } catch (e: NullPointerException) {}
                 }
 
-                if (Utils.shouldUseOverscanMethod(this@App)) {
-                    if (Utils.useRot270Fix(this@App)) handle270()
-                    if (Utils.useRot180Fix(this@App)) handle180()
-                    if (Utils.useTabletMode(this@App)) handleTablet()
+                if (prefManager.shouldUseOverscanMethod) {
+                    if (prefManager.useRot270Fix) handle270()
+                    if (prefManager.useRot180Fix) handle180()
+                    if (prefManager.useTabletMode) handleTablet()
                 }
             }
         }
@@ -917,7 +919,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         private fun handleTablet() {
-            if (Utils.shouldUseOverscanMethod(this@App)) {
+            if (prefManager.shouldUseOverscanMethod) {
                 when (wm.defaultDisplay.rotation) {
                     Surface.ROTATION_0 -> {
                         IWindowManager.setOverscan(0, 0, 0, -getAdjustedNavBarHeight())
