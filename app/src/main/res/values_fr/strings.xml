@@ -108,6 +108,8 @@
   <string name="current_overscan">Current Overscan</string>
   <string name="screen_timeout">Screen Timeout</string>
   <string name="alternate_home">Alternate Home Action</string>
+  <string name="crashlytics_id_switch">Enable Crashlytics ID</string>
+  <string name="crashlytics_id_field">Crashlytics ID</string>
   <!--Descriptions-->
   <string name="gestures_desc">Personnaliser les actions de geste</string>
   <string name="appearance_desc">Personnaliser l’apparence de la pilule de navigation</string>
@@ -148,6 +150,7 @@
   <string name="toggle_nav_desc">Toggle whether or not the device\'s software navigation bar should be hidden.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Enable this to show lock screen shortcuts and to fix issues with items being cut off on the lock screen, ambient display, or always on display.</string>
   <string name="alternate_home_desc">Certain devices (OnePlus) may have an issue where the \"Home\" action doesn\'t work. Enable this to use a workaround for that.</string>
+  <string name="crashlytics_id_switch_desc">To help us debug Navigation Gestures, you can enable this option. By doing so, a random ID will be generated for you and associated with any crash logs we receive in Firebase. If you\'re having issues with the app crashing, simply describe the situation, and give us your ID. No need to capture your own logs.</string>
   <!--Paragraphs-->
   <string name="app_purpose">Cette appli offre de somptueux gestes de navigation pour n\'importe quel appareil Android. Le mieux, elle n\'a pas besoin de root ! Avant de pouvoir utiliser les gestes, quelques paramétrages sont nécessaires.</string>
   <string name="draw_over_apps_desc">Afin d\'afficher la pilule de Navigation Gestures, vous devrez accorder la permission \"Superposer aux autres applis\". Appuyez sur le bouton ci-dessous pour le faire. Si vous avez installé depuis le Play Store, cette permission est déjà accordée.</string>
@@ -184,7 +187,7 @@
   <string name="pill_hidden">Pilule cachée. Appuyez ou balayez vers le faut pour la ré-afficher.</string>
   <string name="accessibility_msg">Trouvez le paramètre d\'accessibilité correspondant et activez le.</string>
   <string name="deactivate_before_uninstall">Assuez-vous que \"Cacher la barre de navigation\" soit désactivé avant de désinstaller l\'application!</string>
-  <string name="copied_to_clipboard">Email copié dans le presse-papier</string>
+  <string name="copied_to_clipboard">Copied to clipboard</string>
   <string name="unable_to_launch">Unable to launch target.</string>
   <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
   <!--Libraries-->
