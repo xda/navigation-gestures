@@ -21,7 +21,7 @@
         android:title="@string/tablet_mode"
         android:summary="@string/tablet_mode_desc"
         android:key="tablet_mode"
-        android:defaultValue="@bool/table_mode_default" />
+        android:defaultValue="@bool/tablet_mode_default" />
 
     <SwitchPreference
         android:title="@string/alternate_home"

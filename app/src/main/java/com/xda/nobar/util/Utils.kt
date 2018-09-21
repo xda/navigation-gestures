@@ -20,6 +20,7 @@ import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
 import com.xda.nobar.activities.IntroActivity
+import com.xda.nobar.prefs.PrefManager
 import java.util.*
 import kotlin.collections.HashSet
 
@@ -89,71 +90,6 @@ object Utils {
     }
 
     /**
-     * Load the actions corresponding to each gesture
-     * @param context a context object
-     * @param map the HashMap to fill/update
-     */
-    fun getActionsList(context: Context, map: HashMap<String, Int>) {
-        try {
-            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            val actionHolder = ActionHolder.getInstance(context)
-
-            val left = prefs.getString(actionHolder.actionLeft, actionHolder.typeBack.toString()).toInt()
-            val right = prefs.getString(actionHolder.actionRight, actionHolder.typeRecents.toString()).toInt()
-            val tap = prefs.getString(actionHolder.actionTap, actionHolder.typeHome.toString()).toInt()
-            val hold = prefs.getString(actionHolder.actionHold, actionHolder.typeAssist.toString()).toInt()
-            val up = prefs.getString(actionHolder.actionUp, actionHolder.typeNoAction.toString()).toInt()
-            val down = prefs.getString(actionHolder.actionDown, actionHolder.typeHide.toString()).toInt()
-            val double = prefs.getString(actionHolder.actionDouble, actionHolder.typeNoAction.toString()).toInt()
-            val holdUp = prefs.getString(actionHolder.actionUpHold, actionHolder.typeNoAction.toString()).toInt()
-            val holdLeft = prefs.getString(actionHolder.actionLeftHold, actionHolder.typeNoAction.toString()).toInt()
-            val holdRight = prefs.getString(actionHolder.actionRightHold, actionHolder.typeNoAction.toString()).toInt()
-            val holdDown = prefs.getString(actionHolder.actionDownHold, actionHolder.typeNoAction.toString()).toInt()
-
-            val upLeft = prefs.getString(actionHolder.actionUpLeft, actionHolder.typeBack.toString()).toInt()
-            val upHoldLeft = prefs.getString(actionHolder.actionUpHoldLeft, actionHolder.typeNoAction.toString()).toInt()
-            val upCenter = prefs.getString(actionHolder.actionUpCenter, actionHolder.typeHome.toString()).toInt()
-            val upHoldCenter = prefs.getString(actionHolder.actionUpHoldCenter, actionHolder.typeRecents.toString()).toInt()
-            val upRight = prefs.getString(actionHolder.actionUpRight, actionHolder.typeBack.toString()).toInt()
-            val upHoldRight = prefs.getString(actionHolder.actionUpHoldRight, actionHolder.typeNoAction.toString()).toInt()
-
-            map[actionHolder.actionLeft] = left
-            map[actionHolder.actionRight] = right
-            map[actionHolder.actionTap] = tap
-            map[actionHolder.actionHold] = hold
-            map[actionHolder.actionUp] = up
-            map[actionHolder.actionDown] = down
-            map[actionHolder.actionDouble] = double
-            map[actionHolder.actionUpHold] = holdUp
-            map[actionHolder.actionLeftHold] = holdLeft
-            map[actionHolder.actionRightHold] = holdRight
-            map[actionHolder.actionDownHold] = holdDown
-
-            map[actionHolder.actionUpLeft] = upLeft
-            map[actionHolder.actionUpHoldLeft] = upHoldLeft
-            map[actionHolder.actionUpCenter] = upCenter
-            map[actionHolder.actionUpHoldCenter] = upHoldCenter
-            map[actionHolder.actionUpRight] = upRight
-            map[actionHolder.actionUpHoldRight] = upHoldRight
-        } catch (e: Exception) {}
-    }
-
-    /**
-     * Check to see if overscan should be used
-     * @param context a context object
-     * @return true if device has a navigation bar and is below P
-     */
-    fun shouldUseOverscanMethod(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context.applicationContext).
-                    getBoolean("hide_nav", false)
-
-    fun setShouldUseOverscanMethod(context: Context, use: Boolean) =
-            PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
-                    .edit()
-                    .putBoolean("hide_nav", use)
-                    .commit()
-
-    /**
      * Make sure the TouchWiz navbar is not hidden
      * @param context a context object
      */
@@ -166,193 +102,12 @@ object Utils {
     fun undoForceTouchWizNavEnabled(context: Context) =
             if (IntroActivity.hasWss(context)) Settings.Global.putString(context.contentResolver, "navigationbar_hide_bar_enabled", null) else false
 
-    /**
-     * Get the user-defined or default vertical position of the pill
-     * @param context a context object
-     * @return the position, in pixels, from the bottom of the screen
-     */
-    fun getHomeY(context: Context): Int {
-        val percent = (getHomeYPercent(context) / 100f)
-
-        return if (usePixelsY(context))
-            PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_y", getDefaultY(context))
-        else
-            (percent * getRealScreenSize(context).y).toInt()
-    }
-
-    fun getHomeYPercent(context: Context) =
-            (PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("custom_y_percent", getDefaultYPercent(context)) * 0.05f)
-
-    /**
-     * Get the default vertical position
-     * @param context a context object
-     * @return the default position, in pixels, from the bottom of the screen
-     */
-    fun getDefaultYPercent(context: Context) =
-            ((getNavBarHeight(context) / 2f - getCustomHeight(context) / 2f) / getRealScreenSize(context).y * 2000f).toInt()
-
-    fun getDefaultY(context: Context) =
-            ((getNavBarHeight(context) / 2f - getCustomHeight(context) / 2f)).toInt()
-
-    /**
-     * Get the user-defined or default horizontal position of the pill
-     * @param context a context object
-     * @return the position, in pixels, from the horizontal center of the screen
-     */
-    fun getHomeX(context: Context): Int {
-        val percent = ((getHomeXPercent(context)) / 100f)
-        val screenWidthHalf = getRealScreenSize(context).x / 2f - getCustomWidth(context) / 2f
-
-        return if (usePixelsX(context))
-            PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_x", 0)
-        else
-            (percent * screenWidthHalf).toInt()
-    }
-
-    fun getHomeXPercent(context: Context) =
-            (PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("custom_x_percent", context.resources.getInteger(R.integer.default_pill_x_pos_percent)) / 10f)
-
-    /**
-     * Get the user-defined or default width of the pill
-     * @param context a context object
-     * @return the width, in pixels
-     */
-    fun getCustomWidth(context: Context): Int {
-        val percent = (getCustomWidthPercent(context) / 100f)
-        val screenWidth = getRealScreenSize(context).x
-
-        return if (usePixelsW(context))
-            PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_width", context.resources.getDimensionPixelSize(R.dimen.pill_width_default))
-        else
-            (percent * screenWidth).toInt()
-    }
-
-    fun getCustomWidthPercent(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("custom_width_percent", context.resources.getInteger(R.integer.default_pill_width_percent)) / 10f
-
-    /**
-     * Get the user-defined or default height of the pill
-     * @param context a context object
-     * @return the height, in pixels
-     */
-    fun getCustomHeight(context: Context): Int {
-        var defHeight = getCustomHeightWithoutHitbox(context)
-        if (largerHitbox(context)) defHeight += context.resources.getDimensionPixelSize(R.dimen.pill_large_hitbox_height_increase)
-
-        return defHeight
-    }
-
-    fun getCustomHeightWithoutHitbox(context: Context): Int {
-        val percent = (getCustomHeightPercent(context) / 100f)
-
-        return if (usePixelsH(context))
-            PreferenceManager.getDefaultSharedPreferences(context).getInt("custom_height", context.resources.getDimensionPixelSize(R.dimen.pill_height_default))
-        else
-            (percent * getRealScreenSize(context).y).toInt()
-    }
-
-    fun getCustomHeightPercent(context: Context) =
-            (PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("custom_height_percent", context.resources.getInteger(R.integer.default_pill_height_percent)) / 10f)
-
-    /**
-     * Get the user-defined or default pill color
-     * @param context a context object
-     * @return the color, as a ColorInt
-     */
-    @android.support.annotation.ColorInt
-    fun getPillBGColor(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("pill_bg", getDefaultPillBGColor(context))
 
     fun getDefaultPillBGColor(context: Context) =
             context.resources.getColor(R.color.pill_color)
 
-    /**
-     * Get the user-defined or default pill border color
-     * @param context a context object
-     * @return the color, as a ColorInt
-     */
-    @android.support.annotation.ColorInt
-    fun getPillFGColor(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context).getInt("pill_fg", getDefaultPillFGColor(context))
-
     fun getDefaultPillFGColor(context: Context) =
             context.resources.getColor(R.color.pill_border_color)
-
-    /**
-     * Get the user-defined or default pill corner radius
-     * @param context a context object
-     * @return the corner radius, in dp
-     */
-    fun getPillCornerRadiusInDp(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("pill_corner_radius", context.resources.getInteger(R.integer.default_corner_radius_dp))
-
-    /**
-     * Get the user-defined or default pill corner radius
-     * @param context a context object
-     * @return the corner radius, in px
-     */
-    fun getPillCornerRadiusInPx(context: Context) =
-            dpAsPx(context, getPillCornerRadiusInDp(context))
-
-    /**
-     * Whether or not the pill should have a shadow
-     * @param context a context object
-     * @return true if the pill should be elevated
-     */
-    fun shouldShowShadow(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("show_shadow", context.resources.getBoolean(R.bool.show_shadow_default))
-
-    /**
-     * Whether or not to move the pill with the input method
-     * @param context a context object
-     * @return true if the pill should NOT move (should stay at the bottom of the screen
-     */
-    fun dontMoveForKeyboard(context: Context) =
-            dontMoveForKeyboardInternal(context)
-
-    private fun dontMoveForKeyboardInternal(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("static_pill", context.resources.getBoolean(R.bool.static_pill_default))
-
-    /**
-     * Whether or not to change the overscan to the top in rotation 270 (top of device on the right)
-     * This isn't needed for all devices, so it's an option
-     * @param context a context object
-     * @return true to dynamically change the overscan
-     */
-    fun useRot270Fix(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("rot270_fix", context.resources.getBoolean(R.bool.rot_fix_default))
-
-    fun useRot180Fix(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("rot180_fix", context.resources.getBoolean(R.bool.rot_fix_default))
-
-    /**
-     * Tablets usually have the software nav on the bottom, which isn't always the physical bottom.
-     * @param context a context object
-     * @return true to dynamically change the overscan to hide the navbar
-     */
-    fun useTabletMode(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("tablet_mode", context.resources.getBoolean(R.bool.table_mode_default))
-
-    /**
-     * Whether or not to provide audio feedback for taps
-     * @param context a context object
-     * @return true if audio feedback is enabled
-     * //TODO: add a user-facing option for this
-     */
-    fun feedbackSound(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("audio_feedback", context.resources.getBoolean(R.bool.feedback_sound_default))
 
     /**
      * Check if the accessibility service is currently enabled
@@ -364,34 +119,6 @@ object Utils {
 
         return services != null && services.contains(context.packageName)
     }
-
-    /**
-     * Check if this is the app's first run
-     * @param context a context object
-     * @return true if this is the first run
-     */
-    fun isFirstRun(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("first_run", true)
-
-    /**
-     * Set whether or not the next start should be counted as the first run
-     * @param context a context object
-     * @param isFirst true to "reset" app to first run
-     */
-    fun setFirstRun(context: Context, isFirst: Boolean) =
-            PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("first_run", isFirst).apply()
-
-//    fun setNavImmersive(context: Context) =
-//            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, TextUtils.join(",", getImmersive(context).apply { add("immersive.navigation=*") })) or
-//                    (checkTouchWiz(context) && forceTouchWizNavNotEnabled(context))
-//
-//    fun removeNavImmersive(context: Context) =
-//            Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, TextUtils.join(",", getImmersive(context).apply { remove("immersive.navigation=*") })) or
-//                    (checkTouchWiz(context) && forceTouchWizNavEnabled(context))
-//
-//    fun getImmersive(context: Context) =
-//            TreeSet((Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL) ?: "").split(","))
 
     /**
      * Check if the current device can use the necessary hidden APIs
@@ -407,81 +134,34 @@ object Utils {
             } && IWindowManager.canRunCommands()
 
     /**
-     * Check if the supplemental root actions should be allowed
-     * @param context a context object
-     * @return true to show root actions
-     * //TODO: re-enable when this is fixed
-     */
-    fun shouldUseRootCommands(context: Context): Boolean {
-//        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_root", false)
-        return false
-    }
-
-    /**
      * Force the navigation bar black, to mask the white line people are complaining so much about
-     * @param context a context object
      */
     fun forceNavBlack(context: Context) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        prefs.edit()
-                .putString("navigationbar_color", Settings.Global.getString(context.contentResolver, "navigationbar_color"))
-                .putString("navigationbar_current_color", Settings.Global.getString(context.contentResolver, "navigationbar_current_color"))
-                .putString("navigationbar_use_theme_default", Settings.Global.getString(context.contentResolver, "navigationbar_use_theme_default"))
-                .apply()
+        val prefManager = PrefManager.getInstance(context)
+        prefManager.navigationBarColor = Settings.Global.getString(context.contentResolver, PrefManager.NAVIGATIONBAR_COLOR)
+        prefManager.navigationBarCurrentColor = Settings.Global.getString(context.contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR)
+        prefManager.navigationBarUseThemeDefault = Settings.Global.getString(context.contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT)
+
         val color = Color.argb(0xff, 0x00, 0x00, 0x00)
-        if (!IntroActivity.needsToRun(context) && shouldUseOverscanMethod(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            Settings.Global.putInt(context.contentResolver, "navigationbar_color", color)
-            Settings.Global.putInt(context.contentResolver, "navigationbar_current_color", color)
-            Settings.Global.putInt(context.contentResolver, "navigationbar_use_theme_default", 0)
+        if (!IntroActivity.needsToRun(context) && prefManager.shouldUseOverscanMethod && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            Settings.Global.putInt(context.contentResolver, PrefManager.NAVIGATIONBAR_COLOR, color)
+            Settings.Global.putInt(context.contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR, color)
+            Settings.Global.putInt(context.contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT, 0)
         }
     }
 
     /**
      * Clear the navigation bar color
      * Used when showing the software nav
-     * @param context a context object
      */
-    fun clearBlackNav(context: Context) =
-            if (!IntroActivity.needsToRun(context) && shouldUseOverscanMethod(context) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-                val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-                Settings.Global.putString(context.contentResolver, "navigationbar_color", prefs.getString("navigationbar_color", null)) or
-                Settings.Global.putString(context.contentResolver, "navigationbar_current_color", prefs.getString("navigationbar_current_color", null)) or
-                Settings.Global.putString(context.contentResolver, "navigationbar_use_theme_default", prefs.getString("navigationbar_use_theme_default", null))
-            } else {
-                false
-            }
-
-    /**
-     * Whether the pill should "hide" in fullscreen apps
-     */
-    fun hideInFullscreen(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("hide_in_fullscreen", context.resources.getBoolean(R.bool.hide_in_fullscreen_default))
-                    && !autoHide(context)
-
-    /**
-     * Whether the pill should have a larger hitbox
-     * (12dp above the visible pill vs 4dp)
-     */
-    fun largerHitbox(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("larger_hitbox", context.resources.getBoolean(R.bool.large_hitbox_default))
-
-    /**
-     * Whether overscan should be removed in fullscreen apps
-     * If enabled, this allows the user to swipe the original navbar onscreen
-     */
-    fun origBarInFullscreen(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("orig_nav_in_immersive", context.resources.getBoolean(R.bool.orig_nav_in_immersive_default))
-
-    /**
-     * Whether NoBar should stay enabled in Car Mode
-     * This is an option because TouchWiz devices ignore the Car Mode navbar height
-     */
-    fun enableInCarMode(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("enable_in_car_mode", context.resources.getBoolean(R.bool.car_mode_default))
+    fun clearBlackNav(context: Context) {
+        val prefManager = PrefManager.getInstance(context)
+        if (!IntroActivity.needsToRun(context) && prefManager.shouldUseOverscanMethod && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            Settings.Global.putString(context.contentResolver, PrefManager.NAVIGATIONBAR_COLOR, prefManager.navigationBarColor) or
+                    Settings.Global.putString(context.contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR, prefManager.navigationBarCurrentColor) or
+                    Settings.Global.putString(context.contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT, prefManager.navigationBarUseThemeDefault)
+        }
+    }
 
     /**
      * Whether the pill should use the pixel dimension value
@@ -696,10 +376,6 @@ object Utils {
     fun defPillHeightDp(context: Context) =
             context.resources.getInteger(R.integer.default_pill_height_dp)
 
-    fun useFullOverscan(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("full_overscan", false)
-
     fun checkTouchWiz(context: Context) = context.packageManager.hasSystemFeature("com.samsung.feature.samsung_experience_mobile")
 
     /**
@@ -771,37 +447,4 @@ object Utils {
 
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(context)
     }
-
-    fun shouldntKeepOverscanOnLock(context: Context) = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("lockscreen_overscan", false)
-
-    fun saveIntentKey(context: Context, res: Int, baseKey: String) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .edit()
-                    .putInt("${baseKey}_intent", res)
-                    .apply()
-
-    fun getIntentKey(context: Context, baseKey: String?) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getInt("${baseKey}_intent", 0)
-
-    fun useAlternateHome(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("alternate_home", context.resources.getBoolean(R.bool.alternate_home_default))
-
-    fun getCrashlyticsId(context: Context): String {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val id = prefs.getString("crashlytics_id", null)
-
-        if (id == null) {
-            val newId = System.currentTimeMillis().toString()
-            prefs.edit().putString("crashlytics_id", newId).apply()
-            return newId
-        }
-
-        return id
-    }
-
-    fun isCrashlyticsIdEnabled(context: Context) =
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("enable_crashlytics_id", false)
 }

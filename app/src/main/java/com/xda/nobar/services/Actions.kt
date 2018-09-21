@@ -20,6 +20,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.KeyEvent
 import android.view.OrientationEventListener
 import android.view.Surface
