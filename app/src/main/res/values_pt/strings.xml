@@ -108,6 +108,8 @@
   <string name="current_overscan">Overscan Atual</string>
   <string name="screen_timeout">Screen Timeout</string>
   <string name="alternate_home">Alternate Home Action</string>
+  <string name="crashlytics_id_switch">Enable Crashlytics ID</string>
+  <string name="crashlytics_id_field">Crashlytics ID</string>
   <!--Descriptions-->
   <string name="gestures_desc">Personalizar Acções dos Gestos</string>
   <string name="appearance_desc">Personalizar Aparência da Barra de Navegação</string>
@@ -148,6 +150,7 @@
   <string name="toggle_nav_desc">Alterne se a barra de navegação de software do dispositivo deve ou não estar oculta.</string>
   <string name="dont_keep_overscan_on_lockscreen_desc">Active isto para mostrar os atalhos no ecrã de bloqueio e para corrigir problemas com itens sendo cortados na ecrã de bloqueio, exibição de ecrã ambiente, ou no ecrã sempre ligado.</string>
   <string name="alternate_home_desc">Certain devices (OnePlus) may have an issue where the \"Home\" action doesn\'t work. Enable this to use a workaround for that.</string>
+  <string name="crashlytics_id_switch_desc">To help us debug Navigation Gestures, you can enable this option. By doing so, a random ID will be generated for you and associated with any crash logs we receive in Firebase. If you\'re having issues with the app crashing, simply describe the situation, and give us your ID. No need to capture your own logs.</string>
   <!--Paragraphs-->
   <string name="app_purpose">Este aplicativo traz gestos de navegação impressionantes para qualquer dispositivo Android. O melhor de tudo, não precisa de root! Antes de usar os gestos, há algumas coisas que precisamos fazer para preparar a aplicação.</string>
   <string name="draw_over_apps_desc">Para que os Gestos de Navegação mostrem a navegação de barra, precisa de conceder permissão para sobreposição sobre outras aplicações. Toque no botão em baixo para fazer isso. Se instalou a partir da Play Store, essa permissão já está concedida.</string>
@@ -184,7 +187,7 @@
   <string name="pill_hidden">Barra Escondida, Toque ou deslize para cima para mostrar novamente.</string>
   <string name="accessibility_msg">Encontre \"Acessibilidade\" e toque.</string>
   <string name="deactivate_before_uninstall">Certifique-se de que \"Esconder a Barra de Navegação\" está desactivado antes de desinstalar!</string>
-  <string name="copied_to_clipboard">Email copiado para a área de transferência</string>
+  <string name="copied_to_clipboard">Copied to clipboard</string>
   <string name="unable_to_launch">Unable to launch target.</string>
   <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
   <!--Libraries-->
