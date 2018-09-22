@@ -1,6 +1,7 @@
 package com.xda.nobar.prefs
 
 import android.content.Context
+import android.graphics.Color
 import android.preference.Preference
 import android.preference.PreferenceGroup
 import android.preference.PreferenceScreen
@@ -15,7 +16,7 @@ import java.util.HashMap
 import kotlin.collections.HashSet
 import kotlin.collections.set
 
-class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
+class PrefManager private constructor(context: Context) : TrayPreferences(context, "prefs", 1) {
     companion object {
         /* Booleans */
         const val IS_ACTIVE = "is_active"
@@ -87,6 +88,13 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
         const val SUFFIX_DISPLAYNAME = "_displayname"
 
         const val OLD_NAME = "com.xda.nobar_preferences"
+
+        private var instance: PrefManager? = null
+
+        fun getInstance(context: Context): PrefManager {
+            if (instance == null) instance = PrefManager(context)
+            return instance!!
+        }
     }
 
     val actionHolder by lazy { ActionHolder(context) }
@@ -264,17 +272,17 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
     val crashlyticsId: String?
         get() = getString(CRASHLYTICS_ID, null)
     var navigationBarColor: String?
-        get() = getString(NAVIGATIONBAR_COLOR, null)
+        get() = getString(NAVIGATIONBAR_COLOR, Color.BLACK.toString())
         set(value) {
             put(NAVIGATIONBAR_COLOR, value)
         }
     var navigationBarCurrentColor: String?
-        get() = getString(NAVIGATIONBAR_CURRENT_COLOR, null)
+        get() = getString(NAVIGATIONBAR_CURRENT_COLOR, Color.BLACK.toString())
         set(value) {
             put(NAVIGATIONBAR_CURRENT_COLOR, value)
         }
     var navigationBarUseThemeDefault: String?
-        get() = getString(NAVIGATIONBAR_USE_THEME_DEFAULT, null)
+        get() = getString(NAVIGATIONBAR_USE_THEME_DEFAULT, Color.BLACK.toString())
         set(value) {
             put(NAVIGATIONBAR_USE_THEME_DEFAULT, value)
         }

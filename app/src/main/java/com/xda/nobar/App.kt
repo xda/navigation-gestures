@@ -16,6 +16,7 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -81,7 +82,7 @@ class App : Application(), OnTrayPreferenceChangeListener, SharedPreferences.OnS
     private val rootServiceIntent by lazy { Intent(this, RootService::class.java) }
 
     val immersiveHelperView by lazy { ImmersiveHelperView(this) }
-    val prefManager by lazy { PrefManager(this) }
+    val prefManager by lazy { PrefManager.getInstance(this) }
     val screenOffHelper by lazy { ScreenOffHelper(this) }
 
     private var isInOtherWindowApp = false

@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
     }
 
     private val app by lazy { application as App }
-    private val prefManager by lazy { PrefManager(this) }
+    private val prefManager by lazy { PrefManager.getInstance(this) }
 
     private val gestureSwitch by lazy { findViewById<TextSwitch>(R.id.activate) }
     private val hideNavSwitch by lazy { findViewById<TextSwitch>(R.id.hide_nav) }

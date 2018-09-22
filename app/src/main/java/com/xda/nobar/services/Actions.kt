@@ -84,7 +84,7 @@ class Actions : AccessibilityService(), Serializable {
         private val audio by lazy { actions.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
         private val imm by lazy { actions.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
         private val wifiManager by lazy { actions.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager }
-        private val prefManager by lazy { PrefManager(actions) }
+        private val prefManager by lazy { PrefManager.getInstance(actions) }
 
         private val handler = Handler()
 

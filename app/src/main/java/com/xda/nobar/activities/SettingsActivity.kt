@@ -702,7 +702,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     abstract class BasePrefFragment : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
-        internal val prefManager by lazy { PrefManager(activity) }
+        internal val prefManager by lazy { PrefManager.getInstance(activity) }
 
         abstract val resId: Int
 

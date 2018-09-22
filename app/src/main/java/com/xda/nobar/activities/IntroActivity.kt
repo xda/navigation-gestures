@@ -40,7 +40,7 @@ class IntroActivity : IntroActivity() {
             val overlaysGranted = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) Settings.canDrawOverlays(context) else true
             val accessibilityGranted = Utils.isAccessibilityEnabled(context)
 
-            return !overlaysGranted || !accessibilityGranted || PrefManager(context).firstRun || !Utils.canRunHiddenCommands(context)
+            return !overlaysGranted || !accessibilityGranted || PrefManager.getInstance(context).firstRun || !Utils.canRunHiddenCommands(context)
         }
 
         fun hasWss(context: Context): Boolean {
@@ -57,7 +57,7 @@ class IntroActivity : IntroActivity() {
     }
 
     private var didntNeedToRun = false
-    private val prefManager by lazy { PrefManager(this) }
+    private val prefManager by lazy { PrefManager.getInstance(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

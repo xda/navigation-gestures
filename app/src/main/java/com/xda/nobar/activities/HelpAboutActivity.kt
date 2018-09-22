@@ -186,7 +186,7 @@ class HelpAboutActivity : AppCompatActivity() {
         private fun updateCrashlyticsId(enabled: Boolean) {
             val id = findPreference("crashlytics_id")
 
-            id.summary = if (enabled) PrefManager(activity).crashlyticsId else ""
+            id.summary = if (enabled) PrefManager.getInstance(activity).crashlyticsId else ""
             Crashlytics.setUserIdentifier(id.summary.toString())
         }
     }

@@ -81,7 +81,7 @@ object Utils {
      */
     fun getNavBarHeight(context: Context): Int {
         val uim = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        val prefManager = PrefManager(context)
+        val prefManager = PrefManager.getInstance(context)
         return if (uim.currentModeType == Configuration.UI_MODE_TYPE_CAR && prefManager.enableInCarMode) {
             context.resources.getDimensionPixelSize(context.resources.getIdentifier("navigation_bar_height_car_mode", "dimen", "android"))
         } else context.resources.getDimensionPixelSize(context.resources.getIdentifier("navigation_bar_height", "dimen", "android"))
@@ -135,12 +135,16 @@ object Utils {
      * Force the navigation bar black, to mask the white line people are complaining so much about
      */
     fun forceNavBlack(context: Context) {
-        val prefManager = PrefManager(context)
-        prefManager.navigationBarColor = Settings.Global.getString(context.contentResolver, PrefManager.NAVIGATIONBAR_COLOR)
-        prefManager.navigationBarCurrentColor = Settings.Global.getString(context.contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR)
-        prefManager.navigationBarUseThemeDefault = Settings.Global.getString(context.contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT)
-
+        val prefManager = PrefManager.getInstance(context)
         val color = Color.argb(0xff, 0x00, 0x00, 0x00)
+        val nColor = Settings.Global.getString(context.contentResolver, PrefManager.NAVIGATIONBAR_COLOR)
+        val nCurrentColor = Settings.Global.getString(context.contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR)
+        val nUTD = Settings.Global.getString(context.contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT)
+
+        if (nColor != color.toString()) prefManager.navigationBarColor = nColor
+        if (nCurrentColor != color.toString()) prefManager.navigationBarCurrentColor = nCurrentColor
+        if (nUTD != color.toString()) prefManager.navigationBarUseThemeDefault = nUTD
+
         if (!IntroActivity.needsToRun(context) && prefManager.shouldUseOverscanMethod && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             Settings.Global.putInt(context.contentResolver, PrefManager.NAVIGATIONBAR_COLOR, color)
             Settings.Global.putInt(context.contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR, color)
@@ -153,7 +157,7 @@ object Utils {
      * Used when showing the software nav
      */
     fun clearBlackNav(context: Context) {
-        val prefManager = PrefManager(context)
+        val prefManager = PrefManager.getInstance(context)
         if (!IntroActivity.needsToRun(context) && prefManager.shouldUseOverscanMethod && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             Settings.Global.putString(context.contentResolver, PrefManager.NAVIGATIONBAR_COLOR, prefManager.navigationBarColor) or
                     Settings.Global.putString(context.contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR, prefManager.navigationBarCurrentColor) or
@@ -209,7 +213,7 @@ object Utils {
             context.resources.getInteger(R.integer.min_pill_height_dp)
 
     fun minPillXPx(context: Context): Int {
-        val prefManager = PrefManager(context)
+        val prefManager = PrefManager.getInstance(context)
         return -(getRealScreenSize(context).x.toFloat() / 2f - prefManager.customWidth.toFloat() / 2f).toInt()
     }
 

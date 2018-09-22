@@ -170,11 +170,10 @@ class BarView : LinearLayout, OnTrayPreferenceChangeListener {
             items?.forEach {
                 val key = it.key()
 
-                app.logicHandler.post {
-                    if (gestureDetector.actionMap.keys.contains(key)) {
-                        gestureDetector.loadActionMap()
-                    }
+                if (gestureDetector.actionMap.keys.contains(key)) {
+                    gestureDetector.loadActionMap()
                 }
+
                 if (key != null && key.contains("use_pixels")) {
                     params.width = app.prefManager.customWidth
                     params.height = app.prefManager.customHeight
@@ -290,6 +289,10 @@ class BarView : LinearLayout, OnTrayPreferenceChangeListener {
         return other is BarView
     }
 
+    override fun hashCode(): Int {
+        return 1
+    }
+
     /**
      * Animate the pill to invisibility
      * Used during deactivation
@@ -314,28 +317,30 @@ class BarView : LinearLayout, OnTrayPreferenceChangeListener {
      * @param alpha desired alpha level (0-1)
      */
     fun animate(listener: Animator.AnimatorListener?, alpha: Float) {
-        animate().alpha(alpha).setDuration(getAnimationDurationMs())
-                .setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationCancel(animation: Animator?) {
-                        listener?.onAnimationCancel(animation)
-                    }
+        handler?.post {
+            animate().alpha(alpha).setDuration(getAnimationDurationMs())
+                    .setListener(object : Animator.AnimatorListener {
+                        override fun onAnimationCancel(animation: Animator?) {
+                            listener?.onAnimationCancel(animation)
+                        }
 
-                    override fun onAnimationEnd(animation: Animator?) {
-                        listener?.onAnimationEnd(animation)
-                    }
+                        override fun onAnimationEnd(animation: Animator?) {
+                            listener?.onAnimationEnd(animation)
+                        }
 
-                    override fun onAnimationRepeat(animation: Animator?) {
-                        listener?.onAnimationRepeat(animation)
-                    }
+                        override fun onAnimationRepeat(animation: Animator?) {
+                            listener?.onAnimationRepeat(animation)
+                        }
 
-                    override fun onAnimationStart(animation: Animator?) {
-                        listener?.onAnimationStart(animation)
+                        override fun onAnimationStart(animation: Animator?) {
+                            listener?.onAnimationStart(animation)
+                        }
+                    })
+                    .withEndAction {
+                        this@BarView.alpha = alpha
                     }
-                })
-                .withEndAction {
-                    this@BarView.alpha = alpha
-                }
-                .start()
+                    .start()
+        }
     }
 
     private var hideHandle: ScheduledFuture<*>? = null
@@ -344,43 +349,45 @@ class BarView : LinearLayout, OnTrayPreferenceChangeListener {
      * "Hide" the pill by moving it partially offscreen
      */
     fun hidePill(auto: Boolean, autoReason: String?, overrideBeingTouched: Boolean = false) {
-        if (auto && autoReason == null) throw IllegalArgumentException("autoReason must not be null when auto is true")
-        if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
+        handler?.post {
+            if (auto && autoReason == null) throw IllegalArgumentException("autoReason must not be null when auto is true")
+            if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
 
-        if ((!beingTouched && !isCarryingOutTouchAction) || overrideBeingTouched) {
-            if (app.isPillShown()) {
-                isPillHidingOrShowing = true
+            if ((!beingTouched && !isCarryingOutTouchAction) || overrideBeingTouched) {
+                if (app.isPillShown()) {
+                    isPillHidingOrShowing = true
 
-                val navHeight = getZeroY()
+                    val navHeight = getZeroY()
 
-                val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-                val time = (getAnimationDurationMs() * animDurScale)
-                val distance = (params.y - navHeight).absoluteValue
+                    val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+                    val time = (getAnimationDurationMs() * animDurScale)
+                    val distance = (params.y - navHeight).absoluteValue
 
-                if (distance == 0) {
-                    animateHide()
-                } else {
-                    val animator = ValueAnimator.ofInt(params.y, navHeight)
-                    animator.interpolator = DecelerateInterpolator()
-                    animator.addUpdateListener {
-                        params.y = it.animatedValue.toString().toInt()
-                        updateLayout(params)
-                    }
-                    animator.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator?) {
-                            animateHide()
+                    if (distance == 0) {
+                        animateHide()
+                    } else {
+                        val animator = ValueAnimator.ofInt(params.y, navHeight)
+                        animator.interpolator = DecelerateInterpolator()
+                        animator.addUpdateListener {
+                            params.y = it.animatedValue.toString().toInt()
+                            updateLayout(params)
                         }
-                    })
-                    animator.duration = (time * distance / 100f).toLong()
-                    animator.start()
-                }
+                        animator.addListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator?) {
+                                animateHide()
+                            }
+                        })
+                        animator.duration = (time * distance / 100f).toLong()
+                        animator.start()
+                    }
 
-                showHiddenToast()
+                    showHiddenToast()
+                }
+            } else {
+                needsScheduledHide = true
+                hideHandle?.cancel(true)
+                hideHandle = null
             }
-        } else {
-            needsScheduledHide = true
-            hideHandle?.cancel(true)
-            hideHandle = null
         }
     }
 
@@ -427,32 +434,36 @@ class BarView : LinearLayout, OnTrayPreferenceChangeListener {
     /**
      * "Show" the pill by moving it back to its normal position
      */
-    fun showPill(autoReasonToRemove: String?) {
-        if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
-        if (app.isPillShown()) {
-            isPillHidingOrShowing = true
-            val reallyForceNotAuto = hiddenPillReasons.isEmpty()
+    fun showPill(autoReasonToRemove: String?, forceShow: Boolean = false) {
+        handler?.post {
+            if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
+            if (app.isPillShown()) {
+                isPillHidingOrShowing = true
+                val reallyForceNotAuto = hiddenPillReasons.isEmpty()
 
-            if ((reallyForceNotAuto) && hideHandle != null) {
-                hideHandle?.cancel(true)
-                hideHandle = null
+                if ((reallyForceNotAuto) && hideHandle != null) {
+                    hideHandle?.cancel(true)
+                    hideHandle = null
+                }
+
+                if (!reallyForceNotAuto) {
+                    scheduleHide()
+                }
+
+                if (reallyForceNotAuto || forceShow) {
+                    pill.animate()
+                            .translationY(0f)
+                            .alpha(ALPHA_ACTIVE)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .withEndAction {
+                                pill.translationY = 0f
+
+                                animateShow()
+                            }
+                            .start()
+                } else isPillHidingOrShowing = false
             }
-
-            if (!reallyForceNotAuto) {
-                scheduleHide()
-            }
-
-            pill.animate()
-                    .translationY(0f)
-                    .alpha(ALPHA_ACTIVE)
-                    .setInterpolator(EXIT_INTERPOLATOR)
-                    .setDuration(getAnimationDurationMs())
-                    .withEndAction {
-                        pill.translationY = 0f
-
-                        animateShow()
-                    }
-                    .start()
         }
     }
 
@@ -489,13 +500,15 @@ class BarView : LinearLayout, OnTrayPreferenceChangeListener {
     }
 
     fun changePillMargins(margins: Rect) {
-        (pill.layoutParams as FrameLayout.LayoutParams).apply {
-            bottomMargin = margins.bottom
-            topMargin = margins.top
-            marginStart = margins.left
-            marginEnd = margins.right
+        handler?.post {
+            (pill.layoutParams as FrameLayout.LayoutParams).apply {
+                bottomMargin = margins.bottom
+                topMargin = margins.top
+                marginStart = margins.left
+                marginEnd = margins.right
 
-            pill.layoutParams = pill.layoutParams
+                pill.layoutParams = pill.layoutParams
+            }
         }
     }
 
@@ -1097,7 +1110,7 @@ class BarView : LinearLayout, OnTrayPreferenceChangeListener {
                     && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
                 if (isHidden && !isPillHidingOrShowing && !beingTouched) {
                     vibrate(getVibrationDuration().toLong())
-                    showPill(null)
+                    showPill(null, true)
                 }
                 true
             } else false
@@ -1239,7 +1252,7 @@ class BarView : LinearLayout, OnTrayPreferenceChangeListener {
                 } else if (isHidden && !isPillHidingOrShowing) {
                     isOverrideTap = false
                     vibrate(getVibrationDuration().toLong())
-                    showPill(null)
+                    showPill(null, true)
                     true
                 } else {
                     isOverrideTap = false
