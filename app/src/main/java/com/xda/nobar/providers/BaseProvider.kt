@@ -117,8 +117,8 @@ abstract class BaseProvider: AppWidgetProvider() {
         val views = RemoteViews(context.packageName, layout)
 
         val gestures = app.areGesturesActivated()
-        val hideNav = app.prefs.getBoolean("hide_nav", false)
-        val useImm = Utils.useImmersiveWhenNavHidden(context)
+        val hideNav = app.prefManager.navHidden
+        val useImm = app.prefManager.useImmersiveWhenNavHidden
 
         views.setTextViewText(R.id.gesture_status, context.resources.getText(
                 if (gestures) R.string.gestures_on else R.string.gestures_off))

@@ -24,6 +24,7 @@ import com.heinrichreimersoftware.materialintro.app.SlideFragment
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
 import com.xda.nobar.R
+import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.util.SuUtils
 import com.xda.nobar.util.Utils
 
@@ -39,7 +40,7 @@ class IntroActivity : IntroActivity() {
             val overlaysGranted = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) Settings.canDrawOverlays(context) else true
             val accessibilityGranted = Utils.isAccessibilityEnabled(context)
 
-            return !overlaysGranted || !accessibilityGranted || Utils.isFirstRun(context) || !Utils.canRunHiddenCommands(context)
+            return !overlaysGranted || !accessibilityGranted || PrefManager(context).firstRun || !Utils.canRunHiddenCommands(context)
         }
 
         fun hasWss(context: Context): Boolean {
@@ -56,6 +57,7 @@ class IntroActivity : IntroActivity() {
     }
 
     private var didntNeedToRun = false
+    private val prefManager by lazy { PrefManager(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,7 +115,7 @@ class IntroActivity : IntroActivity() {
         } else {
             //Only show the intro if the device is able to run the needed commands. Otherwise, show failure screen
             if (Utils.canRunHiddenCommands(this)) {
-                if (Utils.isFirstRun(this)) {
+                if (prefManager.firstRun) {
                     addSlide(FragmentSlide.Builder()
                             .background(R.color.slide_1)
                             .backgroundDark(R.color.slide_1_dark)
@@ -178,7 +180,7 @@ class IntroActivity : IntroActivity() {
                     addSlide(wssSlide)
                 }
 
-                if (Utils.isFirstRun(this) && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                if (prefManager.firstRun && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                     addSlide(SimpleSlide.Builder()
                             .title(R.string.qs_tile)
                             .description(R.string.nougat_qs_reminder)
@@ -211,7 +213,7 @@ class IntroActivity : IntroActivity() {
 
                 addSlide(SimpleSlide.Builder()
                         .title(R.string.ready)
-                        .description(if (Utils.isFirstRun(this)) R.string.ready_first_run_desc else R.string.ready_desc)
+                        .description(if (prefManager.firstRun) R.string.ready_first_run_desc else R.string.ready_desc)
                         .background(R.color.slide_5)
                         .backgroundDark(R.color.slide_5_dark)
                         .build())
@@ -241,7 +243,7 @@ class IntroActivity : IntroActivity() {
             }
         }
 
-        if (Utils.isFirstRun(this)) { //If the user is using a tablet, we want to turn Tablet Mode on automatically
+        if (prefManager.firstRun) { //If the user is using a tablet, we want to turn Tablet Mode on automatically
             if (SystemProperties.get("ro.build.characteristics").contains("tablet")) {
                 prefs.edit().putBoolean("tablet_mode", true).apply()
             }
@@ -255,7 +257,7 @@ class IntroActivity : IntroActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        Utils.setFirstRun(this, false)
+        prefManager.firstRun = false
         if (!didntNeedToRun) MainActivity.start(this)
     }
 

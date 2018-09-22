@@ -1,14 +1,15 @@
 package com.xda.nobar.prefs
 
 import android.content.Context
-import android.preference.PreferenceManager
+import android.preference.Preference
+import android.preference.PreferenceGroup
+import android.preference.PreferenceScreen
 import android.text.TextUtils
 import com.xda.nobar.R
 import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.Utils
 import net.grandcentrix.tray.TrayPreferences
 import net.grandcentrix.tray.core.SharedPreferencesImport
-import java.lang.ref.WeakReference
 import java.util.ArrayList
 import java.util.HashMap
 import kotlin.collections.HashSet
@@ -85,18 +86,10 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
         const val SUFFIX_PACKAGE = "_package"
         const val SUFFIX_DISPLAYNAME = "_displayname"
 
-        private const val OLD_NAME = "com.xda.nobar_preferences"
-
-        private var instance: WeakReference<PrefManager>? = null
-
-        fun getInstance(context: Context): PrefManager {
-            if (instance == null) instance = WeakReference(PrefManager(context))
-
-            return instance!!.get()!!
-        }
+        const val OLD_NAME = "com.xda.nobar_preferences"
     }
 
-    val actionHolder = ActionHolder.getInstance(context)
+    val actionHolder by lazy { ActionHolder(context) }
 
     val crashlyticsIdEnabled: Boolean
         get() = getBoolean(ENABLE_CRASHLYTICS_ID, false)
@@ -168,6 +161,11 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
         }
     val navHidden: Boolean
         get() = getBoolean(HIDE_NAV, false)
+    var showHiddenToast: Boolean
+        get() = getBoolean(SHOW_HIDDEN_TOAST, true)
+        set(value) {
+            put(SHOW_HIDDEN_TOAST, value)
+        }
 
     /**
      * Get the user-defined or default pill color
@@ -182,25 +180,25 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
     val pillFGColor: Int
         get() = getInt(PILL_FG, Utils.getDefaultPillFGColor(context))
     val pillCornerRadiusDp: Int
-        get() = getInt(PILL_CORNER_RADIUS, context.resources.getInteger(R.integer.default_corner_radius_dp))
+        get() = getFloat(PILL_CORNER_RADIUS, context.resources.getInteger(R.integer.default_corner_radius_dp).toFloat()).toInt()
     val pillCornerRadiusPx: Int
         get() = Utils.dpAsPx(context, pillCornerRadiusDp)
     val animationDurationMs: Int
-        get() = getInt(ANIM_DURATION, context.resources.getInteger(R.integer.default_anim_duration))
+        get() = getFloat(ANIM_DURATION, context.resources.getInteger(R.integer.default_anim_duration).toFloat()).toInt()
     val xThresholdDp: Int
-        get() = getInt(X_THRESHOLD, context.resources.getInteger(R.integer.default_x_threshold_dp))
+        get() = getFloat(X_THRESHOLD, context.resources.getInteger(R.integer.default_x_threshold_dp).toFloat()).toInt()
     val yThresholdDp: Int
-        get() = getInt(Y_THRESHOLD, context.resources.getInteger(R.integer.default_y_threshold_dp))
+        get() = getFloat(Y_THRESHOLD, context.resources.getInteger(R.integer.default_y_threshold_dp).toFloat()).toInt()
     val xThresholdPx: Int
         get() = Utils.dpAsPx(context, xThresholdDp)
     val yThresholdPx: Int
         get() = Utils.dpAsPx(context, yThresholdDp)
     val autoHideTime: Int
-        get() = getInt(AUTO_HIDE_PILL_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
+        get() = getFloat(AUTO_HIDE_PILL_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time).toFloat()).toInt()
     val hideInFullscreenTime: Int
-        get() = getInt(HIDE_IN_FULLSCREEN_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
+        get() = getFloat(HIDE_IN_FULLSCREEN_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time).toFloat()).toInt()
     val hideOnKeyboardTime: Int
-        get() = getInt(HIDE_PILL_ON_KEYBOARD_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
+        get() = getFloat(HIDE_PILL_ON_KEYBOARD_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time).toFloat()).toInt()
     val homeY: Int
         get() {
             val percent = (homeYPercent / 100f)
@@ -211,31 +209,31 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
                 (percent * Utils.getRealScreenSize(context).y).toInt()
         }
     val homeYPercent: Int
-        get() = (getInt(CUSTOM_Y_PERCENT, defaultYPercent) * 0.05f).toInt()
+        get() = (getFloat(CUSTOM_Y_PERCENT, defaultYPercent.toFloat()) * 0.05f).toInt()
     val homeX: Int
         get() {
             val percent = (homeXPercent / 100f)
             val screenWidthHalf = Utils.getRealScreenSize(context).x / 2f - customWidth / 2f
 
             return if (usePixelsX)
-                getInt(CUSTOM_X, 0)
+                getFloat(CUSTOM_X, 0f).toInt()
             else
                 (percent * screenWidthHalf).toInt()
         }
     val homeXPercent: Int
-        get() = (getInt(CUSTOM_X_PERCENT, context.resources.getInteger(R.integer.default_pill_x_pos_percent)) / 10f).toInt()
+        get() = (getFloat(CUSTOM_X_PERCENT, context.resources.getInteger(R.integer.default_pill_x_pos_percent).toFloat()) / 10f).toInt()
     val customWidth: Int
         get() {
             val percent = (customWidthPercent / 100f)
             val screenWidth = Utils.getRealScreenSize(context).x
 
             return if (usePixelsW)
-                getInt(CUSTOM_WIDTH, context.resources.getDimensionPixelSize(R.dimen.pill_width_default))
+                getFloat(CUSTOM_WIDTH, context.resources.getDimensionPixelSize(R.dimen.pill_width_default).toFloat()).toInt()
             else
                 (percent * screenWidth).toInt()
         }
     val customWidthPercent: Int
-        get() = (getInt(CUSTOM_WIDTH_PERCENT, context.resources.getInteger(R.integer.default_pill_width_percent)) / 10f).toInt()
+        get() = (getFloat(CUSTOM_WIDTH_PERCENT, context.resources.getInteger(R.integer.default_pill_width_percent).toFloat()) / 10f).toInt()
     val customHeight: Int
         get() {
             var defHeight = customHeightWithoutHitbox
@@ -248,16 +246,20 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
             val percent = (customHeightPercent / 100f)
 
             return if (usePixelsH)
-                getInt(CUSTOM_HEIGHT, context.resources.getDimensionPixelSize(R.dimen.pill_height_default))
+                getFloat(CUSTOM_HEIGHT, context.resources.getDimensionPixelSize(R.dimen.pill_height_default).toFloat()).toInt()
             else
                 (percent * Utils.getRealScreenSize(context).y).toInt()
         }
     val customHeightPercent: Int
-        get() = (getInt(CUSTOM_HEIGHT_PERCENT, context.resources.getInteger(R.integer.default_pill_height_percent)) / 10f).toInt()
+        get() = (getFloat(CUSTOM_HEIGHT_PERCENT, context.resources.getInteger(R.integer.default_pill_height_percent).toFloat()) / 10f).toInt()
     val defaultYPercent: Int
         get() = ((Utils.getNavBarHeight(context) / 2f - customHeight / 2f) / Utils.getRealScreenSize(context).y * 2000f).toInt()
     val defaultY: Int
         get() = ((Utils.getNavBarHeight(context) / 2f - customHeight / 2f)).toInt()
+    val holdTime: Int
+        get() = getFloat(HOLD_TIME, context.resources.getInteger(R.integer.default_hold_time).toFloat()).toInt()
+    val vibrationDuration: Int
+        get() = getFloat(VIBRATION_DURATION, context.resources.getInteger(R.integer.default_vibe_time).toFloat()).toInt()
 
     val crashlyticsId: String?
         get() = getString(CRASHLYTICS_ID, null)
@@ -627,7 +629,7 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
         )
 
         //Actions, Intents, Apps, Activities
-        actionHolder.actionsList.forEach {
+        ActionHolder(context).actionsList.forEach {
             migrate(
                     SharedPreferencesImport(
                             context,
@@ -663,9 +665,21 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
         }
     }
 
-    fun put(key: String, list: Set<String>) {
+    fun put(key: String, list: Set<*>) {
         val string = TextUtils.join(",", list)
         put(key, string)
+    }
+
+    fun put(key: String, obj: Any?) {
+        if (obj == null) remove(key)
+        else when (obj) {
+            is String -> put(key, obj)
+            is Int -> put(key, obj)
+            is Float -> put(key, obj)
+            is Long -> put(key, obj)
+            is Boolean -> put(key, obj)
+            is Set<*> -> put(key, obj)
+        }
     }
 
     fun getStringSet(key: String, def: Set<String>): Set<String> {
@@ -697,7 +711,7 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
      */
     fun getActionsList(map: HashMap<String, Int>) {
         try {
-            val actionHolder = ActionHolder.getInstance(context)
+            val actionHolder = ActionHolder(context)
 
             val left = getString(actionHolder.actionLeft, actionHolder.typeBack.toString())!!.toInt()
             val right = getString(actionHolder.actionRight, actionHolder.typeRecents.toString())!!.toInt()
@@ -743,49 +757,70 @@ class PrefManager(context: Context) : TrayPreferences(context, "prefs", 1) {
      * Load the list of apps that should keep the navbar shown
      */
     fun loadBlacklistedNavPackages(packages: ArrayList<String>) =
-            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_nav_apps", HashSet<String>()))
+            packages.addAll(getStringSet(BLACKLISTED_NAV_APPS, HashSet()))
 
     /**
      * Load the list of apps where the pill shouldn't be shown
      */
     fun loadBlacklistedBarPackages(packages: ArrayList<String>) =
-            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_bar_apps", HashSet<String>()))
+            packages.addAll(getStringSet(BLACKLISTED_BAR_APPS, HashSet()))
 
     /**
      * Load the list of apps where immersive navigation should be disabled
      */
     fun loadBlacklistedImmPackages(packages: ArrayList<String>) =
-            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("blacklisted_imm_apps", HashSet<String>()))
+            packages.addAll(getStringSet(BLACKLISTED_IMM_APPS, HashSet()))
 
     fun loadOtherWindowApps(packages: ArrayList<String>) =
-            packages.addAll(PreferenceManager.getDefaultSharedPreferences(context).getStringSet("other_window_apps", HashSet<String>()))
+            packages.addAll(getStringSet(OTHER_WINDOW_APPS, HashSet()))
 
     /**
      * Save the list of apps that should keep the navbar shown
      */
     fun saveBlacklistedNavPackageList(packages: ArrayList<String>) =
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
-                    .putStringSet("blacklisted_nav_apps", HashSet<String>(packages))
-                    .apply()
+                    put(BLACKLISTED_NAV_APPS, HashSet<String>(packages))
 
     /**
      * Save the list of apps where the pill shouldn't be shown
      */
     fun saveBlacklistedBarPackages(packages: ArrayList<String>) =
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
-                    .putStringSet("blacklisted_bar_apps", HashSet<String>(packages))
-                    .apply()
+            put(BLACKLISTED_BAR_APPS, HashSet<String>(packages))
 
     /**
      * Save the list of apps where immersive navigation should be disabled
      */
     fun saveBlacklistedImmPackages(packages: ArrayList<String>) =
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
-                    .putStringSet("blacklisted_imm_apps", HashSet<String>(packages))
-                    .apply()
+                    put(BLACKLISTED_IMM_APPS, HashSet<String>(packages))
 
     fun saveOtherWindowApps(packages: ArrayList<String>) =
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
-                    .putStringSet("other_window_apps", HashSet<String>(packages))
-                    .apply()
+            put(OTHER_WINDOW_APPS, HashSet<String>(packages))
+
+    fun setPreferenceListeners(screen: PreferenceScreen) {
+//        val list = ArrayList<Preference>()
+//        for (i in 0 until screen.preferenceCount) {
+//            val pref = screen.getPreference(i)
+//
+//            if (pref is PreferenceGroup) list.addAll(loopPreferenceGroup(pref))
+//            else list.add(pref)
+//        }
+//
+//        list.forEach {
+//            it.setOnPreferenceChangeListener { preference, newValue ->
+//                put(preference.key, newValue)
+//                true
+//            }
+//        }
+    }
+
+    private fun loopPreferenceGroup(group: PreferenceGroup): ArrayList<Preference> {
+        val list = ArrayList<Preference>()
+        for (i in 0 until group.preferenceCount) {
+            val pref = group.getPreference(i)
+
+            if (pref is PreferenceGroup) list.addAll(loopPreferenceGroup(pref))
+            else list.add(pref)
+        }
+
+        return list
+    }
 }

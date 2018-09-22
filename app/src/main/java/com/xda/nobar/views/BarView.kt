@@ -8,7 +8,6 @@ import android.app.ActivityManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
@@ -16,7 +15,6 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.AttributeSet
 import android.view.*
@@ -31,10 +29,8 @@ import com.xda.nobar.services.Actions
 import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.HiddenPillReasonManager
 import com.xda.nobar.util.Utils
-import com.xda.nobar.util.Utils.getCustomHeight
-import com.xda.nobar.util.Utils.getCustomWidth
-import com.xda.nobar.util.Utils.getHomeX
-import com.xda.nobar.util.Utils.getHomeY
+import net.grandcentrix.tray.core.OnTrayPreferenceChangeListener
+import net.grandcentrix.tray.core.TrayItem
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
@@ -44,7 +40,7 @@ import kotlin.math.absoluteValue
 /**
  * The Pill™©® (not really copyrighted)
  */
-class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener {
+class BarView : LinearLayout, OnTrayPreferenceChangeListener {
     companion object {
         const val ALPHA_HIDDEN = 0.2f
         const val ALPHA_ACTIVE = 1.0f
@@ -69,7 +65,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private const val THIRD_SECTION = 2
     }
     private val app = context.applicationContext as App
-    private val actionHolder = ActionHolder.getInstance(context)
+    private val actionHolder = ActionHolder(context)
 
     var view: View = View.inflate(context, R.layout.pill, this)
     var pill: LinearLayout = view.findViewById(R.id.pill)
@@ -84,7 +80,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private val gestureDetector = GestureManager()
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val pool = Executors.newScheduledThreadPool(1)
 
@@ -117,26 +112,26 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         alpha = ALPHA_GONE
 
         gestureDetector.loadActionMap()
-        prefs.registerOnSharedPreferenceChangeListener(this)
-        isSoundEffectsEnabled = Utils.feedbackSound(context)
+        app.prefManager.registerOnTrayPreferenceChangeListener(this)
+        isSoundEffectsEnabled = app.prefManager.feedbackSound
 
         val layers = pill.background as LayerDrawable
         (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-            setColor(Utils.getPillBGColor(context))
-            cornerRadius = Utils.getPillCornerRadiusInPx(context).toFloat()
+            setColor(app.prefManager.pillBGColor)
+            cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
         }
         (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-            setStroke(Utils.dpAsPx(context, 1), Utils.getPillFGColor(context))
-            cornerRadius = Utils.getPillCornerRadiusInPx(context).toFloat()
+            setStroke(Utils.dpAsPx(context, 1), app.prefManager.pillFGColor)
+            cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
         }
 
         (pillFlash.background as GradientDrawable).apply {
-            cornerRadius = Utils.getPillCornerRadiusInPx(context).toFloat()
+            cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
         }
 
-        pill.elevation = Utils.dpAsPx(context, if (Utils.shouldShowShadow(context)) 2 else 0).toFloat()
+        pill.elevation = Utils.dpAsPx(context, if (app.prefManager.shouldShowShadow) 2 else 0).toFloat()
         (pill.layoutParams as FrameLayout.LayoutParams).apply {
-            val shadow = Utils.shouldShowShadow(context)
+            val shadow = app.prefManager.shouldShowShadow
             marginEnd = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_RIGHT_DP) else 0
             marginStart = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_LEFT_DP) else 0
             bottomMargin = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_BOTTOM_DP) else 0
@@ -153,13 +148,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         app.pillShown = true
 //
-//        params.width = getCustomWidth(context)
-//        params.height = getCustomHeight(context)
+//        params.width = app.prefManager.customWidth
+//        params.height = app.prefManager.customHeight
 //        updateLayout(params)
 
         show(null)
 
-        if (Utils.autoHide(context)) {
+        if (app.prefManager.autoHide) {
             hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
             scheduleHide()
         }
@@ -170,106 +165,109 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         return gestureDetector.onTouchEvent(event)
     }
 
-    /**
-     * Listen for relevant changes in the SharedPreferences
-     */
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        app.logicHandler.post {
-            if (gestureDetector.actionMap.keys.contains(key)) {
-                gestureDetector.loadActionMap()
-            }
-        }
-        if (key != null && key.contains("use_pixels")) {
-            params.width = getCustomWidth(context)
-            params.height = getCustomHeight(context)
-            params.x = getAdjustedHomeX()
-            params.y = getAdjustedHomeY()
-            updateLayout(params)
-        }
-        if (key == "custom_width_percent" || key == "custom_width") {
-            params.width = getCustomWidth(context)
-            params.x = getAdjustedHomeX()
-            updateLayout(params)
-        }
-        if (key == "custom_height_percent" || key == "custom_height") {
-            params.height = getCustomHeight(context)
-            params.y = getAdjustedHomeY()
-            updateLayout(params)
-        }
-        if (key == "custom_y_percent" || key == "custom_y") {
-            params.y = getAdjustedHomeY()
-            updateLayout(params)
-        }
-        if (key == "custom_x_percent" || key == "custom_x") {
-            params.x = getAdjustedHomeX()
-            updateLayout(params)
-        }
-        if (key == "pill_bg" || key == "pill_fg") {
-            val layers = pill.background as LayerDrawable
-            (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-                setColor(Utils.getPillBGColor(context))
-            }
-            (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-                setStroke(Utils.dpAsPx(context, 1), Utils.getPillFGColor(context))
-            }
-        }
-        if (key == "show_shadow") {
-            val shadow = Utils.shouldShowShadow(context)
-            pill.elevation = Utils.dpAsPx(context, if (shadow) 2 else 0).toFloat()
+    override fun onTrayPreferenceChanged(items: MutableCollection<TrayItem>?) {
+        handler?.post {
+            items?.forEach {
+                val key = it.key()
 
-            (pill.layoutParams as FrameLayout.LayoutParams).apply {
-                marginEnd = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_RIGHT_DP) else 0
-                marginStart = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_LEFT_DP) else 0
-                bottomMargin = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_BOTTOM_DP) else 0
+                app.logicHandler.post {
+                    if (gestureDetector.actionMap.keys.contains(key)) {
+                        gestureDetector.loadActionMap()
+                    }
+                }
+                if (key != null && key.contains("use_pixels")) {
+                    params.width = app.prefManager.customWidth
+                    params.height = app.prefManager.customHeight
+                    params.x = getAdjustedHomeX()
+                    params.y = getAdjustedHomeY()
+                    updateLayout(params)
+                }
+                if (key == "custom_width_percent" || key == "custom_width") {
+                    params.width = app.prefManager.customWidth
+                    params.x = getAdjustedHomeX()
+                    updateLayout(params)
+                }
+                if (key == "custom_height_percent" || key == "custom_height") {
+                    params.height = app.prefManager.customHeight
+                    params.y = getAdjustedHomeY()
+                    updateLayout(params)
+                }
+                if (key == "custom_y_percent" || key == "custom_y") {
+                    params.y = getAdjustedHomeY()
+                    updateLayout(params)
+                }
+                if (key == "custom_x_percent" || key == "custom_x") {
+                    params.x = getAdjustedHomeX()
+                    updateLayout(params)
+                }
+                if (key == "pill_bg" || key == "pill_fg") {
+                    val layers = pill.background as LayerDrawable
+                    (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
+                        setColor(app.prefManager.pillBGColor)
+                    }
+                    (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
+                        setStroke(Utils.dpAsPx(context, 1), app.prefManager.pillFGColor)
+                    }
+                }
+                if (key == "show_shadow") {
+                    val shadow = app.prefManager.shouldShowShadow
+                    pill.elevation = Utils.dpAsPx(context, if (shadow) 2 else 0).toFloat()
 
-                pill.layoutParams = this
-            }
-        }
-        if (key == "static_pill") {
-            if (Utils.dontMoveForKeyboard(context)) {
-                params.flags = params.flags or
-                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
-                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
-            } else {
-                params.flags = params.flags or
-                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM and
-                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
-                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-            }
+                    (pill.layoutParams as FrameLayout.LayoutParams).apply {
+                        marginEnd = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_RIGHT_DP) else 0
+                        marginStart = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_LEFT_DP) else 0
+                        bottomMargin = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_BOTTOM_DP) else 0
 
-            updateLayout(params)
-        }
-        if (key == "audio_feedback") {
-            isSoundEffectsEnabled = Utils.feedbackSound(context)
-        }
-        if (key == "pill_corner_radius") {
-            val layers = pill.background as LayerDrawable
-            (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-                cornerRadius = Utils.dpAsPx(context, Utils.getPillCornerRadiusInDp(context)).toFloat()
-            }
-            (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-                cornerRadius = Utils.dpAsPx(context, Utils.getPillCornerRadiusInDp(context)).toFloat()
-            }
-            (pillFlash.background as GradientDrawable).apply {
-                cornerRadius = Utils.getPillCornerRadiusInPx(context).toFloat()
-            }
-        }
-        if (key == "larger_hitbox") {
-            val enabled = Utils.largerHitbox(context)
-            val margins = getPillMargins()
-            params.height = Utils.getCustomHeight(context)
-            params.y = getHomeY(context)
-            margins.top = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
-            changePillMargins(margins)
-            updateLayout(params)
-        }
-        if (key == "auto_hide_pill") {
-            if (Utils.autoHide(context)) {
-                hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
-                if (!isHidden) scheduleHide()
-            } else {
-                if (isHidden) showPill(HiddenPillReasonManager.AUTO)
+                        pill.layoutParams = this
+                    }
+                }
+                if (key == "static_pill") {
+                    if (app.prefManager.dontMoveForKeyboard) {
+                        params.flags = params.flags or
+                                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
+                                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+                        params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+                    } else {
+                        params.flags = params.flags or
+                                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM and
+                                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
+                        params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                    }
+
+                    updateLayout(params)
+                }
+                if (key == "audio_feedback") {
+                    isSoundEffectsEnabled = app.prefManager.feedbackSound
+                }
+                if (key == "pill_corner_radius") {
+                    val layers = pill.background as LayerDrawable
+                    (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
+                        cornerRadius = Utils.dpAsPx(context, app.prefManager.pillCornerRadiusDp).toFloat()
+                    }
+                    (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
+                        cornerRadius = Utils.dpAsPx(context, app.prefManager.pillCornerRadiusDp).toFloat()
+                    }
+                    (pillFlash.background as GradientDrawable).apply {
+                        cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
+                    }
+                }
+                if (key == "larger_hitbox") {
+                    val enabled = app.prefManager.largerHitbox
+                    val margins = getPillMargins()
+                    params.height = app.prefManager.customHeight
+                    params.y = app.prefManager.homeY
+                    margins.top = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
+                    changePillMargins(margins)
+                    updateLayout(params)
+                }
+                if (key == "auto_hide_pill") {
+                    if (app.prefManager.autoHide) {
+                        hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
+                        if (!isHidden) scheduleHide()
+                    } else {
+                        if (isHidden) showPill(HiddenPillReasonManager.AUTO)
+                    }
+                }
             }
         }
     }
@@ -284,7 +282,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             app.addBarInternal(false)
             shouldReAddOnDetach = false
         } else {
-            prefs.unregisterOnSharedPreferenceChangeListener(this)
+            app.prefManager.unregisterOnTrayPreferenceChangeListener(this)
         }
     }
 
@@ -419,9 +417,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private fun parseHideTime(): Long? {
         val reason = hiddenPillReasons.getMostRecentReason()
         return when (reason) {
-            HiddenPillReasonManager.AUTO -> Utils.autoHideTime(context)
-            HiddenPillReasonManager.FULLSCREEN -> Utils.hideInFullscreenTime(context)
-            HiddenPillReasonManager.KEYBOARD -> Utils.hideOnKeyboardTime(context)
+            HiddenPillReasonManager.AUTO -> app.prefManager.autoHideTime.toLong()
+            HiddenPillReasonManager.FULLSCREEN -> app.prefManager.hideInFullscreenTime.toLong()
+            HiddenPillReasonManager.KEYBOARD -> app.prefManager.hideOnKeyboardTime.toLong()
             else -> null
         }
     }
@@ -515,11 +513,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun getAdjustedHomeY(): Int {
-        return Utils.getRealScreenSize(context).y - getHomeY(context) - Utils.getCustomHeight(context)
+        return Utils.getRealScreenSize(context).y - app.prefManager.homeY - app.prefManager.customHeight
     }
 
     fun getZeroY(): Int {
-        return Utils.getRealScreenSize(context).y - Utils.getCustomHeight(context)
+        return Utils.getRealScreenSize(context).y - app.prefManager.customHeight
     }
 
     fun getAdjustedHomeX(): Int {
@@ -531,7 +529,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             0
         }
 
-        return getHomeX(context) - if (immersiveNav && !Utils.useTabletMode(context)) (diff / 2f).toInt() else 0
+        return app.prefManager.homeX - if (immersiveNav && !app.prefManager.useTabletMode) (diff / 2f).toInt() else 0
     }
 
     fun toggleScreenOn(): Boolean {
@@ -552,9 +550,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * Show a toast when the pill is hidden. Only shows once.
      */
     private fun showHiddenToast() {
-        if (prefs.getBoolean("show_hidden_toast", true)) {
+        if (app.prefManager.showHiddenToast) {
             Toast.makeText(context, resources.getString(R.string.pill_hidden), Toast.LENGTH_LONG).show()
-            prefs.edit().putBoolean("show_hidden_toast", false).apply()
+            app.prefManager.showHiddenToast = false
         }
     }
     
@@ -571,7 +569,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @return the time, in ms
      */
     private fun getHoldTime(): Int {
-        return prefs.getInt("hold_time", context.resources.getInteger(R.integer.default_hold_time))
+        return app.prefManager.holdTime
     }
 
     /**
@@ -579,7 +577,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @return the duration, in ms
      */
     private fun getVibrationDuration(): Int {
-        return prefs.getInt("vibration_duration", context.resources.getInteger(R.integer.default_vibe_time))
+        return app.prefManager.vibrationDuration
     }
 
     /**
@@ -587,7 +585,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @return the duration, in ms
      */
     private fun getAnimationDurationMs(): Long {
-        return Utils.getAnimationDurationMs(context)
+        return app.prefManager.animationDurationMs.toLong()
     }
 
     /**
@@ -745,7 +743,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     fun animateActiveLayer(alpha: Float) {
         pillFlash.apply {
-            val alphaRatio = Color.alpha(Utils.getPillBGColor(context)).toFloat() / 255f
+            val alphaRatio = Color.alpha(app.prefManager.pillBGColor).toFloat() / 255f
             animate()
                     .setDuration(getAnimationDurationMs())
                     .alpha(alpha * alphaRatio)
@@ -975,7 +973,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         oldY = ev.rawY
 
                         if (params.y > Utils.getRealScreenSize(context).y
-                                - Utils.getRealScreenSize(context).y / 6 - getHomeY(context)
+                                - Utils.getRealScreenSize(context).y / 6 - app.prefManager.homeY
                                 && getAnimationDurationMs() > 0) {
                             params.y -= (velocity / 2).toInt()
                             updateLayout(params)
@@ -1019,8 +1017,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         oldX = ev.rawX
 
                         val halfScreen = Utils.getRealScreenSize(context).x / 2f
-                        val leftParam = params.x - Utils.getCustomWidth(context).toFloat() / 2f
-                        val rightParam = params.x + Utils.getCustomWidth(context).toFloat() / 2f
+                        val leftParam = params.x - app.prefManager.customWidth.toFloat() / 2f
+                        val rightParam = params.x + app.prefManager.customWidth.toFloat() / 2f
 
                         if (getAnimationDurationMs() > 0) {
                             when {
@@ -1070,8 +1068,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             val distanceX = motionEvent.rawX - origX
             val distanceY = motionEvent.rawY - origY
-            val xThresh = Utils.getXThresholdPx(context)
-            val yThresh = Utils.getYThresholdPx(context)
+            val xThresh = app.prefManager.xThresholdPx
+            val yThresh = app.prefManager.yThresholdPx
 
             return if (!isHidden && !isActing) {
                 when {
@@ -1106,7 +1104,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         private fun getSectionedUpHoldAction(x: Float): Int? {
-            return if (!Utils.sectionedPill(context)) actionMap[actionHolder.actionUpHold]
+            return if (!app.prefManager.sectionedPill) actionMap[actionHolder.actionUpHold]
             else when (getSection(x)) {
                 FIRST_SECTION -> actionMap[actionHolder.actionUpHoldLeft]
                 SECOND_SECTION -> actionMap[actionHolder.actionUpHoldCenter]
@@ -1117,10 +1115,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private fun String.isEligible() = arrayListOf(
                 actionHolder.actionUp,
                 actionHolder.actionUpHold
-        ).contains(this) && Utils.sectionedPill(context)
+        ).contains(this) && app.prefManager.sectionedPill
 
         private fun getSection(x: Float): Int {
-            val third = Utils.getCustomWidth(context) / 3f
+            val third = app.prefManager.customWidth / 3f
 
             return when {
                 x < third -> FIRST_SECTION
@@ -1187,7 +1185,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                 context.startService(intent)
 
-                if (Utils.shouldUseRootCommands(context)) {
+                if (app.prefManager.useRoot) {
                     app.rootBinder?.handle(which)
                 }
             }
@@ -1197,7 +1195,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
          * Load the user's custom gesture/action pairings; default values if a pairing doesn't exist
          */
         fun loadActionMap() {
-            Utils.getActionsList(context, actionMap)
+            app.prefManager.getActionsList(actionMap)
         }
 
         inner class Detector : GestureDetector.SimpleOnGestureListener() {
@@ -1216,7 +1214,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                 if (!isHidden && !isActing) {
                     if (isPinned) {
-                       if (Utils.shouldUseOverscanMethod(context)) app.showNav()
+                       if (app.prefManager.shouldUseOverscanMethod) app.showNav()
                     } else {
                         isActing = true
                         sendAction(actionHolder.actionHold)

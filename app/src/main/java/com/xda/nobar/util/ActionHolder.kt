@@ -2,18 +2,8 @@ package com.xda.nobar.util
 
 import android.content.Context
 import com.xda.nobar.R
-import java.lang.ref.WeakReference
 
-class ActionHolder private constructor(private val context: Context) {
-    companion object {
-        private var instance: WeakReference<ActionHolder>? = null
-
-        fun getInstance(context: Context): ActionHolder {
-            if (instance == null || instance?.get() == null) instance = WeakReference(ActionHolder(context))
-            return instance!!.get()!!
-        }
-    }
-
+class ActionHolder(private val context: Context) {
     /**
      * Actions and Types
      * *********************************************************

@@ -14,6 +14,7 @@ import com.jaredrummler.android.colorpicker.ColorPreference
 import com.pavelsikun.seekbarpreference.SeekBarPreference
 import com.xda.nobar.R
 import com.xda.nobar.prefs.CustomPreferenceCategory
+import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.prefs.SeekBarSwitchPreference
 import com.xda.nobar.util.ActionHolder
@@ -109,9 +110,11 @@ class SettingsActivity : AppCompatActivity() {
     /**
      * Gesture preferences
      */
-    class GestureFragment : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
+    class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
+        override val resId = R.xml.prefs_gestures
+
         private val listPrefs = ArrayList<SectionableListPreference>()
-        private val actionHolder by lazy { ActionHolder.getInstance(activity) }
+        private val actionHolder by lazy { ActionHolder(activity) }
 
         private val sectionedScreen by lazy { preferenceManager.inflateFromResource(activity, R.xml.prefs_sectioned, null) }
         private val sectionedCategory by lazy { sectionedScreen.findPreference("section_gestures") as PreferenceCategory }
@@ -124,9 +127,43 @@ class SettingsActivity : AppCompatActivity() {
 
             addPreferencesFromResource(R.xml.prefs_gestures)
 
-            val sectionedPill = findPreference("sectioned_pill") as SwitchPreference
-            sectionedPill.setOnPreferenceChangeListener { _, newValue ->
-                if (newValue.toString().toBoolean()) {
+            refreshListPrefs()
+
+            removeNougatActionsIfNeeded()
+            removeRootActionsIfNeeded()
+
+            preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+            prefManager.setPreferenceListeners(preferenceScreen)
+        }
+
+        override fun onResume() {
+            super.onResume()
+
+            activity.title = resources.getText(R.string.gestures)
+
+            val sectionedPill = findPreference(PrefManager.SECTIONED_PILL) as SwitchPreference
+            if (sectionedPill.isChecked) {
+                sectionedCategoryHolder.addPreference(sectionedCategory)
+                swipeUpCategory.removeAll()
+                swipeUpHoldCategory.removeAll()
+            } else {
+                sectionedCategoryHolder.removePreference(sectionedCategory)
+                swipeUpCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up)))
+                swipeUpHoldCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up_hold)))
+            }
+
+            refreshListPrefs()
+            updateSummaries()
+        }
+
+        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+            val map = HashMap<String, Int>()
+            prefManager.getActionsList(map)
+
+            if (map.keys.contains(key)) updateSummaries()
+
+            if (key == PrefManager.SECTIONED_PILL) {
+                if (sharedPreferences.getBoolean(key, false).toString().toBoolean()) {
                     sectionedCategoryHolder.addPreference(sectionedCategory)
                     swipeUpCategory.removeAll()
                     swipeUpHoldCategory.removeAll()
@@ -134,7 +171,6 @@ class SettingsActivity : AppCompatActivity() {
                     refreshListPrefs()
 
                     updateSummaries()
-                    setListeners()
 
                     AlertDialog.Builder(activity)
                             .setTitle(R.string.use_recommended_settings)
@@ -157,44 +193,35 @@ class SettingsActivity : AppCompatActivity() {
 
                     refreshListPrefs()
                 }
-                true
             }
 
-            refreshListPrefs()
+            if (listPrefs.map { it.key }.contains(key)) {
+                val newValue = sharedPreferences.getString(key, null)
+                if (newValue == actionHolder.premTypeLaunchApp.toString() || newValue == actionHolder.premTypeLaunchActivity.toString()) {
+                    val forActivity = newValue == actionHolder.premTypeLaunchActivity.toString()
+                    val intent = Intent(activity, AppLaunchSelectActivity::class.java)
 
-            removeNougatActionsIfNeeded()
-            removeRootActionsIfNeeded()
-            setListeners()
+                    var pack = prefManager.getString("${key}_${if (forActivity) "activity" else "package"}", null)
+                    var activity: String? = null
+                    if (pack != null) {
+                        activity = pack.split("/")[1]
+                        pack = pack.split("/")[0]
+                    }
 
-            preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-        }
+                    intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, key)
+                    intent.putExtra(AppLaunchSelectActivity.CHECKED_PACKAGE, pack)
+                    intent.putExtra(AppLaunchSelectActivity.CHECKED_ACTIVITY, activity)
+                    intent.putExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, forActivity)
 
-        override fun onResume() {
-            super.onResume()
+                    startActivityForResult(intent, REQ_APP)
+                } else if (newValue == actionHolder.premTypeIntent.toString()) {
+                    val intent = Intent(activity, IntentSelectorActivity::class.java)
 
-            activity.title = resources.getText(R.string.gestures)
+                    intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, key)
 
-            val sectionedPill = findPreference("sectioned_pill") as SwitchPreference
-            if (sectionedPill.isChecked) {
-                sectionedCategoryHolder.addPreference(sectionedCategory)
-                swipeUpCategory.removeAll()
-                swipeUpHoldCategory.removeAll()
-            } else {
-                sectionedCategoryHolder.removePreference(sectionedCategory)
-                swipeUpCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up)))
-                swipeUpHoldCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up_hold)))
+                    startActivityForResult(intent, REQ_INTENT)
+                }
             }
-
-            refreshListPrefs()
-            setListeners()
-            updateSummaries()
-        }
-
-        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-            val map = HashMap<String, Int>()
-            Utils.getActionsList(activity, map)
-
-            if (map.keys.contains(key)) updateSummaries()
         }
 
         override fun onDestroy() {
@@ -216,7 +243,7 @@ class SettingsActivity : AppCompatActivity() {
                     Activity.RESULT_CANCELED -> {
                         listPrefs.forEach {
                             if (it.key == key) {
-                                val pack = preferenceManager.sharedPreferences.getString(
+                                val pack = prefManager.getString(
                                         "${key}_${if (forActivity) "activity" else "package"}", null)
                                 if (pack == null) {
                                     it.saveValue(actionHolder.typeNoAction.toString())
@@ -232,14 +259,14 @@ class SettingsActivity : AppCompatActivity() {
 
                 when (resultCode) {
                     Activity.RESULT_OK -> {
-                        val res = Utils.getIntentKey(activity, key ?: return)
+                        val res = prefManager.getIntentKey(key ?: return)
                         updateIntentSummary(key, res)
                     }
 
                     Activity.RESULT_CANCELED -> {
                         listPrefs.forEach {
                             if (it.key == key) {
-                                val res = Utils.getIntentKey(activity, key)
+                                val res = prefManager.getIntentKey(key)
 
                                 if (res < 1) {
                                     it.saveValue(actionHolder.typeNoAction.toString())
@@ -259,43 +286,42 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun setSectionedSettings() {
-            preferenceManager.sharedPreferences.edit().apply {
-                putBoolean("use_pixels_width", false)
-                putBoolean("use_pixels_height", true)
-                putBoolean("use_pixels_y", false)
-                putBoolean("larger_hitbox", false)
-                putBoolean("hide_in_fullscreen", false)
-                putBoolean("static_pill", true)
-                putBoolean("hide_pill_on_keyboard", false)
-                putBoolean("auto_hide_pill", false)
+            prefManager.apply {
+                put("use_pixels_width", false)
+                put("use_pixels_height", true)
+                put("use_pixels_y", false)
+                put("larger_hitbox", false)
+                put("hide_in_fullscreen", false)
+                put("static_pill", true)
+                put("hide_pill_on_keyboard", false)
+                put("auto_hide_pill", false)
 
-                putInt("custom_width_percent", 1000)
-                putInt("custom_height", Utils.minPillHeightPx(activity) + Utils.dpAsPx(activity, 7f))
-                putInt("custom_y_percent", 0)
-                putInt("pill_corner_radius", 0)
-                putInt("pill_bg", Color.TRANSPARENT)
-                putInt("pill_fg", Color.TRANSPARENT)
-                putInt("anim_duration", 0)
-                putInt("hold_time", 500)
+                put("custom_width_percent", 1000)
+                put("custom_height", Utils.minPillHeightPx(activity) + Utils.dpAsPx(activity, 7f))
+                put("custom_y_percent", 0)
+                put("pill_corner_radius", 0)
+                put("pill_bg", Color.TRANSPARENT)
+                put("pill_fg", Color.TRANSPARENT)
+                put("anim_duration", 0)
+                put("hold_time", 500)
 
-                putString(actionHolder.actionTap, actionHolder.typeNoAction.toString())
-                putString(actionHolder.actionDouble, actionHolder.typeNoAction.toString())
-                putString(actionHolder.actionHold, actionHolder.typeNoAction.toString())
-                putString(actionHolder.actionDown, actionHolder.typeNoAction.toString())
-                putString(actionHolder.actionLeft, actionHolder.typeNoAction.toString())
-                putString(actionHolder.actionLeftHold, actionHolder.typeNoAction.toString())
-                putString(actionHolder.actionRight, actionHolder.typeNoAction.toString())
-                putString(actionHolder.actionRightHold, actionHolder.typeNoAction.toString())
-                putString(actionHolder.actionUp, actionHolder.typeNoAction.toString())
-                putString(actionHolder.actionUpHold, actionHolder.typeNoAction.toString())
-            }.apply()
+                put(actionHolder.actionTap, actionHolder.typeNoAction.toString())
+                put(actionHolder.actionDouble, actionHolder.typeNoAction.toString())
+                put(actionHolder.actionHold, actionHolder.typeNoAction.toString())
+                put(actionHolder.actionDown, actionHolder.typeNoAction.toString())
+                put(actionHolder.actionLeft, actionHolder.typeNoAction.toString())
+                put(actionHolder.actionLeftHold, actionHolder.typeNoAction.toString())
+                put(actionHolder.actionRight, actionHolder.typeNoAction.toString())
+                put(actionHolder.actionRightHold, actionHolder.typeNoAction.toString())
+                put(actionHolder.actionUp, actionHolder.typeNoAction.toString())
+                put(actionHolder.actionUpHold, actionHolder.typeNoAction.toString())
+            }
 
             updateSummaries()
-            setListeners()
         }
         
         private fun resetSectionedSettings() {
-            preferenceManager.sharedPreferences.edit().apply {
+            prefManager.apply {
                 remove("use_pixels_width")
                 remove("use_pixels_height")
                 remove("use_pixels_y")
@@ -324,10 +350,9 @@ class SettingsActivity : AppCompatActivity() {
                 remove(actionHolder.actionRightHold)
                 remove(actionHolder.actionUp)
                 remove(actionHolder.actionUpHold)
-            }.apply()
+            }
 
             updateSummaries()
-            setListeners()
         }
 
         private fun updateAppLaunchSummary(key: String, appName: String) {
@@ -354,14 +379,14 @@ class SettingsActivity : AppCompatActivity() {
 
                 if (it.getSavedValue() == actionHolder.premTypeLaunchApp.toString() || it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()) {
                     val forActivity = it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()
-                    val packageInfo = preferenceManager.sharedPreferences.getString(
+                    val packageInfo = prefManager.getString(
                             "${it.key}_${if (forActivity) "activity" else "package"}", null) ?: return@forEach
 
                     it.summary = String.format(Locale.getDefault(),
                             resources.getString(if (forActivity) R.string.prem_launch_activity else R.string.prem_launch_app),
-                            preferenceManager.sharedPreferences.getString("${it.key}_displayname", packageInfo.split("/")[0]))
+                            prefManager.getString("${it.key}_displayname", packageInfo.split("/")[0]))
                 } else if (it.getSavedValue() == actionHolder.premTypeIntent.toString()) {
-                    val res = Utils.getIntentKey(activity, it.key)
+                    val res = prefManager.getIntentKey(it.key)
                     it.summary = String.format(Locale.getDefault(),
                             resources.getString(R.string.prem_intent),
                             if (res > 0) resources.getString(res) else "")
@@ -379,42 +404,10 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun removeRootActionsIfNeeded() {
-            if (!Utils.shouldUseRootCommands(activity)) {
+            if (!prefManager.useRoot) {
                 listPrefs.forEach {
                     val actions = resources.getStringArray(R.array.root_action_values)
                     it.removeItemsByValue(actions)
-                }
-            }
-        }
-
-        private fun setListeners() {
-            listPrefs.forEach {
-                it.setOnPreferenceChangeListener { _, newValue ->
-                    if (newValue?.toString() == actionHolder.premTypeLaunchApp.toString() || newValue?.toString() == actionHolder.premTypeLaunchActivity.toString()) {
-                        val forActivity = newValue.toString() == actionHolder.premTypeLaunchActivity.toString()
-                        val intent = Intent(activity, AppLaunchSelectActivity::class.java)
-
-                        var pack = preferenceManager.sharedPreferences.getString("${it.key}_${if (forActivity) "activity" else "package"}", null)
-                        var activity: String? = null
-                        if (pack != null) {
-                            activity = pack.split("/")[1]
-                            pack = pack.split("/")[0]
-                        }
-
-                        intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
-                        intent.putExtra(AppLaunchSelectActivity.CHECKED_PACKAGE, pack)
-                        intent.putExtra(AppLaunchSelectActivity.CHECKED_ACTIVITY, activity)
-                        intent.putExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, forActivity)
-
-                        startActivityForResult(intent, REQ_APP)
-                    } else if (newValue?.toString() == actionHolder.premTypeIntent.toString()) {
-                        val intent = Intent(activity, IntentSelectorActivity::class.java)
-
-                        intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
-
-                        startActivityForResult(intent, REQ_INTENT)
-                    }
-                    true
                 }
             }
         }
@@ -448,12 +441,8 @@ class SettingsActivity : AppCompatActivity() {
     /**
      * Appearance settings
      */
-    class AppearanceFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-
-            addPreferencesFromResource(R.xml.prefs_appearance)
-        }
+    class AppearanceFragment : BasePrefFragment() {
+        override val resId = R.xml.prefs_appearance
 
         override fun onResume() {
             super.onResume()
@@ -464,14 +453,14 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun setListeners() {
-            val pillColor = findPreference("pill_bg") as ColorPreference
-            val pillBorderColor = findPreference("pill_fg") as ColorPreference
+            val pillColor = findPreference(PrefManager.PILL_BG) as ColorPreference
+            val pillBorderColor = findPreference(PrefManager.PILL_FG) as ColorPreference
 
             pillColor.setDefaultValue(Utils.getDefaultPillBGColor(activity))
             pillBorderColor.setDefaultValue(Utils.getDefaultPillFGColor(activity))
 
-            pillColor.saveValue(Utils.getPillBGColor(activity))
-            pillBorderColor.saveValue(Utils.getPillFGColor(activity))
+            pillColor.saveValue(prefManager.pillBGColor)
+            pillBorderColor.saveValue(prefManager.pillFGColor)
         }
 
         private fun setup() {
@@ -507,8 +496,8 @@ class SettingsActivity : AppCompatActivity() {
             yPixels.maxValue = Utils.maxPillYPx(activity)
             xPixels.maxValue = Utils.maxPillXPx(activity)
 
-            yPercent.setDefaultValue(Utils.getDefaultYPercent(activity))
-            yPixels.setDefaultValue(Utils.getDefaultY(activity))
+            yPercent.setDefaultValue(prefManager.defaultYPercent)
+            yPixels.setDefaultValue(prefManager.defaultY)
             widthPixels.setDefaultValue(Utils.defPillWidthPx(activity))
             heightPixels.setDefaultValue(Utils.defPillHeightPx(activity))
 
@@ -555,12 +544,8 @@ class SettingsActivity : AppCompatActivity() {
     /**
      * Behavior settings
      */
-    class BehaviorFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-
-            addPreferencesFromResource(R.xml.prefs_behavior)
-        }
+    class BehaviorFragment : BasePrefFragment() {
+        override val resId = R.xml.prefs_behavior
 
         override fun onResume() {
             super.onResume()
@@ -596,11 +581,40 @@ class SettingsActivity : AppCompatActivity() {
     /**
      * Compatibility settings
      */
-    class CompatibilityFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
+    class CompatibilityFragment : BasePrefFragment()  {
+        override val resId = R.xml.prefs_compatibility
 
-            addPreferencesFromResource(R.xml.prefs_compatibility)
+        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+            when (key) {
+                PrefManager.ROT270_FIX -> {
+                    val enabled = sharedPreferences.getBoolean(key, false)
+                    val tabletMode = findPreference(PrefManager.TABLET_MODE) as SwitchPreference
+
+                    tabletMode.isEnabled = !enabled
+                    tabletMode.isChecked = if (enabled) false else tabletMode.isChecked
+                }
+                PrefManager.TABLET_MODE -> {
+                    val enabled = sharedPreferences.getBoolean(key, false)
+                    val rot270Fix = findPreference(PrefManager.ROT270_FIX) as SwitchPreference
+
+                    rot270Fix.isEnabled = !enabled
+                    rot270Fix.isChecked = if (enabled) false else rot270Fix.isChecked
+                }
+                PrefManager.ORIG_NAV_IN_IMMERSIVE -> {
+                    val enabled = sharedPreferences.getBoolean(key, false)
+                    val immNav = findPreference(PrefManager.USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN) as SwitchPreference
+
+                    immNav.isEnabled = !enabled
+                    immNav.isChecked = if (enabled) false else immNav.isChecked
+                }
+                PrefManager.USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN -> {
+                    val enabled = sharedPreferences.getBoolean(key, false)
+                    val origNav = findPreference(PrefManager.ORIG_NAV_IN_IMMERSIVE) as SwitchPreference
+
+                    origNav.isEnabled = !enabled
+                    origNav.isChecked = if (enabled) false else origNav.isChecked
+                }
+            }
         }
 
         override fun onResume() {
@@ -611,7 +625,13 @@ class SettingsActivity : AppCompatActivity() {
             setUpRotListeners()
             setUpImmersiveListeners()
         }
-        
+
+        override fun onDestroy() {
+            super.onDestroy()
+
+            preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        }
+
         private fun setUpRotListeners() {
             val rot270Fix = findPreference("rot270_fix") as SwitchPreference
             val tabletMode = findPreference("tablet_mode") as SwitchPreference
@@ -626,23 +646,6 @@ class SettingsActivity : AppCompatActivity() {
                 rot270Fix.isEnabled = false
             }
 
-            rot270Fix.setOnPreferenceChangeListener { _, newValue ->
-                val enabled = newValue.toString().toBoolean()
-                
-                tabletMode.isEnabled = !enabled
-                tabletMode.isChecked = if (enabled) false else tabletMode.isChecked
-                
-                true
-            }
-
-            tabletMode.setOnPreferenceChangeListener { _, newValue ->
-                val enabled = newValue.toString().toBoolean()
-
-                rot270Fix.isEnabled = !enabled
-                rot270Fix.isChecked = if (enabled) false else rot270Fix.isChecked
-
-                true
-            }
         }
 
         private fun setUpImmersiveListeners() {
@@ -660,24 +663,6 @@ class SettingsActivity : AppCompatActivity() {
                 origNav.isEnabled = false
             }
 
-            origNav.setOnPreferenceChangeListener { _, newValue ->
-                val enabled = newValue.toString().toBoolean()
-
-                immNav.isEnabled = !enabled
-                immNav.isChecked = if (enabled) false else immNav.isChecked
-
-                true
-            }
-
-            immNav.setOnPreferenceChangeListener { _, newValue ->
-                val enabled = newValue.toString().toBoolean()
-
-                origNav.isEnabled = !enabled
-                origNav.isChecked = if (enabled) false else origNav.isChecked
-
-                true
-            }
-
             immBL.setOnPreferenceClickListener {
                 val selector = Intent(activity, BlacklistSelectorActivity::class.java)
                 selector.putExtra(BlacklistSelectorActivity.EXTRA_WHICH, BlacklistSelectorActivity.FOR_IMM)
@@ -690,12 +675,8 @@ class SettingsActivity : AppCompatActivity() {
     /**
      * Experimental, but mostly working settings
      */
-    class ExperimentalFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-
-            addPreferencesFromResource(R.xml.prefs_experimental)
-        }
+    class ExperimentalFragment : BasePrefFragment() {
+        override val resId = R.xml.prefs_experimental
 
         override fun onResume() {
             super.onResume()
@@ -707,7 +688,7 @@ class SettingsActivity : AppCompatActivity() {
 
         private fun setListeners() {
             val hideOnKb = findPreference("hide_pill_on_keyboard") as SeekBarSwitchPreference
-            hideOnKb.isEnabled = !preferenceManager.sharedPreferences.getBoolean("auto_hide_pill", false)
+            hideOnKb.isEnabled = !prefManager.autoHide
 
             val winFix = findPreference("window_fix")
             winFix.setOnPreferenceClickListener {
@@ -717,6 +698,28 @@ class SettingsActivity : AppCompatActivity() {
 
                 true
             }
+        }
+    }
+
+    abstract class BasePrefFragment : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
+        internal val prefManager by lazy { PrefManager(activity) }
+
+        abstract val resId: Int
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+
+            addPreferencesFromResource(resId)
+            prefManager.setPreferenceListeners(preferenceScreen)
+            preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        }
+
+        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {}
+
+        override fun onDestroy() {
+            super.onDestroy()
+
+            preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         }
     }
 }

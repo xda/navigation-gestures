@@ -9,7 +9,6 @@ import com.xda.nobar.R
 import com.xda.nobar.adapters.AppSelectAdapter
 import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.util.AppInfo
-import com.xda.nobar.util.Utils
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -44,19 +43,19 @@ class BlacklistSelectorActivity : BaseAppSelectActivity<ApplicationInfo, AppInfo
         when (which) {
             FOR_BAR -> {
                 title = resources.getText(R.string.bar_blacklist)
-                Utils.loadBlacklistedBarPackages(this, currentlyBlacklisted)
+                prefManager.loadBlacklistedBarPackages(currentlyBlacklisted)
             }
             FOR_NAV -> {
                 title = resources.getText(R.string.nav_blacklist)
-                Utils.loadBlacklistedNavPackages(this, currentlyBlacklisted)
+                prefManager.loadBlacklistedNavPackages(currentlyBlacklisted)
             }
             FOR_IMM -> {
                 title = resources.getText(R.string.imm_blacklist)
-                Utils.loadBlacklistedImmPackages(this, currentlyBlacklisted)
+                prefManager.loadBlacklistedImmPackages(currentlyBlacklisted)
             }
             FOR_WIN -> {
                 title = resources.getText(R.string.fix_for_other_windows)
-                Utils.loadOtherWindowApps(this, currentlyBlacklisted)
+                prefManager.loadOtherWindowApps(currentlyBlacklisted)
             }
             else -> {
                 setResult(Activity.RESULT_CANCELED)
@@ -96,10 +95,10 @@ class BlacklistSelectorActivity : BaseAppSelectActivity<ApplicationInfo, AppInfo
         super.onDestroy()
 
         when (which) {
-            FOR_NAV -> Utils.saveBlacklistedNavPackageList(this, currentlyBlacklisted)
-            FOR_BAR -> Utils.saveBlacklistedBarPackages(this, currentlyBlacklisted)
-            FOR_IMM -> Utils.saveBlacklistedImmPackages(this, currentlyBlacklisted)
-            FOR_WIN -> Utils.saveOtherWindowApps(this, currentlyBlacklisted)
+            FOR_NAV -> prefManager.saveBlacklistedNavPackageList(currentlyBlacklisted)
+            FOR_BAR -> prefManager.saveBlacklistedBarPackages(currentlyBlacklisted)
+            FOR_IMM -> prefManager.saveBlacklistedImmPackages(currentlyBlacklisted)
+            FOR_WIN -> prefManager.saveOtherWindowApps(currentlyBlacklisted)
         }
     }
 

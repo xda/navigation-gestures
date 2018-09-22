@@ -17,6 +17,7 @@ import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
+import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.util.Utils
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.TextSwitch
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
     }
 
     private val app by lazy { application as App }
+    private val prefManager by lazy { PrefManager(this) }
 
     private val gestureSwitch by lazy { findViewById<TextSwitch>(R.id.activate) }
     private val hideNavSwitch by lazy { findViewById<TextSwitch>(R.id.hide_nav) }
@@ -80,7 +82,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             }
         }
 
-        hideNavSwitch.isChecked = Utils.shouldUseOverscanMethod(this)
+        hideNavSwitch.isChecked = prefManager.shouldUseOverscanMethod
         hideNavSwitch.onCheckedChangeListener = navListener
 
         refresh.setOnClickListener {

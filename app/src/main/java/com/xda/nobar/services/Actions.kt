@@ -15,12 +15,10 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Handler
 import android.os.UserHandle
-import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.KeyEvent
 import android.view.OrientationEventListener
 import android.view.Surface
@@ -32,10 +30,10 @@ import com.xda.nobar.R
 import com.xda.nobar.activities.IntentSelectorActivity
 import com.xda.nobar.activities.RequestPermissionsActivity
 import com.xda.nobar.activities.ScreenshotActivity
+import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.receivers.ActionReceiver
 import com.xda.nobar.tasker.activities.EventConfigureActivity
 import com.xda.nobar.tasker.updates.EventUpdate
-import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.FlashlighControllerLollipop
 import com.xda.nobar.util.FlashlightControllerMarshmallow
 import com.xda.nobar.util.Utils
@@ -86,7 +84,7 @@ class Actions : AccessibilityService(), Serializable {
         private val audio by lazy { actions.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
         private val imm by lazy { actions.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
         private val wifiManager by lazy { actions.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager }
-        private val prefs by lazy { PreferenceManager.getDefaultSharedPreferences(actions.applicationContext) }
+        private val prefManager by lazy { PrefManager(actions) }
 
         private val handler = Handler()
 
@@ -133,10 +131,10 @@ class Actions : AccessibilityService(), Serializable {
             when(intent?.action) {
                 ACTION -> {
                     val gesture = intent.getStringExtra(EXTRA_GESTURE)
-                    val actionHolder = ActionHolder.getInstance(actions)
+                    val actionHolder = prefManager.actionHolder
                     when (intent.getIntExtra(EXTRA_ACTION, actionHolder.typeNoAction)) {
                         actionHolder.typeHome -> {
-                            if (Utils.useAlternateHome(actions)) {
+                            if (prefManager.useAlternateHome) {
                                 val homeIntent = Intent(Intent.ACTION_MAIN)
                                 homeIntent.addCategory(Intent.CATEGORY_HOME)
                                 homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -224,7 +222,7 @@ class Actions : AccessibilityService(), Serializable {
                         }
                         actionHolder.premTypeLaunchApp -> runPremiumAction {
                             val key = "${gesture}_package"
-                            val launchPackage = prefs.getString(key, null)
+                            val launchPackage = prefManager.getString(key, null)
 
                             if (launchPackage != null) {
                                 val launch = Intent(Intent.ACTION_MAIN)
@@ -240,7 +238,7 @@ class Actions : AccessibilityService(), Serializable {
                         }
                         actionHolder.premTypeLaunchActivity -> runPremiumAction {
                             val key = "${gesture}_activity"
-                            val activity = prefs.getString(key, null) ?: return@runPremiumAction
+                            val activity = prefManager.getString(key, null) ?: return@runPremiumAction
 
                             val p = activity.split("/")[0]
                             val c = activity.split("/")[1]
@@ -289,7 +287,7 @@ class Actions : AccessibilityService(), Serializable {
                             wifiManager.isWifiEnabled = !wifiManager.isWifiEnabled
                         }
                         actionHolder.premTypeIntent -> runPremiumAction {
-                            val broadcast = IntentSelectorActivity.INTENTS[Utils.getIntentKey(actions, gesture)]
+                            val broadcast = IntentSelectorActivity.INTENTS[prefManager.getIntentKey(gesture)]
                             val type = broadcast?.which
 
                             try {

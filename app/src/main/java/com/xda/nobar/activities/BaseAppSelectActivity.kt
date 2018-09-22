@@ -17,6 +17,7 @@ import com.github.lzyzsd.circleprogress.ArcProgress
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.adapters.BaseSelectAdapter
+import com.xda.nobar.prefs.PrefManager
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -26,6 +27,8 @@ import java.util.*
  * Manages the basic logic of each
  */
 abstract class BaseAppSelectActivity<ListItem : Any, Info: Parcelable> : AppCompatActivity(), SearchView.OnQueryTextListener {
+    internal val prefManager by lazy { PrefManager(this) }
+
     internal companion object {
         const val APPINFO = "app_info"
         const val EXTRA_KEY = "key"

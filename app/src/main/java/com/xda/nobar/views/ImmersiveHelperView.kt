@@ -111,7 +111,7 @@ class ImmersiveHelperView(context: Context) : View(context) {
         return when (rotation) {
             Surface.ROTATION_90,
             Surface.ROTATION_270 -> {
-                screenHeight + if (Utils.useTabletMode(context)) if (app.navHidden) navHeight else 0 else 0
+                screenHeight + if (app.prefManager.useTabletMode) if (app.navHidden) navHeight else 0 else 0
             }
             else -> {
                 screenHeight + if (app.navHidden) Utils.getNavBarHeight(context) else 0

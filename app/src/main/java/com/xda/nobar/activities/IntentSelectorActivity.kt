@@ -9,7 +9,6 @@ import com.xda.nobar.R
 import com.xda.nobar.adapters.IntentSelectorAdapter
 import com.xda.nobar.interfaces.OnIntentSelectedListener
 import com.xda.nobar.util.IntentInfo
-import com.xda.nobar.util.Utils
 
 class IntentSelectorActivity : BaseAppSelectActivity<Int, IntentInfo>() {
     companion object {
@@ -92,7 +91,7 @@ class IntentSelectorActivity : BaseAppSelectActivity<Int, IntentInfo>() {
 
     override val adapter by lazy {
         IntentSelectorAdapter(OnIntentSelectedListener {
-            Utils.saveIntentKey(this, it.id, getKey())
+            prefManager.saveIntentKey(getKey(), it.id)
             val resultIntent = Intent()
             resultIntent.putExtra(EXTRA_KEY, intent.getStringExtra(EXTRA_KEY))
             setResult(Activity.RESULT_OK, resultIntent)
@@ -109,7 +108,7 @@ class IntentSelectorActivity : BaseAppSelectActivity<Int, IntentInfo>() {
     override fun loadAppInfo(info: Int): IntentInfo? {
         return IntentInfo(
                 info,
-                Utils.getIntentKey(this, getKey()) == info
+                prefManager.getIntentKey(getKey()) == info
         )
     }
 

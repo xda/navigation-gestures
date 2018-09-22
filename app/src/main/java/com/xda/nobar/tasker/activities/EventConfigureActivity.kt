@@ -30,7 +30,7 @@ class EventConfigureActivity : BaseAppSelectActivity<String, AppInfo>(), TaskerP
         }
     }
 
-    private val actionHolder by lazy { ActionHolder.getInstance(this) }
+    private val actionHolder by lazy { ActionHolder(this) }
 
     override fun assignFromInput(input: TaskerInput<EventInput>) {
         gesture = input.regular.gesture

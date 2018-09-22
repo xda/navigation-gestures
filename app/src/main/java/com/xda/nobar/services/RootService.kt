@@ -40,7 +40,7 @@ class RootService : Service() {
 
     class RootBinder(val service: RootService) : Binder() {
         private val app = service.application as App
-        private val actionHolder = ActionHolder.getInstance(service)
+        private val actionHolder = ActionHolder(service)
 
         fun handle(which: Int) {
             when (which) {

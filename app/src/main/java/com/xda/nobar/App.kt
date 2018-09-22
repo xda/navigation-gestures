@@ -12,6 +12,7 @@ import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.net.Uri
 import android.os.*
+import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
@@ -43,7 +44,7 @@ import java.util.*
 /**
  * Centralize important stuff in the App class, so we can be sure to have an instance of it
  */
-class App : Application(), OnTrayPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
+class App : Application(), OnTrayPreferenceChangeListener, SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
     companion object {
         const val EDGE_TYPE_ACTIVE = 2
 
@@ -80,7 +81,7 @@ class App : Application(), OnTrayPreferenceChangeListener, AppOpsManager.OnOpCha
     private val rootServiceIntent by lazy { Intent(this, RootService::class.java) }
 
     val immersiveHelperView by lazy { ImmersiveHelperView(this) }
-    val prefManager by lazy { PrefManager.getInstance(this) }
+    val prefManager by lazy { PrefManager(this) }
     val screenOffHelper by lazy { ScreenOffHelper(this) }
 
     private var isInOtherWindowApp = false
@@ -149,6 +150,7 @@ class App : Application(), OnTrayPreferenceChangeListener, AppOpsManager.OnOpCha
             isValidPremium = prefManager.validPrem
 
             prefManager.registerOnTrayPreferenceChangeListener(this)
+            PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this)
 
             refreshPremium()
 
@@ -231,6 +233,10 @@ class App : Application(), OnTrayPreferenceChangeListener, AppOpsManager.OnOpCha
                 }
             }
         }
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+        prefManager.put(key, sharedPreferences.all[key])
     }
 
     override fun onOpChanged(op: String?, packageName: String?) {

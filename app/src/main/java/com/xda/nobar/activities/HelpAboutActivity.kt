@@ -11,7 +11,7 @@ import android.widget.Toast
 import com.crashlytics.android.Crashlytics
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.R
-import com.xda.nobar.util.Utils
+import com.xda.nobar.prefs.PrefManager
 
 /**
  * Information about the app
@@ -168,6 +168,8 @@ class HelpAboutActivity : AppCompatActivity() {
                 true
             }
 
+            updateCrashlyticsId(switch.isChecked)
+
             id.setOnPreferenceClickListener {
                 if (!it.summary.isNullOrBlank()) {
                     val cm = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -184,7 +186,7 @@ class HelpAboutActivity : AppCompatActivity() {
         private fun updateCrashlyticsId(enabled: Boolean) {
             val id = findPreference("crashlytics_id")
 
-            id.summary = if (enabled) Utils.getCrashlyticsId(activity) else ""
+            id.summary = if (enabled) PrefManager(activity).crashlyticsId else ""
             Crashlytics.setUserIdentifier(id.summary.toString())
         }
     }
