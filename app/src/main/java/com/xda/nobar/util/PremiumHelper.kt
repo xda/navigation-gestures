@@ -37,6 +37,11 @@ class PremiumHelper(private val context: Context, private val listener: OnLicens
         }
     }
 
+    init {
+        val filter = IntentFilter("com.xda.nobar.action.PREMIUM_RESULT")
+        context.registerReceiver(receiver, filter, "com.xda.nobar.permission.VERIFY_LICENSE", null)
+    }
+
     fun checkPremium() {
         if (context.checkCallingOrSelfPermission(Manifest.permission.GET_ACCOUNTS) == PackageManager.PERMISSION_GRANTED) {
             val accounts = AccountManager.get(context).accounts
@@ -51,11 +56,6 @@ class PremiumHelper(private val context: Context, private val listener: OnLicens
         }
 
         checkInternal()
-    }
-
-    init {
-        val filter = IntentFilter("com.xda.nobar.action.PREMIUM_RESULT")
-        context.registerReceiver(receiver, filter, "com.xda.nobar.permission.VERIFY_LICENSE", null)
     }
 
     private fun checkInternal() {

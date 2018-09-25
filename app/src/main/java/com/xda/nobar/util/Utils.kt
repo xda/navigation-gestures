@@ -143,7 +143,7 @@ object Utils {
 
         if (nColor != color.toString()) prefManager.navigationBarColor = nColor
         if (nCurrentColor != color.toString()) prefManager.navigationBarCurrentColor = nCurrentColor
-        if (nUTD != color.toString()) prefManager.navigationBarUseThemeDefault = nUTD
+        if (nUTD != "0") prefManager.navigationBarUseThemeDefault = nUTD
 
         if (!IntroActivity.needsToRun(context) && prefManager.shouldUseOverscanMethod && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             Settings.Global.putInt(context.contentResolver, PrefManager.NAVIGATIONBAR_COLOR, color)

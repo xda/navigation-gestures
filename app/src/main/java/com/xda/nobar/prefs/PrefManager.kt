@@ -2,21 +2,15 @@ package com.xda.nobar.prefs
 
 import android.content.Context
 import android.graphics.Color
-import android.preference.Preference
-import android.preference.PreferenceGroup
-import android.preference.PreferenceScreen
-import android.text.TextUtils
+import android.preference.PreferenceManager
 import com.xda.nobar.R
 import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.Utils
-import net.grandcentrix.tray.TrayPreferences
-import net.grandcentrix.tray.core.SharedPreferencesImport
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 import kotlin.collections.HashSet
 import kotlin.collections.set
 
-class PrefManager private constructor(context: Context) : TrayPreferences(context, "prefs", 1) {
+class PrefManager private constructor(private val context: Context) {
     companion object {
         /* Booleans */
         const val IS_ACTIVE = "is_active"
@@ -87,8 +81,6 @@ class PrefManager private constructor(context: Context) : TrayPreferences(contex
         const val SUFFIX_PACKAGE = "_package"
         const val SUFFIX_DISPLAYNAME = "_displayname"
 
-        const val OLD_NAME = "com.xda.nobar_preferences"
-
         private var instance: PrefManager? = null
 
         fun getInstance(context: Context): PrefManager {
@@ -97,10 +89,12 @@ class PrefManager private constructor(context: Context) : TrayPreferences(contex
         }
     }
 
-    val actionHolder by lazy { ActionHolder(context) }
+    private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+
+    val actionHolder = ActionHolder(context)
 
     val crashlyticsIdEnabled: Boolean
-        get() = getBoolean(ENABLE_CRASHLYTICS_ID, false)
+        get() = prefs.getBoolean(ENABLE_CRASHLYTICS_ID, false)
     val useAlternateHome: Boolean
         get() = getBoolean(ALTERNATE_HOME, context.resources.getBoolean(R.bool.alternate_home_default))
     val shouldntKeepOverscanOnLock: Boolean
@@ -110,7 +104,7 @@ class PrefManager private constructor(context: Context) : TrayPreferences(contex
     var shouldUseOverscanMethod: Boolean
         get() = getBoolean(HIDE_NAV, false)
         set(value) {
-            put(HIDE_NAV, value)
+            putBoolean(HIDE_NAV, value)
         }
     val shouldShowShadow: Boolean
         get() = getBoolean(SHOW_SHADOW, context.resources.getBoolean(R.bool.show_shadow_default))
@@ -127,7 +121,7 @@ class PrefManager private constructor(context: Context) : TrayPreferences(contex
     var firstRun: Boolean
         get() = getBoolean(FIRST_RUN, true)
         set(value) {
-            put(FIRST_RUN, value)
+            putBoolean(FIRST_RUN, value)
         }
     var useRoot: Boolean = false
     val hideInFullscreen: Boolean
@@ -153,26 +147,26 @@ class PrefManager private constructor(context: Context) : TrayPreferences(contex
     var useImmersiveWhenNavHidden: Boolean
         get() = getBoolean(USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN, context.resources.getBoolean(R.bool.immersive_nav_default))
         set(value) {
-            put(USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN, value)
+            putBoolean(USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN, value)
         }
     val autoHide: Boolean
         get() = getBoolean(AUTO_HIDE_PILL, context.resources.getBoolean(R.bool.auto_hide_default))
     var validPrem: Boolean
         get() = getBoolean(VALID_PREM, false)
         set(value) {
-            put(VALID_PREM, value)
+            putBoolean(VALID_PREM, value)
         }
     var isActive: Boolean
         get() = getBoolean(IS_ACTIVE, false)
         set(value) {
-            put(IS_ACTIVE, value)
+            putBoolean(IS_ACTIVE, value)
         }
     val navHidden: Boolean
         get() = getBoolean(HIDE_NAV, false)
     var showHiddenToast: Boolean
         get() = getBoolean(SHOW_HIDDEN_TOAST, true)
         set(value) {
-            put(SHOW_HIDDEN_TOAST, value)
+            putBoolean(SHOW_HIDDEN_TOAST, value)
         }
 
     /**
@@ -188,25 +182,25 @@ class PrefManager private constructor(context: Context) : TrayPreferences(contex
     val pillFGColor: Int
         get() = getInt(PILL_FG, Utils.getDefaultPillFGColor(context))
     val pillCornerRadiusDp: Int
-        get() = getFloat(PILL_CORNER_RADIUS, context.resources.getInteger(R.integer.default_corner_radius_dp).toFloat()).toInt()
+        get() = getInt(PILL_CORNER_RADIUS, context.resources.getInteger(R.integer.default_corner_radius_dp))
     val pillCornerRadiusPx: Int
         get() = Utils.dpAsPx(context, pillCornerRadiusDp)
     val animationDurationMs: Int
-        get() = getFloat(ANIM_DURATION, context.resources.getInteger(R.integer.default_anim_duration).toFloat()).toInt()
+        get() = getInt(ANIM_DURATION, context.resources.getInteger(R.integer.default_anim_duration))
     val xThresholdDp: Int
-        get() = getFloat(X_THRESHOLD, context.resources.getInteger(R.integer.default_x_threshold_dp).toFloat()).toInt()
+        get() = getInt(X_THRESHOLD, context.resources.getInteger(R.integer.default_x_threshold_dp))
     val yThresholdDp: Int
-        get() = getFloat(Y_THRESHOLD, context.resources.getInteger(R.integer.default_y_threshold_dp).toFloat()).toInt()
+        get() = getInt(Y_THRESHOLD, context.resources.getInteger(R.integer.default_y_threshold_dp))
     val xThresholdPx: Int
         get() = Utils.dpAsPx(context, xThresholdDp)
     val yThresholdPx: Int
         get() = Utils.dpAsPx(context, yThresholdDp)
     val autoHideTime: Int
-        get() = getFloat(AUTO_HIDE_PILL_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time).toFloat()).toInt()
+        get() = getInt(AUTO_HIDE_PILL_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
     val hideInFullscreenTime: Int
-        get() = getFloat(HIDE_IN_FULLSCREEN_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time).toFloat()).toInt()
+        get() = getInt(HIDE_IN_FULLSCREEN_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
     val hideOnKeyboardTime: Int
-        get() = getFloat(HIDE_PILL_ON_KEYBOARD_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time).toFloat()).toInt()
+        get() = getInt(HIDE_PILL_ON_KEYBOARD_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
     val homeY: Int
         get() {
             val percent = (homeYPercent / 100f)
@@ -217,31 +211,31 @@ class PrefManager private constructor(context: Context) : TrayPreferences(contex
                 (percent * Utils.getRealScreenSize(context).y).toInt()
         }
     val homeYPercent: Int
-        get() = (getFloat(CUSTOM_Y_PERCENT, defaultYPercent.toFloat()) * 0.05f).toInt()
+        get() = (getInt(CUSTOM_Y_PERCENT, defaultYPercent) * 0.05f).toInt()
     val homeX: Int
         get() {
             val percent = (homeXPercent / 100f)
             val screenWidthHalf = Utils.getRealScreenSize(context).x / 2f - customWidth / 2f
 
             return if (usePixelsX)
-                getFloat(CUSTOM_X, 0f).toInt()
+                getInt(CUSTOM_X, 0)
             else
                 (percent * screenWidthHalf).toInt()
         }
     val homeXPercent: Int
-        get() = (getFloat(CUSTOM_X_PERCENT, context.resources.getInteger(R.integer.default_pill_x_pos_percent).toFloat()) / 10f).toInt()
+        get() = (getInt(CUSTOM_X_PERCENT, context.resources.getInteger(R.integer.default_pill_x_pos_percent)) / 10f).toInt()
     val customWidth: Int
         get() {
             val percent = (customWidthPercent / 100f)
             val screenWidth = Utils.getRealScreenSize(context).x
 
             return if (usePixelsW)
-                getFloat(CUSTOM_WIDTH, context.resources.getDimensionPixelSize(R.dimen.pill_width_default).toFloat()).toInt()
+                getInt(CUSTOM_WIDTH, context.resources.getDimensionPixelSize(R.dimen.pill_width_default))
             else
                 (percent * screenWidth).toInt()
         }
     val customWidthPercent: Int
-        get() = (getFloat(CUSTOM_WIDTH_PERCENT, context.resources.getInteger(R.integer.default_pill_width_percent).toFloat()) / 10f).toInt()
+        get() = (getInt(CUSTOM_WIDTH_PERCENT, context.resources.getInteger(R.integer.default_pill_width_percent)) / 10f).toInt()
     val customHeight: Int
         get() {
             var defHeight = customHeightWithoutHitbox
@@ -254,464 +248,47 @@ class PrefManager private constructor(context: Context) : TrayPreferences(contex
             val percent = (customHeightPercent / 100f)
 
             return if (usePixelsH)
-                getFloat(CUSTOM_HEIGHT, context.resources.getDimensionPixelSize(R.dimen.pill_height_default).toFloat()).toInt()
+                getInt(CUSTOM_HEIGHT, context.resources.getDimensionPixelSize(R.dimen.pill_height_default))
             else
                 (percent * Utils.getRealScreenSize(context).y).toInt()
         }
     val customHeightPercent: Int
-        get() = (getFloat(CUSTOM_HEIGHT_PERCENT, context.resources.getInteger(R.integer.default_pill_height_percent).toFloat()) / 10f).toInt()
+        get() = (getInt(CUSTOM_HEIGHT_PERCENT, context.resources.getInteger(R.integer.default_pill_height_percent)) / 10f).toInt()
     val defaultYPercent: Int
         get() = ((Utils.getNavBarHeight(context) / 2f - customHeight / 2f) / Utils.getRealScreenSize(context).y * 2000f).toInt()
     val defaultY: Int
         get() = ((Utils.getNavBarHeight(context) / 2f - customHeight / 2f)).toInt()
     val holdTime: Int
-        get() = getFloat(HOLD_TIME, context.resources.getInteger(R.integer.default_hold_time).toFloat()).toInt()
+        get() = getInt(HOLD_TIME, context.resources.getInteger(R.integer.default_hold_time))
     val vibrationDuration: Int
-        get() = getFloat(VIBRATION_DURATION, context.resources.getInteger(R.integer.default_vibe_time).toFloat()).toInt()
+        get() = getInt(VIBRATION_DURATION, context.resources.getInteger(R.integer.default_vibe_time))
 
     val crashlyticsId: String?
         get() = getString(CRASHLYTICS_ID, null)
     var navigationBarColor: String?
         get() = getString(NAVIGATIONBAR_COLOR, Color.BLACK.toString())
         set(value) {
-            put(NAVIGATIONBAR_COLOR, value)
+            if (value == null) remove(NAVIGATIONBAR_COLOR)
+            else putString(NAVIGATIONBAR_COLOR, value)
         }
     var navigationBarCurrentColor: String?
         get() = getString(NAVIGATIONBAR_CURRENT_COLOR, Color.BLACK.toString())
         set(value) {
-            put(NAVIGATIONBAR_CURRENT_COLOR, value)
+            if (value == null) remove(NAVIGATIONBAR_CURRENT_COLOR)
+            else putString(NAVIGATIONBAR_CURRENT_COLOR, value)
         }
     var navigationBarUseThemeDefault: String?
         get() = getString(NAVIGATIONBAR_USE_THEME_DEFAULT, Color.BLACK.toString())
         set(value) {
-            put(NAVIGATIONBAR_USE_THEME_DEFAULT, value)
+            if (value == null) remove(NAVIGATIONBAR_USE_THEME_DEFAULT)
+            else putString(NAVIGATIONBAR_USE_THEME_DEFAULT, value)
         }
 
-    override fun onCreate(initialVersion: Int) {
-        super.onCreate(initialVersion)
-
-        //Migrate Booleans
-        migrate(
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        IS_ACTIVE,
-                        IS_ACTIVE
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        HIDE_NAV,
-                        HIDE_NAV
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        USE_ROOT,
-                        USE_ROOT
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        ROT270_FIX,
-                        ROT270_FIX
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        ROT180_FIX,
-                        ROT180_FIX
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        TABLET_MODE,
-                        TABLET_MODE
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        ENABLE_IN_CAR_MODE,
-                        ENABLE_IN_CAR_MODE
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN,
-                        USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        HIDE_PILL_ON_KEYBOARD,
-                        HIDE_PILL_ON_KEYBOARD
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        FULL_OVERSCAN,
-                        FULL_OVERSCAN
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        VALID_PREM,
-                        VALID_PREM
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        USE_PIXELS_WIDTH,
-                        USE_PIXELS_WIDTH
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        USE_PIXELS_HEIGHT,
-                        USE_PIXELS_HEIGHT
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        USE_PIXELS_X,
-                        USE_PIXELS_X
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        USE_PIXELS_Y,
-                        USE_PIXELS_Y
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        SHOW_SHADOW,
-                        SHOW_SHADOW
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        STATIC_PILL,
-                        STATIC_PILL
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        AUDIO_FEEDBACK,
-                        AUDIO_FEEDBACK
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        LARGER_HITBOX,
-                        LARGER_HITBOX
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        AUTO_HIDE_PILL,
-                        AUTO_HIDE_PILL
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        SHOW_HIDDEN_TOAST,
-                        SHOW_HIDDEN_TOAST
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        ENABLE_CRASHLYTICS_ID,
-                        ENABLE_CRASHLYTICS_ID
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        ALTERNATE_HOME,
-                        ALTERNATE_HOME
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        FIRST_RUN,
-                        FIRST_RUN
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        HIDE_IN_FULLSCREEN,
-                        HIDE_IN_FULLSCREEN
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        ORIG_NAV_IN_IMMERSIVE,
-                        ORIG_NAV_IN_IMMERSIVE
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        SECTIONED_PILL,
-                        SECTIONED_PILL
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        LOCKSCREEN_OVERSCAN,
-                        LOCKSCREEN_OVERSCAN
-                )
-        )
-
-        //Migrate Numbers
-        migrate(
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        CUSTOM_WIDTH_PERCENT,
-                        CUSTOM_WIDTH_PERCENT
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        CUSTOM_WIDTH,
-                        CUSTOM_WIDTH
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        CUSTOM_HEIGHT_PERCENT,
-                        CUSTOM_HEIGHT_PERCENT
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        CUSTOM_HEIGHT,
-                        CUSTOM_HEIGHT
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        CUSTOM_X_PERCENT,
-                        CUSTOM_X_PERCENT
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        CUSTOM_X,
-                        CUSTOM_X
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        CUSTOM_Y_PERCENT,
-                        CUSTOM_Y_PERCENT
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        CUSTOM_Y,
-                        CUSTOM_Y
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        PILL_BG,
-                        PILL_BG
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        PILL_FG,
-                        PILL_FG
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        PILL_CORNER_RADIUS,
-                        PILL_CORNER_RADIUS
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        HOLD_TIME,
-                        HOLD_TIME
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        VIBRATION_DURATION,
-                        VIBRATION_DURATION
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        NAVIGATIONBAR_COLOR,
-                        NAVIGATIONBAR_COLOR
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        NAVIGATIONBAR_CURRENT_COLOR,
-                        NAVIGATIONBAR_CURRENT_COLOR
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        NAVIGATIONBAR_USE_THEME_DEFAULT,
-                        NAVIGATIONBAR_USE_THEME_DEFAULT
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        ANIM_DURATION,
-                        ANIM_DURATION
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        X_THRESHOLD,
-                        X_THRESHOLD
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        Y_THRESHOLD,
-                        Y_THRESHOLD
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        AUTO_HIDE_PILL_PROGRESS,
-                        AUTO_HIDE_PILL_PROGRESS
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        HIDE_IN_FULLSCREEN_PROGRESS,
-                        HIDE_IN_FULLSCREEN_PROGRESS
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        HIDE_PILL_ON_KEYBOARD_PROGRESS,
-                        HIDE_PILL_ON_KEYBOARD_PROGRESS
-                )
-        )
-
-        //Migrate Strings
-        migrate(
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        CRASHLYTICS_ID,
-                        CRASHLYTICS_ID
-                )
-        )
-
-        //Migrate Lists
-        migrateList(
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        BLACKLISTED_NAV_APPS,
-                        BLACKLISTED_NAV_APPS
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        BLACKLISTED_BAR_APPS,
-                        BLACKLISTED_BAR_APPS
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        BLACKLISTED_IMM_APPS,
-                        BLACKLISTED_IMM_APPS
-                ),
-                SharedPreferencesImport(
-                        context,
-                        OLD_NAME,
-                        OTHER_WINDOW_APPS,
-                        OTHER_WINDOW_APPS
-                )
-        )
-
-        //Actions, Intents, Apps, Activities
-        ActionHolder(context).actionsList.forEach {
-            migrate(
-                    SharedPreferencesImport(
-                            context,
-                            OLD_NAME,
-                            it,
-                            it
-                    ),
-                    SharedPreferencesImport(
-                            context,
-                            OLD_NAME,
-                            it + SUFFIX_INTENT,
-                            it + SUFFIX_INTENT
-                    ),
-                    SharedPreferencesImport(
-                            context,
-                            OLD_NAME,
-                            it + SUFFIX_ACTIVITY,
-                            it + SUFFIX_ACTIVITY
-                    ),
-                    SharedPreferencesImport(
-                            context,
-                            OLD_NAME,
-                            it + SUFFIX_PACKAGE,
-                            it + SUFFIX_PACKAGE
-                    ),
-                    SharedPreferencesImport(
-                            context,
-                            OLD_NAME,
-                            it + SUFFIX_DISPLAYNAME,
-                            it + SUFFIX_DISPLAYNAME
-                    )
-            )
-        }
-    }
-
-    fun put(key: String, list: Set<*>) {
-        val string = TextUtils.join(",", list)
-        put(key, string)
-    }
-
-    fun put(key: String, obj: Any?) {
-        if (obj == null) remove(key)
-        else when (obj) {
-            is String -> put(key, obj)
-            is Int -> put(key, obj)
-            is Float -> put(key, obj)
-            is Long -> put(key, obj)
-            is Boolean -> put(key, obj)
-            is Set<*> -> put(key, obj)
-        }
-    }
-
-    fun getStringSet(key: String, def: Set<String>): Set<String> {
-        val saved = getString(key, null) ?: return def
-        return HashSet<String>(saved.split(","))
-    }
-
-    fun migrateList(vararg migration: SharedPreferencesImport) {
-        migration.forEach {
-            val data = it.data as? Set<*> ?: return@forEach
-
-            val key = it.trayKey
-            val migrationKey = it.previousKey
-            // save into tray
-            storage.put(key, migrationKey, data)
-
-            // return the saved data.
-            val item = storage.get(key)
-            it.onPostMigrate(item)
-        }
-    }
-
-    fun getIntentKey(baseKey: String?) = getInt(baseKey + SUFFIX_INTENT, 0)
-    fun saveIntentKey(baseKey: String?, res: Int) = put(baseKey + SUFFIX_INTENT, res)
+    fun getIntentKey(baseKey: String) = getInt(baseKey + SUFFIX_INTENT, 0)
+    fun saveIntentKey(baseKey: String?, res: Int) = putInt(baseKey + SUFFIX_INTENT, res)
+    fun getPackage(baseKey: String) = getString("$baseKey$SUFFIX_PACKAGE")
+    fun getActivity(baseKey: String) = getString("$baseKey$SUFFIX_ACTIVITY")
+    fun getDisplayName(baseKey: String) = getString("$baseKey$SUFFIX_DISPLAYNAME")
 
     /**
      * Load the actions corresponding to each gesture
@@ -786,49 +363,34 @@ class PrefManager private constructor(context: Context) : TrayPreferences(contex
      * Save the list of apps that should keep the navbar shown
      */
     fun saveBlacklistedNavPackageList(packages: ArrayList<String>) =
-                    put(BLACKLISTED_NAV_APPS, HashSet<String>(packages))
+            putStringSet(BLACKLISTED_NAV_APPS, HashSet<String>(packages))
 
     /**
      * Save the list of apps where the pill shouldn't be shown
      */
     fun saveBlacklistedBarPackages(packages: ArrayList<String>) =
-            put(BLACKLISTED_BAR_APPS, HashSet<String>(packages))
+            putStringSet(BLACKLISTED_BAR_APPS, HashSet<String>(packages))
 
     /**
      * Save the list of apps where immersive navigation should be disabled
      */
     fun saveBlacklistedImmPackages(packages: ArrayList<String>) =
-                    put(BLACKLISTED_IMM_APPS, HashSet<String>(packages))
+            putStringSet(BLACKLISTED_IMM_APPS, HashSet<String>(packages))
 
     fun saveOtherWindowApps(packages: ArrayList<String>) =
-            put(OTHER_WINDOW_APPS, HashSet<String>(packages))
+            putStringSet(OTHER_WINDOW_APPS, HashSet<String>(packages))
 
-    fun setPreferenceListeners(screen: PreferenceScreen) {
-//        val list = ArrayList<Preference>()
-//        for (i in 0 until screen.preferenceCount) {
-//            val pref = screen.getPreference(i)
-//
-//            if (pref is PreferenceGroup) list.addAll(loopPreferenceGroup(pref))
-//            else list.add(pref)
-//        }
-//
-//        list.forEach {
-//            it.setOnPreferenceChangeListener { preference, newValue ->
-//                put(preference.key, newValue)
-//                true
-//            }
-//        }
-    }
+    fun getBoolean(key: String, def: Boolean) = prefs.getBoolean(key, def)
+    fun getFloat(key: String, def: Float) = prefs.getFloat(key, def)
+    fun getInt(key: String, def: Int) = prefs.getInt(key, def)
+    fun getString(key: String, def: String? = null) = prefs.getString(key, def)
+    fun getStringSet(key: String, def: Set<String>) = prefs.getStringSet(key, def)
 
-    private fun loopPreferenceGroup(group: PreferenceGroup): ArrayList<Preference> {
-        val list = ArrayList<Preference>()
-        for (i in 0 until group.preferenceCount) {
-            val pref = group.getPreference(i)
+    fun remove(key: String) = prefs.edit().remove(key).apply()
 
-            if (pref is PreferenceGroup) list.addAll(loopPreferenceGroup(pref))
-            else list.add(pref)
-        }
-
-        return list
-    }
+    fun putBoolean(key: String, value: Boolean) = prefs.edit().putBoolean(key, value).apply()
+    fun putFloat(key: String, value: Float) = prefs.edit().putFloat(key, value).apply()
+    fun putInt(key: String, value: Int) = prefs.edit().putInt(key, value).apply()
+    fun putString(key: String, value: String) = prefs.edit().putString(key, value).apply()
+    fun putStringSet(key: String, set: Set<String>) = prefs.edit().putStringSet(key, set).apply()
 }

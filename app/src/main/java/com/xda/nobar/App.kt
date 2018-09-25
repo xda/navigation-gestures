@@ -16,7 +16,6 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -37,15 +36,13 @@ import com.xda.nobar.util.*
 import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.ImmersiveHelperView
-import net.grandcentrix.tray.core.OnTrayPreferenceChangeListener
-import net.grandcentrix.tray.core.TrayItem
 import java.util.*
 
 
 /**
  * Centralize important stuff in the App class, so we can be sure to have an instance of it
  */
-class App : Application(), OnTrayPreferenceChangeListener, SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
+class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
     companion object {
         const val EDGE_TYPE_ACTIVE = 2
 
@@ -150,7 +147,6 @@ class App : Application(), OnTrayPreferenceChangeListener, SharedPreferences.OnS
 
             isValidPremium = prefManager.validPrem
 
-            prefManager.registerOnTrayPreferenceChangeListener(this)
             PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this)
 
             refreshPremium()
@@ -185,59 +181,53 @@ class App : Application(), OnTrayPreferenceChangeListener, SharedPreferences.OnS
         return !procName.contains("action")
     }
 
-    override fun onTrayPreferenceChanged(items: MutableCollection<TrayItem>?) {
-        items?.forEach {item ->
-            when (item.key()) {
-                PrefManager.IS_ACTIVE -> {
-                    gestureListeners.forEach { it.onGestureStateChange(bar, prefManager.isActive) }
-                }
-                PrefManager.HIDE_NAV -> {
-                    navbarListeners.forEach { it.onNavStateChange(prefManager.navHidden) }
-                }
-                PrefManager.USE_ROOT -> {
-                    if (prefManager.useRoot) {
-                        startService(rootServiceIntent)
-                        ensureRootServiceBound()
-                    } else {
-                        stopService(rootServiceIntent)
-                    }
-                }
-                PrefManager.ROT270_FIX -> {
-                    if (prefManager.useRot270Fix) uiHandler.handleRot()
-                }
-                PrefManager.ROT180_FIX -> {
-                    if (prefManager.useRot180Fix) uiHandler.handleRot()
-                }
-                "tablet_mode" -> {
-                    if (prefManager.useTabletMode) uiHandler.handleRot()
-                }
-                "enable_in_car_mode" -> {
-                    val enabled = prefManager.enableInCarMode
-                    if (um.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
-                        if (enabled) {
-                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                            if (areGesturesActivated() && !pillShown) addBar(false)
-                        } else {
-                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                            if (areGesturesActivated() && !pillShown) removeBar(false)
-                        }
-                    }
-                }
-                "use_immersive_mode_when_nav_hidden" -> {
-                    BaseProvider.sendUpdate(this)
-                }
-                "hide_pill_on_keyboard" -> {
-                    uiHandler.onGlobalLayout()
-                }
-                "full_overscan" -> {
-                    if (prefManager.shouldUseOverscanMethod) hideNav(false)
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+        when (key) {
+            PrefManager.IS_ACTIVE -> {
+                gestureListeners.forEach { it.onGestureStateChange(bar, prefManager.isActive) }
+            }
+            PrefManager.HIDE_NAV -> {
+                navbarListeners.forEach { it.onNavStateChange(prefManager.navHidden) }
+            }
+            PrefManager.USE_ROOT -> {
+                if (prefManager.useRoot) {
+                    startService(rootServiceIntent)
+                    ensureRootServiceBound()
+                } else {
+                    stopService(rootServiceIntent)
                 }
             }
+            PrefManager.ROT270_FIX -> {
+                if (prefManager.useRot270Fix) uiHandler.handleRot()
+            }
+            PrefManager.ROT180_FIX -> {
+                if (prefManager.useRot180Fix) uiHandler.handleRot()
+            }
+            PrefManager.TABLET_MODE -> {
+                if (prefManager.useTabletMode) uiHandler.handleRot()
+            }
+            PrefManager.ENABLE_IN_CAR_MODE -> {
+                val enabled = prefManager.enableInCarMode
+                if (um.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
+                    if (enabled) {
+                        disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
+                        if (areGesturesActivated() && !pillShown) addBar(false)
+                    } else {
+                        disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
+                        if (areGesturesActivated() && !pillShown) removeBar(false)
+                    }
+                }
+            }
+            PrefManager.USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN -> {
+                BaseProvider.sendUpdate(this)
+            }
+            PrefManager.HIDE_PILL_ON_KEYBOARD -> {
+                uiHandler.onGlobalLayout()
+            }
+            PrefManager.FULL_OVERSCAN -> {
+                if (prefManager.shouldUseOverscanMethod) hideNav(false)
+            }
         }
-    }
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        prefManager.put(key, sharedPreferences.all[key])
     }
 
     override fun onOpChanged(op: String?, packageName: String?) {

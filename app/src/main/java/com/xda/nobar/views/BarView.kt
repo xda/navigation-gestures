@@ -8,6 +8,7 @@ import android.app.ActivityManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
@@ -15,6 +16,7 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.AttributeSet
 import android.view.*
@@ -25,12 +27,11 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import com.xda.nobar.App
 import com.xda.nobar.R
+import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.services.Actions
 import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.HiddenPillReasonManager
 import com.xda.nobar.util.Utils
-import net.grandcentrix.tray.core.OnTrayPreferenceChangeListener
-import net.grandcentrix.tray.core.TrayItem
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
@@ -40,7 +41,7 @@ import kotlin.math.absoluteValue
 /**
  * The Pill™©® (not really copyrighted)
  */
-class BarView : LinearLayout, OnTrayPreferenceChangeListener {
+class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener {
     companion object {
         const val ALPHA_HIDDEN = 0.2f
         const val ALPHA_ACTIVE = 1.0f
@@ -112,7 +113,7 @@ class BarView : LinearLayout, OnTrayPreferenceChangeListener {
         alpha = ALPHA_GONE
 
         gestureDetector.loadActionMap()
-        app.prefManager.registerOnTrayPreferenceChangeListener(this)
+        PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(this)
         isSoundEffectsEnabled = app.prefManager.feedbackSound
 
         val layers = pill.background as LayerDrawable
@@ -165,108 +166,102 @@ class BarView : LinearLayout, OnTrayPreferenceChangeListener {
         return gestureDetector.onTouchEvent(event)
     }
 
-    override fun onTrayPreferenceChanged(items: MutableCollection<TrayItem>?) {
-        handler?.post {
-            items?.forEach {
-                val key = it.key()
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        if (gestureDetector.actionMap.keys.contains(key)) {
+            gestureDetector.loadActionMap()
+        }
 
-                if (gestureDetector.actionMap.keys.contains(key)) {
-                    gestureDetector.loadActionMap()
-                }
+        if (key != null && key.contains("use_pixels")) {
+            params.width = app.prefManager.customWidth
+            params.height = app.prefManager.customHeight
+            params.x = getAdjustedHomeX()
+            params.y = getAdjustedHomeY()
+            updateLayout(params)
+        }
+        if (key == "custom_width_percent" || key == "custom_width") {
+            params.width = app.prefManager.customWidth
+            params.x = getAdjustedHomeX()
+            updateLayout(params)
+        }
+        if (key == "custom_height_percent" || key == "custom_height") {
+            params.height = app.prefManager.customHeight
+            params.y = getAdjustedHomeY()
+            updateLayout(params)
+        }
+        if (key == "custom_y_percent" || key == "custom_y") {
+            params.y = getAdjustedHomeY()
+            updateLayout(params)
+        }
+        if (key == "custom_x_percent" || key == "custom_x") {
+            params.x = getAdjustedHomeX()
+            updateLayout(params)
+        }
+        if (key == "pill_bg" || key == "pill_fg") {
+            val layers = pill.background as LayerDrawable
+            (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
+                setColor(app.prefManager.pillBGColor)
+            }
+            (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
+                setStroke(Utils.dpAsPx(context, 1), app.prefManager.pillFGColor)
+            }
+        }
+        if (key == "show_shadow") {
+            val shadow = app.prefManager.shouldShowShadow
+            pill.elevation = Utils.dpAsPx(context, if (shadow) 2 else 0).toFloat()
 
-                if (key != null && key.contains("use_pixels")) {
-                    params.width = app.prefManager.customWidth
-                    params.height = app.prefManager.customHeight
-                    params.x = getAdjustedHomeX()
-                    params.y = getAdjustedHomeY()
-                    updateLayout(params)
-                }
-                if (key == "custom_width_percent" || key == "custom_width") {
-                    params.width = app.prefManager.customWidth
-                    params.x = getAdjustedHomeX()
-                    updateLayout(params)
-                }
-                if (key == "custom_height_percent" || key == "custom_height") {
-                    params.height = app.prefManager.customHeight
-                    params.y = getAdjustedHomeY()
-                    updateLayout(params)
-                }
-                if (key == "custom_y_percent" || key == "custom_y") {
-                    params.y = getAdjustedHomeY()
-                    updateLayout(params)
-                }
-                if (key == "custom_x_percent" || key == "custom_x") {
-                    params.x = getAdjustedHomeX()
-                    updateLayout(params)
-                }
-                if (key == "pill_bg" || key == "pill_fg") {
-                    val layers = pill.background as LayerDrawable
-                    (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-                        setColor(app.prefManager.pillBGColor)
-                    }
-                    (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-                        setStroke(Utils.dpAsPx(context, 1), app.prefManager.pillFGColor)
-                    }
-                }
-                if (key == "show_shadow") {
-                    val shadow = app.prefManager.shouldShowShadow
-                    pill.elevation = Utils.dpAsPx(context, if (shadow) 2 else 0).toFloat()
+            (pill.layoutParams as FrameLayout.LayoutParams).apply {
+                marginEnd = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_RIGHT_DP) else 0
+                marginStart = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_LEFT_DP) else 0
+                bottomMargin = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_BOTTOM_DP) else 0
 
-                    (pill.layoutParams as FrameLayout.LayoutParams).apply {
-                        marginEnd = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_RIGHT_DP) else 0
-                        marginStart = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_LEFT_DP) else 0
-                        bottomMargin = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_BOTTOM_DP) else 0
+                pill.layoutParams = this
+            }
+        }
+        if (key == "static_pill") {
+            if (app.prefManager.dontMoveForKeyboard) {
+                params.flags = params.flags or
+                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
+                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+            } else {
+                params.flags = params.flags or
+                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM and
+                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
+                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+            }
 
-                        pill.layoutParams = this
-                    }
-                }
-                if (key == "static_pill") {
-                    if (app.prefManager.dontMoveForKeyboard) {
-                        params.flags = params.flags or
-                                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
-                                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                        params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
-                    } else {
-                        params.flags = params.flags or
-                                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM and
-                                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
-                        params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-                    }
-
-                    updateLayout(params)
-                }
-                if (key == "audio_feedback") {
-                    isSoundEffectsEnabled = app.prefManager.feedbackSound
-                }
-                if (key == "pill_corner_radius") {
-                    val layers = pill.background as LayerDrawable
-                    (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-                        cornerRadius = Utils.dpAsPx(context, app.prefManager.pillCornerRadiusDp).toFloat()
-                    }
-                    (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-                        cornerRadius = Utils.dpAsPx(context, app.prefManager.pillCornerRadiusDp).toFloat()
-                    }
-                    (pillFlash.background as GradientDrawable).apply {
-                        cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
-                    }
-                }
-                if (key == "larger_hitbox") {
-                    val enabled = app.prefManager.largerHitbox
-                    val margins = getPillMargins()
-                    params.height = app.prefManager.customHeight
-                    params.y = app.prefManager.homeY
-                    margins.top = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
-                    changePillMargins(margins)
-                    updateLayout(params)
-                }
-                if (key == "auto_hide_pill") {
-                    if (app.prefManager.autoHide) {
-                        hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
-                        if (!isHidden) scheduleHide()
-                    } else {
-                        if (isHidden) showPill(HiddenPillReasonManager.AUTO)
-                    }
-                }
+            updateLayout(params)
+        }
+        if (key == "audio_feedback") {
+            isSoundEffectsEnabled = app.prefManager.feedbackSound
+        }
+        if (key == "pill_corner_radius") {
+            val layers = pill.background as LayerDrawable
+            (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
+                cornerRadius = Utils.dpAsPx(context, app.prefManager.pillCornerRadiusDp).toFloat()
+            }
+            (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
+                cornerRadius = Utils.dpAsPx(context, app.prefManager.pillCornerRadiusDp).toFloat()
+            }
+            (pillFlash.background as GradientDrawable).apply {
+                cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
+            }
+        }
+        if (key == "larger_hitbox") {
+            val enabled = app.prefManager.largerHitbox
+            val margins = getPillMargins()
+            params.height = app.prefManager.customHeight
+            params.y = app.prefManager.homeY
+            margins.top = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
+            changePillMargins(margins)
+            updateLayout(params)
+        }
+        if (key == "auto_hide_pill") {
+            if (app.prefManager.autoHide) {
+                hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
+                if (!isHidden) scheduleHide()
+            } else {
+                if (isHidden) showPill(HiddenPillReasonManager.AUTO)
             }
         }
     }
@@ -281,7 +276,7 @@ class BarView : LinearLayout, OnTrayPreferenceChangeListener {
             app.addBarInternal(false)
             shouldReAddOnDetach = false
         } else {
-            app.prefManager.unregisterOnTrayPreferenceChangeListener(this)
+            PreferenceManager.getDefaultSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(this)
         }
     }
 
@@ -1194,6 +1189,16 @@ class BarView : LinearLayout, OnTrayPreferenceChangeListener {
                 val intent = Intent(Actions.ACTION)
                 intent.putExtra(Actions.EXTRA_ACTION, which)
                 intent.putExtra(Actions.EXTRA_GESTURE, key)
+                when (which) {
+                    actionHolder.typeHome ->
+                        intent.putExtra(Actions.EXTRA_ALT_HOME, app.prefManager.useAlternateHome)
+                    actionHolder.premTypeLaunchApp ->
+                        intent.putExtra(Actions.EXTRA_PACKAGE, app.prefManager.getString("$key${PrefManager.SUFFIX_PACKAGE}"))
+                    actionHolder.premTypeLaunchActivity ->
+                        intent.putExtra(Actions.EXTRA_ACTIVITY, app.prefManager.getString("$key${PrefManager.SUFFIX_ACTIVITY}"))
+                    actionHolder.premTypeIntent ->
+                        intent.putExtra(Actions.EXTRA_INTENT_KEY, app.prefManager.getIntentKey(key))
+                }
                 intent.component = ComponentName(context, Actions::class.java)
 
                 context.startService(intent)

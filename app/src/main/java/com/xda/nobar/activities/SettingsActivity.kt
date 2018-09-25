@@ -125,15 +125,10 @@ class SettingsActivity : AppCompatActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
 
-            addPreferencesFromResource(R.xml.prefs_gestures)
-
             refreshListPrefs()
 
             removeNougatActionsIfNeeded()
             removeRootActionsIfNeeded()
-
-            preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-            prefManager.setPreferenceListeners(preferenceScreen)
         }
 
         override fun onResume() {
@@ -195,13 +190,13 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
 
-            if (listPrefs.map { it.key }.contains(key)) {
+            if (listPrefs.asSequence().map { it.key }.contains(key)) {
                 val newValue = sharedPreferences.getString(key, null)
                 if (newValue == actionHolder.premTypeLaunchApp.toString() || newValue == actionHolder.premTypeLaunchActivity.toString()) {
                     val forActivity = newValue == actionHolder.premTypeLaunchActivity.toString()
                     val intent = Intent(activity, AppLaunchSelectActivity::class.java)
 
-                    var pack = prefManager.getString("${key}_${if (forActivity) "activity" else "package"}", null)
+                    var pack = if (forActivity) prefManager.getActivity(key) else prefManager.getPackage(key)
                     var activity: String? = null
                     if (pack != null) {
                         activity = pack.split("/")[1]
@@ -222,11 +217,6 @@ class SettingsActivity : AppCompatActivity() {
                     startActivityForResult(intent, REQ_INTENT)
                 }
             }
-        }
-
-        override fun onDestroy() {
-            super.onDestroy()
-            preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         }
 
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -265,7 +255,7 @@ class SettingsActivity : AppCompatActivity() {
 
                     Activity.RESULT_CANCELED -> {
                         listPrefs.forEach {
-                            if (it.key == key) {
+                            if (key != null && key == it.key) {
                                 val res = prefManager.getIntentKey(key)
 
                                 if (res < 1) {
@@ -286,59 +276,59 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun setSectionedSettings() {
-            prefManager.apply {
-                put("use_pixels_width", false)
-                put("use_pixels_height", true)
-                put("use_pixels_y", false)
-                put("larger_hitbox", false)
-                put("hide_in_fullscreen", false)
-                put("static_pill", true)
-                put("hide_pill_on_keyboard", false)
-                put("auto_hide_pill", false)
+            preferenceManager.sharedPreferences.edit().apply {
+                putBoolean("use_pixels_width", false)
+                putBoolean("use_pixels_height", true)
+                putBoolean("use_pixels_y", false)
+                putBoolean("larger_hitbox", false)
+                putBoolean("hide_in_fullscreen", false)
+                putBoolean("static_pill", true)
+                putBoolean("hide_pill_on_keyboard", false)
+                putBoolean("auto_hide_pill", false)
 
-                put("custom_width_percent", 1000)
-                put("custom_height", Utils.minPillHeightPx(activity) + Utils.dpAsPx(activity, 7f))
-                put("custom_y_percent", 0)
-                put("pill_corner_radius", 0)
-                put("pill_bg", Color.TRANSPARENT)
-                put("pill_fg", Color.TRANSPARENT)
-                put("anim_duration", 0)
-                put("hold_time", 500)
+                putInt("custom_width_percent", 1000)
+                putInt("custom_height", Utils.minPillHeightPx(activity) + Utils.dpAsPx(activity, 7f))
+                putInt("custom_y_percent", 0)
+                putInt("pill_corner_radius", 0)
+                putInt("pill_bg", Color.TRANSPARENT)
+                putInt("pill_fg", Color.TRANSPARENT)
+                putInt("anim_duration", 0)
+                putInt("hold_time", 500)
 
-                put(actionHolder.actionTap, actionHolder.typeNoAction.toString())
-                put(actionHolder.actionDouble, actionHolder.typeNoAction.toString())
-                put(actionHolder.actionHold, actionHolder.typeNoAction.toString())
-                put(actionHolder.actionDown, actionHolder.typeNoAction.toString())
-                put(actionHolder.actionLeft, actionHolder.typeNoAction.toString())
-                put(actionHolder.actionLeftHold, actionHolder.typeNoAction.toString())
-                put(actionHolder.actionRight, actionHolder.typeNoAction.toString())
-                put(actionHolder.actionRightHold, actionHolder.typeNoAction.toString())
-                put(actionHolder.actionUp, actionHolder.typeNoAction.toString())
-                put(actionHolder.actionUpHold, actionHolder.typeNoAction.toString())
-            }
+                putString(actionHolder.actionTap, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionDouble, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionHold, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionDown, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionLeft, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionLeftHold, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionRight, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionRightHold, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionUp, actionHolder.typeNoAction.toString())
+                putString(actionHolder.actionUpHold, actionHolder.typeNoAction.toString())
+            }.apply()
 
             updateSummaries()
         }
         
         private fun resetSectionedSettings() {
-            prefManager.apply {
-                remove("use_pixels_width")
-                remove("use_pixels_height")
-                remove("use_pixels_y")
-                remove("larger_hitbox")
-                remove("hide_in_fullscreen")
-                remove("static_pill")
-                remove("hide_pill_on_keyboard")
-                remove("auto_hide_pill")
+            preferenceManager.sharedPreferences.edit().apply {
+                remove(PrefManager.USE_PIXELS_WIDTH)
+                remove(PrefManager.USE_PIXELS_HEIGHT)
+                remove(PrefManager.USE_PIXELS_Y)
+                remove(PrefManager.LARGER_HITBOX)
+                remove(PrefManager.HIDE_IN_FULLSCREEN)
+                remove(PrefManager.STATIC_PILL)
+                remove(PrefManager.HIDE_PILL_ON_KEYBOARD)
+                remove(PrefManager.AUTO_HIDE_PILL)
 
-                remove("custom_width_percent")
-                remove("custom_height")
-                remove("custom_y_percent")
-                remove("pill_corner_radius")
-                remove("pill_bg")
-                remove("pill_fg")
-                remove("anim_duration")
-                remove("hold_time")
+                remove(PrefManager.CUSTOM_WIDTH_PERCENT)
+                remove(PrefManager.CUSTOM_HEIGHT)
+                remove(PrefManager.CUSTOM_Y_PERCENT)
+                remove(PrefManager.PILL_CORNER_RADIUS)
+                remove(PrefManager.PILL_BG)
+                remove(PrefManager.PILL_FG)
+                remove(PrefManager.ANIM_DURATION)
+                remove(PrefManager.HOLD_TIME)
 
                 remove(actionHolder.actionTap)
                 remove(actionHolder.actionDouble)
@@ -350,7 +340,7 @@ class SettingsActivity : AppCompatActivity() {
                 remove(actionHolder.actionRightHold)
                 remove(actionHolder.actionUp)
                 remove(actionHolder.actionUpHold)
-            }
+            }.apply()
 
             updateSummaries()
         }
@@ -380,11 +370,11 @@ class SettingsActivity : AppCompatActivity() {
                 if (it.getSavedValue() == actionHolder.premTypeLaunchApp.toString() || it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()) {
                     val forActivity = it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()
                     val packageInfo = prefManager.getString(
-                            "${it.key}_${if (forActivity) "activity" else "package"}", null) ?: return@forEach
+                            if (forActivity) prefManager.getActivity(it.key) else prefManager.getPackage(it.key)) ?: return@forEach
 
                     it.summary = String.format(Locale.getDefault(),
                             resources.getString(if (forActivity) R.string.prem_launch_activity else R.string.prem_launch_app),
-                            prefManager.getString("${it.key}_displayname", packageInfo.split("/")[0]))
+                            prefManager.getString(prefManager.getDisplayName(it.key), packageInfo.split("/")[0]))
                 } else if (it.getSavedValue() == actionHolder.premTypeIntent.toString()) {
                     val res = prefManager.getIntentKey(it.key)
                     it.summary = String.format(Locale.getDefault(),
@@ -688,7 +678,6 @@ class SettingsActivity : AppCompatActivity() {
 
         private fun setListeners() {
             val hideOnKb = findPreference("hide_pill_on_keyboard") as SeekBarSwitchPreference
-            hideOnKb.isEnabled = !prefManager.autoHide
 
             val winFix = findPreference("window_fix")
             winFix.setOnPreferenceClickListener {
@@ -710,7 +699,6 @@ class SettingsActivity : AppCompatActivity() {
             super.onCreate(savedInstanceState)
 
             addPreferencesFromResource(resId)
-            prefManager.setPreferenceListeners(preferenceScreen)
             preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         }
 
