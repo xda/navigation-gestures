@@ -264,7 +264,16 @@ class PrefManager private constructor(private val context: Context) {
         get() = getInt(VIBRATION_DURATION, context.resources.getInteger(R.integer.default_vibe_time))
 
     val crashlyticsId: String?
-        get() = getString(CRASHLYTICS_ID, null)
+        get() {
+            val s = getString(CRASHLYTICS_ID, null)
+
+            return if (s != null) s
+            else {
+                val new = System.currentTimeMillis().toString()
+                putString(CRASHLYTICS_ID, new)
+                new
+            }
+        }
     var navigationBarColor: String?
         get() = getString(NAVIGATIONBAR_COLOR, Color.BLACK.toString())
         set(value) {

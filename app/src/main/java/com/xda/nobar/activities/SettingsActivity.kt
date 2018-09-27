@@ -369,8 +369,7 @@ class SettingsActivity : AppCompatActivity() {
 
                 if (it.getSavedValue() == actionHolder.premTypeLaunchApp.toString() || it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()) {
                     val forActivity = it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()
-                    val packageInfo = prefManager.getString(
-                            if (forActivity) prefManager.getActivity(it.key) else prefManager.getPackage(it.key)) ?: return@forEach
+                    val packageInfo = if (forActivity) prefManager.getActivity(it.key) else prefManager.getPackage(it.key) ?: return@forEach
 
                     it.summary = String.format(Locale.getDefault(),
                             resources.getString(if (forActivity) R.string.prem_launch_activity else R.string.prem_launch_app),
