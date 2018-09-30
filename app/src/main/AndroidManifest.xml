@@ -17,9 +17,9 @@
     <uses-permission
         android:name="android.permission.DUMP"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
-
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -27,15 +27,15 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="com.android.vending.CHECK_LICENSE"/>
+    <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
-    <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" />
 
     <!-- Used for premium backdoor -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -48,11 +48,12 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".activities.MainActivity"
-            android:theme="@style/AppTheme.NoBar"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.NoBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -73,8 +74,8 @@
         <activity android:name=".activities.HelpAboutActivity" />
         <activity
             android:name=".activities.IntroActivity"
-            android:theme="@style/AppTheme.Intro"
-            android:launchMode="singleInstance" />
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.Intro" />
         <activity
             android:name=".activities.DialogActivity"
             android:theme="@style/AppTheme.Null" />
@@ -82,13 +83,13 @@
         <activity android:name=".activities.AppLaunchSelectActivity" />
         <activity
             android:name=".activities.ToggleNavActivity"
-            android:label="@string/toggle_nav"
             android:exported="true"
+            android:label="@string/toggle_nav"
             android:theme="@style/AppTheme.Null" />
         <activity
             android:name=".activities.ToggleGesturesActivity"
-            android:label="@string/toggle_gestures"
             android:exported="true"
+            android:label="@string/toggle_gestures"
             android:theme="@style/AppTheme.Null" />
         <activity android:name=".activities.TaskerConfig" />
         <activity
@@ -236,7 +237,8 @@
                 android:name="com.samsung.android.cocktail.provider"
                 android:resource="@xml/cocktail" />
         </receiver>
-        <receiver android:name=".receivers.ActionReceiver"
+        <receiver
+            android:name=".receivers.ActionReceiver"
             android:enabled="true"
             android:exported="false" />
 
@@ -255,6 +257,16 @@
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="true" />
+
+        <receiver
+            android:name=".receivers.StartupReceiver"
+            android:enabled="true"
+            android:exported="true">
+                <intent-filter>
+                    <action android:name="android.intent.action.BOOT_COMPLETED" />
+                    <action android:name="com.xda.nobar.intent.action.ACCESSIBILITY_STARTED" />
+                </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

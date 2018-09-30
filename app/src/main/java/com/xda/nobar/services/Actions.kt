@@ -31,6 +31,7 @@ import com.xda.nobar.activities.IntentSelectorActivity
 import com.xda.nobar.activities.RequestPermissionsActivity
 import com.xda.nobar.activities.ScreenshotActivity
 import com.xda.nobar.receivers.ActionReceiver
+import com.xda.nobar.receivers.StartupReceiver
 import com.xda.nobar.tasker.activities.EventConfigureActivity
 import com.xda.nobar.tasker.updates.EventUpdate
 import com.xda.nobar.util.ActionHolder
@@ -72,6 +73,11 @@ class Actions : AccessibilityService(), Serializable {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         receiver.onReceive(this, intent)
+
+        val startIntent = Intent(this, StartupReceiver::class.java)
+        startIntent.action = "com.xda.nobar.intent.action.ACCESSIBILITY_STARTED"
+        sendBroadcast(startIntent)
+
         return super.onStartCommand(intent, flags, startId)
     }
 
