@@ -683,9 +683,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         @SuppressLint("WrongConstant")
         private fun handleNewEvent(info: AccessibilityEvent) {
             val source: AccessibilityNodeInfo? = info.source
-            val pName = source?.packageName?.toString()
+            val pName = info.packageName.toString()
 
-            if (pName != oldPName) {
+            if (pName != oldPName && pName != packageName) {
                 oldPName = pName
 
                 if (pName == "com.android.systemui" && info.className?.contains("TextView") == false) {
@@ -708,7 +708,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         private fun runNewNodeInfo(pName: String?) {
-            if (pName != null && pName != packageName) {
+            if (pName != null) {
                 val navArray = ArrayList<String>().apply { prefManager.loadBlacklistedNavPackages(this) }
                 if (navArray.contains(pName)) {
                     disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
