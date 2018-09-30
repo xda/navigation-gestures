@@ -18,7 +18,6 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityNodeInfo
 import android.view.inputmethod.InputMethodManager
 import com.crashlytics.android.Crashlytics
 import com.github.anrwatchdog.ANRWatchDog
@@ -682,7 +681,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         @SuppressLint("WrongConstant")
         private fun handleNewEvent(info: AccessibilityEvent) {
-            val source: AccessibilityNodeInfo? = info.source
             val pName = info.packageName.toString()
 
             if (pName != oldPName && pName != packageName) {
@@ -703,8 +701,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             } else {
                 onGlobalLayout()
             }
-
-            source?.recycle()
         }
 
         private fun runNewNodeInfo(pName: String?) {
