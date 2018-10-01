@@ -129,6 +129,37 @@ class SettingsActivity : AppCompatActivity() {
 
             removeNougatActionsIfNeeded()
             removeRootActionsIfNeeded()
+
+            listPrefs.forEach {
+                it.setOnPreferenceChangeListener { _, newValue ->
+                    if (newValue == actionHolder.premTypeLaunchApp.toString() || newValue == actionHolder.premTypeLaunchActivity.toString()) {
+                        val forActivity = newValue == actionHolder.premTypeLaunchActivity.toString()
+                        val intent = Intent(activity, AppLaunchSelectActivity::class.java)
+
+                        var pack = if (forActivity) prefManager.getActivity(it.key) else prefManager.getPackage(it.key)
+                        var activity: String? = null
+                        if (pack != null) {
+                            activity = pack.split("/")[1]
+                            pack = pack.split("/")[0]
+                        }
+
+                        intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
+                        intent.putExtra(AppLaunchSelectActivity.CHECKED_PACKAGE, pack)
+                        intent.putExtra(AppLaunchSelectActivity.CHECKED_ACTIVITY, activity)
+                        intent.putExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, forActivity)
+
+                        startActivityForResult(intent, REQ_APP)
+                    } else if (newValue == actionHolder.premTypeIntent.toString()) {
+                        val intent = Intent(activity, IntentSelectorActivity::class.java)
+
+                        intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
+
+                        startActivityForResult(intent, REQ_INTENT)
+                    }
+
+                    true
+                }
+            }
         }
 
         override fun onResume() {
@@ -173,8 +204,7 @@ class SettingsActivity : AppCompatActivity() {
                             .setPositiveButton(android.R.string.yes) { _, _ -> setSectionedSettings() }
                             .setNegativeButton(R.string.no, null)
                             .show()
-                }
-                else {
+                } else {
                     AlertDialog.Builder(activity)
                             .setTitle(R.string.back_to_default)
                             .setMessage(R.string.back_to_default_desc)
@@ -187,34 +217,6 @@ class SettingsActivity : AppCompatActivity() {
                     swipeUpHoldCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up_hold)))
 
                     refreshListPrefs()
-                }
-            }
-
-            if (listPrefs.asSequence().map { it.key }.contains(key)) {
-                val newValue = sharedPreferences.getString(key, null)
-                if (newValue == actionHolder.premTypeLaunchApp.toString() || newValue == actionHolder.premTypeLaunchActivity.toString()) {
-                    val forActivity = newValue == actionHolder.premTypeLaunchActivity.toString()
-                    val intent = Intent(activity, AppLaunchSelectActivity::class.java)
-
-                    var pack = if (forActivity) prefManager.getActivity(key) else prefManager.getPackage(key)
-                    var activity: String? = null
-                    if (pack != null) {
-                        activity = pack.split("/")[1]
-                        pack = pack.split("/")[0]
-                    }
-
-                    intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, key)
-                    intent.putExtra(AppLaunchSelectActivity.CHECKED_PACKAGE, pack)
-                    intent.putExtra(AppLaunchSelectActivity.CHECKED_ACTIVITY, activity)
-                    intent.putExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, forActivity)
-
-                    startActivityForResult(intent, REQ_APP)
-                } else if (newValue == actionHolder.premTypeIntent.toString()) {
-                    val intent = Intent(activity, IntentSelectorActivity::class.java)
-
-                    intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, key)
-
-                    startActivityForResult(intent, REQ_INTENT)
                 }
             }
         }
@@ -368,7 +370,7 @@ class SettingsActivity : AppCompatActivity() {
 
                 if (it.getSavedValue() == actionHolder.premTypeLaunchApp.toString() || it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()) {
                     val forActivity = it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()
-                    val packageInfo = if (forActivity) prefManager.getActivity(it.key) else prefManager.getPackage(it.key) ?: return@forEach
+                    val packageInfo = (if (forActivity) prefManager.getActivity(it.key) else prefManager.getPackage(it.key)) ?: return@forEach
 
                     it.summary = String.format(Locale.getDefault(),
                             resources.getString(if (forActivity) R.string.prem_launch_activity else R.string.prem_launch_app),
