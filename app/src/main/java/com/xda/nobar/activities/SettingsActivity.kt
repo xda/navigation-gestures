@@ -233,8 +233,7 @@ class SettingsActivity : AppCompatActivity() {
                     Activity.RESULT_CANCELED -> {
                         listPrefs.forEach {
                             if (it.key == key) {
-                                val pack = prefManager.getString(
-                                        "${key}_${if (forActivity) "activity" else "package"}", null)
+                                val pack = if (forActivity) prefManager.getActivity(it.key) else prefManager.getPackage(it.key)
                                 if (pack == null) {
                                     it.saveValue(actionHolder.typeNoAction.toString())
                                 } else {
@@ -373,7 +372,7 @@ class SettingsActivity : AppCompatActivity() {
 
                     it.summary = String.format(Locale.getDefault(),
                             resources.getString(if (forActivity) R.string.prem_launch_activity else R.string.prem_launch_app),
-                            prefManager.getString(prefManager.getDisplayName(it.key), packageInfo.split("/")[0]))
+                            prefManager.getDisplayName(it.key) ?: packageInfo.split("/")[0])
                 } else if (it.getSavedValue() == actionHolder.premTypeIntent.toString()) {
                     val res = prefManager.getIntentKey(it.key)
                     it.summary = String.format(Locale.getDefault(),

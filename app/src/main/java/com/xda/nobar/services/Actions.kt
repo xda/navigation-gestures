@@ -63,6 +63,10 @@ class Actions : AccessibilityService(), Serializable {
 
     override fun onCreate() {
         receiver.register()
+
+        val bc = Intent(this, StartupReceiver::class.java)
+        bc.action = StartupReceiver.ACTION_ACTIVATE
+        sendBroadcast(bc)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -73,10 +77,6 @@ class Actions : AccessibilityService(), Serializable {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         receiver.onReceive(this, intent)
-
-        val startIntent = Intent(this, StartupReceiver::class.java)
-        startIntent.action = "com.xda.nobar.intent.action.ACCESSIBILITY_STARTED"
-        sendBroadcast(startIntent)
 
         return super.onStartCommand(intent, flags, startId)
     }

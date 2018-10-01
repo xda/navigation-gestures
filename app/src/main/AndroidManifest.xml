@@ -166,7 +166,7 @@
         <service
             android:name=".services.ForegroundService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="true" />
         <service
             android:name=".services.RootService"
             android:enabled="true"
@@ -241,6 +241,17 @@
             android:name=".receivers.ActionReceiver"
             android:enabled="true"
             android:exported="false" />
+        <receiver
+            android:name=".receivers.StartupReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="com.xda.nobar.intent.action.ACTIVATE" />
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -257,16 +268,6 @@
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="true" />
-
-        <receiver
-            android:name=".receivers.StartupReceiver"
-            android:enabled="true"
-            android:exported="true">
-                <intent-filter>
-                    <action android:name="android.intent.action.BOOT_COMPLETED" />
-                    <action android:name="com.xda.nobar.intent.action.ACCESSIBILITY_STARTED" />
-                </intent-filter>
-        </receiver>
     </application>
 
 </manifest>
