@@ -7,6 +7,14 @@
         android:name="com.xda.nobar.permission.VERIFY_LICENSE"
         android:label="VERIFY_LICENSE"
         android:protectionLevel="signature" />
+    <permission
+        android:name="com.xda.nobar.permission.RECEIVE_BROADCAST"
+        android:label="RECEIVE_BROADCAST"
+        android:protectionLevel="signature|dangerous" />
+    <permission
+        android:name="com.xda.nobar.permission.SEND_BROADCAST"
+        android:label="SEND_BROADCAST"
+        android:protectionLevel="signature|dangerous" />
 
     <uses-permission
         android:name="android.permission.WRITE_SECURE_SETTINGS"
@@ -34,6 +42,8 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="com.xda.nobar.permission.RECEIVE_BROADCAST" />
+    <uses-permission android:name="com.xda.nobar.permission.SEND_BROADCAST" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" />
 
