@@ -68,10 +68,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         licenseCheckListeners.forEach { it.onResult(valid, reason) }
 
-        val updateActions = Intent(this, Actions::class.java)
-        updateActions.action = Actions.PREMIUM_UPDATE
-        updateActions.putExtra(Actions.EXTRA_PREM, isValidPremium)
-        startService(updateActions)
+        Actions.updatePremium(this, isValidPremium)
     })}
 
     private val premiumInstallListener = PremiumInstallListener()

@@ -5,15 +5,14 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.ActivityManager
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
+import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.preference.PreferenceManager
@@ -1186,22 +1185,21 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     animate(null, ALPHA_ACTIVE)
                 }
 
-                val intent = Intent(Actions.ACTION)
-                intent.putExtra(Actions.EXTRA_ACTION, which)
-                intent.putExtra(Actions.EXTRA_GESTURE, key)
+                val options = Bundle()
+                options.putInt(Actions.EXTRA_ACTION, which)
+                options.putString(Actions.EXTRA_GESTURE, key)
                 when (which) {
                     actionHolder.typeHome ->
-                        intent.putExtra(Actions.EXTRA_ALT_HOME, app.prefManager.useAlternateHome)
+                        options.putBoolean(Actions.EXTRA_ALT_HOME, app.prefManager.useAlternateHome)
                     actionHolder.premTypeLaunchApp ->
-                        intent.putExtra(Actions.EXTRA_PACKAGE, app.prefManager.getString("$key${PrefManager.SUFFIX_PACKAGE}"))
+                        options.putString(Actions.EXTRA_PACKAGE, app.prefManager.getString("$key${PrefManager.SUFFIX_PACKAGE}"))
                     actionHolder.premTypeLaunchActivity ->
-                        intent.putExtra(Actions.EXTRA_ACTIVITY, app.prefManager.getString("$key${PrefManager.SUFFIX_ACTIVITY}"))
+                        options.putString(Actions.EXTRA_ACTIVITY, app.prefManager.getString("$key${PrefManager.SUFFIX_ACTIVITY}"))
                     actionHolder.premTypeIntent ->
-                        intent.putExtra(Actions.EXTRA_INTENT_KEY, app.prefManager.getIntentKey(key))
+                        options.putInt(Actions.EXTRA_INTENT_KEY, app.prefManager.getIntentKey(key))
                 }
-                intent.component = ComponentName(context, Actions::class.java)
 
-                context.startService(intent)
+                Actions.sendAction(context, Actions.ACTION, options)
 
                 if (app.prefManager.useRoot) {
                     app.rootBinder?.handle(which)

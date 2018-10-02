@@ -66,8 +66,8 @@ class RequestPermissionsActivity : AppCompatActivity() {
                 intent.putExtra(EXTRA_RESULT_CODE, grantResults)
                 intent.putExtras(this.intent.extras)
 
-                if (className == ComponentName(this, Actions::class.java)) {
-                    startService(intent)
+                if (className == ComponentName(this, Actions.ActionHandler::class.java)) {
+                    sendBroadcast(intent)
                 } else {
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
                 }

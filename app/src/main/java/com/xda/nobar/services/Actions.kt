@@ -5,14 +5,12 @@ import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.bluetooth.BluetoothAdapter
-import android.content.ActivityNotFoundException
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.os.Bundle
 import android.os.Handler
 import android.os.UserHandle
 import android.provider.MediaStore
@@ -57,6 +55,19 @@ class Actions : AccessibilityService(), Serializable {
         const val EXTRA_PACKAGE = "package_name"
         const val EXTRA_ACTIVITY = "activity_name"
         const val EXTRA_INTENT_KEY = "intent_key"
+
+        fun updatePremium(context: Context, premium: Boolean) {
+            val intent = Intent(context, ActionHandler::class.java)
+            intent.putExtra(EXTRA_PREM, premium)
+            context.sendBroadcast(intent)
+        }
+
+        fun sendAction(context: Context, action: String, options: Bundle) {
+            val intent = Intent(context, ActionHandler::class.java)
+            intent.action = action
+            intent.putExtras(options)
+            context.sendBroadcast(intent)
+        }
     }
 
     private val receiver by lazy { ActionHandler(this) }
@@ -90,7 +101,7 @@ class Actions : AccessibilityService(), Serializable {
     /**
      * Special BroadcastReceiver to handle actions sent to this service by {@link com.xda.nobar.views.BarView}
      */
-    class ActionHandler(private val actions: Actions) {
+    class ActionHandler(private val actions: Actions) : BroadcastReceiver() {
         private val audio by lazy { actions.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
         private val imm by lazy { actions.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
         private val wifiManager by lazy { actions.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager }
@@ -136,7 +147,7 @@ class Actions : AccessibilityService(), Serializable {
         }
 
         @SuppressLint("InlinedApi")
-        fun onReceive(context: Context?, intent: Intent?) {
+        override fun onReceive(context: Context?, intent: Intent?) {
             when(intent?.action) {
                 ACTION -> {
                     val gesture = intent.getStringExtra(EXTRA_GESTURE)
@@ -315,7 +326,7 @@ class Actions : AccessibilityService(), Serializable {
                                         RequestPermissionsActivity.createAndStart(actions,
                                                 arrayOf(Manifest.permission.CAMERA),
                                                 intent.extras,
-                                                ComponentName(actions, Actions::class.java))
+                                                ComponentName(actions, ActionHandler::class.java))
                                     }
                                 }
                             } catch (e: ActivityNotFoundException) {
