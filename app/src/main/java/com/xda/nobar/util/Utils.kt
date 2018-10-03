@@ -3,7 +3,6 @@ package com.xda.nobar.util
 import android.app.KeyguardManager
 import android.app.UiModeManager
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -13,12 +12,14 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import android.util.TypedValue
 import android.view.WindowManager
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
 import com.xda.nobar.activities.IntroActivity
+import com.xda.nobar.interfaces.OnDialogChoiceMadeListener
 import com.xda.nobar.prefs.PrefManager
 
 
@@ -262,11 +263,12 @@ object Utils {
             DialogActivity.Builder(context).apply {
                 title = R.string.premium_required
                 message = R.string.premium_required_desc
-                yesAction = DialogInterface.OnClickListener { _, _ ->
+                yesAction = OnDialogChoiceMadeListener {
+                    Log.e("NoBar", "launch")
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data = Uri.parse("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(intent)
+                    context.applicationContext.startActivity(intent)
                 }
                 start()
             }
@@ -308,7 +310,7 @@ object Utils {
                 yesRes = android.R.string.ok
                 noRes = android.R.string.cancel
 
-                yesAction = DialogInterface.OnClickListener { _, _ ->
+                yesAction = OnDialogChoiceMadeListener {
                     val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
                     intent.data = Uri.parse("package:${context.packageName}")
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

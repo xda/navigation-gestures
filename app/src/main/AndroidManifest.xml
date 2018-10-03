@@ -88,6 +88,7 @@
             android:theme="@style/AppTheme.Intro" />
         <activity
             android:name=".activities.DialogActivity"
+            android:multiprocess="true"
             android:theme="@style/AppTheme.Null" />
         <activity android:name=".activities.LibraryActivity" />
         <activity android:name=".activities.AppLaunchSelectActivity" />
