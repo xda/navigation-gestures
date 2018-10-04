@@ -292,12 +292,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
                         softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
                     }
-
-                    if (prefManager.largerHitbox) {
-                        val margins = bar.getPillMargins()
-                        margins.top = resources.getDimensionPixelSize(R.dimen.pill_margin_top_large_hitbox)
-                        bar.changePillMargins(margins)
-                    }
                 }
 
                 if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, true) }

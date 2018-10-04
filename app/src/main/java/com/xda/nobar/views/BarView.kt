@@ -146,6 +146,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
+        if (app.prefManager.largerHitbox) {
+            val margins = getPillMargins()
+            margins.top = resources.getDimensionPixelSize(R.dimen.pill_margin_top_large_hitbox)
+            changePillMargins(margins)
+        }
+
         app.pillShown = true
 //
 //        params.width = app.prefManager.customWidth
@@ -250,10 +256,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             val enabled = app.prefManager.largerHitbox
             val margins = getPillMargins()
             params.height = app.prefManager.customHeight
-            params.y = app.prefManager.homeY
+            params.y = getAdjustedHomeY()
             margins.top = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
-            changePillMargins(margins)
             updateLayout(params)
+            changePillMargins(margins)
         }
         if (key == "auto_hide_pill") {
             if (app.prefManager.autoHide) {
