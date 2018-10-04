@@ -17,13 +17,16 @@ class FlashlightControllerMarshmallow(override val context: Context) : Flashligh
                 manager.setTorchMode(cameraId ?: return, value)
             } catch (e: Exception) {}
         }
+        get() = flashlightEnabledInternal
+
+    private var flashlightEnabledInternal = false
 
     private val manager by lazy { context.getSystemService(Context.CAMERA_SERVICE) as CameraManager }
     private val callback = object : CameraManager.TorchCallback() {
         override fun onTorchModeUnavailable(cameraId: String) {}
 
         override fun onTorchModeChanged(cameraId: String, enabled: Boolean) {
-            flashlightEnabled = enabled
+            flashlightEnabledInternal = enabled
         }
     }
 
