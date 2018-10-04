@@ -48,7 +48,7 @@ class FlashlightControllerMarshmallow(override val context: Context) : Flashligh
     }
 
     override fun onDestroy() {
-        manager.setTorchMode(cameraId, false)
+        if (cameraId != null) manager.setTorchMode(cameraId, false)
         manager.unregisterTorchCallback(callback)
     }
 }
