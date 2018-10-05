@@ -60,6 +60,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         val bundle = Bundle()
         bundle.putBoolean("valid", valid)
         bundle.putString("reason", reason)
+        bundle.putString("crashlytics_id", prefManager.crashlyticsId)
 
         FirebaseAnalytics.getInstance(this).logEvent("license_event", bundle)
 
