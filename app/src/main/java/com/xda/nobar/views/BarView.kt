@@ -31,6 +31,7 @@ import com.xda.nobar.services.Actions
 import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.HiddenPillReasonManager
 import com.xda.nobar.util.Utils
+import kotlinx.android.synthetic.main.pill.view.*
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
@@ -68,8 +69,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private val actionHolder = ActionHolder(context)
 
     var view: View = View.inflate(context, R.layout.pill, this)
-    var pill: LinearLayout = view.findViewById(R.id.pill)
-    var pillFlash: LinearLayout = pill.findViewById(R.id.pill_tap_flash)
     var yHomeAnimator: ValueAnimator? = null
     var lastTouchTime = 0L
     var shouldReAddOnDetach = false
@@ -125,7 +124,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
         }
 
-        (pillFlash.background as GradientDrawable).apply {
+        (pill_tap_flash.background as GradientDrawable).apply {
             cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
         }
 
@@ -248,7 +247,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
                 cornerRadius = Utils.dpAsPx(context, app.prefManager.pillCornerRadiusDp).toFloat()
             }
-            (pillFlash.background as GradientDrawable).apply {
+            (pill_tap_flash.background as GradientDrawable).apply {
                 cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
             }
         }
@@ -755,7 +754,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * This is called twice to "flash" the pill when an action is performed
      */
     fun animateActiveLayer(alpha: Float) {
-        pillFlash.apply {
+        pill_tap_flash.apply {
             val alphaRatio = Color.alpha(app.prefManager.pillBGColor).toFloat() / 255f
             animate()
                     .setDuration(getAnimationDurationMs())

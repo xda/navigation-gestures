@@ -6,21 +6,16 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.FrameLayout
-import android.widget.Switch
-import android.widget.TextView
 import com.xda.nobar.R
+import kotlinx.android.synthetic.main.text_switch.view.*
 
 class TextSwitch(context: Context, attributeSet: AttributeSet?) : FrameLayout(context, attributeSet) {
-    val title: TextView
-    val summary: TextView
-    val switch: Switch
-
     var isChecked: Boolean
-        get() = switch.isChecked
-        set(value) { switch.isChecked = value }
+        get() = switch1.isChecked
+        set(value) { switch1.isChecked = value }
 
     var onCheckedChangeListener: CompoundButton.OnCheckedChangeListener? = null
-        set(value) { switch.setOnCheckedChangeListener(value) }
+        set(value) { switch1.setOnCheckedChangeListener(value) }
 
     var titleText: CharSequence?
         get() = title.text
@@ -36,10 +31,6 @@ class TextSwitch(context: Context, attributeSet: AttributeSet?) : FrameLayout(co
 
     init {
         View.inflate(context, R.layout.text_switch, this)
-
-        title = findViewById(R.id.title)
-        summary = findViewById(R.id.summary)
-        switch = findViewById(R.id.switch1)
 
         val array = context.theme.obtainStyledAttributes(attributeSet, R.styleable.TextSwitch, 0, 0)
 

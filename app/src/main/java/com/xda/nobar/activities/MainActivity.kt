@@ -6,12 +6,10 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.widget.CompoundButton
-import android.widget.ImageView
-import android.widget.TextView
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
@@ -20,7 +18,7 @@ import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.util.Utils
 import com.xda.nobar.views.BarView
-import com.xda.nobar.views.TextSwitch
+import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  * The main app activity
@@ -41,15 +39,12 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
     private val app by lazy { application as App }
     private val prefManager by lazy { PrefManager.getInstance(this) }
 
-    private val gestureSwitch by lazy { findViewById<TextSwitch>(R.id.activate) }
-    private val hideNavSwitch by lazy { findViewById<TextSwitch>(R.id.hide_nav) }
-    private val premStatus by lazy { findViewById<TextView>(R.id.prem_stat) }
-    private val refresh by lazy { findViewById<ImageView>(R.id.refresh_prem) }
-
     private val navListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
         app.toggleNavState(!isChecked)
         if (!IntroActivity.hasWss(this)) onNavStateChange(false)
     }
+
+    private var currentPremReason: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,8 +65,8 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         app.addGestureActivationListener(this)
         app.addNavBarHideListener(this)
 
-        gestureSwitch.isChecked = app.areGesturesActivated()
-        gestureSwitch.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { button, isChecked ->
+        activate.isChecked = app.areGesturesActivated()
+        activate.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { button, isChecked ->
             if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this))
                     && Utils.isAccessibilityEnabled(this)) {
                 if (isChecked) app.addBar() else app.removeBar()
@@ -82,30 +77,37 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             }
         }
 
-        hideNavSwitch.isChecked = prefManager.shouldUseOverscanMethod
-        hideNavSwitch.onCheckedChangeListener = navListener
+        hide_nav.isChecked = prefManager.shouldUseOverscanMethod
+        hide_nav.onCheckedChangeListener = navListener
 
-        refresh.setOnClickListener {
+        refresh_prem.setOnClickListener {
             refresh()
+        }
+
+        prem_stat_clicker.setOnClickListener {
+            AlertDialog.Builder(this)
+                    .setMessage(currentPremReason)
+                    .show()
         }
 
         refresh()
     }
 
     override fun onGestureStateChange(barView: BarView?, activated: Boolean) {
-        gestureSwitch.isChecked = activated
+        activate.isChecked = activated
     }
 
     override fun onNavStateChange(hidden: Boolean) {
-        hideNavSwitch.onCheckedChangeListener = null
-        hideNavSwitch.isChecked = hidden
-        hideNavSwitch.onCheckedChangeListener = navListener
+        activate.onCheckedChangeListener = null
+        activate.isChecked = hidden
+        activate.onCheckedChangeListener = navListener
     }
 
     override fun onResult(valid: Boolean, reason: String?) {
+        currentPremReason = reason
         runOnUiThread {
-            premStatus.setTextColor(if (valid) Color.GREEN else Color.RED)
-            premStatus.text = resources.getText(if (valid) R.string.installed else R.string.not_found)
+            prem_stat.setTextColor(if (valid) Color.GREEN else Color.RED)
+            prem_stat.text = resources.getText(if (valid) R.string.installed else R.string.not_found)
         }
     }
 
@@ -122,8 +124,8 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
     }
 
     private fun refresh() {
-        premStatus.setTextColor(Color.YELLOW)
-        premStatus.text = resources.getText(R.string.checking)
+        prem_stat.setTextColor(Color.YELLOW)
+        prem_stat.text = resources.getText(R.string.checking)
 
         app.refreshPremium()
     }
@@ -132,7 +134,6 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
      * Add buttons to the action bar
      */
     private fun setUpActionBar() {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         val gear = LayoutInflater.from(this).inflate(R.layout.settings_button, toolbar, false)

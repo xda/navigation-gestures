@@ -15,9 +15,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
-import android.widget.VideoView
 import com.heinrichreimersoftware.materialintro.app.IntroActivity
 import com.heinrichreimersoftware.materialintro.app.OnNavigationBlockedListener
 import com.heinrichreimersoftware.materialintro.app.SlideFragment
@@ -27,6 +25,7 @@ import com.xda.nobar.R
 import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.util.SuUtils
 import com.xda.nobar.util.Utils
+import kotlinx.android.synthetic.main.slide_welcome.*
 
 /**
  * Introduction activity for Navigation Gestures
@@ -289,28 +288,23 @@ class IntroActivity : IntroActivity() {
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
 
-            val title = view.findViewById<TextView>(R.id.mi_title)
-            val desc = view.findViewById<TextView>(R.id.mi_description)
-
-            title.text = resources.getText(R.string.welcome)
-            desc.text = resources.getText(R.string.app_purpose)
+            mi_title.text = resources.getText(R.string.welcome)
+            mi_description.text = resources.getText(R.string.app_purpose)
         }
 
         override fun onResume() {
             super.onResume()
-            val image = view?.findViewById<VideoView>(R.id.mi_image)
-
             try {
                 val uri = Uri.parse("android.resource://${context?.packageName}/${R.raw.nav_gesture}")
-                image?.setVideoURI(uri)
+                mi_image?.setVideoURI(uri)
 
-                image?.setOnPreparedListener {
+                mi_image?.setOnPreparedListener {
                     it.isLooping = true
                 }
 
-                image?.start()
+                mi_image?.start()
             } catch (e: Exception) {
-                image?.visibility = View.GONE
+                mi_image?.visibility = View.GONE
             }
         }
     }
@@ -326,28 +320,23 @@ class IntroActivity : IntroActivity() {
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
 
-            val title = view.findViewById<TextView>(R.id.mi_title)
-            val desc = view.findViewById<TextView>(R.id.mi_description)
-
-            title.text = resources.getText(R.string.write_secure_settings)
-            desc.text = resources.getText(R.string.write_secure_settings_desc)
+            mi_title.text = resources.getText(R.string.write_secure_settings)
+            mi_description.text = resources.getText(R.string.write_secure_settings_desc)
         }
 
         override fun onResume() {
             super.onResume()
-            val image = view?.findViewById<VideoView>(R.id.mi_image)
-
             try {
                 val uri = Uri.parse("android.resource://${context?.packageName}/${R.raw.hide_nav}")
-                image?.setVideoURI(uri)
+                mi_image?.setVideoURI(uri)
 
-                image?.setOnPreparedListener {
+                mi_image?.setOnPreparedListener {
                     it.isLooping = true
                 }
 
-                image?.start()
+                mi_image?.start()
             } catch (e: Exception) {
-                image?.visibility = View.GONE
+                mi_image?.visibility = View.GONE
             }
         }
     }
