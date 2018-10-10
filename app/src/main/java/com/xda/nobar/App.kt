@@ -771,6 +771,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     oldRot = rot
                 }
 
+                if (prefManager.origBarInFullscreen) {
+                    if (immersiveHelperView.isFullImmersive()) {
+                        showNav(false, false)
+                    } else {
+                        hideNav(false)
+                    }
+                }
+
                 removeImmersiveHelper(true)
 
                 if (isPillShown()) {
