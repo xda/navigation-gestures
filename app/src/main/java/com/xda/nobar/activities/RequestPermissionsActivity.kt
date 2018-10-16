@@ -25,8 +25,8 @@ class RequestPermissionsActivity : AppCompatActivity() {
 
         fun createAndStart(context: Context,
                            permissions: Array<String>,
+                           className: ComponentName,
                            extras: Bundle? = null,
-                           className: ComponentName? = null,
                            requestCode: Int = REQ_CODE) {
             val intent = Intent(context, RequestPermissionsActivity::class.java)
             intent.putExtra(EXTRA_PERMISSIONS, permissions)
@@ -60,15 +60,12 @@ class RequestPermissionsActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == req) {
-            if (className != null) {
-                val intent = Intent(ACTION_RESULT)
-                intent.component = className
-                intent.putExtra(EXTRA_RESULT_CODE, grantResults)
-                intent.putExtras(this.intent.extras)
+            val intent = Intent(ACTION_RESULT)
+            intent.putExtra(EXTRA_RESULT_CODE, grantResults)
+            intent.putExtras(this.intent.extras)
 
-                sendBroadcast(intent, Manifest.permission.RECEIVE_BROADCAST)
-                LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
-            }
+            sendBroadcast(intent, Manifest.permission.RECEIVE_BROADCAST)
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
         }
 
         finish()

@@ -21,9 +21,9 @@ import com.heinrichreimersoftware.materialintro.app.OnNavigationBlockedListener
 import com.heinrichreimersoftware.materialintro.app.SlideFragment
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
+import com.topjohnwu.superuser.Shell
 import com.xda.nobar.R
 import com.xda.nobar.prefs.PrefManager
-import com.xda.nobar.util.SuUtils
 import com.xda.nobar.util.Utils
 import kotlinx.android.synthetic.main.slide_welcome.*
 
@@ -79,12 +79,12 @@ class IntroActivity : IntroActivity() {
                 .fragment(WriteSecureFragment())
                 .buttonCtaLabel(R.string.grant)
                 .buttonCtaClickListener {
-                    if (SuUtils.testSudo()) {
+                    if (Shell.rootAccess()) {
                         AlertDialog.Builder(this)
                                 .setTitle(R.string.root_found)
                                 .setMessage(R.string.root_found_desc)
                                 .setPositiveButton(R.string.use_root) { _, _ ->
-                                    SuUtils.sudo("pm grant $packageName ${Manifest.permission.WRITE_SECURE_SETTINGS}")
+                                    Shell.su("pm grant $packageName ${Manifest.permission.WRITE_SECURE_SETTINGS}")
                                 }
                                 .setNegativeButton(R.string.non_root) { _, _ ->
                                     nonRootDialog()

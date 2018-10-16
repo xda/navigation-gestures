@@ -323,4 +323,18 @@ object Utils {
 
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(context)
     }
+
+    fun isAccessibilityAction(context: Context, action: Int): Boolean {
+        val actionHolder = ActionHolder(context)
+        return arrayListOf(
+                actionHolder.typeHome,
+                actionHolder.typeRecents,
+                actionHolder.typeBack,
+                actionHolder.typeSwitch,
+                actionHolder.typeSplit,
+//                actionHolder.premTypeNotif,
+//                actionHolder.premTypeQs,
+                actionHolder.premTypePower
+        ).contains(action)
+    }
 }

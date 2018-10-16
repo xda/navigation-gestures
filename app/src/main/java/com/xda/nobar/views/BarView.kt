@@ -1,36 +1,48 @@
 package com.xda.nobar.views
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.ActivityManager
-import android.content.Context
-import android.content.SharedPreferences
+import android.app.SearchManager
+import android.bluetooth.BluetoothAdapter
+import android.content.*
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
-import android.os.Build
-import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
+import android.media.AudioManager
+import android.net.wifi.WifiManager
+import android.os.*
 import android.preference.PreferenceManager
+import android.provider.MediaStore
 import android.provider.Settings
+import android.speech.RecognizerIntent
+import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
+import com.android.internal.statusbar.IStatusBarService
+import com.joaomgcd.taskerpluginlibrary.extensions.requestQuery
+import com.topjohnwu.superuser.Shell
 import com.xda.nobar.App
 import com.xda.nobar.R
+import com.xda.nobar.activities.IntentSelectorActivity
+import com.xda.nobar.activities.RequestPermissionsActivity
+import com.xda.nobar.activities.ScreenshotActivity
 import com.xda.nobar.prefs.PrefManager
+import com.xda.nobar.receivers.ActionReceiver
 import com.xda.nobar.services.Actions
-import com.xda.nobar.util.ActionHolder
-import com.xda.nobar.util.HiddenPillReasonManager
-import com.xda.nobar.util.Utils
+import com.xda.nobar.tasker.activities.EventConfigureActivity
+import com.xda.nobar.tasker.updates.EventUpdate
+import com.xda.nobar.util.*
 import kotlinx.android.synthetic.main.pill.view.*
 import java.util.*
 import java.util.concurrent.Executors
@@ -67,6 +79,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
     private val app = context.applicationContext as App
     private val actionHolder = ActionHolder(context)
+    private val rootActions = RootActions(context)
+    private val audio = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    private val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    private val flashlightController =
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) FlashlightControllerMarshmallow(context)
+        else FlashlighControllerLollipop(context)
+    private val iStatusBarManager = IStatusBarService.Stub.asInterface(
+            ServiceManager.checkService(Context.STATUS_BAR_SERVICE)
+    )
 
     var view: View = View.inflate(context, R.layout.pill, this)
     var yHomeAnimator: ValueAnimator? = null
@@ -77,7 +99,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     val hiddenPillReasons = HiddenPillReasonManager()
 
-    private val gestureDetector = GestureManager()
+    val gestureDetector = GestureManager()
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
     private val pool = Executors.newScheduledThreadPool(1)
@@ -100,7 +122,32 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private var needsScheduledHide = false
 
-    private val hideLock = Any()
+    private val orientationEventListener by lazy {
+        object : OrientationEventListener(context) {
+            override fun onOrientationChanged(orientation: Int) {
+                currentDegree = orientation
+            }
+        }
+    }
+
+    private var currentDegree = 0
+        set(value) {
+            field = value
+            orientationEventListener.disable()
+            handler.postDelayed({
+                val currentAcc = Settings.System.getInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
+                if (currentAcc == 0) {
+                    val rotation = when (currentDegree) {
+                        in 45..134 -> Surface.ROTATION_270
+                        in 135..224 -> Surface.ROTATION_180
+                        in 225..314 -> Surface.ROTATION_90
+                        else -> Surface.ROTATION_0
+                    }
+
+                    Settings.System.putInt(context.contentResolver, Settings.System.USER_ROTATION, rotation)
+                }
+            }, 20)
+        }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet?) : super(context, attributeSet)
@@ -144,6 +191,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+        if (app.prefManager.useRoot) rootActions.onCreate()
+        flashlightController.onCreate()
 
         if (app.prefManager.largerHitbox) {
             val margins = getPillMargins()
@@ -152,10 +201,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         app.pillShown = true
-//
-//        params.width = app.prefManager.customWidth
-//        params.height = app.prefManager.customHeight
-//        updateLayout(params)
 
         show(null)
 
@@ -182,25 +227,25 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             params.y = getAdjustedHomeY()
             updateLayout(params)
         }
-        if (key == "custom_width_percent" || key == "custom_width") {
+        if (key == PrefManager.CUSTOM_WIDTH_PERCENT || key == PrefManager.CUSTOM_WIDTH) {
             params.width = app.prefManager.customWidth
             params.x = getAdjustedHomeX()
             updateLayout(params)
         }
-        if (key == "custom_height_percent" || key == "custom_height") {
+        if (key == PrefManager.CUSTOM_HEIGHT_PERCENT || key == PrefManager.CUSTOM_HEIGHT) {
             params.height = app.prefManager.customHeight
             params.y = getAdjustedHomeY()
             updateLayout(params)
         }
-        if (key == "custom_y_percent" || key == "custom_y") {
+        if (key == PrefManager.CUSTOM_Y_PERCENT || key == PrefManager.CUSTOM_Y) {
             params.y = getAdjustedHomeY()
             updateLayout(params)
         }
-        if (key == "custom_x_percent" || key == "custom_x") {
+        if (key == PrefManager.CUSTOM_X_PERCENT || key == PrefManager.CUSTOM_X) {
             params.x = getAdjustedHomeX()
             updateLayout(params)
         }
-        if (key == "pill_bg" || key == "pill_fg") {
+        if (key == PrefManager.PILL_BG || key == PrefManager.PILL_FG) {
             val layers = pill.background as LayerDrawable
             (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
                 setColor(app.prefManager.pillBGColor)
@@ -209,7 +254,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 setStroke(Utils.dpAsPx(context, 1), app.prefManager.pillFGColor)
             }
         }
-        if (key == "show_shadow") {
+        if (key == PrefManager.SHOW_SHADOW) {
             val shadow = app.prefManager.shouldShowShadow
             pill.elevation = Utils.dpAsPx(context, if (shadow) 2 else 0).toFloat()
 
@@ -221,7 +266,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 pill.layoutParams = this
             }
         }
-        if (key == "static_pill") {
+        if (key == PrefManager.STATIC_PILL) {
             if (app.prefManager.dontMoveForKeyboard) {
                 params.flags = params.flags or
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
@@ -236,10 +281,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             updateLayout(params)
         }
-        if (key == "audio_feedback") {
+        if (key == PrefManager.AUDIO_FEEDBACK) {
             isSoundEffectsEnabled = app.prefManager.feedbackSound
         }
-        if (key == "pill_corner_radius") {
+        if (key == PrefManager.PILL_CORNER_RADIUS) {
             val layers = pill.background as LayerDrawable
             (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
                 cornerRadius = Utils.dpAsPx(context, app.prefManager.pillCornerRadiusDp).toFloat()
@@ -251,7 +296,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
             }
         }
-        if (key == "larger_hitbox") {
+        if (key == PrefManager.LARGER_HITBOX) {
             val enabled = app.prefManager.largerHitbox
             val margins = getPillMargins()
             params.height = app.prefManager.customHeight
@@ -260,13 +305,17 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             updateLayout(params)
             changePillMargins(margins)
         }
-        if (key == "auto_hide_pill") {
+        if (key == PrefManager.AUTO_HIDE_PILL) {
             if (app.prefManager.autoHide) {
                 hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
                 if (!isHidden) scheduleHide()
             } else {
                 if (isHidden) showPill(HiddenPillReasonManager.AUTO)
             }
+        }
+        if (key == PrefManager.USE_ROOT) {
+            if (app.prefManager.useRoot) rootActions.onCreate()
+            else rootActions.onDestroy()
         }
     }
 
@@ -275,6 +324,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+        rootActions.onDestroy()
+        flashlightController.onDestroy()
 
         if (shouldReAddOnDetach) {
             app.addBarInternal(false)
@@ -1190,27 +1241,232 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     animate(null, ALPHA_ACTIVE)
                 }
 
-                val options = Bundle()
-                options.putInt(Actions.EXTRA_ACTION, which)
-                options.putString(Actions.EXTRA_GESTURE, key)
-                when (which) {
-                    actionHolder.typeHome ->
-                        options.putBoolean(Actions.EXTRA_ALT_HOME, app.prefManager.useAlternateHome)
-                    actionHolder.premTypeLaunchApp ->
-                        options.putString(Actions.EXTRA_PACKAGE, app.prefManager.getString("$key${PrefManager.SUFFIX_PACKAGE}"))
-                    actionHolder.premTypeLaunchActivity ->
-                        options.putString(Actions.EXTRA_ACTIVITY, app.prefManager.getString("$key${PrefManager.SUFFIX_ACTIVITY}"))
-                    actionHolder.premTypeIntent ->
-                        options.putInt(Actions.EXTRA_INTENT_KEY, app.prefManager.getIntentKey(key))
-                }
+                if (Utils.isAccessibilityAction(context, which)) {
+                    if (app.prefManager.useRoot && Shell.rootAccess()) {
+                        when (which) {
+                            actionHolder.typeHome -> rootActions.home()
+                            actionHolder.typeRecents -> rootActions.recents()
+                            actionHolder.typeBack -> rootActions.back()
+                            actionHolder.typeSwitch -> rootActions.switch()
+                            actionHolder.typeSplit -> rootActions.split()
+                            actionHolder.premTypePower -> Utils.runPremiumAction(context, App.isValidPremium) { rootActions.power() }
+                        }
+                    } else {
+                        val options = Bundle()
+                        options.putInt(Actions.EXTRA_ACTION, which)
+                        options.putString(Actions.EXTRA_GESTURE, key)
+                        when (which) {
+                            actionHolder.typeHome ->
+                                options.putBoolean(Actions.EXTRA_ALT_HOME, app.prefManager.useAlternateHome)
+                            actionHolder.premTypeLaunchApp ->
+                                options.putString(Actions.EXTRA_PACKAGE, app.prefManager.getString("$key${PrefManager.SUFFIX_PACKAGE}"))
+                            actionHolder.premTypeLaunchActivity ->
+                                options.putString(Actions.EXTRA_ACTIVITY, app.prefManager.getString("$key${PrefManager.SUFFIX_ACTIVITY}"))
+                            actionHolder.premTypeIntent ->
+                                options.putInt(Actions.EXTRA_INTENT_KEY, app.prefManager.getIntentKey(key))
+                        }
 
-                Actions.sendAction(context, Actions.ACTION, options)
-
-                if (app.prefManager.useRoot) {
-                    app.rootBinder?.handle(which)
+                        Actions.sendAction(context, Actions.ACTION, options)
+                    }
+                } else {
+                    handleAction(which, key)
                 }
             }
         }
+
+        fun handleAction(which: Int, key: String) {
+            when (which) {
+                actionHolder.typeAssist -> {
+                    val assist = Intent(RecognizerIntent.ACTION_WEB_SEARCH)
+                    assist.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+                    try {
+                        context.startActivity(assist)
+                    } catch (e: Exception) {
+                        assist.action = RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE
+
+                        try {
+                            context.startActivity(assist)
+                        } catch (e: Exception) {
+                            assist.action = Intent.ACTION_VOICE_ASSIST
+
+                            try {
+                                context.startActivity(assist)
+                            } catch (e: Exception) {
+                                assist.action = Intent.ACTION_VOICE_COMMAND
+
+                                try {
+                                    context.startActivity(assist)
+                                } catch (e: Exception) {
+                                    assist.action = Intent.ACTION_ASSIST
+
+                                    try {
+                                        context.startActivity(assist)
+                                    } catch (e: Exception) {
+                                        val searchMan = context.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+
+                                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                                            try {
+                                                searchMan.launchAssist(null)
+                                            } catch (e: Exception) {
+
+                                                searchMan.launchLegacyAssist(null, UserHandle.USER_CURRENT, null)
+                                            }
+                                        } else {
+                                            val launchAssistAction = searchMan::class.java
+                                                    .getMethod("launchAssistAction", Int::class.java, String::class.java, Int::class.java)
+                                            launchAssistAction.invoke(searchMan, 1, null, UserHandle.USER_CURRENT)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                actionHolder.typeOhm -> {
+                    val ohm = Intent("com.xda.onehandedmode.intent.action.TOGGLE_OHM")
+                    ohm.setClassName("com.xda.onehandedmode", "com.xda.onehandedmode.receivers.OHMReceiver")
+                    context.sendBroadcast(ohm)
+                }
+                actionHolder.premTypePlayPause -> runPremiumAction {
+                    audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
+                    audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
+                }
+                actionHolder.premTypePrev -> runPremiumAction {
+                    audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+                    audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+                }
+                actionHolder.premTypeNext -> runPremiumAction {
+                    audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
+                    audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
+                }
+                actionHolder.premTypeSwitchIme -> runPremiumAction {
+                    imm.showInputMethodPicker()
+                }
+                actionHolder.premTypeLaunchApp -> runPremiumAction {
+                    val launchPackage = app.prefManager.getPackage(key)
+
+                    if (launchPackage != null) {
+                        val launch = Intent(Intent.ACTION_MAIN)
+                        launch.addCategory(Intent.CATEGORY_LAUNCHER)
+                        launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        launch.`package` = launchPackage.split("/")[0]
+                        launch.component = ComponentName(launch.`package`, launchPackage.split("/")[1])
+
+                        try {
+                            context.startActivity(launch)
+                        } catch (e: Exception) {}
+                    }
+                }
+                actionHolder.premTypeLaunchActivity -> runPremiumAction {
+                    val activity = app.prefManager.getActivity(key)
+
+                    val p = activity.split("/")[0]
+                    val c = activity.split("/")[1]
+
+                    val launch = Intent()
+                    launch.component = ComponentName(p, c)
+                    launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                    try {
+                        context.startActivity(launch)
+                    } catch (e: Exception) {}
+                }
+                actionHolder.premTypeLockScreen -> runPremiumAction {
+                    runSystemSettingsAction {
+                        ActionReceiver.turnScreenOff(context)
+                    }
+                }
+                actionHolder.premTypeScreenshot -> runPremiumAction {
+                    val screenshot = Intent(context, ScreenshotActivity::class.java)
+                    screenshot.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(screenshot)
+                }
+                actionHolder.premTypeRot -> runPremiumAction {
+                    runSystemSettingsAction {
+                        orientationEventListener.enable()
+                    }
+                }
+                actionHolder.premTypeTaskerEvent -> runPremiumAction {
+                    EventConfigureActivity::class.java.requestQuery(context, EventUpdate(key))
+                }
+                actionHolder.typeToggleNav -> {
+                    ActionReceiver.toggleNav(context)
+                }
+                actionHolder.premTypeFlashlight -> runPremiumAction {
+                    flashlightController.flashlightEnabled = !flashlightController.flashlightEnabled
+                }
+                actionHolder.premTypeVolumePanel -> runPremiumAction {
+                    audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
+                }
+                actionHolder.premTypeBluetooth -> runPremiumAction {
+                    val adapter = BluetoothAdapter.getDefaultAdapter()
+                    if (adapter.isEnabled) adapter.disable() else adapter.enable()
+                }
+                actionHolder.premTypeWiFi -> runPremiumAction {
+                    wifiManager.isWifiEnabled = !wifiManager.isWifiEnabled
+                }
+                actionHolder.premTypeIntent -> runPremiumAction {
+                    val broadcast = IntentSelectorActivity.INTENTS[which]
+                    val type = broadcast?.which
+
+                    try {
+                        when (type) {
+                            IntentSelectorActivity.ACTIVITY -> {
+                                broadcast.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                context.startActivity(broadcast)
+                            }
+                            IntentSelectorActivity.SERVICE -> ContextCompat.startForegroundService(context, broadcast)
+                            IntentSelectorActivity.BROADCAST -> context.sendBroadcast(broadcast)
+                        }
+                    } catch (e: SecurityException) {
+                        when (broadcast?.action) {
+                            MediaStore.ACTION_VIDEO_CAPTURE,
+                            MediaStore.ACTION_IMAGE_CAPTURE -> {
+                                RequestPermissionsActivity.createAndStart(context,
+                                        arrayOf(Manifest.permission.CAMERA), //TODO THIS NEEDS TO BE FIXED
+                                        ComponentName(context, BarView::class.java),
+                                        Bundle().apply {
+                                            putInt(Actions.EXTRA_ACTION, which)
+                                            putString(Actions.EXTRA_GESTURE, key)
+                                        }
+                                )
+                            }
+                        }
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                actionHolder.premTypeBatterySaver -> {
+                    runPremiumAction {
+                        val current = Settings.Global.getInt(context.contentResolver, Settings.Global.LOW_POWER_MODE, 0)
+                        Settings.Global.putInt(context.contentResolver, Settings.Global.LOW_POWER_MODE, if (current == 0) 1 else 0)
+                    }
+                }
+                actionHolder.premTypeScreenTimeout -> {
+                    runPremiumAction { ActionReceiver.toggleScreenOn(context) }
+                }
+                actionHolder.premTypeNotif -> runPremiumAction {
+                    iStatusBarManager.expandNotificationsPanel()
+                }
+                actionHolder.premTypeQs -> runPremiumAction {
+                    iStatusBarManager.expandSettingsPanel(null)
+                }
+                actionHolder.premTypeVibe -> {
+                    //TODO: Implement
+                }
+                actionHolder.premTypeSilent -> {
+                    //TODO: Implement
+                }
+                actionHolder.premTypeMute -> {
+                    //TODO: Implement
+                }
+            }
+        }
+
+        private fun runNougatAction(action: () -> Unit) = Utils.runNougatAction(context, action)
+        private fun runPremiumAction(action: () -> Unit) = Utils.runPremiumAction(context, App.isValidPremium, action)
+        private fun runSystemSettingsAction(action: () -> Unit) = Utils.runSystemSettingsAction(context, action)
 
         /**
          * Load the user's custom gesture/action pairings; default values if a pairing doesn't exist

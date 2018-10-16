@@ -123,7 +123,8 @@ class PrefManager private constructor(private val context: Context) {
         set(value) {
             putBoolean(FIRST_RUN, value)
         }
-    var useRoot: Boolean = false
+    val useRoot: Boolean
+        get() = getBoolean(USE_ROOT, false)
     val hideInFullscreen: Boolean
         get() = getBoolean(HIDE_IN_FULLSCREEN, context.resources.getBoolean(R.bool.hide_in_fullscreen_default))
     val largerHitbox: Boolean

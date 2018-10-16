@@ -1,5 +1,6 @@
 package com.xda.nobar.activities
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -135,6 +136,7 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info: Parcelable> : AppComp
         super.onBackPressed()
     }
 
+    @SuppressLint("CheckResult")
     internal fun reloadList() {
         loader.visibility = View.VISIBLE
         list.visibility = View.GONE

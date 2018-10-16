@@ -10,6 +10,7 @@ import android.content.res.Configuration
 import android.database.ContentObserver
 import android.graphics.PixelFormat
 import android.graphics.Rect
+import android.hardware.input.InputManager
 import android.net.Uri
 import android.os.*
 import android.preference.PreferenceManager
@@ -22,7 +23,11 @@ import android.view.inputmethod.InputMethodManager
 import com.crashlytics.android.Crashlytics
 import com.github.anrwatchdog.ANRWatchDog
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.topjohnwu.superuser.BusyBox
+import com.topjohnwu.superuser.ContainerApp
+import com.topjohnwu.superuser.Shell
 import com.xda.nobar.activities.IntroActivity
+import com.xda.nobar.activities.RequestPermissionsActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
@@ -30,7 +35,6 @@ import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.providers.BaseProvider
 import com.xda.nobar.services.Actions
 import com.xda.nobar.services.ForegroundService
-import com.xda.nobar.services.RootService
 import com.xda.nobar.util.*
 import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.views.BarView
@@ -41,8 +45,10 @@ import java.util.*
 /**
  * Centralize important stuff in the App class, so we can be sure to have an instance of it
  */
-class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
+class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
     companion object {
+        val INPUT_MANAGER = InputManager.getInstance()
+
         const val EDGE_TYPE_ACTIVE = 2
 
         var isValidPremium: Boolean = false
@@ -73,15 +79,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     })}
 
     private val premiumInstallListener = PremiumInstallListener()
-    private val rootServiceIntent by lazy { Intent(this, RootService::class.java) }
+    private val permissionListener = PermissionReceiver()
 
     val immersiveHelperView by lazy { ImmersiveHelperView(this) }
     val prefManager by lazy { PrefManager.getInstance(this) }
     val screenOffHelper by lazy { ScreenOffHelper(this) }
 
     private var isInOtherWindowApp = false
-
-    var rootBinder: RootService.RootBinder? = null
 
     var navHidden = false
     var pillShown = false
@@ -102,16 +106,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     val bar by lazy { BarView(this) }
 
-    private val rootConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            rootBinder = service as RootService.RootBinder
-        }
-
-        override fun onServiceDisconnected(name: ComponentName?) {
-            rootBinder = null
-        }
-    }
-
     val disabledNavReasonManager = DisabledReasonManager()
     val disabledBarReasonManager = DisabledReasonManager()
     val disabledImmReasonManager = DisabledReasonManager()
@@ -122,6 +116,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     override fun onCreate() {
         super.onCreate()
+
+        Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR)
+        Shell.Config.verboseLogging(BuildConfig.DEBUG)
+
+        BusyBox.setup(this)
 
         if (isRightProcess()) {
             if (prefManager.crashlyticsIdEnabled) Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
@@ -141,6 +140,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             uiHandler.register()
             carModeHandler.register()
             premiumInstallListener.register()
+            permissionListener.register()
 
             isValidPremium = prefManager.validPrem
 
@@ -187,12 +187,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 navbarListeners.forEach { it.onNavStateChange(prefManager.navHidden) }
             }
             PrefManager.USE_ROOT -> {
-                if (prefManager.useRoot) {
-                    startService(rootServiceIntent)
-                    ensureRootServiceBound()
-                } else {
-                    stopService(rootServiceIntent)
-                }
+                //TODO: Re-implement
             }
             PrefManager.ROT270_FIX -> {
                 if (prefManager.useRot270Fix) uiHandler.handleRot()
@@ -461,8 +456,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
     }
 
-    fun ensureRootServiceBound() = bindService(rootServiceIntent, rootConnection, 0)
-
     /**
      * Get the current screen overscan
      * @return the overscan as a Rect
@@ -503,8 +496,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             ContextCompat.startForegroundService(this, Intent(this, ForegroundService::class.java))
 
             if (prefManager.useRoot) {
-                startService(rootServiceIntent)
-                ensureRootServiceBound()
+                //TODO: Re-implement
             }
         }
     }
@@ -956,6 +948,30 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     || intent?.action == Intent.ACTION_PACKAGE_REMOVED) {
                 if (intent.dataString.contains("com.xda.nobar.premium")) {
                     refreshPremium()
+                }
+            }
+        }
+    }
+
+    inner class PermissionReceiver : BroadcastReceiver() {
+        fun register() {
+            val filter = IntentFilter()
+            filter.addAction(RequestPermissionsActivity.ACTION_RESULT)
+        }
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action) {
+                RequestPermissionsActivity.ACTION_RESULT -> {
+                    val className = intent.getParcelableExtra<ComponentName>(RequestPermissionsActivity.EXTRA_CLASS_NAME)
+
+                    when (className) {
+                        ComponentName(this@App, BarView::class.java) -> {
+                            val which = intent.getIntExtra(Actions.EXTRA_ACTION, -1)
+                            val key = intent.getStringExtra(Actions.EXTRA_GESTURE) ?: return
+
+                            bar.gestureDetector.handleAction(which, key)
+                        }
+                    }
                 }
             }
         }

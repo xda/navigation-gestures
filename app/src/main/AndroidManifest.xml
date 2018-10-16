@@ -178,10 +178,6 @@
             android:name=".services.ForegroundService"
             android:enabled="true"
             android:exported="true" />
-        <service
-            android:name=".services.RootService"
-            android:enabled="true"
-            android:exported="true" />
 
         <receiver
             android:name=".receivers.PackageReplaceReceiver"
