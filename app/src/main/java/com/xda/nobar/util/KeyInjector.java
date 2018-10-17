@@ -56,7 +56,7 @@ public class KeyInjector {
 
         try {
             if (longPress) {
-
+                //TODO: find a way to make this work
             } else {
                 injectKeyEvent(new KeyEvent(now, now, KeyEvent.ACTION_DOWN, code, 0));
                 injectKeyEvent(new KeyEvent(now, now, KeyEvent.ACTION_UP, code, 0));

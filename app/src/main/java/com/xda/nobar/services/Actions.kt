@@ -83,14 +83,7 @@ class Actions : AccessibilityService(), ReceiverCallback {
                 val actionHolder = ActionHolder(this)
                 when (intent.getIntExtra(EXTRA_ACTION, actionHolder.typeNoAction)) {
                     actionHolder.typeHome -> {
-                        if (intent.getBooleanExtra(EXTRA_ALT_HOME, false)) {
-                            val homeIntent = Intent(Intent.ACTION_MAIN)
-                            homeIntent.addCategory(Intent.CATEGORY_HOME)
-                            homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            startActivity(homeIntent)
-                        } else {
-                            performGlobalAction(GLOBAL_ACTION_HOME)
-                        }
+                        performGlobalAction(GLOBAL_ACTION_HOME)
                     }
                     actionHolder.typeRecents -> {
                         performGlobalAction(GLOBAL_ACTION_RECENTS)

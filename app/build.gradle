@@ -73,6 +73,12 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
     implementation 'com.github.topjohnwu:libsu:2.0.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2'
 }
 
 apply plugin: 'com.google.gms.google-services'
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}

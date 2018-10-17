@@ -1,7 +1,9 @@
 package com.xda.nobar.util
 
 import android.content.Context
+import android.os.Build
 import android.view.KeyEvent
+import com.topjohnwu.superuser.Shell
 import com.xda.nobar.R
 import java.io.DataOutputStream
 
@@ -32,27 +34,19 @@ class RootActions(private val context: Context) {
     fun lock() = sendKeycode(KeyEvent.KEYCODE_POWER)
 
     fun sendKeycode(code: Int) {
-        try {
-            outputStream.writeBytes("$code\n")
-            outputStream.flush()
-        } catch (e: Exception) {}
+        sendCommand("$code")
     }
 
     fun sendRepeatKeycode(code: Int) {
-        try {
-            outputStream.writeBytes("$code --repeat\n")
-            outputStream.flush()
-        } catch (e: Exception) {}
+        sendCommand("$code --repeat")
     }
 
     fun sendLongKeycode(code: Int) {
-        try {
-            outputStream.writeBytes("$code --longpress\n")
-            outputStream.flush()
-        } catch (e: Exception) {}
+        sendCommand("$code --longpress")
     }
 
     fun sendCommand(command: String) {
+        if (!hasProc()) onCreate()
         try {
             outputStream.writeBytes("$command\n")
             outputStream.flush()
@@ -60,14 +54,22 @@ class RootActions(private val context: Context) {
     }
 
     fun onDestroy() {
-        Runtime.getRuntime().exec("killall -9 NoBarKey")
         if (this::outputStream.isInitialized) {
             try {
-                outputStream.writeBytes("exit\n")
-                outputStream.flush()
-                injectorProc.waitFor()
+                injectorProc.destroy()
                 outputStream.close()
             } catch (e: Exception) {}
+        }
+        Shell.su("killall -9 NoBarKey").submit()
+    }
+
+    fun hasProc(): Boolean {
+        return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) injectorProc.isAlive
+        else try {
+            outputStream.writeBytes("\n")
+            true
+        } catch (e: Exception) {
+            false
         }
     }
 }

@@ -180,7 +180,10 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 navbarListeners.forEach { it.onNavStateChange(prefManager.navHidden) }
             }
             PrefManager.USE_ROOT -> {
-                //TODO: Re-implement
+                if (areGesturesActivated()) {
+                    if (prefManager.useRoot) bar.rootActions.onCreate()
+                    else bar.rootActions.onDestroy()
+                }
             }
             PrefManager.ROT270_FIX -> {
                 if (prefManager.useRot270Fix) uiHandler.handleRot()
