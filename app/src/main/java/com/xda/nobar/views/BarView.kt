@@ -1258,12 +1258,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         when (which) {
                             actionHolder.typeHome ->
                                 options.putBoolean(Actions.EXTRA_ALT_HOME, app.prefManager.useAlternateHome)
-                            actionHolder.premTypeLaunchApp ->
-                                options.putString(Actions.EXTRA_PACKAGE, app.prefManager.getString("$key${PrefManager.SUFFIX_PACKAGE}"))
-                            actionHolder.premTypeLaunchActivity ->
-                                options.putString(Actions.EXTRA_ACTIVITY, app.prefManager.getString("$key${PrefManager.SUFFIX_ACTIVITY}"))
-                            actionHolder.premTypeIntent ->
-                                options.putInt(Actions.EXTRA_INTENT_KEY, app.prefManager.getIntentKey(key))
+//                            actionHolder.premTypeLaunchApp ->
+//                                options.putString(Actions.EXTRA_PACKAGE, app.prefManager.getString("$key${PrefManager.SUFFIX_PACKAGE}"))
+//                            actionHolder.premTypeLaunchActivity ->
+//                                options.putString(Actions.EXTRA_ACTIVITY, app.prefManager.getString("$key${PrefManager.SUFFIX_ACTIVITY}"))
+//                            actionHolder.premTypeIntent ->
+//                                options.putInt(Actions.EXTRA_INTENT_KEY, app.prefManager.getIntentKey(key))
                         }
 
                         Actions.sendAction(context, Actions.ACTION, options)
@@ -1374,7 +1374,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
                 actionHolder.premTypeLockScreen -> runPremiumAction {
                     runSystemSettingsAction {
-                        ActionReceiver.turnScreenOff(context)
+                        if (app.prefManager.useRoot && Shell.rootAccess()) {
+                            rootActions.lock()
+                        } else {
+                            ActionReceiver.turnScreenOff(context)
+                        }
                     }
                 }
                 actionHolder.premTypeScreenshot -> runPremiumAction {
@@ -1407,7 +1411,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     wifiManager.isWifiEnabled = !wifiManager.isWifiEnabled
                 }
                 actionHolder.premTypeIntent -> runPremiumAction {
-                    val broadcast = IntentSelectorActivity.INTENTS[which]
+                    val broadcast = IntentSelectorActivity.INTENTS[app.prefManager.getIntentKey(key)]
                     val type = broadcast?.which
 
                     try {
@@ -1424,7 +1428,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             MediaStore.ACTION_VIDEO_CAPTURE,
                             MediaStore.ACTION_IMAGE_CAPTURE -> {
                                 RequestPermissionsActivity.createAndStart(context,
-                                        arrayOf(Manifest.permission.CAMERA), //TODO THIS NEEDS TO BE FIXED
+                                        arrayOf(Manifest.permission.CAMERA),
                                         ComponentName(context, BarView::class.java),
                                         Bundle().apply {
                                             putInt(Actions.EXTRA_ACTION, which)

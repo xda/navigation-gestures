@@ -10,7 +10,6 @@ import android.content.res.Configuration
 import android.database.ContentObserver
 import android.graphics.PixelFormat
 import android.graphics.Rect
-import android.hardware.input.InputManager
 import android.net.Uri
 import android.os.*
 import android.preference.PreferenceManager
@@ -47,8 +46,6 @@ import java.util.*
  */
 class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
     companion object {
-        val INPUT_MANAGER = InputManager.getInstance()
-
         const val EDGE_TYPE_ACTIVE = 2
 
         var isValidPremium: Boolean = false
@@ -109,10 +106,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
     val disabledNavReasonManager = DisabledReasonManager()
     val disabledBarReasonManager = DisabledReasonManager()
     val disabledImmReasonManager = DisabledReasonManager()
-
-    /**
-     * ***************************************************************
-     */
 
     override fun onCreate() {
         super.onCreate()

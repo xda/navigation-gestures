@@ -29,23 +29,38 @@ class RootActions(private val context: Context) {
     fun switch() = sendRepeatKeycode(KeyEvent.KEYCODE_APP_SWITCH)
     fun split() = sendLongKeycode(KeyEvent.KEYCODE_APP_SWITCH)
     fun power() = sendLongKeycode(KeyEvent.KEYCODE_POWER)
+    fun lock() = sendKeycode(KeyEvent.KEYCODE_POWER)
 
     fun sendKeycode(code: Int) {
-        outputStream.writeBytes("$code\n")
-        outputStream.flush()
+        try {
+            outputStream.writeBytes("$code\n")
+            outputStream.flush()
+        } catch (e: Exception) {}
     }
 
     fun sendRepeatKeycode(code: Int) {
-        outputStream.writeBytes("$code --repeat\n")
-        outputStream.flush()
+        try {
+            outputStream.writeBytes("$code --repeat\n")
+            outputStream.flush()
+        } catch (e: Exception) {}
     }
 
     fun sendLongKeycode(code: Int) {
-        outputStream.writeBytes("$code --longpress\n")
-        outputStream.flush()
+        try {
+            outputStream.writeBytes("$code --longpress\n")
+            outputStream.flush()
+        } catch (e: Exception) {}
+    }
+
+    fun sendCommand(command: String) {
+        try {
+            outputStream.writeBytes("$command\n")
+            outputStream.flush()
+        } catch (e: Exception) {}
     }
 
     fun onDestroy() {
+        Runtime.getRuntime().exec("killall -9 NoBarKey")
         if (this::outputStream.isInitialized) {
             try {
                 outputStream.writeBytes("exit\n")

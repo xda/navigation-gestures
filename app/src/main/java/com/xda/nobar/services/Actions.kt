@@ -5,12 +5,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.view.accessibility.AccessibilityEvent
-import com.xda.nobar.activities.RequestPermissionsActivity
 import com.xda.nobar.interfaces.ReceiverCallback
 import com.xda.nobar.receivers.ActionReceiver
 import com.xda.nobar.receivers.StartupReceiver
