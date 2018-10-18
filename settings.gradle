@@ -1,2 +1,2 @@
-include ':app', ':SeekBarPref', ':sdk-v1.0.0', ':slook_v1.4.0'
+include ':app', ':SeekBarPref'
 project(':SeekBarPref').projectDir = new File('/mnt/AA387BDB387BA54B/StudioProjects/MaterialSeekBarPreference/library')

@@ -78,7 +78,7 @@ class CocktailReceiver : BaseProvider() {
         }
     }
 
-    override fun onUpdate(context: Context, cocktailManager: SlookCocktailManager, cocktailIds: IntArray) {
+    override fun onUpdate(context: Context, manager: SlookCocktailManager, ids: IntArray) {
         val views = handleUpdate(context, R.layout.widget_layout)
 
         val longClickIntent = Intent(context, MainActivity::class.java)
@@ -86,10 +86,10 @@ class CocktailReceiver : BaseProvider() {
 
         val longClickPendingIntent = PendingIntent.getActivity(context, 400, longClickIntent, 0)
 
-        cocktailManager.setOnLongClickPendingIntent(views, R.id.root, longClickPendingIntent)
+        manager.setOnLongClickPendingIntent(views, R.id.root, longClickPendingIntent)
 
-        for (id in cocktailIds) {
-            cocktailManager.updateCocktail(id, views)
+        for (id in ids) {
+            manager.updateCocktail(id, views)
         }
     }
 }

@@ -10,8 +10,6 @@
             <option value="$PROJECT_DIR$/../MaterialSeekBarPreference/library" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/sdk-v1.0.0" />
-            <option value="$PROJECT_DIR$/slook_v1.4.0" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
