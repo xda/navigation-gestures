@@ -33,6 +33,10 @@ class ImmersiveHelperView(context: Context) : View(context) {
         alpha = 0f
     }
 
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        immersiveListener?.invoke(h >= getProperScreenHeightForRotation().absoluteValue)
+    }
+
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         immersiveListener?.invoke(bottom.absoluteValue >= getProperScreenHeightForRotation().absoluteValue)
     }
