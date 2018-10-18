@@ -98,9 +98,9 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
     }
 
     override fun onNavStateChange(hidden: Boolean) {
-        activate.onCheckedChangeListener = null
-        activate.isChecked = hidden
-        activate.onCheckedChangeListener = navListener
+        hide_nav.onCheckedChangeListener = null
+        hide_nav.isChecked = hidden
+        hide_nav.onCheckedChangeListener = navListener
     }
 
     override fun onResult(valid: Boolean, reason: String?) {
