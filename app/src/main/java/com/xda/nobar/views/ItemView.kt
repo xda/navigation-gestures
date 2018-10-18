@@ -1,10 +1,10 @@
 package com.xda.nobar.views
 
 import android.content.Context
+import android.support.v7.widget.AppCompatCheckedTextView
 import android.util.AttributeSet
-import android.widget.CheckedTextView
 
-class ItemView(context: Context, attributeSet: AttributeSet) : CheckedTextView(context, attributeSet) {
+class ItemView(context: Context, attributeSet: AttributeSet) : AppCompatCheckedTextView(context, attributeSet) {
     var name: String? = null
         set(value) {
             text = value

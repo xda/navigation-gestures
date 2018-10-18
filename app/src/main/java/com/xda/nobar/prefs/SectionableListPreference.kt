@@ -6,6 +6,7 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Typeface
 import android.preference.DialogPreference
+import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -13,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import android.widget.TextView
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnItemChosenListener
@@ -227,7 +227,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         }
     }
 
-    inner class SectionTitleView(context: Context) : TextView(context) {
+    inner class SectionTitleView(context: Context) : AppCompatTextView(context) {
         var name: String? = null
             set(value) {
                 text = value
@@ -275,11 +275,11 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
                         }
                     }
 
-                    itemView.setOnClickListener {
-                        if (it is ItemView) {
-                            it.isChecked = true
-                            setAllOthersUnchecked(it.value)
-                            listener.onItemChosen(it.value)
+                    itemView.setOnClickListener {v ->
+                        if (v is ItemView) {
+                            v.isChecked = true
+                            setAllOthersUnchecked(v.value)
+                            listener.onItemChosen(v.value)
                         }
                     }
                 }

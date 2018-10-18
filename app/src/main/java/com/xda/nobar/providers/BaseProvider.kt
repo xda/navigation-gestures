@@ -9,13 +9,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.RemoteViews
-import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.SettingsActivity
-import com.xda.nobar.util.Utils
 import dalvik.system.DexFile
 import java.io.IOException
+import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
 
 /**
  * Base provider for all the widgets

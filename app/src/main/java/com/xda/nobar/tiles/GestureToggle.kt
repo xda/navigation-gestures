@@ -7,7 +7,6 @@ import android.service.quicksettings.TileService
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
-import com.xda.nobar.util.Utils
 import com.xda.nobar.views.BarView
 
 /**

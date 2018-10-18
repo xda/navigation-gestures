@@ -1,7 +1,6 @@
 package com.xda.nobar.tasker.activities
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import com.joaomgcd.taskerpluginlibrary.action.TaskerPluginRunnerActionNoOutputOrInput
 import com.joaomgcd.taskerpluginlibrary.config.TaskerPluginConfig

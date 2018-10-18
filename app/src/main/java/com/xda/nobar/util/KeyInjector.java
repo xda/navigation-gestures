@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.util.Scanner;
 
 public class KeyInjector {
-    private static InputManager inputManager = InputManager.getInstance();
+    private static final InputManager inputManager = InputManager.getInstance();
 
     public static void main(final String[] args) {
         Scanner scanner = new Scanner(new InputStreamReader(System.in));

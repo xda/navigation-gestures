@@ -4,10 +4,9 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
 import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
+import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
 
 /**
  * Widget provider for TouchWiz's Edge Screen framework

@@ -11,12 +11,6 @@ import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
 import com.xda.nobar.providers.BaseProvider
-import com.xda.nobar.providers.BaseProvider.Companion.ACTION_PERFORM_TOGGLE
-import com.xda.nobar.providers.BaseProvider.Companion.ACTION_REFRESH
-import com.xda.nobar.providers.BaseProvider.Companion.GEST
-import com.xda.nobar.providers.BaseProvider.Companion.IMM
-import com.xda.nobar.providers.BaseProvider.Companion.NAV
-import com.xda.nobar.providers.BaseProvider.Companion.sendUpdate
 
 class CocktailReceiver : BaseProvider() {
     override fun onReceive(context: Context, intent: Intent) {

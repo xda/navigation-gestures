@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="1040px"
     android:layout_height="160px"
     android:clickable="true"
     android:focusable="true"
     android:gravity="center"
-    android:id="@+id/root">
+    android:id="@+id/root"
+    tools:ignore="PxUsage">
 
     <LinearLayout
         android:layout_width="match_parent"
