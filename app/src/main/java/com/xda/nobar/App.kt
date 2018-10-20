@@ -767,10 +767,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     }
                 }
 
-//                removeImmersiveHelper(true)
-                try {
-                    wm.updateViewLayout(immersiveHelperView, immersiveHelperView.params)
-                } catch (e: Exception) {}
+                removeImmersiveHelper(true)
 
                 if (isPillShown()) {
                     try {
