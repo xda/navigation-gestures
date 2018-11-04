@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
 
     private val navListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
         app.toggleNavState(!isChecked)
-        if (!IntroActivity.hasWss(this)) onNavStateChange(false)
+        if (!IntroActivity.hasWss(this)) onNavStateChange(!isChecked)
     }
 
     private var currentPremReason: String? = null

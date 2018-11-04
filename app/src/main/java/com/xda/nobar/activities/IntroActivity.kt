@@ -84,7 +84,7 @@ class IntroActivity : IntroActivity() {
                                 .setTitle(R.string.root_found)
                                 .setMessage(R.string.root_found_desc)
                                 .setPositiveButton(R.string.use_root) { _, _ ->
-                                    Shell.su("pm grant $packageName ${Manifest.permission.WRITE_SECURE_SETTINGS}")
+                                    Shell.su("pm grant $packageName ${Manifest.permission.WRITE_SECURE_SETTINGS}").submit()
                                 }
                                 .setNegativeButton(R.string.non_root) { _, _ ->
                                     nonRootDialog()
