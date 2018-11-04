@@ -45,7 +45,6 @@ import com.xda.nobar.tasker.updates.EventUpdate
 import com.xda.nobar.util.*
 import kotlinx.android.synthetic.main.pill.view.*
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.Executors
@@ -87,7 +86,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
     private val flashlightController =
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) FlashlightControllerMarshmallow(context)
-        else FlashlighControllerLollipop(context)
+        else FlashlightControllerLollipop(context)
     private val iStatusBarManager = IStatusBarService.Stub.asInterface(
             ServiceManager.checkService(Context.STATUS_BAR_SERVICE)
     )
@@ -193,7 +192,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        flashlightController.onCreate()
+
+        if (!flashlightController.isCreated) flashlightController.onCreate()
 
         if (app.prefManager.largerHitbox) {
             val margins = getPillMargins()
@@ -219,6 +219,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (gestureDetector.actionMap.keys.contains(key)) {
             gestureDetector.loadActionMap()
+        }
+
+        if (key == PrefManager.IS_ACTIVE) {
+            if (!app.prefManager.isActive) {
+                flashlightController.onDestroy()
+            }
         }
 
         if (key != null && key.contains("use_pixels")) {
@@ -321,7 +327,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        flashlightController.onDestroy()
 
         if (shouldReAddOnDetach) {
             app.addBarInternal(false)

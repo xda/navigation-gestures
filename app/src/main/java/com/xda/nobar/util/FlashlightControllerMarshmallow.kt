@@ -48,6 +48,7 @@ class FlashlightControllerMarshmallow(override val context: Context) : Flashligh
 
     override fun onCreate() {
         manager.registerTorchCallback(callback, Handler())
+        isCreated = true
     }
 
     override fun onDestroy() {
@@ -56,5 +57,6 @@ class FlashlightControllerMarshmallow(override val context: Context) : Flashligh
         } catch (e: Exception) {}
 
         manager.unregisterTorchCallback(callback)
+        isCreated = false
     }
 }

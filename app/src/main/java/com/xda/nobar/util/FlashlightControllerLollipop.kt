@@ -5,7 +5,7 @@ import android.graphics.SurfaceTexture
 import android.hardware.Camera
 import java.io.IOException
 
-class FlashlighControllerLollipop(override val context: Context) : FlashlightControllerBase(context) {
+class FlashlightControllerLollipop(override val context: Context) : FlashlightControllerBase(context) {
     override var flashlightEnabled: Boolean
         get() {
             return camera.parameters.flashMode == Camera.Parameters.FLASH_MODE_TORCH
@@ -29,7 +29,13 @@ class FlashlighControllerLollipop(override val context: Context) : FlashlightCon
     private val camera by lazy { Camera.open() }
     private var texture: SurfaceTexture? = null
 
+    override fun onCreate() {
+        isCreated = true
+    }
+
     override fun onDestroy() {
         camera.stopPreview()
+
+        isCreated = false
     }
 }
