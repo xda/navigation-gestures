@@ -193,8 +193,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        if (!flashlightController.isCreated) flashlightController.onCreate()
-
         if (app.prefManager.largerHitbox) {
             val margins = getPillMargins()
             margins.top = resources.getDimensionPixelSize(R.dimen.pill_margin_top_large_hitbox)
@@ -1481,6 +1479,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
          */
         fun loadActionMap() {
             app.prefManager.getActionsList(actionMap)
+
+            if (actionMap.values.contains(actionHolder.premTypeFlashlight)) {
+                if (!flashlightController.isCreated) flashlightController.onCreate()
+            } else {
+                flashlightController.onDestroy()
+            }
         }
 
         inner class Detector : GestureDetector.SimpleOnGestureListener() {
