@@ -44,8 +44,9 @@ import com.xda.nobar.tasker.activities.EventConfigureActivity
 import com.xda.nobar.tasker.updates.EventUpdate
 import com.xda.nobar.util.*
 import kotlinx.android.synthetic.main.pill.view.*
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
