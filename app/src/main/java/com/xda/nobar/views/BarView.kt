@@ -850,6 +850,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var isRunningLongRight = false
         private var isRunningLongDown = false
 
+        private var sentLongUp = false
+        private var sentLongLeft = false
+        private var sentLongRight = false
+        private var sentLongDown = false
+
         private var oldEvent: MotionEvent? = null
         private var oldY = 0F
         private var oldX = 0F
@@ -998,6 +1003,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     isRunningLongUp = false
                     isRunningLongDown = false
 
+                    sentLongRight = false
+                    sentLongLeft = false
+                    sentLongUp = false
+                    sentLongDown = false
+
                     isSwipeUp = false
                     isSwipeLeft = false
                     isSwipeRight = false
@@ -1021,8 +1031,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             updateLayout(params)
                         }
 
-                        gestureHandler.sendEmptyMessageAtTime(MSG_UP_HOLD,
-                                SystemClock.uptimeMillis() + getHoldTime().toLong())
+                        if (!sentLongUp) {
+                            sentLongUp = true
+                            gestureHandler.sendEmptyMessageAtTime(MSG_UP_HOLD,
+                                    SystemClock.uptimeMillis() + getHoldTime().toLong())
+                        }
                     }
 
                     if (isSwipeDown && !isSwipeLeft && !isSwipeRight && !isSwipeUp) {
@@ -1036,8 +1049,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             updateLayout(params)
                         }
 
-                        gestureHandler.sendEmptyMessageAtTime(MSG_DOWN_HOLD,
-                                SystemClock.uptimeMillis() + getHoldTime().toLong())
+                        if (!sentLongDown) {
+                            sentLongDown = true
+                            gestureHandler.sendEmptyMessageAtTime(MSG_DOWN_HOLD,
+                                    SystemClock.uptimeMillis() + getHoldTime().toLong())
+                        }
                     }
 
                     if ((isSwipeLeft || isSwipeRight) && !isSwipeUp && !isSwipeDown) {
@@ -1063,12 +1079,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             }
                         }
 
-                        if (isSwipeLeft) {
+                        if (isSwipeLeft && !sentLongLeft) {
+                            sentLongLeft = true
                             gestureHandler.sendEmptyMessageAtTime(MSG_LEFT_HOLD,
                                     SystemClock.uptimeMillis() + getHoldTime().toLong())
                         }
 
-                        if (isSwipeRight) {
+                        if (isSwipeRight && !sentLongRight) {
+                            sentLongRight = true
                             gestureHandler.sendEmptyMessageAtTime(MSG_RIGHT_HOLD,
                                     SystemClock.uptimeMillis() + getHoldTime().toLong())
                         }
