@@ -47,9 +47,6 @@ import kotlinx.android.synthetic.main.pill.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.TimeUnit
 import kotlin.math.absoluteValue
 
 /**
@@ -78,7 +75,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private const val FIRST_SECTION = 0
         private const val SECOND_SECTION = 1
         private const val THIRD_SECTION = 2
+
+        private const val MSG_UP_HOLD = 0
+        private const val MSG_LEFT_HOLD = 1
+        private const val MSG_RIGHT_HOLD = 2
+        private const val MSG_DOWN_HOLD = 3
+
+        private const val MSG_HIDE = 0
     }
+
+
     private val app = context.applicationContext as App
     private val actionHolder = ActionHolder(context)
     private val audio = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -93,7 +99,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     var view: View = View.inflate(context, R.layout.pill, this)
     var yHomeAnimator: ValueAnimator? = null
-    var lastTouchTime = 0L
+    var lastTouchTime = -1L
     var shouldReAddOnDetach = false
 
     val params = WindowManager.LayoutParams()
@@ -103,7 +109,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-    private val pool = Executors.newScheduledThreadPool(1)
+    private val hideHandler = HideHandler()
 
     var isHidden = false
     var beingTouched = false
@@ -392,8 +398,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    private var hideHandle: ScheduledFuture<*>? = null
-
     /**
      * "Hide" the pill by moving it partially offscreen
      */
@@ -434,8 +438,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
             } else {
                 needsScheduledHide = true
-                hideHandle?.cancel(true)
-                hideHandle = null
+                hideHandler.removeMessages(MSG_HIDE)
             }
         }
     }
@@ -458,15 +461,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private fun scheduleHide(time: Long? = parseHideTime()) {
         if (time != null) {
-            hideHandle = pool.schedule({
-                if (System.currentTimeMillis() - lastTouchTime < time) {
-                    scheduleHide()
-                } else {
-                    if (hiddenPillReasons.isNotEmpty()) {
-                        hidePill(true, hiddenPillReasons.getMostRecentReason())
-                    }
-                }
-            }, time, TimeUnit.MILLISECONDS)
+            hideHandler.sendEmptyMessageAtTime(MSG_HIDE,
+                    SystemClock.uptimeMillis() + time)
         }
     }
 
@@ -490,9 +486,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 isPillHidingOrShowing = true
                 val reallyForceNotAuto = hiddenPillReasons.isEmpty()
 
-                if ((reallyForceNotAuto) && hideHandle != null) {
-                    hideHandle?.cancel(true)
-                    hideHandle = null
+                if ((reallyForceNotAuto)) {
+                    hideHandler.removeMessages(MSG_HIDE)
                 }
 
                 if (!reallyForceNotAuto) {
@@ -840,7 +835,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     inner class GestureManager {
         val actionMap = HashMap<String, Int>()
-        private val tapLock = Any()
 
         private var isSwipeUp = false
         private var isSwipeLeft = false
@@ -850,11 +844,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var wasHidden = false
 
         var isActing = false
-
-        private var upHoldHandle: ScheduledFuture<*>? = null
-        private var leftHoldHandle: ScheduledFuture<*>? = null
-        private var rightHoldHandle: ScheduledFuture<*>? = null
-        private var downHoldHandle: ScheduledFuture<*>? = null
 
         private var isRunningLongUp = false
         private var isRunningLongLeft = false
@@ -872,6 +861,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var origAdjY = 0F
 
         private val manager = GestureDetector(context, Detector())
+        private val gestureHandler = GestureHandler()
 
         fun onTouchEvent(ev: MotionEvent?): Boolean {
             return handleTouchEvent(ev) || manager.onTouchEvent(ev)
@@ -898,36 +888,30 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                 MotionEvent.ACTION_UP -> {
                     beingTouched = false
+                    lastTouchTime = -1L
 
                     if (wasHidden) {
                         isSwipeUp = false
                     }
 
-                    upHoldHandle?.cancel(false)
-                    upHoldHandle = null
+                    gestureHandler.removeMessages(MSG_UP_HOLD)
+                    gestureHandler.removeMessages(MSG_LEFT_HOLD)
+                    gestureHandler.removeMessages(MSG_RIGHT_HOLD)
+                    gestureHandler.removeMessages(MSG_DOWN_HOLD)
 
-                    leftHoldHandle?.cancel(false)
-                    leftHoldHandle = null
-
-                    rightHoldHandle?.cancel(false)
-                    rightHoldHandle = null
-
-                    downHoldHandle?.cancel(false)
-                    downHoldHandle = null
-
-                    if (isSwipeUp || (isRunningLongUp &&  getSectionedUpHoldAction(origAdjX) == actionHolder.typeNoAction)) {
+                    if (isSwipeUp && !isRunningLongUp) {
                         sendAction(actionHolder.actionUp)
                     }
 
-                    if (isSwipeLeft || (isRunningLongLeft && actionMap[actionHolder.actionLeftHold] == actionHolder.typeNoAction)) {
+                    if (isSwipeLeft && !isRunningLongLeft) {
                         sendAction(actionHolder.actionLeft)
                     }
 
-                    if (isSwipeRight || (isRunningLongRight && actionMap[actionHolder.actionRightHold] == actionHolder.typeNoAction)) {
+                    if (isSwipeRight && !isRunningLongRight) {
                         sendAction(actionHolder.actionRight)
                     }
 
-                    if (isSwipeDown || (isRunningLongDown && actionMap[actionHolder.actionDown] == actionHolder.typeNoAction)) {
+                    if (isSwipeDown && !isRunningLongDown) {
                         sendAction(actionHolder.actionDown)
                     }
 
@@ -952,8 +936,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                 .withEndAction {
                                     if (params.y == getAdjustedHomeY()) {
                                         isActing = false
-                                        isSwipeDown = false
-                                        isSwipeUp = false
+                                        isCarryingOutTouchAction = false
                                     }
                                 }
                                 .start()
@@ -975,8 +958,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             yHomeAnimator?.addListener(object : AnimatorListenerAdapter() {
                                 override fun onAnimationEnd(animation: Animator?) {
                                     isActing = false
-                                    isSwipeUp = false
-                                    isSwipeDown = false
                                     isCarryingOutTouchAction = false
 
                                     yHomeAnimator = null
@@ -1000,8 +981,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             animator.addListener(object : AnimatorListenerAdapter() {
                                 override fun onAnimationEnd(animation: Animator?) {
                                     isActing = false
-                                    isSwipeLeft = false
-                                    isSwipeRight = false
                                     isCarryingOutTouchAction = false
                                 }
                             })
@@ -1010,10 +989,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }
                         else -> {
                             isActing = false
-                            isSwipeUp = false
-                            isSwipeLeft = false
-                            isSwipeRight = false
-                            isSwipeDown = false
                             isCarryingOutTouchAction = false
                         }
                     }
@@ -1022,6 +997,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     isRunningLongLeft = false
                     isRunningLongUp = false
                     isRunningLongDown = false
+
+                    isSwipeUp = false
+                    isSwipeLeft = false
+                    isSwipeRight = false
+                    isSwipeDown = false
 
                     wasHidden = isHidden
                 }
@@ -1041,14 +1021,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             updateLayout(params)
                         }
 
-                        if (upHoldHandle == null) {
-                            upHoldHandle = pool.schedule({
-                                isRunningLongUp = true
-                                isSwipeUp = false
-                                sendAction(actionHolder.actionUpHold)
-                                upHoldHandle = null
-                            }, getHoldTime().toLong(), TimeUnit.MILLISECONDS)
-                        }
+                        gestureHandler.sendEmptyMessageAtTime(MSG_UP_HOLD,
+                                SystemClock.uptimeMillis() + getHoldTime().toLong())
                     }
 
                     if (isSwipeDown && !isSwipeLeft && !isSwipeRight && !isSwipeUp) {
@@ -1062,14 +1036,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             updateLayout(params)
                         }
 
-                        if (downHoldHandle == null) {
-                            downHoldHandle = pool.schedule({
-                                isRunningLongDown = true
-                                isSwipeDown = false
-                                sendAction(actionHolder.actionDownHold)
-                                downHoldHandle = null
-                            }, getHoldTime().toLong(), TimeUnit.MILLISECONDS)
-                        }
+                        gestureHandler.sendEmptyMessageAtTime(MSG_DOWN_HOLD,
+                                SystemClock.uptimeMillis() + getHoldTime().toLong())
                     }
 
                     if ((isSwipeLeft || isSwipeRight) && !isSwipeUp && !isSwipeDown) {
@@ -1096,25 +1064,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }
 
                         if (isSwipeLeft) {
-                            if (leftHoldHandle == null) {
-                                leftHoldHandle = pool.schedule({
-                                    isRunningLongLeft = true
-                                    isSwipeLeft = false
-                                    sendAction(actionHolder.actionLeftHold)
-                                    leftHoldHandle = null
-                                }, getHoldTime().toLong(), TimeUnit.MILLISECONDS)
-                            }
+                            gestureHandler.sendEmptyMessageAtTime(MSG_LEFT_HOLD,
+                                    SystemClock.uptimeMillis() + getHoldTime().toLong())
                         }
 
                         if (isSwipeRight) {
-                            if (rightHoldHandle == null) {
-                                rightHoldHandle = pool.schedule({
-                                    isRunningLongRight = true
-                                    isSwipeRight = false
-                                    sendAction(actionHolder.actionRightHold)
-                                    rightHoldHandle = null
-                                }, getHoldTime().toLong(), TimeUnit.MILLISECONDS)
-                            }
+                            gestureHandler.sendEmptyMessageAtTime(MSG_RIGHT_HOLD,
+                                    SystemClock.uptimeMillis() + getHoldTime().toLong())
                         }
                     }
                 }
@@ -1487,6 +1443,41 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
 
+        @SuppressLint("HandlerLeak")
+        private inner class GestureHandler : Handler() {
+            override fun handleMessage(msg: Message?) {
+                when (msg?.what) {
+                    MSG_UP_HOLD -> {
+                        if (getSectionedUpHoldAction(origAdjX) != actionHolder.typeNoAction) {
+                            isRunningLongUp = true
+                            sendAction(actionHolder.actionUpHold)
+                        }
+                    }
+
+                    MSG_LEFT_HOLD -> {
+                        if (actionMap[actionHolder.actionLeftHold] != actionHolder.typeNoAction) {
+                            isRunningLongLeft = true
+                            sendAction(actionHolder.actionLeftHold)
+                        }
+                    }
+
+                    MSG_RIGHT_HOLD -> {
+                        if (actionMap[actionHolder.actionRightHold] != actionHolder.typeNoAction) {
+                            isRunningLongRight = true
+                            sendAction(actionHolder.actionRightHold)
+                        }
+                    }
+
+                    MSG_DOWN_HOLD -> {
+                        if (actionMap[actionHolder.actionDownHold] != actionHolder.typeNoAction) {
+                            isRunningLongDown = true
+                            sendAction(actionHolder.actionDownHold)
+                        }
+                    }
+                }
+            }
+        }
+
         inner class Detector : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapUp(ev: MotionEvent): Boolean {
                 return if (actionMap[actionHolder.actionDouble] == actionHolder.typeNoAction && !isActing && !wasHidden) {
@@ -1533,6 +1524,18 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 } else {
                     isOverrideTap = false
                     false
+                }
+            }
+        }
+    }
+
+    inner class HideHandler : Handler() {
+        override fun handleMessage(msg: Message?) {
+            when (msg?.what) {
+                MSG_HIDE -> {
+                    if (hiddenPillReasons.isNotEmpty()) {
+                        hidePill(true, hiddenPillReasons.getMostRecentReason())
+                    }
                 }
             }
         }
