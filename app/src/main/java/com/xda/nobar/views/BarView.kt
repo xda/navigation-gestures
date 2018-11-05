@@ -403,6 +403,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     fun hidePill(auto: Boolean, autoReason: String?, overrideBeingTouched: Boolean = false) {
         handler?.post {
+            if (hiddenPillReasons.contains(autoReason)) return@post
             if (auto && autoReason == null) throw IllegalArgumentException("autoReason must not be null when auto is true")
             if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
 
