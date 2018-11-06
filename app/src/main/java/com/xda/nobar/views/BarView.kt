@@ -3,7 +3,6 @@ package com.xda.nobar.views
 import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.SearchManager
@@ -22,6 +21,7 @@ import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -46,6 +46,7 @@ import com.xda.nobar.util.*
 import kotlinx.android.synthetic.main.pill.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.exception.ExceptionUtils
 import java.util.*
 import kotlin.math.absoluteValue
 
@@ -98,7 +99,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     )
 
     var view: View = View.inflate(context, R.layout.pill, this)
-    var yHomeAnimator: ValueAnimator? = null
     var lastTouchTime = -1L
     var shouldReAddOnDetach = false
 
@@ -108,7 +108,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     val rootActions = RootActions(context)
 
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
+    private val animator = BarAnimator(this)
     private val hideHandler = HideHandler()
 
     var isHidden = false
@@ -411,29 +411,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 if (app.isPillShown()) {
                     isPillHidingOrShowing = true
 
-                    val navHeight = getZeroY()
-
-                    val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-                    val time = (getAnimationDurationMs() * animDurScale)
-                    val distance = (params.y - navHeight).absoluteValue
-
-                    if (distance == 0) {
-                        animateHide()
-                    } else {
-                        val animator = ValueAnimator.ofInt(params.y, navHeight)
-                        animator.interpolator = DecelerateInterpolator()
-                        animator.addUpdateListener {
-                            params.y = it.animatedValue.toString().toInt()
-                            updateLayout(params)
+                    animator.hide(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator?) {
+                            animateHide()
                         }
-                        animator.addListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator?) {
-                                animateHide()
-                            }
-                        })
-                        animator.duration = (time * distance / 100f).toLong()
-                        animator.start()
-                    }
+                    })
 
                     showHiddenToast()
                 }
@@ -481,17 +463,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Show" the pill by moving it back to its normal position
      */
     fun showPill(autoReasonToRemove: String?, forceShow: Boolean = false) {
+        Log.e("NoBar", ExceptionUtils.getStackTrace(Exception()))
         handler?.post {
             if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
             if (app.isPillShown()) {
                 isPillHidingOrShowing = true
                 val reallyForceNotAuto = hiddenPillReasons.isEmpty()
 
-                if ((reallyForceNotAuto)) {
+                if (reallyForceNotAuto) {
                     hideHandler.removeMessages(MSG_HIDE)
-                }
-
-                if (!reallyForceNotAuto) {
+                } else {
                     scheduleHide()
                 }
 
@@ -513,35 +494,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private fun animateShow() {
-        val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-        val time = (getAnimationDurationMs() * animDurScale)
-
-        val navHeight = getAdjustedHomeY()
-        val distance = (navHeight - params.y).absoluteValue
-        val animator = ValueAnimator.ofInt(params.y, navHeight)
-
-        if (distance == 0) {
-            handler?.postDelayed(Runnable {
-                isHidden = false
-                isPillHidingOrShowing = false
-            }, (if (getAnimationDurationMs() < 12) 12 else 0))
-        } else {
-            animator.interpolator = DecelerateInterpolator()
-            animator.addUpdateListener {
-                params.y = it.animatedValue.toString().toInt()
-                updateLayout(params)
+        animator.show(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                handler?.postDelayed(Runnable {
+                    isHidden = false
+                    isPillHidingOrShowing = false
+                }, (if (getAnimationDurationMs() < 12) 12 else 0))
             }
-            animator.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    handler?.postDelayed(Runnable {
-                        isHidden = false
-                        isPillHidingOrShowing = false
-                    }, (if (getAnimationDurationMs() < 12) 12 else 0))
-                }
-            })
-            animator.duration = (time * distance / 100f).toLong()
-            animator.start()
-        }
+        })
     }
 
     fun changePillMargins(margins: Rect) {
@@ -614,7 +574,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
     
-    fun updateLayout(params: WindowManager.LayoutParams) {
+    fun updateLayout(params: WindowManager.LayoutParams = this.params) {
         handler?.post {
             try {
                 wm.updateViewLayout(this, params)
@@ -950,48 +910,24 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                     when {
                         params.y != getAdjustedHomeY() && !isHidden && !isPillHidingOrShowing -> {
-                            val distance = (params.y - getAdjustedHomeY()).absoluteValue
-                            if (yHomeAnimator != null) {
-                                yHomeAnimator?.cancel()
-                                yHomeAnimator = null
-                            }
-                            yHomeAnimator = ValueAnimator.ofInt(params.y, getAdjustedHomeY())
-                            yHomeAnimator?.interpolator = DecelerateInterpolator()
-                            yHomeAnimator?.addUpdateListener {
-                                params.y = it.animatedValue.toString().toInt()
-                                updateLayout(params)
-                            }
-                            yHomeAnimator?.addListener(object : AnimatorListenerAdapter() {
+                            animator.homeY(object : AnimatorListenerAdapter() {
                                 override fun onAnimationEnd(animation: Animator?) {
                                     isActing = false
                                     isCarryingOutTouchAction = false
-
-                                    yHomeAnimator = null
                                 }
 
                                 override fun onAnimationCancel(animation: Animator?) {
                                     onAnimationEnd(animation)
                                 }
                             })
-                            yHomeAnimator?.duration = (time * distance / 100f).toLong()
-                            yHomeAnimator?.start()
                         }
                         params.x < getAdjustedHomeX() || params.x > getAdjustedHomeX() -> {
-                            val distance = (params.x - getAdjustedHomeX()).absoluteValue
-                            val animator = ValueAnimator.ofInt(params.x, getAdjustedHomeX())
-                            animator.interpolator = DecelerateInterpolator()
-                            animator.addUpdateListener {
-                                params.x = it.animatedValue.toString().toInt()
-                                updateLayout(params)
-                            }
-                            animator.addListener(object : AnimatorListenerAdapter() {
+                            animator.homeX(object : AnimatorListenerAdapter() {
                                 override fun onAnimationEnd(animation: Animator?) {
                                     isActing = false
                                     isCarryingOutTouchAction = false
                                 }
                             })
-                            animator.duration = (time * distance / 100f).toLong()
-                            animator.start()
                         }
                         else -> {
                             isActing = false
@@ -1193,10 +1129,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 if (key == actionHolder.actionDouble) handler?.postDelayed({ vibrate(getVibrationDuration().toLong()) }, getVibrationDuration().toLong())
 
                 if (which == actionHolder.typeHide) {
-                    if (key == actionHolder.actionUp || key == actionHolder.actionUpHold) {
-                        yHomeAnimator?.cancel()
-                        yHomeAnimator = null
-                    }
                     hidePill(false, null, true)
                     return@post
                 }

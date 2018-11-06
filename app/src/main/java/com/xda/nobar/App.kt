@@ -861,7 +861,9 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     if (isImmersive) {
                         if (hideInFullScreen) bar.hidePill(true, HiddenPillReasonManager.FULLSCREEN)
                     } else {
-                        if (bar.isHidden) bar.showPill(HiddenPillReasonManager.FULLSCREEN)
+                        if (bar.isHidden &&
+                                bar.hiddenPillReasons.onlyContains(HiddenPillReasonManager.FULLSCREEN))
+                            bar.showPill(HiddenPillReasonManager.FULLSCREEN)
                     }
                 }
             }
