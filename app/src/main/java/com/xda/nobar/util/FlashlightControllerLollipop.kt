@@ -1,9 +1,7 @@
 package com.xda.nobar.util
 
 import android.content.Context
-import android.graphics.SurfaceTexture
 import android.hardware.Camera
-import java.io.IOException
 
 class FlashlightControllerLollipop(override val context: Context) : FlashlightControllerBase(context) {
     override var flashlightEnabled: Boolean
