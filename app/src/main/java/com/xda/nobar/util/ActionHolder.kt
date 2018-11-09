@@ -3,7 +3,17 @@ package com.xda.nobar.util
 import android.content.Context
 import com.xda.nobar.R
 
-class ActionHolder(private val context: Context) {
+class ActionHolder private constructor(private val context: Context) {
+    companion object {
+        private var instance: ActionHolder? = null
+
+        fun getInstance(context: Context): ActionHolder {
+            if (instance == null) instance = ActionHolder(context.applicationContext)
+
+            return instance!!
+        }
+    }
+
     /**
      * Actions and Types
      * *********************************************************

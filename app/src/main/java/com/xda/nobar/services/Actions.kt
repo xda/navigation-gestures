@@ -80,7 +80,7 @@ class Actions : AccessibilityService(), ReceiverCallback {
     override fun onActionReceived(intent: Intent?) {
         when(intent?.action) {
             ACTION -> {
-                val actionHolder = ActionHolder(this)
+                val actionHolder = ActionHolder.getInstance(this)
                 when (intent.getIntExtra(EXTRA_ACTION, actionHolder.typeNoAction)) {
                     actionHolder.typeHome -> {
                         performGlobalAction(GLOBAL_ACTION_HOME)

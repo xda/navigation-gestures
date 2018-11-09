@@ -157,7 +157,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     override fun onGetDefaultValue(a: TypedArray, index: Int): String {
-        val def = a.getString(index) ?: ActionHolder(context).typeNoAction.toString()
+        val def = a.getString(index) ?: ActionHolder.getInstance(context).typeNoAction.toString()
         defaultValue = def
         return def
     }

@@ -1,5 +1,6 @@
 package com.xda.nobar.prefs
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.preference.PreferenceManager
@@ -81,17 +82,16 @@ class PrefManager private constructor(private val context: Context) {
         const val SUFFIX_PACKAGE = "_package"
         const val SUFFIX_DISPLAYNAME = "_displayname"
 
+        @SuppressLint("StaticFieldLeak")
         private var instance: PrefManager? = null
 
         fun getInstance(context: Context): PrefManager {
-            if (instance == null) instance = PrefManager(context)
+            if (instance == null) instance = PrefManager(context.applicationContext)
             return instance!!
         }
     }
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-
-    val actionHolder = ActionHolder(context)
 
     val crashlyticsIdEnabled: Boolean
         get() = prefs.getBoolean(ENABLE_CRASHLYTICS_ID, false)
@@ -306,7 +306,7 @@ class PrefManager private constructor(private val context: Context) {
      */
     fun getActionsList(map: HashMap<String, Int>) {
         try {
-            val actionHolder = ActionHolder(context)
+            val actionHolder = ActionHolder.getInstance(context)
 
             val left = getString(actionHolder.actionLeft, actionHolder.typeBack.toString())!!.toInt()
             val right = getString(actionHolder.actionRight, actionHolder.typeRecents.toString())!!.toInt()

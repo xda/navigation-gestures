@@ -114,7 +114,7 @@ class SettingsActivity : AppCompatActivity() {
         override val resId = R.xml.prefs_gestures
 
         private val listPrefs = ArrayList<SectionableListPreference>()
-        private val actionHolder by lazy { ActionHolder(activity) }
+        private val actionHolder by lazy { ActionHolder.getInstance(activity) }
 
         private val sectionedScreen by lazy { preferenceManager.inflateFromResource(activity, R.xml.prefs_sectioned, null) }
         private val sectionedCategory by lazy { sectionedScreen.findPreference("section_gestures") as PreferenceCategory }

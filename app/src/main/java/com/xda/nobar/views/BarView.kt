@@ -87,7 +87,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
 
     private val app = context.applicationContext as App
-    private val actionHolder = ActionHolder(context)
+    private val actionHolder = ActionHolder.getInstance(context)
     private val audio = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     private val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager

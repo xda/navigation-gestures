@@ -325,7 +325,7 @@ object Utils {
     }
 
     fun isAccessibilityAction(context: Context, action: Int): Boolean {
-        val actionHolder = ActionHolder(context)
+        val actionHolder = ActionHolder.getInstance(context)
         return arrayListOf(
                 actionHolder.typeHome,
                 actionHolder.typeRecents,
