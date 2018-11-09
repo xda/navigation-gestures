@@ -5,10 +5,10 @@
         android:title="@string/warning"
         android:summary="@string/compatibility_warning" />
 
-    <SwitchPreference
-        android:title="@string/use_root"
-        android:key="use_root"
-        android:defaultValue="false" />
+    <!--<SwitchPreference-->
+        <!--android:title="@string/use_root"-->
+        <!--android:key="use_root"-->
+        <!--android:defaultValue="false" />-->
 
     <SwitchPreference
         android:title="@string/hide_navbar_in_landscape"
