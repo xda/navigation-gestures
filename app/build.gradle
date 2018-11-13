@@ -63,7 +63,6 @@ dependencies {
     implementation ('com.github.javiersantos:PiracyChecker:1.2.4') {
         exclude group: "com.android.support"
     }
-    implementation 'org.apache.commons:commons-lang3:3.5'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.6'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'

@@ -46,7 +46,6 @@ import com.xda.nobar.util.*
 import kotlinx.android.synthetic.main.pill.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.apache.commons.lang3.exception.ExceptionUtils
 import java.util.*
 import kotlin.math.absoluteValue
 
