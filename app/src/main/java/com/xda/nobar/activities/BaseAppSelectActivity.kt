@@ -19,15 +19,15 @@ import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.adapters.BaseSelectAdapter
 import com.xda.nobar.prefs.PrefManager
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
  * Base activity for all app selection activities
  * Manages the basic logic of each
  */
-abstract class BaseAppSelectActivity<ListItem : Any, Info: Parcelable> : AppCompatActivity(), SearchView.OnQueryTextListener {
+abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCompatActivity(), SearchView.OnQueryTextListener {
     internal val prefManager by lazy { PrefManager.getInstance(this) }
 
     internal companion object {
@@ -137,47 +137,45 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info: Parcelable> : AppComp
     }
 
     @SuppressLint("CheckResult")
-    internal fun reloadList() {
-        loader.visibility = View.VISIBLE
-        list.visibility = View.GONE
+    internal fun reloadList() = GlobalScope.launch {
+        runOnUiThread {
+            loader.visibility = View.VISIBLE
+            list.visibility = View.GONE
 
-        adapter.clear()
+            adapter.clear()
+        }
 
-        val thread = Schedulers.io()
-        Observable.fromCallable { loadAppList() }
-                .subscribeOn(thread)
-                .observeOn(thread)
-                .subscribe {
-                    it.forEach { info ->
-                        val appInfo = loadAppInfo(info)
+        val appList = loadAppList()
+        appList.forEach { info ->
+            val appInfo = loadAppInfo(info)
 
-                        if (appInfo != null) {
-                            if (shouldAddInfo(appInfo)) {
-                                adapter.add(appInfo)
-                                origAppSet.add(appInfo)
-                            }
-                        }
-
-                        val index = it.indexOf(info)
-                        val percent = (index.toFloat() / it.size.toFloat() * 100).toInt()
-
-                        runOnUiThread {
-                            loader.progress = percent
-                        }
-                    }
-
-                    runOnUiThread {
-                        isCreated = true
-
-                        list.adapter = adapter
-                        loader.visibility = View.GONE
-                        list.visibility = View.VISIBLE
-
-                        try {
-                            searchItem.isVisible = true
-                        } catch (e: UninitializedPropertyAccessException) {}
-                    }
+            if (appInfo != null) {
+                if (shouldAddInfo(appInfo)) {
+                    adapter.add(appInfo)
+                    origAppSet.add(appInfo)
                 }
+            }
+
+            val index = appList.indexOf(info)
+            val percent = (index.toFloat() / appList.size.toFloat() * 100).toInt()
+
+            runOnUiThread {
+                loader.progress = percent
+            }
+        }
+
+        runOnUiThread {
+            isCreated = true
+
+            list.adapter = adapter
+            loader.visibility = View.GONE
+            list.visibility = View.VISIBLE
+
+            try {
+                searchItem.isVisible = true
+            } catch (e: UninitializedPropertyAccessException) {
+            }
+        }
     }
 
     internal fun getKey() = intent.getStringExtra(EXTRA_KEY)
