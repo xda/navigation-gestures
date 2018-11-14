@@ -777,8 +777,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
                         handler.post {
                             if (prefManager.hidePillWhenKeyboardShown) {
-                                if (keyboardShown) bar.hidePill(true, HiddenPillReasonManager.KEYBOARD)
-                                else if (bar.hiddenPillReasons.onlyContains(HiddenPillReasonManager.KEYBOARD)) bar.showPill(HiddenPillReasonManager.KEYBOARD)
+                                if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
+                                else bar.showPill(HiddenPillReasonManager.KEYBOARD)
                             }
                         }
 
@@ -859,11 +859,9 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     bar.isImmersive = isImmersive
                     val hideInFullScreen = prefManager.hideInFullscreen
                     if (isImmersive) {
-                        if (hideInFullScreen) bar.hidePill(true, HiddenPillReasonManager.FULLSCREEN)
+                        if (hideInFullScreen) bar.scheduleHide(HiddenPillReasonManager.FULLSCREEN)
                     } else {
-                        if (bar.isHidden &&
-                                bar.hiddenPillReasons.onlyContains(HiddenPillReasonManager.FULLSCREEN))
-                            bar.showPill(HiddenPillReasonManager.FULLSCREEN)
+                        bar.showPill(HiddenPillReasonManager.FULLSCREEN)
                     }
                 }
             }
