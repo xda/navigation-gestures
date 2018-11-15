@@ -21,7 +21,6 @@ import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -82,6 +81,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private const val MSG_DOWN_HOLD = 3
 
         private const val MSG_HIDE = 0
+        private const val MSG_SHOW = 1
     }
 
 
@@ -311,7 +311,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
                 if (!isHidden) scheduleHide()
             } else {
-                if (isHidden) showPill(HiddenPillReasonManager.AUTO)
+                if (isHidden) hideHandler.show(HiddenPillReasonManager.AUTO)
             }
         }
     }
@@ -460,10 +460,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 else -> throw IllegalArgumentException("$reason is not a valid hide reason")
             }
 
+    fun showPill(reason: String?, forceShow: Boolean = false) {
+        hideHandler.show(reason, forceShow)
+    }
+
     /**
      * "Show" the pill by moving it back to its normal position
      */
-    fun showPill(autoReasonToRemove: String?, forceShow: Boolean = false) {
+    private fun showPillInternal(autoReasonToRemove: String?, forceShow: Boolean = false) {
         if (isHidden) {
             handler?.post {
                 if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
@@ -1071,7 +1075,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
                 if (isHidden && !isPillHidingOrShowing && !beingTouched) {
                     vibrate(getVibrationDuration().toLong())
-                    showPill(null, true)
+                    hideHandler.show(null, true)
                 }
                 true
             } else false
@@ -1119,8 +1123,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
          */
         private fun sendActionInternal(key: String) {
             handler?.post {
-                Log.e("NoBar", key)
-
                 val which = actionMap[key] ?: return@post
 
                 if (which == actionHolder.typeNoAction) return@post
@@ -1473,7 +1475,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 } else if (isHidden && !isPillHidingOrShowing) {
                     isOverrideTap = false
                     vibrate(getVibrationDuration().toLong())
-                    showPill(null, true)
+                    hideHandler.show(null, true)
                     true
                 } else {
                     isOverrideTap = false
@@ -1489,6 +1491,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 MSG_HIDE -> {
                     val reason = msg.obj?.toString()
                     hidePill(reason != null, reason)
+                }
+                MSG_SHOW -> {
+                    val reason = msg.obj?.toString()
+                    showPillInternal(reason, msg.arg1 == 1)
                 }
             }
         }
@@ -1506,6 +1512,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         fun hide(time: Long) {
             sendEmptyMessageAtTime(MSG_HIDE, SystemClock.uptimeMillis() + time)
+        }
+
+        fun show(reason: String?, forceShow: Boolean = false) {
+            val msg = Message.obtain(this)
+            msg.what = MSG_SHOW
+            msg.arg1 = if (forceShow) 1 else 0
+            msg.obj = reason
+
+            if (!hasMessages(MSG_SHOW, reason)
+                    && isHidden) sendMessage(msg)
         }
     }
 }
