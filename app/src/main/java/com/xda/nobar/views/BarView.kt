@@ -21,6 +21,7 @@ import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -107,7 +108,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val animator = BarAnimator(this)
-    private val hideHandler = HideHandler()
+
+    private val hideThread = HandlerThread("NoBar-Hide").apply { start() }
+    private val hideHandler = HideHandler(hideThread.looper)
 
     var isHidden = false
     var beingTouched = false
@@ -461,29 +464,31 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Show" the pill by moving it back to its normal position
      */
     fun showPill(autoReasonToRemove: String?, forceShow: Boolean = false) {
-        handler?.post {
-            if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
-            if (app.isPillShown()) {
-                isPillHidingOrShowing = true
-                val reallyForceNotAuto = hiddenPillReasons.isEmpty()
+        if (isHidden) {
+            handler?.post {
+                if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
+                if (app.isPillShown()) {
+                    isPillHidingOrShowing = true
+                    val reallyForceNotAuto = hiddenPillReasons.isEmpty()
 
-                if (reallyForceNotAuto) {
-                    hideHandler.removeMessages(MSG_HIDE)
+                    if (reallyForceNotAuto) {
+                        hideHandler.removeMessages(MSG_HIDE)
+                    }
+
+                    if (reallyForceNotAuto || forceShow) {
+                        pill.animate()
+                                .translationY(0f)
+                                .alpha(ALPHA_ACTIVE)
+                                .setInterpolator(EXIT_INTERPOLATOR)
+                                .setDuration(getAnimationDurationMs())
+                                .withEndAction {
+                                    pill.translationY = 0f
+
+                                    animateShow(!reallyForceNotAuto)
+                                }
+                                .start()
+                    } else isPillHidingOrShowing = false
                 }
-
-                if (reallyForceNotAuto || forceShow) {
-                    pill.animate()
-                            .translationY(0f)
-                            .alpha(ALPHA_ACTIVE)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .withEndAction {
-                                pill.translationY = 0f
-
-                                animateShow(!reallyForceNotAuto)
-                            }
-                            .start()
-                } else isPillHidingOrShowing = false
             }
         }
     }
@@ -771,18 +776,18 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     fun vibrate(duration: Long) {
         handler?.post {
-            if (duration > 0) {
-                val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
-                } else {
-                    vibrator.vibrate(duration)
-                }
-            }
-
             if (isSoundEffectsEnabled) {
                 playSoundEffect(SoundEffectConstants.CLICK)
+            }
+        }
+
+        if (duration > 0) {
+            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+                vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                vibrator.vibrate(duration)
             }
         }
     }
@@ -823,15 +828,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         private var origAdjY = 0F
 
         private val manager = GestureDetector(context, Detector())
-        private val gestureHandler = GestureHandler()
+
+        private val gestureThread = HandlerThread("NoBar-Gesture").apply { start() }
+        private val gestureHandler = GestureHandler(gestureThread.looper)
 
         fun onTouchEvent(ev: MotionEvent?): Boolean {
             return handleTouchEvent(ev) || manager.onTouchEvent(ev)
         }
 
         private fun handleTouchEvent(ev: MotionEvent?): Boolean {
-            val animDurScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-            val time = (getAnimationDurationMs() * animDurScale)
             var ultimateReturn = false
 
             when (ev?.action) {
@@ -1110,10 +1115,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         /**
          * Parse the action index and broadcast to {@link com.xda.nobar.services.Actions}
-         * @param key one of app.action*
+         * @param key one of ActionHolder's variables
          */
         private fun sendActionInternal(key: String) {
             handler?.post {
+                Log.e("NoBar", key)
+
                 val which = actionMap[key] ?: return@post
 
                 if (which == actionHolder.typeNoAction) return@post
@@ -1391,7 +1398,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         @SuppressLint("HandlerLeak")
-        private inner class GestureHandler : Handler() {
+        private inner class GestureHandler(looper: Looper) : Handler(looper) {
             override fun handleMessage(msg: Message?) {
                 when (msg?.what) {
                     MSG_UP_HOLD -> {
@@ -1476,7 +1483,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    inner class HideHandler : Handler() {
+    inner class HideHandler(looper: Looper) : Handler(looper) {
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
                 MSG_HIDE -> {
