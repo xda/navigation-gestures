@@ -10,6 +10,7 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -20,7 +21,7 @@ import com.xda.nobar.R
 import com.xda.nobar.adapters.BaseSelectAdapter
 import com.xda.nobar.prefs.PrefManager
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
 import java.util.*
 
 /**
@@ -137,7 +138,7 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
     }
 
     @SuppressLint("CheckResult")
-    internal fun reloadList() = GlobalScope.launch {
+    internal fun reloadList() = GlobalScope.async {
         runOnUiThread {
             loader.visibility = View.VISIBLE
             list.visibility = View.GONE
@@ -151,7 +152,9 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
 
             if (appInfo != null) {
                 if (shouldAddInfo(appInfo)) {
-                    adapter.add(appInfo)
+                    runOnUiThread {
+                        adapter.add(appInfo)
+                    }
                     origAppSet.add(appInfo)
                 }
             }
