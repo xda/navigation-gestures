@@ -141,7 +141,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
             refreshPremium()
 
-            if (areGesturesActivated() && !IntroActivity.needsToRun(this)) {
+            if (prefManager.isActive
+                    && !IntroActivity.needsToRun(this)) {
                 addBar()
             }
 
@@ -180,7 +181,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 navbarListeners.forEach { it.onNavStateChange(prefManager.navHidden) }
             }
             PrefManager.USE_ROOT -> {
-                if (areGesturesActivated()) {
+                if (prefManager.isActive) {
                     if (prefManager.useRoot) bar.rootActions.onCreate()
                     else bar.rootActions.onDestroy()
                 }
@@ -199,10 +200,10 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 if (um.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
                     if (enabled) {
                         disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                        if (areGesturesActivated() && !pillShown) addBar(false)
+                        if (prefManager.isActive && !pillShown) addBar(false)
                     } else {
                         disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                        if (areGesturesActivated() && !pillShown) removeBar(false)
+                        if (prefManager.isActive && !pillShown) removeBar(false)
                     }
                 }
             }
@@ -377,13 +378,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
         prefManager.useImmersiveWhenNavHidden = !prefManager.useImmersiveWhenNavHidden
     }
 
-    /**
-     * Check if NoBar is currently active
-     * @return true if active
-     */
-    fun areGesturesActivated() = prefManager.isActive
-
-    fun isPillShown() = areGesturesActivated() && pillShown
+    fun isPillShown() = prefManager.isActive && pillShown
 
     /**
      * Check if the navbar is currently hidden
@@ -443,7 +438,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
             navHidden = false
 
-            if (!areGesturesActivated()) {
+            if (!prefManager.isActive) {
                 stopService(Intent(this, ForegroundService::class.java))
                 removeImmersiveHelper()
             }
@@ -565,11 +560,11 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                                 disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             }
 
-                            if (areGesturesActivated()) addBar()
+                            if (prefManager.isActive) addBar()
                         }
                         Intent.ACTION_USER_PRESENT -> {
                             disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
-                            if (areGesturesActivated()) addBar()
+                            if (prefManager.isActive) addBar()
                         }
                     }
                 }, 50)
@@ -606,7 +601,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     if (prefManager.enableInCarMode) {
                         if (pillShown) bar.params.height = prefManager.customHeight
                     } else {
-                        if (areGesturesActivated()) addBar()
+                        if (prefManager.isActive) addBar()
                         disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         disabledImmReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
                     }
@@ -709,7 +704,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
                 val windowArray = ArrayList<String>().apply { prefManager.loadOtherWindowApps(this) }
                 if (windowArray.contains(pName)) {
-                    if (!isInOtherWindowApp) {
+                    if (!isInOtherWindowApp && prefManager.isActive) {
                         addBar(false)
                         isInOtherWindowApp = true
                     }
@@ -800,7 +795,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                         }
 
                         if (disabledBarReasonManager.isEmpty()) {
-                            if (areGesturesActivated()
+                            if (prefManager.isActive
                                     && !pillShown) addBar(false)
                         } else {
                             removeBar(false)
@@ -840,7 +835,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                         asDidContainApp = contains
                         if (wm.defaultDisplay.state == Display.STATE_ON) {
                             logicHandler.postDelayed({
-                                if (contains && areGesturesActivated()) {
+                                if (contains && prefManager.isActive) {
                                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
                                             || Settings.canDrawOverlays(this@App)) addBar(false)
                                 }

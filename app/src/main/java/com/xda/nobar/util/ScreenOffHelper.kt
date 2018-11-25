@@ -53,7 +53,7 @@ class ScreenOffHelper(private val app: App) {
 
         saveSettings(LockSettings(0, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL, 1000, 0))
 
-        if (app.areGesturesActivated()) app.removeBar(false)
+        if (app.prefManager.isActive) app.removeBar(false)
     }
 
     private fun destroy() {
@@ -62,7 +62,7 @@ class ScreenOffHelper(private val app: App) {
             saveSettings(previousSettings)
             lockView.remove()
 
-            if (app.areGesturesActivated() && !app.pillShown) app.addBar(false)
+            if (app.prefManager.isActive && !app.pillShown) app.addBar(false)
 
             app.unregisterReceiver(screenOffReceiver)
         }

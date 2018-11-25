@@ -9,12 +9,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.RemoteViews
+import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.SettingsActivity
 import dalvik.system.DexFile
 import java.io.IOException
-import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
 
 /**
  * Base provider for all the widgets
@@ -115,7 +115,7 @@ abstract class BaseProvider: AppWidgetProvider() {
         val app = context.applicationContext as App
         val views = RemoteViews(context.packageName, layout)
 
-        val gestures = app.areGesturesActivated()
+        val gestures = app.prefManager.isActive
         val hideNav = app.prefManager.navHidden
         val useImm = app.prefManager.useImmersiveWhenNavHidden
 

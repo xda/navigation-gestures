@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         app.addGestureActivationListener(this)
         app.addNavBarHideListener(this)
 
-        activate.isChecked = app.areGesturesActivated()
+        activate.isChecked = prefManager.isActive
         activate.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { button, isChecked ->
             if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this))
                     && Utils.isAccessibilityEnabled(this)) {
