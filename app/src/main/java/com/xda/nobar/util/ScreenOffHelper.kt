@@ -92,7 +92,7 @@ class ScreenOffHelper(private val app: App) {
     private class LockSettings(var brightness: Int = -1, var brightnessMode: Int = -1, var timeout: Int = -1, var keepScreenOn: Int = -1)
 
     class LockView(context: Context) : LinearLayout(context) {
-        val params = WindowManager.LayoutParams().apply {
+        private val params = WindowManager.LayoutParams().apply {
             val size = Utils.getRealScreenSize(context)
             width = size.x
             height = size.y
