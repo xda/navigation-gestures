@@ -677,8 +677,6 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun setListeners() {
-            val hideOnKb = findPreference("hide_pill_on_keyboard") as SeekBarSwitchPreference
-
             val winFix = findPreference("window_fix")
             winFix.setOnPreferenceClickListener {
                 val blIntent = Intent(activity, BlacklistSelectorActivity::class.java)

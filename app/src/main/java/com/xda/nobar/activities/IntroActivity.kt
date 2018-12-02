@@ -98,7 +98,7 @@ class IntroActivity : IntroActivity() {
         if (intent.hasExtra(EXTRA_WSS_ONLY)) { //The folllowing logic will be used if the user tries to hide the navbar, but didn't grant WSS during the initial setup
             addSlide(wssSlide)
 
-            addOnNavigationBlockedListener { index, dir ->
+            addOnNavigationBlockedListener { index, _ ->
                 if (index == indexOfSlide(wssSlide)) {
                     AlertDialog.Builder(this)
                             .setTitle(R.string.are_you_sure)

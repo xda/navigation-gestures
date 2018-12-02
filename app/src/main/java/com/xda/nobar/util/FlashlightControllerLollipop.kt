@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.xda.nobar.util
 
 import android.content.Context

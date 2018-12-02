@@ -44,6 +44,7 @@ import java.util.*
 /**
  * Centralize important stuff in the App class, so we can be sure to have an instance of it
  */
+@Suppress("DEPRECATION")
 class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
     companion object {
         const val EDGE_TYPE_ACTIVE = 2

@@ -91,6 +91,7 @@ class ScreenOffHelper(private val app: App) {
      */
     private class LockSettings(var brightness: Int = -1, var brightnessMode: Int = -1, var timeout: Int = -1, var keepScreenOn: Int = -1)
 
+    @Suppress("DEPRECATION")
     class LockView(context: Context) : LinearLayout(context) {
         private val params = WindowManager.LayoutParams().apply {
             val size = Utils.getRealScreenSize(context)
@@ -100,10 +101,11 @@ class ScreenOffHelper(private val app: App) {
                     WindowManager.LayoutParams.FLAG_LAYOUT_IN_OVERSCAN or
                     WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
                     WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-            type = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_PHONE else WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            type = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_PHONE
+            else WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
         }
 
-        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        private val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         init {
             setBackgroundColor(Color.BLACK)

@@ -6,6 +6,7 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Typeface
 import android.preference.DialogPreference
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
 import android.util.TypedValue
@@ -242,7 +243,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
             height = Utils.dpAsPx(context, 48)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
 
-            setTextColor(resources.getColor(R.color.colorAccent))
+            setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
             setPaddingRelative(Utils.dpAsPx(context, 16), 0, 0, 0)
         }
     }

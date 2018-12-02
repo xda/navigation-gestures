@@ -13,9 +13,11 @@ import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.checkTouchWiz
 import kotlin.math.absoluteValue
 
+@Suppress("DEPRECATION")
 class ImmersiveHelperView(context: Context) : View(context) {
     val params = WindowManager.LayoutParams().apply {
-        type = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_PHONE else WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        type = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_PHONE
+        else WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
         width = 1
         flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING

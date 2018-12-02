@@ -2,6 +2,7 @@ package com.xda.nobar.adapters
 
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.support.v4.content.ContextCompat
 import android.support.v7.util.SortedList
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.xda.nobar.util.Utils
  * This manages all the selection logic
  * Parses available AppInfo and displays the information
  */
+@Suppress("DEPRECATION")
 class AppSelectAdapter(val isSingleSelect: Boolean,
                        val showSummary: Boolean,
                        val checkListener: OnAppSelectedListener,
@@ -56,23 +58,23 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
             Utils.getBitmapDrawable(remoteResources.getDrawable(app.icon), holder.view.context.resources)
                     ?: view.context.resources.getDrawable(R.drawable.blank)
         } catch (e: Resources.NotFoundException) {
-            view.context.resources.getDrawable(R.drawable.blank)
+            ContextCompat.getDrawable(view.context, R.drawable.blank)
         } catch (e: IllegalStateException) {
-            view.context.resources.getDrawable(R.drawable.blank)
+            ContextCompat.getDrawable(view.context, R.drawable.blank)
         }
 
-        view.setOnClickListener { _ ->
+        view.setOnClickListener {
             check.isChecked = !check.isChecked || isSingleSelect
             app.isChecked = check.isChecked
 
             if (isSingleSelect) {
                 (0 until apps.size())
-                        .map { apps[it] }
-                        .filterNot { it == app }
-                        .filter { it.isChecked }
-                        .forEach {
-                            it.isChecked = false
-                            notifyItemChanged(apps.indexOf(it))
+                        .map { int -> apps[int] }
+                        .filterNot { info -> info == app }
+                        .filter { info -> info.isChecked }
+                        .forEach { info ->
+                            info.isChecked = false
+                            notifyItemChanged(apps.indexOf(info))
                         }
             }
 

@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.util.TypedValue
 import android.view.WindowManager
@@ -103,10 +104,10 @@ object Utils {
 
 
     fun getDefaultPillBGColor(context: Context) =
-            context.resources.getColor(R.color.pill_color)
+            ContextCompat.getColor(context, R.color.pill_color)
 
     fun getDefaultPillFGColor(context: Context) =
-            context.resources.getColor(R.color.pill_border_color)
+            ContextCompat.getColor(context, R.color.pill_border_color)
 
     /**
      * Check if the accessibility service is currently enabled

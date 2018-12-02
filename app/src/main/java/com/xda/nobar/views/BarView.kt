@@ -51,6 +51,7 @@ import kotlin.math.absoluteValue
 /**
  * The Pill™©® (not really copyrighted)
  */
+@Suppress("DEPRECATION")
 class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener {
     companion object {
         const val ALPHA_HIDDEN = 0.2f
@@ -764,7 +765,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     /**
      * This is called twice to "flash" the pill when an action is performed
      */
-    fun animateActiveLayer(alpha: Float) {
+    private fun animateActiveLayer(alpha: Float) {
         pill_tap_flash.apply {
             val alphaRatio = Color.alpha(app.prefManager.pillBGColor).toFloat() / 255f
             animate()

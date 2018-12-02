@@ -1,6 +1,7 @@
 package com.xda.nobar.adapters
 
 import android.content.Context
+import android.support.v4.content.ContextCompat
 import android.support.v7.util.SortedList
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +31,7 @@ class IntentSelectorAdapter(private val callback: OnIntentSelectedListener, priv
         title.text = context.resources.getString(info.id)
         summary.visibility = View.GONE
 
-        icon.background = view.context.resources.getDrawable(R.drawable.blank)
+        icon.background = ContextCompat.getDrawable(view.context, R.drawable.blank)
 
         view.setOnClickListener { _ ->
             check.isChecked = true

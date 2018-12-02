@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.xda.nobar.providers
 
 import android.annotation.LayoutRes
@@ -8,6 +10,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.widget.RemoteViews
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
 import com.xda.nobar.App
@@ -127,11 +130,11 @@ abstract class BaseProvider: AppWidgetProvider() {
                 if (useImm) R.string.nav_imm_enabled else R.string.nav_imm_disabled))
 
         views.setInt(R.id.toggle_gestures, "setColorFilter",
-                context.resources.getColor(if (gestures) R.color.colorAccent else R.color.color_disabled))
+                ContextCompat.getColor(context, if (gestures) R.color.colorAccent else R.color.color_disabled))
         views.setInt(R.id.toggle_nav, "setColorFilter",
-                context.resources.getColor(if (hideNav) R.color.colorAccent else R.color.color_disabled))
+                ContextCompat.getColor(context, if (hideNav) R.color.colorAccent else R.color.color_disabled))
         views.setInt(R.id.toggle_imm, "setColorFilter",
-                context.resources.getColor(if (useImm) R.color.colorAccent else R.color.color_disabled))
+                ContextCompat.getColor(context, if (useImm) R.color.colorAccent else R.color.color_disabled))
 
         val toggleGestureIntent = Intent(context, javaClass)
         toggleGestureIntent.action = ACTION_PERFORM_TOGGLE
