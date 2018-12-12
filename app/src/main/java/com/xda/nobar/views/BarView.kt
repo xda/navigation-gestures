@@ -397,6 +397,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if (auto && autoReason == null) throw IllegalArgumentException("autoReason must not be null when auto is true")
             if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
 
+            if (!auto) hiddenPillReasons.add(HiddenPillReasonManager.MANUAL)
+
             if ((!beingTouched && !isCarryingOutTouchAction) || overrideBeingTouched) {
                 if (app.isPillShown()) {
                     isPillHidingOrShowing = true
@@ -914,6 +916,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
                 if (isHidden && !isPillHidingOrShowing && !beingTouched) {
                     vibrate(getVibrationDuration().toLong())
+                    hiddenPillReasons.remove(HiddenPillReasonManager.MANUAL)
                     hideHandler.show(null, true)
                 }
                 true

@@ -10,6 +10,7 @@ class HiddenPillReasonManager : ArrayList<String>() {
         const val AUTO = "auto"
         const val FULLSCREEN = "fullscreen"
         const val KEYBOARD = "keyboard"
+        const val MANUAL = "manual"
     }
     override fun add(element: String): Boolean {
         return if (contains(element)) {
