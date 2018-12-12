@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!--Width-->
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
+    <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
         app:msbp_minValue="@integer/min_pill_width_percent"
         app:msbp_maxValue="@integer/max_pill_width_percent"
         app:msbp_scale="0.1"
@@ -13,7 +13,7 @@
         android:icon="@drawable/ic_arrow_expanded_horizontal_black_24dp"
         android:key="custom_width_percent" />
 
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
+    <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
         app:msbp_measurementUnit="px"
         app:msbp_minValue="-10000"
         app:msbp_maxValue="10000"
@@ -22,7 +22,7 @@
         android:key="custom_width" />
 
     <!--Height-->
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
+    <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
         app:msbp_measurementUnit="%"
         app:msbp_minValue="@integer/min_pill_height_percent"
         app:msbp_maxValue="@integer/max_pill_height_percent"
@@ -32,7 +32,7 @@
         android:icon="@drawable/ic_arrow_expanded_vertical_black_24dp"
         android:key="custom_height_percent" />
 
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
+    <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
         app:msbp_measurementUnit="px"
         app:msbp_minValue="-10000"
         app:msbp_maxValue="10000"
@@ -41,7 +41,7 @@
         android:key="custom_height" />
 
     <!--X-->
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
+    <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
         app:msbp_minValue="@integer/min_pill_x_percent"
         app:msbp_maxValue="@integer/max_pill_x_percent"
         app:msbp_scale="0.1"
@@ -51,7 +51,7 @@
         android:icon="@drawable/ic_swap_horiz_black_24dp"
         android:key="custom_x_percent" />
 
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
+    <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
         app:msbp_measurementUnit="px"
         app:msbp_minValue="-10000"
         app:msbp_maxValue="10000"
@@ -61,7 +61,7 @@
         android:key="custom_x" />
 
     <!--Y-->
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
+    <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
         app:msbp_measurementUnit="%"
         app:msbp_minValue="@integer/min_pill_y_percent"
         app:msbp_maxValue="@integer/max_pill_y_percent"
@@ -70,7 +70,7 @@
         android:icon="@drawable/ic_swap_vert_black_24dp"
         android:key="custom_y_percent" />
 
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
+    <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
         app:msbp_measurementUnit="px"
         app:msbp_minValue="-10000"
         app:msbp_maxValue="10000"

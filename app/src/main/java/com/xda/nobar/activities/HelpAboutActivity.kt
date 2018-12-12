@@ -3,11 +3,11 @@ package com.xda.nobar.activities
 import android.content.*
 import android.net.Uri
 import android.os.Bundle
-import android.preference.PreferenceFragment
-import android.preference.SwitchPreference
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreference
 import com.crashlytics.android.Crashlytics
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.R
@@ -25,7 +25,7 @@ class HelpAboutActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        fragmentManager?.beginTransaction()?.replace(R.id.content, HelpFragment())?.commit()
+        supportFragmentManager?.beginTransaction()?.replace(R.id.content, HelpFragment())?.commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -42,10 +42,8 @@ class HelpAboutActivity : AppCompatActivity() {
     /**
      * Main fragment for the activity
      */
-    class HelpFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-
+    class HelpFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             addPreferencesFromResource(R.xml.prefs_about)
 
             fillInVersion()
@@ -64,7 +62,7 @@ class HelpAboutActivity : AppCompatActivity() {
 
             pref.summary = BuildConfig.VERSION_NAME
             pref.setOnPreferenceClickListener {
-                val cm = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val cm = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val data = ClipData.newPlainText("Navigation Gestures version", it.summary)
                 cm.primaryClip = data
 
@@ -104,7 +102,7 @@ class HelpAboutActivity : AppCompatActivity() {
                 try {
                     startActivity(intent)
                 } catch (e: ActivityNotFoundException) {
-                    val clipboardManager = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clipboardManager = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboardManager.primaryClip = ClipData(ClipDescription("email", arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)), ClipData.Item("navigationgestures@xda-developers.com"))
                     Toast.makeText(activity, resources.getText(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
                 }
@@ -172,7 +170,7 @@ class HelpAboutActivity : AppCompatActivity() {
 
             id.setOnPreferenceClickListener {
                 if (!it.summary.isNullOrBlank()) {
-                    val cm = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val cm = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     val data = ClipData.newPlainText(id.title, id.summary)
                     cm.primaryClip = data
 
@@ -186,7 +184,7 @@ class HelpAboutActivity : AppCompatActivity() {
         private fun updateCrashlyticsId(enabled: Boolean) {
             val id = findPreference("crashlytics_id")
 
-            id.summary = if (enabled) PrefManager.getInstance(activity).crashlyticsId else ""
+            id.summary = if (enabled) PrefManager.getInstance(activity!!).crashlyticsId else ""
             Crashlytics.setUserIdentifier(id.summary.toString())
         }
     }

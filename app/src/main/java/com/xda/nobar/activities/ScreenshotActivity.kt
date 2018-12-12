@@ -19,13 +19,13 @@ import android.media.MediaScannerConnection
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
 import android.os.*
-import android.support.v4.app.ActivityCompat
-import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -215,7 +215,7 @@ class ScreenshotActivity : AppCompatActivity() {
                         bitmap = createBitmap(bitmapWidth, height, Bitmap.Config.ARGB_8888)
                         bitmap.copyPixelsFromBuffer(buffer)
 
-                        val cropped = Bitmap.createBitmap(bitmap, 0, 0, width, height)
+                        val cropped = Bitmap.createBitmap(bitmap!!, 0, 0, width, height)
 
                         // write bitmap to a file
                         val root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString()

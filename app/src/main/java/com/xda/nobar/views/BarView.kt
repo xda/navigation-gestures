@@ -18,9 +18,8 @@ import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.RecognizerIntent
-import android.support.animation.DynamicAnimation
-import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -28,7 +27,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
-import com.android.internal.statusbar.IStatusBarService
+import androidx.core.content.ContextCompat
+import androidx.dynamicanimation.animation.DynamicAnimation
 import com.joaomgcd.taskerpluginlibrary.extensions.requestQuery
 import com.topjohnwu.superuser.Shell
 import com.xda.nobar.App
@@ -94,9 +94,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private val flashlightController =
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) FlashlightControllerMarshmallow(context)
         else FlashlightControllerLollipop(context)
-    private val iStatusBarManager = IStatusBarService.Stub.asInterface(
-            ServiceManager.checkService(Context.STATUS_BAR_SERVICE)
-    )
 
     var view: View = View.inflate(context, R.layout.pill, this)
     var lastTouchTime = -1L
@@ -1037,7 +1034,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             try {
                                 context.startActivity(assist)
                             } catch (e: Exception) {
-                                assist.action = Intent.ACTION_VOICE_ASSIST
+                                assist.action = "android.intent.action.VOICE_ASSIST"
 
                                 try {
                                     context.startActivity(assist)
@@ -1056,15 +1053,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                                             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
                                                 try {
-                                                    searchMan.launchAssist(null)
+                                                    searchMan.launchAssist()
                                                 } catch (e: Exception) {
 
-                                                    searchMan.launchLegacyAssist(null, UserHandle.USER_CURRENT, null)
+                                                    searchMan.launchLegacyAssist()
                                                 }
                                             } else {
                                                 val launchAssistAction = searchMan::class.java
                                                         .getMethod("launchAssistAction", Int::class.java, String::class.java, Int::class.java)
-                                                launchAssistAction.invoke(searchMan, 1, null, UserHandle.USER_CURRENT)
+                                                launchAssistAction.invoke(searchMan, 1, null, -2)
                                             }
                                         }
                                     }
@@ -1106,7 +1103,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             launch.addCategory(Intent.CATEGORY_LAUNCHER)
                             launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             launch.`package` = launchPackage.split("/")[0]
-                            launch.component = ComponentName(launch.`package`, launchPackage.split("/")[1])
+                            launch.component = ComponentName(launch.`package`!!, launchPackage.split("/")[1])
 
                             try {
                                 context.startActivity(launch)
@@ -1114,7 +1111,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }
                     }
                     actionHolder.premTypeLaunchActivity -> runPremiumAction {
-                        val activity = app.prefManager.getActivity(key)
+                        val activity = app.prefManager.getActivity(key) ?: return@runPremiumAction
 
                         val p = activity.split("/")[0]
                         val c = activity.split("/")[1]
@@ -1198,18 +1195,18 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     }
                     actionHolder.premTypeBatterySaver -> {
                         runPremiumAction {
-                            val current = Settings.Global.getInt(context.contentResolver, Settings.Global.LOW_POWER_MODE, 0)
-                            Settings.Global.putInt(context.contentResolver, Settings.Global.LOW_POWER_MODE, if (current == 0) 1 else 0)
+                            val current = Settings.Global.getInt(context.contentResolver, "low_power", 0)
+                            Settings.Global.putInt(context.contentResolver, "low_power", if (current == 0) 1 else 0)
                         }
                     }
                     actionHolder.premTypeScreenTimeout -> {
                         runPremiumAction { ActionReceiver.toggleScreenOn(context) }
                     }
                     actionHolder.premTypeNotif -> runPremiumAction {
-                        iStatusBarManager.expandNotificationsPanel()
+                        expandNotificationsPanel()
                     }
                     actionHolder.premTypeQs -> runPremiumAction {
-                        iStatusBarManager.expandSettingsPanel(null)
+                        expandSettingsPanel()
                     }
                     actionHolder.premTypeVibe -> {
                         //TODO: Implement

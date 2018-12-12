@@ -11,14 +11,14 @@
             android:icon="@drawable/ic_shadow_black_24dp"
             android:defaultValue="@bool/show_shadow_default" />
 
-        <com.jaredrummler.android.colorpicker.ColorPreference
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:title="@string/pill_color"
             android:key="pill_bg"
             android:icon="@drawable/ic_color_lens_black_24dp"
             app:cpv_showAlphaSlider="true"
             app:cpv_allowCustom="true" />
 
-        <com.jaredrummler.android.colorpicker.ColorPreference
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:title="@string/pill_border_color"
             android:key="pill_fg"
             android:icon="@drawable/ic_color_lens_black_24dp"
@@ -31,7 +31,7 @@
         android:title="@string/dimension_prefs"
         android:key="dimens">
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
+        <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
             app:msbp_measurementUnit="dp"
             app:msbp_minValue="@integer/min_corner_radius_dp"
             app:msbp_maxValue="@integer/max_corner_radius_dp"

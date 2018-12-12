@@ -1,8 +1,8 @@
 package com.xda.nobar.prefs
 
 import android.content.Context
-import android.preference.PreferenceGroup
 import android.util.AttributeSet
+import androidx.preference.PreferenceGroup
 import com.xda.nobar.R
 
 /**

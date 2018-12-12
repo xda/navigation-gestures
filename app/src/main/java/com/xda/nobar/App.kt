@@ -14,14 +14,13 @@ import android.net.Uri
 import android.os.*
 import android.preference.PreferenceManager
 import android.provider.Settings
-import android.support.v4.app.NotificationCompat
-import android.support.v4.content.ContextCompat
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.crashlytics.android.Crashlytics
 import com.github.anrwatchdog.ANRWatchDog
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.topjohnwu.superuser.BusyBox
 import com.topjohnwu.superuser.ContainerApp
 import com.topjohnwu.superuser.Shell
@@ -35,7 +34,6 @@ import com.xda.nobar.providers.BaseProvider
 import com.xda.nobar.services.Actions
 import com.xda.nobar.services.ForegroundService
 import com.xda.nobar.util.*
-import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.ImmersiveHelperView
 import java.util.*
@@ -61,13 +59,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
     private val stateHandler = ScreenStateHandler()
     private val carModeHandler = CarModeHandler()
     private val premiumHelper by lazy { PremiumHelper(this, OnLicenseCheckResultListener { valid, reason ->
-        val bundle = Bundle()
-        bundle.putBoolean("valid", valid)
-        bundle.putString("reason", reason)
-        bundle.putString("crashlytics_id", prefManager.crashlyticsId)
-
-        FirebaseAnalytics.getInstance(this).logEvent("license_event", bundle)
-
         isValidPremium = valid
         prefManager.validPrem = valid
 
@@ -159,7 +150,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 immersiveHelperView.immersiveListener = uiHandler
             }
 
-            appOps.startWatchingMode(AppOpsManager.OP_SYSTEM_ALERT_WINDOW, packageName, this)
+            appOps.startWatchingMode(AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW, packageName, this)
         }
     }
 
@@ -633,7 +624,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
         fun register() {
             logicHandler.post {
-                contentResolver.registerContentObserver(Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL), true, this)
+                contentResolver.registerContentObserver(Settings.Global.getUriFor(POLICY_CONTROL), true, this)
                 contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_color"), true, this)
                 contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_current_color"), true, this)
                 contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_use_theme_default"), true, this)
@@ -817,7 +808,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
         override fun onChange(selfChange: Boolean, uri: Uri?) {
             when (uri) {
-                Settings.Global.getUriFor(Settings.Global.POLICY_CONTROL) -> {
+                Settings.Global.getUriFor(POLICY_CONTROL) -> {
                     handleImmersiveChange(immersiveHelperView.isFullImmersive())
                 }
 
@@ -938,7 +929,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     || intent?.action == Intent.ACTION_PACKAGE_CHANGED
                     || intent?.action == Intent.ACTION_PACKAGE_REPLACED
                     || intent?.action == Intent.ACTION_PACKAGE_REMOVED) {
-                if (intent.dataString.contains("com.xda.nobar.premium")) {
+                if (intent.dataString?.contains("com.xda.nobar.premium") == true) {
                     refreshPremium()
                 }
             }

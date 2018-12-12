@@ -2,9 +2,9 @@ package com.xda.nobar.activities
 
 import android.content.*
 import android.os.Bundle
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.xda.nobar.interfaces.OnDialogChoiceMadeListener
 
 /**

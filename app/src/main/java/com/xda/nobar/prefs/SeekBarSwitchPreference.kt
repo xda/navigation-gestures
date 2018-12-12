@@ -3,11 +3,11 @@ package com.xda.nobar.prefs
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
-import android.preference.SwitchPreference
 import android.util.AttributeSet
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
+import androidx.preference.PreferenceViewHolder
+import androidx.preference.SwitchPreference
 import com.pavelsikun.seekbarpreference.SeekBarPreferenceView
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnProgressSetListener
@@ -29,17 +29,17 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
         dialog.setTitle(title)
     }
 
-    override fun onSetInitialValue(restoreValue: Boolean, defaultValue: Any?) {
-        seekBar.currentValue = if (restoreValue) preferenceManager.sharedPreferences.getInt("$key$KEY_SUFFIX", seekBar.currentValue) else seekBar.currentValue
-        super.onSetInitialValue(restoreValue, defaultValue)
+    override fun onSetInitialValue(defaultValue: Any?) {
+        seekBar.currentValue = if (isPersistent) preferenceManager.sharedPreferences.getInt("$key$KEY_SUFFIX", seekBar.currentValue) else seekBar.currentValue
+        super.onSetInitialValue(defaultValue)
     }
 
-    override fun onBindView(view: View) {
-        super.onBindView(view)
+    override fun onBindViewHolder(holder: PreferenceViewHolder) {
+        super.onBindViewHolder(holder)
 
-        var switch = view.findViewById<Switch>(com.android.internal.R.id.switch_widget)
+        var switch = holder.itemView.findViewById<Switch>(context.resources.getIdentifier("switch_widget", "id", "android"))
         if (switch == null) {
-            switch = view.findViewById(context.resources.getIdentifier("switchWidget", "id", "android"))
+            switch = holder.itemView.findViewById(context.resources.getIdentifier("switchWidget", "id", "android"))
         }
 
         switch.apply {

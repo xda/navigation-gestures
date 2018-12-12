@@ -12,10 +12,10 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.util.TypedValue
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
@@ -171,6 +171,7 @@ object Utils {
     /**
      * Check if the device is on the KeyGuard (lockscreen)
      */
+    @Suppress("DEPRECATION")
     fun isOnKeyguard(context: Context): Boolean {
         val kgm = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
 

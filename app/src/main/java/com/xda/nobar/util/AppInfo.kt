@@ -13,9 +13,9 @@ import android.os.Parcelable
  */
 open class AppInfo(val packageName: String, val activity: String, val displayName: String, val icon: Int, var isChecked: Boolean) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
+            parcel.readString()!!,
+            parcel.readString()!!,
+            parcel.readString()!!,
             parcel.readInt(),
             parcel.readInt() == 1)
 

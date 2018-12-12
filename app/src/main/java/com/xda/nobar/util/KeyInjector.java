@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.util.Scanner;
 
 public class KeyInjector {
-    private static final InputManager inputManager = InputManager.getInstance();
+    private static final InputManager inputManager = ProxyUtilKt.getInputManager();
 
     public static void main(final String[] args) {
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
@@ -70,7 +70,6 @@ public class KeyInjector {
     }
 
     private static void injectKeyEvent(KeyEvent event) {
-        inputManager.injectInputEvent(event,
-                InputManager.INJECT_INPUT_EVENT_MODE_WAIT_FOR_FINISH);
+        ProxyUtilKt.injectInputEvent(inputManager, event, 2);
     }
 }

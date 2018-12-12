@@ -9,6 +9,7 @@ import android.view.Surface
 import android.view.View
 import android.view.WindowManager
 import com.xda.nobar.activities.IntroActivity
+import com.xda.nobar.util.POLICY_CONTROL
 import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.checkTouchWiz
 import kotlin.math.absoluteValue
@@ -82,14 +83,14 @@ class ImmersiveHelperView(context: Context) : View(context) {
     private var hasRunForcedImm = false
 
     fun tempForcePolicyControlForRecents() {
-        oldImm = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)
-        if (IntroActivity.hasWss(context)) Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, "immersive.navigation=*")
+        oldImm = Settings.Global.getString(context.contentResolver, POLICY_CONTROL)
+        if (IntroActivity.hasWss(context)) Settings.Global.putString(context.contentResolver, POLICY_CONTROL, "immersive.navigation=*")
         hasRunForcedImm = true
     }
 
     fun putBackOldImmersive() {
         if (hasRunForcedImm) {
-            if (IntroActivity.hasWss(context)) Settings.Global.putString(context.contentResolver, Settings.Global.POLICY_CONTROL, oldImm)
+            if (IntroActivity.hasWss(context)) Settings.Global.putString(context.contentResolver, POLICY_CONTROL, oldImm)
             hasRunForcedImm = false
         }
     }
@@ -97,14 +98,14 @@ class ImmersiveHelperView(context: Context) : View(context) {
     fun isFlagNavImmersive() = systemUiVisibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0
 
     fun isNavImmersive(): Boolean {
-        val imm = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)
+        val imm = Settings.Global.getString(context.contentResolver, POLICY_CONTROL)
         return imm?.contains("navigation") == true
                 || imm?.contains("immersive.full") == true
                 || systemUiVisibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0
     }
 
     fun isFullImmersive(): Boolean {
-        val imm = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)
+        val imm = Settings.Global.getString(context.contentResolver, POLICY_CONTROL)
         return imm?.contains("immersive.full") == true
                 || systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
     }

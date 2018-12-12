@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.SystemProperties
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -25,6 +24,7 @@ import com.topjohnwu.superuser.Shell
 import com.xda.nobar.R
 import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.util.Utils
+import com.xda.nobar.util.getSystemProperty
 import kotlinx.android.synthetic.main.slide_welcome.*
 
 /**
@@ -243,7 +243,7 @@ class IntroActivity : IntroActivity() {
         }
 
         if (prefManager.firstRun) { //If the user is using a tablet, we want to turn Tablet Mode on automatically
-            if (SystemProperties.get("ro.build.characteristics").contains("tablet")) {
+            if (getSystemProperty("ro.build.characteristics").contains("tablet")) {
                 prefs.edit().putBoolean("tablet_mode", true).apply()
             }
         }

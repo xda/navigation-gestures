@@ -2,7 +2,6 @@
 
 package com.xda.nobar.providers
 
-import android.annotation.LayoutRes
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -10,8 +9,9 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.widget.RemoteViews
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
 import com.xda.nobar.App
 import com.xda.nobar.R
@@ -108,7 +108,7 @@ abstract class BaseProvider: AppWidgetProvider() {
         } else {
             extras = intent.extras
             if (extras != null && extras.containsKey("cocktailIds")) {
-                val cocktailIds = extras.getIntArray("cocktailIds")
+                val cocktailIds = extras.getIntArray("cocktailIds") ?: return
                 onUpdate(context, SlookCocktailManager.getInstance(context), cocktailIds)
             }
         }

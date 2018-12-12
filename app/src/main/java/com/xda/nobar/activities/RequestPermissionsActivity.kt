@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.xda.nobar.Manifest
 
 /**
@@ -62,7 +62,7 @@ class RequestPermissionsActivity : AppCompatActivity() {
         if (requestCode == req) {
             val intent = Intent(ACTION_RESULT)
             intent.putExtra(EXTRA_RESULT_CODE, grantResults)
-            intent.putExtras(this.intent.extras)
+            intent.putExtras(this.intent.extras ?: Bundle())
 
             sendBroadcast(intent, Manifest.permission.RECEIVE_BROADCAST)
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent)

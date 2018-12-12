@@ -28,7 +28,7 @@
     <PreferenceCategory
         android:title="@string/look_feel">
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
+        <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
             android:title="@string/vibration_duration"
             android:key="vibration_duration"
             android:icon="@drawable/ic_timer_black_24dp"
@@ -37,7 +37,7 @@
             app:msbp_measurementUnit="ms"
             android:defaultValue="@integer/default_vibe_time" />
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
+        <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
             android:title="@string/anim_duration"
             android:key="anim_duration"
             android:icon="@drawable/ic_timer_black_24dp"
@@ -103,7 +103,7 @@
             android:key="larger_hitbox"
             android:defaultValue="@bool/large_hitbox_default" />
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
+        <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
             android:title="@string/x_threshold"
             android:icon="@drawable/ic_swap_horiz_black_24dp"
             android:defaultValue="@integer/default_x_threshold_dp"
@@ -112,7 +112,7 @@
             app:msbp_measurementUnit="dp"
             android:key="x_threshold" />
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
+        <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
             android:title="@string/y_threshold"
             android:icon="@drawable/ic_swap_vert_black_24dp"
             android:defaultValue="@integer/default_y_threshold_dp"
@@ -121,7 +121,7 @@
             app:msbp_measurementUnit="dp"
             android:key="y_threshold" />
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreference
+        <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
             android:title="@string/hold_time"
             android:key="hold_time"
             android:icon="@drawable/ic_timer_black_24dp"

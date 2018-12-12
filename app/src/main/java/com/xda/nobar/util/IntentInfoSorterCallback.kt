@@ -1,8 +1,8 @@
 package com.xda.nobar.util
 
 import android.content.Context
-import android.support.v7.util.SortedList
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SortedList
 
 /**
  * For use by BaseAppSelectActivity

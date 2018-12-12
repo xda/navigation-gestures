@@ -1,8 +1,8 @@
 package com.xda.nobar.adapters
 
-import android.support.v7.util.SortedList
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SortedList
 
 abstract class BaseSelectAdapter<Info : Any>: RecyclerView.Adapter<BaseSelectAdapter.VH>() {
     abstract val apps: SortedList<Info>

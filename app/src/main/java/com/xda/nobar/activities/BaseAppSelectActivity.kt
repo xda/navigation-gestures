@@ -5,15 +5,15 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.lzyzsd.circleprogress.ArcProgress
 import com.xda.nobar.App
 import com.xda.nobar.R
@@ -78,7 +78,7 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
 
         setContentView(R.layout.activity_app_launch_select)
 
-        list.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        list.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         list.addItemDecoration(DividerItemDecoration(list.context, (list.layoutManager as LinearLayoutManager).orientation))
 
         reloadList()

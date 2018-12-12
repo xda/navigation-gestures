@@ -1,5 +1,6 @@
 package com.xda.nobar.activities
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -7,16 +8,16 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.preference.*
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import com.jaredrummler.android.colorpicker.ColorPreference
-import com.pavelsikun.seekbarpreference.SeekBarPreference
+import androidx.annotation.CallSuper
+import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.*
+import com.jaredrummler.android.colorpicker.ColorPreferenceCompat
+import com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
 import com.xda.nobar.R
 import com.xda.nobar.prefs.CustomPreferenceCategory
 import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.prefs.SectionableListPreference
-import com.xda.nobar.prefs.SeekBarSwitchPreference
 import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.Utils
 import java.util.*
@@ -37,7 +38,7 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        fragmentManager?.beginTransaction()?.replace(R.id.content, MainFragment())?.addToBackStack("main")?.commit()
+        supportFragmentManager?.beginTransaction()?.replace(R.id.content, MainFragment())?.addToBackStack("main")?.commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -55,9 +56,9 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun handleBackPressed() {
-        if (fragmentManager != null) {
-            if (fragmentManager.backStackEntryCount > 1) {
-                fragmentManager.popBackStack()
+        if (supportFragmentManager != null) {
+            if (supportFragmentManager.backStackEntryCount > 1) {
+                supportFragmentManager.popBackStack()
             } else {
                 finish()
             }
@@ -69,17 +70,15 @@ class SettingsActivity : AppCompatActivity() {
     /**
      * Main settings page
      */
-    class MainFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-
+    class MainFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             addPreferencesFromResource(R.xml.prefs_main)
         }
 
         override fun onResume() {
             super.onResume()
 
-            activity.title = resources.getText(R.string.settings)
+            activity?.title = resources.getText(R.string.settings)
 
             setListeners()
         }
@@ -110,11 +109,12 @@ class SettingsActivity : AppCompatActivity() {
     /**
      * Gesture preferences
      */
+    @SuppressLint("RestrictedApi")
     class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
         override val resId = R.xml.prefs_gestures
 
         private val listPrefs = ArrayList<SectionableListPreference>()
-        private val actionHolder by lazy { ActionHolder.getInstance(activity) }
+        private val actionHolder by lazy { ActionHolder.getInstance(activity!!) }
 
         private val sectionedScreen by lazy { preferenceManager.inflateFromResource(activity, R.xml.prefs_sectioned, null) }
         private val sectionedCategory by lazy { sectionedScreen.findPreference("section_gestures") as PreferenceCategory }
@@ -122,8 +122,8 @@ class SettingsActivity : AppCompatActivity() {
         private val swipeUpCategory by lazy { findPreference("swipe_up_cat") as CustomPreferenceCategory }
         private val swipeUpHoldCategory by lazy { findPreference("swipe_up_hold_cat") as CustomPreferenceCategory }
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            super.onCreatePreferences(savedInstanceState, rootKey)
 
             refreshListPrefs()
 
@@ -134,7 +134,7 @@ class SettingsActivity : AppCompatActivity() {
         override fun onResume() {
             super.onResume()
 
-            activity.title = resources.getText(R.string.gestures)
+            activity?.title = resources.getText(R.string.gestures)
 
             val sectionedPill = findPreference(PrefManager.SECTIONED_PILL) as SwitchPreference
             if (sectionedPill.isChecked) {
@@ -288,7 +288,7 @@ class SettingsActivity : AppCompatActivity() {
                 putBoolean("auto_hide_pill", false)
 
                 putInt("custom_width_percent", 1000)
-                putInt("custom_height", Utils.minPillHeightPx(activity) + Utils.dpAsPx(activity, 7f))
+                putInt("custom_height", Utils.minPillHeightPx(activity!!) + Utils.dpAsPx(activity!!, 7f))
                 putInt("custom_y_percent", 0)
                 putInt("pill_corner_radius", 0)
                 putInt("pill_bg", Color.TRANSPARENT)
@@ -437,22 +437,23 @@ class SettingsActivity : AppCompatActivity() {
         override fun onResume() {
             super.onResume()
 
-            activity.title = resources.getText(R.string.appearance)
+            activity?.title = resources.getText(R.string.appearance)
             setListeners()
             setup()
         }
 
         private fun setListeners() {
-            val pillColor = findPreference(PrefManager.PILL_BG) as ColorPreference
-            val pillBorderColor = findPreference(PrefManager.PILL_FG) as ColorPreference
+            val pillColor = findPreference(PrefManager.PILL_BG) as ColorPreferenceCompat
+            val pillBorderColor = findPreference(PrefManager.PILL_FG) as ColorPreferenceCompat
 
-            pillColor.setDefaultValue(Utils.getDefaultPillBGColor(activity))
-            pillBorderColor.setDefaultValue(Utils.getDefaultPillFGColor(activity))
+            pillColor.setDefaultValue(Utils.getDefaultPillBGColor(activity!!))
+            pillBorderColor.setDefaultValue(Utils.getDefaultPillFGColor(activity!!))
 
             pillColor.saveValue(prefManager.pillBGColor)
             pillBorderColor.saveValue(prefManager.pillFGColor)
         }
 
+        @SuppressLint("RestrictedApi")
         private fun setup() {
             val screen = preferenceManager.inflateFromResource(activity, R.xml.prefs_appearance_dimens, null)
 
@@ -466,30 +467,30 @@ class SettingsActivity : AppCompatActivity() {
             val catX = findPreference("cat_x") as CustomPreferenceCategory
             val catY = findPreference("cat_y") as CustomPreferenceCategory
 
-            val widthPercent = screen.findPreference("custom_width_percent") as SeekBarPreference
-            val heightPercent = screen.findPreference("custom_height_percent") as SeekBarPreference
-            val xPercent = screen.findPreference("custom_x_percent") as SeekBarPreference
-            val yPercent = screen.findPreference("custom_y_percent") as SeekBarPreference
+            val widthPercent = screen.findPreference("custom_width_percent") as SeekBarPreferenceCompat
+            val heightPercent = screen.findPreference("custom_height_percent") as SeekBarPreferenceCompat
+            val xPercent = screen.findPreference("custom_x_percent") as SeekBarPreferenceCompat
+            val yPercent = screen.findPreference("custom_y_percent") as SeekBarPreferenceCompat
 
-            val widthPixels = screen.findPreference("custom_width") as SeekBarPreference
-            val heightPixels = screen.findPreference("custom_height") as SeekBarPreference
-            val xPixels = screen.findPreference("custom_x") as SeekBarPreference
-            val yPixels = screen.findPreference("custom_y") as SeekBarPreference
+            val widthPixels = screen.findPreference("custom_width") as SeekBarPreferenceCompat
+            val heightPixels = screen.findPreference("custom_height") as SeekBarPreferenceCompat
+            val xPixels = screen.findPreference("custom_x") as SeekBarPreferenceCompat
+            val yPixels = screen.findPreference("custom_y") as SeekBarPreferenceCompat
 
-            widthPixels.minValue = Utils.minPillWidthPx(activity)
-            heightPixels.minValue = Utils.minPillHeightPx(activity)
-            xPixels.minValue = Utils.minPillXPx(activity)
-            yPixels.minValue = Utils.minPillYPx(activity)
+            widthPixels.minValue = Utils.minPillWidthPx(activity!!)
+            heightPixels.minValue = Utils.minPillHeightPx(activity!!)
+            xPixels.minValue = Utils.minPillXPx(activity!!)
+            yPixels.minValue = Utils.minPillYPx(activity!!)
 
-            widthPixels.maxValue = Utils.maxPillWidthPx(activity)
-            heightPixels.maxValue = Utils.maxPillHeightPx(activity)
-            yPixels.maxValue = Utils.maxPillYPx(activity)
-            xPixels.maxValue = Utils.maxPillXPx(activity)
+            widthPixels.maxValue = Utils.maxPillWidthPx(activity!!)
+            heightPixels.maxValue = Utils.maxPillHeightPx(activity!!)
+            yPixels.maxValue = Utils.maxPillYPx(activity!!)
+            xPixels.maxValue = Utils.maxPillXPx(activity!!)
 
             yPercent.setDefaultValue(prefManager.defaultYPercent)
             yPixels.setDefaultValue(prefManager.defaultY)
-            widthPixels.setDefaultValue(Utils.defPillWidthPx(activity))
-            heightPixels.setDefaultValue(Utils.defPillHeightPx(activity))
+            widthPixels.setDefaultValue(Utils.defPillWidthPx(activity!!))
+            heightPixels.setDefaultValue(Utils.defPillHeightPx(activity!!))
 
             val listener = Preference.OnPreferenceChangeListener { pref, newValue ->
                 val new = newValue.toString().toBoolean()
@@ -540,7 +541,7 @@ class SettingsActivity : AppCompatActivity() {
         override fun onResume() {
             super.onResume()
 
-            activity.title = resources.getText(R.string.behavior)
+            activity?.title = resources.getText(R.string.behavior)
 
             setBlacklistListeners()
         }
@@ -610,7 +611,7 @@ class SettingsActivity : AppCompatActivity() {
         override fun onResume() {
             super.onResume()
 
-            activity.title = resources.getText(R.string.compatibility)
+            activity?.title = resources.getText(R.string.compatibility)
 
             setUpRotListeners()
             setUpImmersiveListeners()
@@ -671,7 +672,7 @@ class SettingsActivity : AppCompatActivity() {
         override fun onResume() {
             super.onResume()
 
-            activity.title = resources.getText(R.string.experimental_prefs)
+            activity?.title = resources.getText(R.string.experimental_prefs)
 
             setListeners()
         }
@@ -688,15 +689,14 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    abstract class BasePrefFragment : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
-        internal val prefManager by lazy { PrefManager.getInstance(activity) }
+    abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
+        internal val prefManager by lazy { PrefManager.getInstance(activity!!) }
 
         abstract val resId: Int
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-
-            addPreferencesFromResource(resId)
+        @CallSuper
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(resId, rootKey)
             preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         }
 

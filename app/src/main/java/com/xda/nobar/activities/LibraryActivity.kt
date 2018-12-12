@@ -1,9 +1,9 @@
 package com.xda.nobar.activities
 
 import android.os.Bundle
-import android.preference.PreferenceFragment
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceFragmentCompat
 import com.xda.nobar.R
 
 /**
@@ -19,7 +19,7 @@ class LibraryActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        fragmentManager?.beginTransaction()?.replace(R.id.content, LibraryPrefs())?.commit()
+        supportFragmentManager?.beginTransaction()?.replace(R.id.content, LibraryPrefs())?.commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -33,17 +33,15 @@ class LibraryActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    class LibraryPrefs : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-
+    class LibraryPrefs : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             addPreferencesFromResource(R.xml.prefs_lib)
         }
 
         override fun onResume() {
             super.onResume()
 
-            activity.title = resources.getString(R.string.libraries)
+            activity?.title = resources.getString(R.string.libraries)
         }
     }
 }

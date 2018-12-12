@@ -24,7 +24,7 @@ class IntentSelectorActivity : BaseAppSelectActivity<Int, IntentInfo>() {
                             data = Uri.parse("dynact://velour/weather/ProxyActivity")
                             `package` = "com.google.android.googlequicksearchbox"
                             component = ComponentName(
-                                    `package`,
+                                    `package`!!,
                                     "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"
                             )
                         },
@@ -53,37 +53,37 @@ class IntentSelectorActivity : BaseAppSelectActivity<Int, IntentInfo>() {
                 R.string.update_twilight to
                         TypeIntent(SERVICE).apply {
                             `package` = "com.urbanandroid.lux"
-                            component = ComponentName(`package`, "com.urbandroid.lux.TwilightService")
+                            component = ComponentName(`package`!!, "com.urbandroid.lux.TwilightService")
                             putExtra("update", "Update")
                         },
                 R.string.refresh_twilight to
                         TypeIntent(SERVICE).apply {
                             `package` = "com.urbanandroid.lux"
-                            component = ComponentName(`package`, "com.urbanandroid.lux.TwilightService")
+                            component = ComponentName(`package`!!, "com.urbanandroid.lux.TwilightService")
                             putExtra("refresh", "Refresh")
                         },
                 R.string.next_twilight_profile to
                         TypeIntent(SERVICE).apply {
                             `package` = "com.urbanandroid.lux"
-                            component = ComponentName(`package`, "com.urbanandroid.lux.TwilightService")
+                            component = ComponentName(`package`!!, "com.urbanandroid.lux.TwilightService")
                             putExtra("profile_next", "Next Profile")
                         },
                 R.string.toggle_twilight to
                         TypeIntent(SERVICE).apply {
                             `package` = "com.urbanandroid.lux"
-                            component = ComponentName(`package`, "com.urbanandroid.lux.TwilightService")
+                            component = ComponentName(`package`!!, "com.urbanandroid.lux.TwilightService")
                             putExtra("toggle", "Toggle")
                         },
                 R.string.start_twilight to
                         TypeIntent(SERVICE).apply {
                             `package` = "com.urbanandroid.lux"
-                            component = ComponentName(`package`, "com.urbanandroid.lux.TwilightService")
+                            component = ComponentName(`package`!!, "com.urbanandroid.lux.TwilightService")
                             putExtra("start", "Start")
                         },
                 R.string.stop_twilight to
                         TypeIntent(SERVICE).apply {
                             `package` = "com.urbanandroid.lux"
-                            component = ComponentName(`package`, "com.urbanandroid.lux.TwilightService")
+                            component = ComponentName(`package`!!, "com.urbanandroid.lux.TwilightService")
                             putExtra("stop", "Stop")
                         }
         )

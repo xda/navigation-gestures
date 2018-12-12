@@ -1,10 +1,10 @@
 package com.xda.nobar.util
 
-import android.support.animation.DynamicAnimation
-import android.support.animation.FloatPropertyCompat
-import android.support.animation.SpringAnimation
 import android.view.WindowManager
 import android.view.animation.AccelerateInterpolator
+import androidx.dynamicanimation.animation.DynamicAnimation
+import androidx.dynamicanimation.animation.FloatPropertyCompat
+import androidx.dynamicanimation.animation.SpringAnimation
 import com.xda.nobar.views.BarView
 
 class BarAnimator(private val bar: BarView) {

@@ -1,6 +1,6 @@
 package com.xda.nobar.interfaces;
 
-import android.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * For use by SectionableListPreference
