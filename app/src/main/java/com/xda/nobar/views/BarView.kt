@@ -2,7 +2,6 @@ package com.xda.nobar.views
 
 import android.Manifest
 import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.SearchManager
@@ -19,6 +18,7 @@ import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.RecognizerIntent
+import android.support.animation.DynamicAnimation
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.*
@@ -401,10 +401,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 if (app.isPillShown()) {
                     isPillHidingOrShowing = true
 
-                    animator.hide(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator?) {
-                            animateHide()
-                        }
+                    animator.hide(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                        animateHide()
                     })
 
                     showHiddenToast()
@@ -499,14 +497,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private fun animateShow(rehide: Boolean) {
-        animator.show(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
-                handler?.postDelayed(Runnable {
-                    if (rehide) scheduleHide()
-                    isHidden = false
-                    isPillHidingOrShowing = false
-                }, (if (getAnimationDurationMs() < 12) 12 else 0))
-            }
+        animator.show(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+            handler?.postDelayed(Runnable {
+                if (rehide) scheduleHide()
+                isHidden = false
+                isPillHidingOrShowing = false
+            }, (if (getAnimationDurationMs() < 12) 12 else 0))
         })
     }
 
@@ -608,158 +604,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * Get the user-defined or default duration of the pill animations
      * @return the duration, in ms
      */
-    private fun getAnimationDurationMs(): Long {
+    fun getAnimationDurationMs(): Long {
         return app.prefManager.animationDurationMs.toLong()
-    }
-
-    /**
-     * The animation for a single tap on the pill
-     */
-    private fun jiggleTap() {
-        animate()
-                .scaleX(SCALE_MID)
-                .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    animate()
-                            .scaleX(SCALE_NORMAL)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .start()
-                    animateActiveLayer(BRIGHTEN_INACTIVE)
-                }
-                .start()
-        animateActiveLayer(BRIGHTEN_ACTIVE)
-    }
-
-    /**
-     * The animation for a swipe-left and hold on the pill
-     */
-    private fun jiggleLeftHold() {
-        animate()
-                .scaleX(SCALE_SMALL)
-                .x(-width * (1 - SCALE_SMALL) / 2)
-                .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    animate()
-                            .scaleX(SCALE_NORMAL)
-                            .x(0f)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .start()
-                    animateActiveLayer(BRIGHTEN_INACTIVE)
-                }
-        animateActiveLayer(BRIGHTEN_ACTIVE)
-    }
-
-    /**
-     * The animation for a swipe-right and hold on the pill
-     */
-    private fun jiggleRightHold() {
-        animate()
-                .scaleX(SCALE_SMALL)
-                .x(width * (1 - SCALE_SMALL) / 2)
-                .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    animate()
-                            .scaleX(SCALE_NORMAL)
-                            .x(0f)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .start()
-                    animateActiveLayer(BRIGHTEN_INACTIVE)
-                }
-        animateActiveLayer(BRIGHTEN_ACTIVE)
-    }
-
-    private fun jiggleDownHold() {
-        animate()
-                .scaleY(SCALE_SMALL)
-                .y(height * (1 - SCALE_SMALL) / 2)
-                .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    animate()
-                            .scaleY(SCALE_NORMAL)
-                            .y(0f)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .start()
-                    animateActiveLayer(BRIGHTEN_INACTIVE)
-                }
-                .start()
-        animateActiveLayer(BRIGHTEN_ACTIVE)
-    }
-
-    /**
-     * The animation for a long-press on the pill
-     */
-    private fun jiggleHold() {
-        animate()
-                .scaleX(SCALE_SMALL)
-                .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    animate()
-                            .scaleX(SCALE_NORMAL)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .start()
-                    animateActiveLayer(BRIGHTEN_INACTIVE)
-                }
-                .start()
-        animateActiveLayer(BRIGHTEN_ACTIVE)
-    }
-
-    /**
-     * The animation for an up-swipe and hold on the pill
-     */
-    private fun jiggleHoldUp() {
-        animate()
-                .scaleY(SCALE_SMALL)
-                .y(-height * (1 - SCALE_SMALL) / 2)
-                .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    animate()
-                            .scaleY(SCALE_NORMAL)
-                            .y(0f)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .start()
-                    animateActiveLayer(BRIGHTEN_INACTIVE)
-                }
-                .start()
-        animateActiveLayer(BRIGHTEN_ACTIVE)
-    }
-
-    /**
-     * The animation for a double-tap on the pill
-     */
-    private fun jiggleDoubleTap() {
-        animate()
-                .scaleX(SCALE_MID)
-                .setInterpolator(AccelerateInterpolator())
-                .setDuration(getAnimationDurationMs())
-                .withEndAction {
-                    animate()
-                            .scaleX(SCALE_SMALL)
-                            .setInterpolator(ENTER_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
-                            .withEndAction {
-                                animate()
-                                        .scaleX(SCALE_NORMAL)
-                                        .setInterpolator(EXIT_INTERPOLATOR)
-                                        .setDuration(getAnimationDurationMs())
-                                        .start()
-                                animateActiveLayer(BRIGHTEN_INACTIVE)
-                            }
-                            .start()
-                }
-                .start()
-        animateActiveLayer(BRIGHTEN_ACTIVE)
     }
 
     /**
@@ -916,23 +762,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                     when {
                         params.y != getAdjustedHomeY() && !isHidden && !isPillHidingOrShowing -> {
-                            animator.homeY(object : AnimatorListenerAdapter() {
-                                override fun onAnimationEnd(animation: Animator?) {
-                                    isActing = false
-                                    isCarryingOutTouchAction = false
-                                }
-
-                                override fun onAnimationCancel(animation: Animator?) {
-                                    onAnimationEnd(animation)
-                                }
+                            animator.homeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                                isActing = false
+                                isCarryingOutTouchAction = false
                             })
                         }
                         params.x < getAdjustedHomeX() || params.x > getAdjustedHomeX() -> {
-                            animator.homeX(object : AnimatorListenerAdapter() {
-                                override fun onAnimationEnd(animation: Animator?) {
-                                    isActing = false
-                                    isCarryingOutTouchAction = false
-                                }
+                            animator.homeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                                isActing = false
+                                isCarryingOutTouchAction = false
                             })
                         }
                         else -> {
@@ -1140,13 +978,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
 
                 when (key) {
-                    actionHolder.actionDouble -> jiggleDoubleTap()
-                    actionHolder.actionHold -> jiggleHold()
-                    actionHolder.actionTap -> jiggleTap()
-                    actionHolder.actionUpHold -> jiggleHoldUp()
-                    actionHolder.actionLeftHold -> jiggleLeftHold()
-                    actionHolder.actionRightHold -> jiggleRightHold()
-                    actionHolder.actionDownHold -> jiggleDownHold()
+                    actionHolder.actionDouble -> animator.jiggleDoubleTap()
+                    actionHolder.actionHold -> animator.jiggleHold()
+                    actionHolder.actionTap -> animator.jiggleTap()
+                    actionHolder.actionUpHold -> animator.jiggleHoldUp()
+                    actionHolder.actionLeftHold -> animator.jiggleLeftHold()
+                    actionHolder.actionRightHold -> animator.jiggleRightHold()
+                    actionHolder.actionDownHold -> animator.jiggleDownHold()
                 }
 
                 if (key == actionHolder.actionUp || key == actionHolder.actionLeft || key == actionHolder.actionRight) {

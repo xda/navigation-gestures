@@ -1,69 +1,176 @@
 package com.xda.nobar.util
 
-import android.animation.AnimatorListenerAdapter
-import android.animation.ValueAnimator
+import android.support.animation.DynamicAnimation
+import android.support.animation.FloatPropertyCompat
+import android.support.animation.SpringAnimation
+import android.view.WindowManager
+import android.view.animation.AccelerateInterpolator
 import com.xda.nobar.views.BarView
 
 class BarAnimator(private val bar: BarView) {
-    private val verticalAnimator: ValueAnimator = ValueAnimator()
-    private val horizontalAnimator: ValueAnimator = ValueAnimator()
+    private var verticalAnimator: SpringAnimation? = null
+    private var horizontalAnimator: SpringAnimation? = null
 
-    fun homeY(listener: AnimatorListenerAdapter) {
+    fun homeY(listener: DynamicAnimation.OnAnimationEndListener) {
         animateVertically(listener, bar.params.y, bar.getAdjustedHomeY())
     }
 
-    fun homeX(listener: AnimatorListenerAdapter) {
+    fun homeX(listener: DynamicAnimation.OnAnimationEndListener) {
         animateHorizontally(listener, bar.params.x, bar.getAdjustedHomeX())
     }
 
-    fun show(listener: AnimatorListenerAdapter) {
+    fun show(listener: DynamicAnimation.OnAnimationEndListener) {
         homeY(listener)
     }
 
-    fun hide(listener: AnimatorListenerAdapter) {
+    fun hide(listener: DynamicAnimation.OnAnimationEndListener) {
         animateVertically(listener, bar.params.y, bar.getZeroY())
     }
 
-    fun animateVertically(listener: AnimatorListenerAdapter? = null,
+    fun animateVertically(listener: DynamicAnimation.OnAnimationEndListener? = null,
                           from: Int,
                           to: Int) {
         cancelVertical()
-        verticalAnimator.setIntValues(from, to)
-        verticalAnimator.addListener(listener)
-        verticalAnimator.addUpdateListener {
-            bar.params.y = it.animatedValue.toString().toInt()
-            bar.updateLayout()
+
+        verticalAnimator = SpringAnimation(bar.params, object : FloatPropertyCompat<WindowManager.LayoutParams>("y") {
+            override fun getValue(`object`: WindowManager.LayoutParams): Float {
+                return `object`.y.toFloat()
+            }
+
+            override fun setValue(`object`: WindowManager.LayoutParams, value: Float) {
+                `object`.y = value.toInt()
+                bar.updateLayout()
+            }
+        }, to.toFloat()).apply {
+            addEndListener(listener)
         }
-        verticalAnimator.start()
+
+        verticalAnimator?.start()
     }
 
-    fun animateHorizontally(listener: AnimatorListenerAdapter? = null,
+    fun animateHorizontally(listener: DynamicAnimation.OnAnimationEndListener? = null,
                             from: Int,
                             to: Int) {
         cancelHorizontal()
-        horizontalAnimator.setIntValues(from, to)
-        horizontalAnimator.addListener(listener)
-        horizontalAnimator.addUpdateListener {
-            bar.params.x = it.animatedValue.toString().toInt()
-            bar.updateLayout()
+
+        horizontalAnimator = SpringAnimation(bar.params, object : FloatPropertyCompat<WindowManager.LayoutParams>("x") {
+            override fun getValue(`object`: WindowManager.LayoutParams): Float {
+                return `object`.x.toFloat()
+            }
+
+            override fun setValue(`object`: WindowManager.LayoutParams, value: Float) {
+                `object`.x = value.toInt()
+                bar.updateLayout()
+            }
+        }, to.toFloat()).apply {
+            addEndListener(listener)
         }
-        horizontalAnimator.start()
+
+        horizontalAnimator?.start()
     }
 
-    private fun cancelAllAnimations() {
-        cancelVertical()
-        cancelHorizontal()
+    fun jiggleTap() {
+        bar.animate()
+                .scaleX(BarView.SCALE_MID)
+                .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                .setDuration(bar.getAnimationDurationMs())
+                .withEndAction {
+                    SpringAnimation(bar, SpringAnimation.SCALE_X, BarView.SCALE_NORMAL)
+                            .start()
+                }
+    }
+
+    fun jiggleLeftHold() {
+        bar.animate()
+                .scaleX(BarView.SCALE_SMALL)
+                .x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                .setDuration(bar.getAnimationDurationMs())
+                .withEndAction {
+                    SpringAnimation(bar, SpringAnimation.SCALE_X, BarView.SCALE_NORMAL)
+                            .start()
+                    SpringAnimation(bar, SpringAnimation.X, 0f)
+                            .start()
+                }
+    }
+
+    fun jiggleRightHold() {
+        bar.animate()
+                .scaleX(BarView.SCALE_SMALL)
+                .x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                .setDuration(bar.getAnimationDurationMs())
+                .withEndAction {
+                    SpringAnimation(bar, SpringAnimation.SCALE_X, BarView.SCALE_NORMAL)
+                            .start()
+                    SpringAnimation(bar, SpringAnimation.X, 0f)
+                            .start()
+                }
+    }
+
+    fun jiggleDownHold() {
+        bar.animate()
+                .scaleY(BarView.SCALE_SMALL)
+                .y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                .setDuration(bar.getAnimationDurationMs())
+                .withEndAction {
+                    SpringAnimation(bar, SpringAnimation.SCALE_Y, BarView.SCALE_NORMAL)
+                            .start()
+                    SpringAnimation(bar, SpringAnimation.Y, 0f)
+                            .start()
+                }
+    }
+
+    fun jiggleHold() {
+        bar.animate()
+                .scaleX(BarView.SCALE_SMALL)
+                .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                .setDuration(bar.getAnimationDurationMs())
+                .withEndAction {
+                    SpringAnimation(bar, SpringAnimation.SCALE_X, BarView.SCALE_NORMAL)
+                            .start()
+                }
+    }
+
+    fun jiggleHoldUp() {
+        bar.animate()
+                .scaleY(BarView.SCALE_SMALL)
+                .y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                .setDuration(bar.getAnimationDurationMs())
+                .withEndAction {
+                    SpringAnimation(bar, SpringAnimation.SCALE_Y, BarView.SCALE_NORMAL)
+                            .start()
+                    SpringAnimation(bar, SpringAnimation.Y, 0f)
+                            .start()
+                }
+    }
+
+    fun jiggleDoubleTap() {
+        bar.animate()
+                .scaleX(BarView.SCALE_MID)
+                .setInterpolator(AccelerateInterpolator())
+                .setDuration(bar.getAnimationDurationMs())
+                .withEndAction {
+                    bar.animate()
+                            .scaleX(BarView.SCALE_SMALL)
+                            .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                            .setDuration(bar.getAnimationDurationMs())
+                            .withEndAction {
+                                SpringAnimation(bar, SpringAnimation.SCALE_X, BarView.SCALE_NORMAL)
+                                        .start()
+                            }
+                }
     }
 
     private fun cancelVertical() {
-        verticalAnimator.cancel()
-        verticalAnimator.removeAllUpdateListeners()
-        verticalAnimator.removeAllListeners()
+        verticalAnimator?.skipToEnd()
+        verticalAnimator = null
     }
 
     private fun cancelHorizontal() {
-        horizontalAnimator.cancel()
-        horizontalAnimator.removeAllUpdateListeners()
-        verticalAnimator.removeAllListeners()
+        horizontalAnimator?.skipToEnd()
+        horizontalAnimator = null
     }
 }
