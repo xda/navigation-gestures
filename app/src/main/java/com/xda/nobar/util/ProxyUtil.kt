@@ -29,7 +29,7 @@ fun Display.getOverscanInsets(out: Rect) {
 }
 
 @SuppressLint("PrivateApi")
-fun getSystemProperty(prop: String): String {
+fun getSystemProperty(prop: String): String? {
     return Class.forName("android.os.SystemProperties")
             .getMethod("get", String::class.java)
             .invoke(null, prop) as String
@@ -72,3 +72,5 @@ fun InputManager.injectInputEvent(event: InputEvent, mode: Int) {
     this::class.java.getMethod("injectInputEvent", InputEvent::class.java, Int::class.java)
             .invoke(this, event, mode)
 }
+
+fun checkEMUI() = getSystemProperty("ro.build.version.emui") != null

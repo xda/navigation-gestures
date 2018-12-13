@@ -24,6 +24,7 @@ import com.xda.nobar.R
 import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.util.Utils
 import com.xda.nobar.util.allowHiddenMethods
+import com.xda.nobar.util.checkEMUI
 import com.xda.nobar.util.getSystemProperty
 import kotlinx.android.synthetic.main.slide_welcome.*
 
@@ -101,6 +102,31 @@ class IntroActivity : IntroActivity() {
             } else false)
         }
 
+        val emuiSlide = SimpleSlide.Builder()
+                .background(R.color.slide_4)
+                .backgroundDark(R.color.slide_4_dark)
+                .title(R.string.emui)
+                .description(R.string.emui_desc)
+                .buttonCtaLabel(R.string.show_me_how)
+                .buttonCtaClickListener {
+                    val emuiBatt = Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://support.doubletwist.com/hc/en-us/articles/360001504071-How-to-turn-off-battery-optimization-on-Huawei-devices"))
+                    emuiBatt.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(emuiBatt)
+                }
+
+        val touchwizMSlide = SimpleSlide.Builder()
+                .background(R.color.slide_6)
+                .backgroundDark(R.color.slide_6_dark)
+                .title(R.string.touchwiz)
+                .description(R.string.touchwiz_desc)
+                .buttonCtaLabel(R.string.disable)
+                .buttonCtaClickListener {
+                    val batt = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:$packageName"))
+                    batt.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(batt)
+                }
+
         if (intent.hasExtra(EXTRA_WSS_ONLY)) { //The folllowing logic will be used if the user tries to hide the navbar, but didn't grant WSS during the initial setup
             addSlide(wssSlide)
         } else {
@@ -171,6 +197,12 @@ class IntroActivity : IntroActivity() {
             }
 
             if (prefManager.firstRun && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                if (Utils.checkTouchWiz(this) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1)
+                    addSlide(touchwizMSlide.build())
+
+                if (checkEMUI())
+                    addSlide(emuiSlide.build())
+
                 addSlide(SimpleSlide.Builder()
                         .title(R.string.qs_tile)
                         .description(R.string.nougat_qs_reminder)
@@ -224,7 +256,7 @@ class IntroActivity : IntroActivity() {
         }
 
         if (prefManager.firstRun) { //If the user is using a tablet, we want to turn Tablet Mode on automatically
-            if (getSystemProperty("ro.build.characteristics").contains("tablet")) {
+            if (getSystemProperty("ro.build.characteristics")?.contains("tablet") == true) {
                 prefs.edit().putBoolean("tablet_mode", true).apply()
             }
         }
