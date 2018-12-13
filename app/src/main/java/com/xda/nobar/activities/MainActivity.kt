@@ -1,7 +1,9 @@
 package com.xda.nobar.activities
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +12,7 @@ import android.view.LayoutInflater
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
@@ -17,6 +20,7 @@ import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.util.Utils
+import com.xda.nobar.util.allowHiddenMethods
 import com.xda.nobar.views.BarView
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -57,6 +61,9 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             finish()
             return
         }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED)
+            allowHiddenMethods()
 
         setContentView(R.layout.activity_main)
         setUpActionBar()

@@ -16,7 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.heinrichreimersoftware.materialintro.app.IntroActivity
-import com.heinrichreimersoftware.materialintro.app.OnNavigationBlockedListener
 import com.heinrichreimersoftware.materialintro.app.SlideFragment
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
@@ -24,6 +23,7 @@ import com.topjohnwu.superuser.Shell
 import com.xda.nobar.R
 import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.util.Utils
+import com.xda.nobar.util.allowHiddenMethods
 import com.xda.nobar.util.getSystemProperty
 import kotlinx.android.synthetic.main.slide_welcome.*
 
@@ -47,6 +47,7 @@ class IntroActivity : IntroActivity() {
         }
 
         fun start(context: Context, extras: Bundle = Bundle()) {
+            Exception().printStackTrace()
             val launch = Intent(context, com.xda.nobar.activities.IntroActivity::class.java)
             launch.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK)
             launch.putExtras(extras)
@@ -93,13 +94,135 @@ class IntroActivity : IntroActivity() {
                     } else {
                         nonRootDialog()
                     }
-                }) { prefs.getBoolean("has_confirmed_skip_wss", false) || hasWss(this) }
+                }) {
+            prefs.getBoolean("has_confirmed_skip_wss", false) || (if (hasWss(this)) {
+                allowHiddenMethods()
+                true
+            } else false)
+        }
 
         if (intent.hasExtra(EXTRA_WSS_ONLY)) { //The folllowing logic will be used if the user tries to hide the navbar, but didn't grant WSS during the initial setup
             addSlide(wssSlide)
+        } else {
+            //Only show the intro if the device is able to run the needed commands. Otherwise, show failure screen
+            if (prefManager.firstRun) {
+                addSlide(FragmentSlide.Builder()
+                        .background(R.color.slide_1)
+                        .backgroundDark(R.color.slide_1_dark)
+                        .fragment(WelcomeFragment())
+                        .build())
+            } else {
+                addSlide(SimpleSlide.Builder()
+                        .background(R.color.slide_1)
+                        .backgroundDark(R.color.slide_1_dark)
+                        .title(R.string.missing_perms)
+                        .description(R.string.missing_perms_desc)
+                        .build())
+            }
 
-            addOnNavigationBlockedListener { index, _ ->
-                if (index == indexOfSlide(wssSlide)) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 && !Settings.canDrawOverlays(this)) {
+                addSlide(DynamicForwardSlide(SimpleSlide.Builder()
+                        .title(R.string.draw_over_apps)
+                        .description(R.string.draw_over_apps_desc)
+                        .image(R.drawable.nav_overlay)
+                        .background(R.color.slide_2)
+                        .backgroundDark(R.color.slide_2_dark)
+                        .buttonCtaLabel(R.string.grant)
+                        .buttonCtaClickListener {
+                            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                            intent.data = Uri.parse("package:$packageName")
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                            try {
+                                startActivity(intent)
+                            } catch (e: ActivityNotFoundException) {
+                                intent.data = null
+                                startActivity(intent)
+                            }
+                        }
+                ) { Settings.canDrawOverlays(this) })
+            }
+
+            if (!Utils.isAccessibilityEnabled(this)) {
+                addSlide(DynamicForwardSlide(SimpleSlide.Builder()
+                        .title(R.string.accessibility)
+                        .description(R.string.accessibility_desc)
+                        .image(R.drawable.nav_acc)
+                        .background(R.color.slide_3)
+                        .backgroundDark(R.color.slide_3_dark)
+                        .buttonCtaLabel(R.string.grant)
+                        .buttonCtaClickListener {
+                            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                            try {
+                                startActivity(intent)
+                            } catch (e: ActivityNotFoundException) {
+                                intent.action = Settings.ACTION_SETTINGS
+                                startActivity(intent)
+                                Toast.makeText(this, resources.getText(R.string.accessibility_msg), Toast.LENGTH_LONG).show()
+                            }
+                        }
+                ) { Utils.isAccessibilityEnabled(this) })
+            }
+
+            if (checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
+                addSlide(wssSlide)
+            }
+
+            if (prefManager.firstRun && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                addSlide(SimpleSlide.Builder()
+                        .title(R.string.qs_tile)
+                        .description(R.string.nougat_qs_reminder)
+                        .image(R.drawable.qs)
+                        .background(R.color.slide_6)
+                        .backgroundDark(R.color.slide_6_dark)
+                        .build())
+
+                addSlide(SimpleSlide.Builder()
+                        .title(R.string.warning)
+                        .description(R.string.warning_desc)
+                        .background(R.color.slide_7)
+                        .backgroundDark(R.color.slide_7_dark)
+                        .build())
+
+                addSlide(SimpleSlide.Builder()
+                        .title(R.string.white_bar)
+                        .description(R.string.white_bar_desc)
+                        .background(R.color.slide_4)
+                        .backgroundDark(R.color.slide_4_dark)
+                        .build())
+
+                addSlide(SimpleSlide.Builder()
+                        .title(R.string.compatibility)
+                        .description(R.string.compatibility_desc)
+                        .background(R.color.slide_3)
+                        .backgroundDark(R.color.slide_3_dark)
+                        .build())
+            }
+
+            addSlide(SimpleSlide.Builder()
+                    .title(R.string.ready)
+                    .description(if (prefManager.firstRun) R.string.ready_first_run_desc else R.string.ready_desc)
+                    .background(R.color.slide_5)
+                    .backgroundDark(R.color.slide_5_dark)
+                    .build())
+
+//            if (Utils.canRunHiddenCommands(this)) {
+//
+//            } else {
+//                addSlide(SimpleSlide.Builder()
+//                        .background(R.color.slide_1)
+//                        .backgroundDark(R.color.slide_1_dark)
+//                        .title(R.string.sorry)
+//                        .description(R.string.sorry_desc)
+//                        .build())
+//            }
+        }
+
+        addOnNavigationBlockedListener { index, _ ->
+            if (index == indexOfSlide(wssSlide)) {
+                if (Utils.canRunHiddenCommands(this)) {
                     AlertDialog.Builder(this)
                             .setTitle(R.string.are_you_sure)
                             .setMessage(R.string.skip_wss_message)
@@ -109,136 +232,13 @@ class IntroActivity : IntroActivity() {
                             }
                             .setNegativeButton(android.R.string.no, null)
                             .show()
-                }
-            }
-        } else {
-            //Only show the intro if the device is able to run the needed commands. Otherwise, show failure screen
-            if (Utils.canRunHiddenCommands(this)) {
-                if (prefManager.firstRun) {
-                    addSlide(FragmentSlide.Builder()
-                            .background(R.color.slide_1)
-                            .backgroundDark(R.color.slide_1_dark)
-                            .fragment(WelcomeFragment())
-                            .build())
                 } else {
-                    addSlide(SimpleSlide.Builder()
-                            .background(R.color.slide_1)
-                            .backgroundDark(R.color.slide_1_dark)
-                            .title(R.string.missing_perms)
-                            .description(R.string.missing_perms_desc)
-                            .build())
+                    AlertDialog.Builder(this)
+                            .setTitle("Android P")
+                            .setMessage("Due to restrictions in Android Pie, WRITE_SECURE_SETTINGS must be granted.")
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show()
                 }
-
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 && !Settings.canDrawOverlays(this)) {
-                    addSlide(DynamicForwardSlide(SimpleSlide.Builder()
-                            .title(R.string.draw_over_apps)
-                            .description(R.string.draw_over_apps_desc)
-                            .image(R.drawable.nav_overlay)
-                            .background(R.color.slide_2)
-                            .backgroundDark(R.color.slide_2_dark)
-                            .buttonCtaLabel(R.string.grant)
-                            .buttonCtaClickListener {
-                                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-                                intent.data = Uri.parse("package:$packageName")
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-                                try {
-                                    startActivity(intent)
-                                } catch (e: ActivityNotFoundException) {
-                                    intent.data = null
-                                    startActivity(intent)
-                                }
-                            }
-                    ) {Settings.canDrawOverlays(this)})
-                }
-
-                if (!Utils.isAccessibilityEnabled(this)) {
-                    addSlide(DynamicForwardSlide(SimpleSlide.Builder()
-                            .title(R.string.accessibility)
-                            .description(R.string.accessibility_desc)
-                            .image(R.drawable.nav_acc)
-                            .background(R.color.slide_3)
-                            .backgroundDark(R.color.slide_3_dark)
-                            .buttonCtaLabel(R.string.grant)
-                            .buttonCtaClickListener {
-                                val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-                                try {
-                                    startActivity(intent)
-                                } catch (e: ActivityNotFoundException) {
-                                    intent.action = Settings.ACTION_SETTINGS
-                                    startActivity(intent)
-                                    Toast.makeText(this, resources.getText(R.string.accessibility_msg), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                    ) {Utils.isAccessibilityEnabled(this)})
-                }
-
-                if (checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
-                    addSlide(wssSlide)
-                }
-
-                if (prefManager.firstRun && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                    addSlide(SimpleSlide.Builder()
-                            .title(R.string.qs_tile)
-                            .description(R.string.nougat_qs_reminder)
-                            .image(R.drawable.qs)
-                            .background(R.color.slide_6)
-                            .backgroundDark(R.color.slide_6_dark)
-                            .build())
-
-                    addSlide(SimpleSlide.Builder()
-                            .title(R.string.warning)
-                            .description(R.string.warning_desc)
-                            .background(R.color.slide_7)
-                            .backgroundDark(R.color.slide_7_dark)
-                            .build())
-
-                    addSlide(SimpleSlide.Builder()
-                            .title(R.string.white_bar)
-                            .description(R.string.white_bar_desc)
-                            .background(R.color.slide_4)
-                            .backgroundDark(R.color.slide_4_dark)
-                            .build())
-
-                    addSlide(SimpleSlide.Builder()
-                            .title(R.string.compatibility)
-                            .description(R.string.compatibility_desc)
-                            .background(R.color.slide_3)
-                            .backgroundDark(R.color.slide_3_dark)
-                            .build())
-                }
-
-                addSlide(SimpleSlide.Builder()
-                        .title(R.string.ready)
-                        .description(if (prefManager.firstRun) R.string.ready_first_run_desc else R.string.ready_desc)
-                        .background(R.color.slide_5)
-                        .backgroundDark(R.color.slide_5_dark)
-                        .build())
-
-                addOnNavigationBlockedListener { index, dir ->
-                    if (index == indexOfSlide(wssSlide)) {
-                        AlertDialog.Builder(this)
-                                .setTitle(R.string.are_you_sure)
-                                .setMessage(R.string.skip_wss_message)
-                                .setPositiveButton(android.R.string.yes) { _, _ ->
-                                    prefs.edit().putBoolean("has_confirmed_skip_wss", true).apply()
-                                    nextSlide()
-                                }
-                                .setNegativeButton(android.R.string.no, null)
-                                .show()
-                    } else if (dir == OnNavigationBlockedListener.DIRECTION_FORWARD) {
-                        Toast.makeText(this, resources.getString(R.string.grant_permission), Toast.LENGTH_LONG).show()
-                    }
-                }
-            } else {
-                addSlide(SimpleSlide.Builder()
-                        .background(R.color.slide_1)
-                        .backgroundDark(R.color.slide_1_dark)
-                        .title(R.string.sorry)
-                        .description(R.string.sorry_desc)
-                        .build())
             }
         }
 
@@ -273,7 +273,8 @@ class IntroActivity : IntroActivity() {
                         startActivity(intent)
                     }
                     .show()
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     /**

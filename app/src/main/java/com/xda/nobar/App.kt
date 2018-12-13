@@ -117,6 +117,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 Crashlytics.logException(it)
             }
 
+            if (IntroActivity.hasWss(this)) allowHiddenMethods()
+
             if (!Utils.canRunHiddenCommands(this) || IntroActivity.needsToRun(this)) {
                 IntroActivity.start(this)
             }
@@ -619,7 +621,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
      */
     inner class UIHandler : ContentObserver(logicHandler), View.OnSystemUiVisibilityChangeListener, ViewTreeObserver.OnGlobalLayoutListener, (Boolean) -> Unit {
         private var oldRot = Surface.ROTATION_0
-        private var isActing = false
         private var asDidContainApp: Boolean = false
 
         fun register() {
@@ -714,6 +715,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
         @SuppressLint("WrongConstant")
         override fun onGlobalLayout() {
+            if (!Utils.canRunHiddenCommands(this@App)) return
+
             keyboardShown = imm.inputMethodWindowVisibleHeight > 0
 
             logicHandler.post {

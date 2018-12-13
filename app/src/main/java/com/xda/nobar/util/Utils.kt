@@ -127,6 +127,8 @@ object Utils {
      */
     fun canRunHiddenCommands(context: Context) =
             try {
+                if (IntroActivity.hasWss(context))
+                    context.allowHiddenMethods()
                 (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(Rect())
                 true
             } catch (e: Throwable) {
@@ -339,4 +341,8 @@ object Utils {
                 actionHolder.premTypePower
         ).contains(action)
     }
+}
+
+fun Context.allowHiddenMethods() {
+    Settings.Global.putInt(contentResolver, "hidden_api_policy_p_apps", 1)
 }
