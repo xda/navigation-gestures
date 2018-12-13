@@ -207,17 +207,6 @@ class IntroActivity : IntroActivity() {
                     .background(R.color.slide_5)
                     .backgroundDark(R.color.slide_5_dark)
                     .build())
-
-//            if (Utils.canRunHiddenCommands(this)) {
-//
-//            } else {
-//                addSlide(SimpleSlide.Builder()
-//                        .background(R.color.slide_1)
-//                        .backgroundDark(R.color.slide_1_dark)
-//                        .title(R.string.sorry)
-//                        .description(R.string.sorry_desc)
-//                        .build())
-//            }
         }
 
         addOnNavigationBlockedListener { index, _ ->
@@ -234,8 +223,8 @@ class IntroActivity : IntroActivity() {
                             .show()
                 } else {
                     AlertDialog.Builder(this)
-                            .setTitle("Android P")
-                            .setMessage("Due to restrictions in Android Pie, WRITE_SECURE_SETTINGS must be granted.")
+                            .setTitle(R.string.sorry)
+                            .setMessage(R.string.android_p_wss)
                             .setPositiveButton(android.R.string.ok, null)
                             .show()
                 }

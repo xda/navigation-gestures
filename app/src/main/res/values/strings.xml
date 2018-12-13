@@ -151,6 +151,7 @@
     <string name="dont_keep_overscan_on_lockscreen_desc">Enable this to show lock screen shortcuts and to fix issues with items being cut off on the lock screen, ambient display, or always on display.</string>
     <string name="alternate_home_desc">Certain devices (OnePlus) may have an issue where the \"Home\" action doesn\'t work. Enable this to use a workaround for that.</string>
     <string name="crashlytics_id_switch_desc">To help us debug Navigation Gestures, you can enable this option. By doing so, a random ID will be generated for you and associated with any crash logs we receive in Firebase. If you\'re having issues with the app crashing, simply describe the situation, and give us your ID. No need to capture your own logs.</string>
+    <string name="android_p_wss">Due to restrictions in Android Pie, WRITE_SECURE_SETTINGS must be granted.</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
