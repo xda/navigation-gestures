@@ -16,6 +16,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
@@ -336,8 +337,6 @@ object Utils {
                 actionHolder.typeBack,
                 actionHolder.typeSwitch,
                 actionHolder.typeSplit,
-//                actionHolder.premTypeNotif,
-//                actionHolder.premTypeQs,
                 actionHolder.premTypePower
         ).contains(action)
     }
@@ -346,3 +345,8 @@ object Utils {
 fun Context.allowHiddenMethods() {
     Settings.Global.putInt(contentResolver, "hidden_api_policy_p_apps", 1)
 }
+
+fun FragmentManager.beginAnimatedTransaction() =
+    beginTransaction()
+            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                    android.R.anim.fade_in, android.R.anim.fade_out)

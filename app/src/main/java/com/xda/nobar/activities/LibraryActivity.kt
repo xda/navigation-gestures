@@ -5,6 +5,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceFragmentCompat
 import com.xda.nobar.R
+import com.xda.nobar.util.beginAnimatedTransaction
 
 /**
  * List the libraries this app is using
@@ -19,7 +20,10 @@ class LibraryActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        supportFragmentManager?.beginTransaction()?.replace(R.id.content, LibraryPrefs())?.commit()
+        supportFragmentManager
+                ?.beginAnimatedTransaction()
+                ?.replace(R.id.content, LibraryPrefs())
+                ?.commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

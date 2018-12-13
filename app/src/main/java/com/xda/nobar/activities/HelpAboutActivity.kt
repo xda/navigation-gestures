@@ -12,6 +12,7 @@ import com.crashlytics.android.Crashlytics
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.R
 import com.xda.nobar.prefs.PrefManager
+import com.xda.nobar.util.beginAnimatedTransaction
 
 /**
  * Information about the app
@@ -25,7 +26,10 @@ class HelpAboutActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        supportFragmentManager?.beginTransaction()?.replace(R.id.content, HelpFragment())?.commit()
+        supportFragmentManager
+                ?.beginAnimatedTransaction()
+                ?.replace(R.id.content, HelpFragment())
+                ?.commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

@@ -19,6 +19,7 @@ import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.Utils
+import com.xda.nobar.util.beginAnimatedTransaction
 import tk.zwander.seekbarpreference.SeekBarPreference
 import java.util.*
 
@@ -38,7 +39,11 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        supportFragmentManager?.beginTransaction()?.replace(R.id.content, MainFragment())?.addToBackStack("main")?.commit()
+        supportFragmentManager
+                ?.beginAnimatedTransaction()
+                ?.replace(R.id.content, MainFragment())
+                ?.addToBackStack("main")
+                ?.commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -58,7 +63,8 @@ class SettingsActivity : AppCompatActivity() {
     private fun handleBackPressed() {
         if (supportFragmentManager != null) {
             if (supportFragmentManager.backStackEntryCount > 1) {
-                supportFragmentManager.popBackStack()
+                supportFragmentManager
+                        .popBackStack()
             } else {
                 finish()
             }
@@ -94,7 +100,11 @@ class SettingsActivity : AppCompatActivity() {
                     else -> null
                 }
 
-                if (whichFrag != null) fragmentManager?.beginTransaction()?.replace(R.id.content, whichFrag, it.key)?.addToBackStack(it.key)?.commit()
+                if (whichFrag != null) fragmentManager
+                        ?.beginAnimatedTransaction()
+                        ?.replace(R.id.content, whichFrag, it.key)
+                        ?.addToBackStack(it.key)
+                        ?.commit()
                 true
             }
 
