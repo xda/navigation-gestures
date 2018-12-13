@@ -178,6 +178,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     override fun onClick() {
         val builder = AlertDialog.Builder(context)
         onPrepareDialogBuilder(builder)
+        builder.show()
     }
 
     private fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {

@@ -8,13 +8,12 @@ import android.view.ViewGroup
 import android.widget.Switch
 import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreference
-import com.pavelsikun.seekbarpreference.SeekBarPreferenceView
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnProgressSetListener
-import java.util.*
+import tk.zwander.seekbarpreference.SeekBarView
 
 /**
- * A combination of a SwitchPreference and a DialogPreference containing a SeekBarPreferenceView
+ * A combination of a SwitchPreference and a DialogPreference containing a SeekBarView
  * The progress of the SeekBar is saved as ${key}_progress
  */
 class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : SwitchPreference(context, attributeSet), OnProgressSetListener {
@@ -22,7 +21,7 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
         const val KEY_SUFFIX = "_progress"
     }
 
-    private val seekBar = SeekBarPreferenceView(context, attributeSet)
+    private val seekBar = SeekBarView(context, attributeSet)
     private val dialog = Dialog(this, seekBar, this)
 
     init {
@@ -30,7 +29,9 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
     }
 
     override fun onSetInitialValue(defaultValue: Any?) {
-        seekBar.currentValue = if (isPersistent) preferenceManager.sharedPreferences.getInt("$key$KEY_SUFFIX", seekBar.currentValue) else seekBar.currentValue
+        seekBar.setValue(if (isPersistent) preferenceManager.sharedPreferences.getInt("$key$KEY_SUFFIX",
+                seekBar.getCurrentProgress()).toFloat() else seekBar.getCurrentProgress().toFloat(),
+                true)
         super.onSetInitialValue(defaultValue)
     }
 
@@ -48,6 +49,10 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
                 super.onClick()
             }
         }
+    }
+
+    override fun onAttached() {
+        super.onAttached()
 
         syncSummary()
     }
@@ -70,14 +75,15 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
         syncSummary()
     }
 
-    fun getProgress() = preferenceManager.sharedPreferences.getInt("$key$KEY_SUFFIX", seekBar.currentValue)
+    fun getProgress() = preferenceManager.sharedPreferences.getInt("$key$KEY_SUFFIX", seekBar.getCurrentProgress())
 
     private fun syncSummary() {
-        if (isChecked && summaryOn != null) summaryOn = String.format(Locale.getDefault(), context.resources.getString(R.string.auto_hide_pill_desc_enabled), getProgress())
+        if (isChecked && summaryOn != null)
+            summaryOn = context.resources.getString(R.string.auto_hide_pill_desc_enabled, getProgress().toString())
     }
 
     class Dialog(private val preference: SeekBarSwitchPreference,
-                 private val seekBar: SeekBarPreferenceView,
+                 private val seekBar: SeekBarView,
                  private val listener: OnProgressSetListener) : AlertDialog.Builder(preference.context), DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
         init {
             setPositiveButton(android.R.string.ok, this)
@@ -88,12 +94,12 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
 
         override fun onClick(dialog: DialogInterface?, which: Int) {
             when (which) {
-                DialogInterface.BUTTON_POSITIVE -> listener.onProgressSet(seekBar.currentValue)
+                DialogInterface.BUTTON_POSITIVE -> listener.onProgressSet(seekBar.getCurrentProgress())
             }
         }
 
         override fun onCancel(dialog: DialogInterface?) {
-            seekBar.currentValue = preference.getProgress()
+            seekBar.setValue(preference.getProgress().toFloat(), true)
         }
 
         override fun show(): AlertDialog {

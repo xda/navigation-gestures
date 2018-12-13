@@ -28,21 +28,21 @@
     <PreferenceCategory
         android:title="@string/look_feel">
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
+        <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/vibration_duration"
             android:key="vibration_duration"
             android:icon="@drawable/ic_timer_black_24dp"
-            app:msbp_minValue="@integer/min_vibe_time"
-            app:msbp_maxValue="@integer/max_vibe_tme"
-            app:msbp_measurementUnit="ms"
+            app:minValue="@integer/min_vibe_time"
+            app:maxValue="@integer/max_vibe_tme"
+            app:units="ms"
             android:defaultValue="@integer/default_vibe_time" />
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
+        <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/anim_duration"
             android:key="anim_duration"
             android:icon="@drawable/ic_timer_black_24dp"
-            app:msbp_minValue="@integer/min_anim_duration"
-            app:msbp_maxValue="@integer/max_anim_duration"
+            app:minValue="@integer/min_anim_duration"
+            app:maxValue="@integer/max_anim_duration"
             android:defaultValue="@integer/default_anim_duration" />
 
     </PreferenceCategory>
@@ -57,10 +57,10 @@
             android:key="auto_hide_pill"
             android:icon="@drawable/ic_visibility_off_black_24dp"
             android:disableDependentsState="true"
-            app:msbp_view_defaultValue="@integer/default_auto_hide_time"
-            app:msbp_minValue="@integer/min_auto_hide_time"
-            app:msbp_maxValue="@integer/max_auto_hide_time"
-            app:msbp_measurementUnit="ms"
+            app:view_defaultValue="@integer/default_auto_hide_time"
+            app:minValue="@integer/min_auto_hide_time"
+            app:maxValue="@integer/max_auto_hide_time"
+            app:units="ms"
             android:defaultValue="@bool/auto_hide_default"
             />
 
@@ -72,10 +72,10 @@
             android:key="hide_in_fullscreen"
             android:icon="@drawable/ic_visibility_off_black_24dp"
             android:defaultValue="@bool/hide_in_fullscreen_default"
-            app:msbp_view_defaultValue="@integer/default_auto_hide_time"
-            app:msbp_minValue="@integer/min_auto_hide_time"
-            app:msbp_maxValue="@integer/max_auto_hide_time"
-            app:msbp_measurementUnit="ms"
+            app:view_defaultValue="@integer/default_auto_hide_time"
+            app:minValue="@integer/min_auto_hide_time"
+            app:maxValue="@integer/max_auto_hide_time"
+            app:units="ms"
             />
 
         <SwitchPreference
@@ -103,31 +103,31 @@
             android:key="larger_hitbox"
             android:defaultValue="@bool/large_hitbox_default" />
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
+        <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/x_threshold"
             android:icon="@drawable/ic_swap_horiz_black_24dp"
             android:defaultValue="@integer/default_x_threshold_dp"
-            app:msbp_minValue="@integer/min_x_threshold_dp"
-            app:msbp_maxValue="@integer/max_x_threshold_dp"
-            app:msbp_measurementUnit="dp"
+            app:minValue="@integer/min_x_threshold_dp"
+            app:maxValue="@integer/max_x_threshold_dp"
+            app:units="dp"
             android:key="x_threshold" />
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
+        <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/y_threshold"
             android:icon="@drawable/ic_swap_vert_black_24dp"
             android:defaultValue="@integer/default_y_threshold_dp"
-            app:msbp_minValue="@integer/min_y_threshold_dp"
-            app:msbp_maxValue="@integer/max_y_threshold_dp"
-            app:msbp_measurementUnit="dp"
+            app:minValue="@integer/min_y_threshold_dp"
+            app:maxValue="@integer/max_y_threshold_dp"
+            app:units="dp"
             android:key="y_threshold" />
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
+        <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/hold_time"
             android:key="hold_time"
             android:icon="@drawable/ic_timer_black_24dp"
-            app:msbp_minValue="@integer/min_hold_time"
-            app:msbp_maxValue="@integer/max_hold_time"
-            app:msbp_measurementUnit="ms"
+            app:minValue="@integer/min_hold_time"
+            app:maxValue="@integer/max_hold_time"
+            app:units="ms"
             android:defaultValue="@integer/default_hold_time" />
 
     </PreferenceCategory>

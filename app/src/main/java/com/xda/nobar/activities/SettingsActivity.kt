@@ -13,13 +13,13 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
 import com.jaredrummler.android.colorpicker.ColorPreferenceCompat
-import com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
 import com.xda.nobar.R
 import com.xda.nobar.prefs.CustomPreferenceCategory
 import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.Utils
+import tk.zwander.seekbarpreference.SeekBarPreference
 import java.util.*
 
 /**
@@ -438,6 +438,11 @@ class SettingsActivity : AppCompatActivity() {
             super.onResume()
 
             activity?.title = resources.getText(R.string.appearance)
+        }
+
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            super.onCreatePreferences(savedInstanceState, rootKey)
+
             setListeners()
             setup()
         }
@@ -467,15 +472,15 @@ class SettingsActivity : AppCompatActivity() {
             val catX = findPreference("cat_x") as CustomPreferenceCategory
             val catY = findPreference("cat_y") as CustomPreferenceCategory
 
-            val widthPercent = screen.findPreference("custom_width_percent") as SeekBarPreferenceCompat
-            val heightPercent = screen.findPreference("custom_height_percent") as SeekBarPreferenceCompat
-            val xPercent = screen.findPreference("custom_x_percent") as SeekBarPreferenceCompat
-            val yPercent = screen.findPreference("custom_y_percent") as SeekBarPreferenceCompat
+            val widthPercent = screen.findPreference("custom_width_percent") as SeekBarPreference
+            val heightPercent = screen.findPreference("custom_height_percent") as SeekBarPreference
+            val xPercent = screen.findPreference("custom_x_percent") as SeekBarPreference
+            val yPercent = screen.findPreference("custom_y_percent") as SeekBarPreference
 
-            val widthPixels = screen.findPreference("custom_width") as SeekBarPreferenceCompat
-            val heightPixels = screen.findPreference("custom_height") as SeekBarPreferenceCompat
-            val xPixels = screen.findPreference("custom_x") as SeekBarPreferenceCompat
-            val yPixels = screen.findPreference("custom_y") as SeekBarPreferenceCompat
+            val widthPixels = screen.findPreference("custom_width") as SeekBarPreference
+            val heightPixels = screen.findPreference("custom_height") as SeekBarPreference
+            val xPixels = screen.findPreference("custom_x") as SeekBarPreference
+            val yPixels = screen.findPreference("custom_y") as SeekBarPreference
 
             widthPixels.minValue = Utils.minPillWidthPx(activity!!)
             heightPixels.minValue = Utils.minPillHeightPx(activity!!)

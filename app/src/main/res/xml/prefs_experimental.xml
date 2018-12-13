@@ -12,10 +12,10 @@
         android:key="hide_pill_on_keyboard"
         android:icon="@drawable/ic_keyboard_hide_black_24dp"
         android:defaultValue="@bool/hide_on_keyboard_default"
-        app:msbp_view_defaultValue="@integer/default_auto_hide_time"
-        app:msbp_minValue="@integer/min_auto_hide_time"
-        app:msbp_maxValue="@integer/max_auto_hide_time"
-        app:msbp_measurementUnit="ms"
+        app:view_defaultValue="@integer/default_auto_hide_time"
+        app:minValue="@integer/min_auto_hide_time"
+        app:maxValue="@integer/max_auto_hide_time"
+        app:units="ms"
         />
 
     <Preference

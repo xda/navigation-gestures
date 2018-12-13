@@ -37,6 +37,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    dataBinding {
+        enabled = true
+    }
 }
 
 static def getDate() {
@@ -61,9 +65,10 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     //Mine
-    implementation 'com.github.zacharee:material-intro:5b050e7c1f'
+    implementation 'com.github.zacharee:material-intro:7c39514ec5'
     implementation 'com.github.zacharee:colorpicker:4b78682602'
-    implementation 'com.github.zacharee:MaterialSeekbarPreference:6ff80903cf'
+//    implementation 'com.github.zacharee:MaterialSeekbarPreference:6ff80903cf'
+    implementation 'com.github.zacharee:SeekBarPreference:f250eee157'
 
     //Other
     implementation 'com.github.lzyzsd:circleprogress:1.2.1'

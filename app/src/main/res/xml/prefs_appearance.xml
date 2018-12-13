@@ -31,10 +31,10 @@
         android:title="@string/dimension_prefs"
         android:key="dimens">
 
-        <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
-            app:msbp_measurementUnit="dp"
-            app:msbp_minValue="@integer/min_corner_radius_dp"
-            app:msbp_maxValue="@integer/max_corner_radius_dp"
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="dp"
+            app:minValue="@integer/min_corner_radius_dp"
+            app:maxValue="@integer/max_corner_radius_dp"
             android:defaultValue="@integer/default_corner_radius_dp"
             android:title="@string/pill_corner_radius"
             android:icon="@drawable/ic_rounded_corner_black_24dp"
