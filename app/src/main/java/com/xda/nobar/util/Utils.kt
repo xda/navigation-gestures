@@ -122,21 +122,6 @@ object Utils {
     }
 
     /**
-     * Check if the current device can use the necessary hidden APIs
-     * @param context a context object
-     * @return true if this app can be used
-     */
-    fun canRunHiddenCommands(context: Context) =
-            try {
-                if (IntroActivity.hasWss(context))
-                    context.allowHiddenMethods()
-                (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(Rect())
-                true
-            } catch (e: Throwable) {
-                false
-            } && IWindowManager.canRunCommands()
-
-    /**
      * Force the navigation bar black, to mask the white line people are complaining so much about
      */
     fun forceNavBlack(context: Context) {

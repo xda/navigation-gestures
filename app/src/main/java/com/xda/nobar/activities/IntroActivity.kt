@@ -39,7 +39,7 @@ class IntroActivity : IntroActivity() {
             val overlaysGranted = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) Settings.canDrawOverlays(context) else true
             val accessibilityGranted = Utils.isAccessibilityEnabled(context)
 
-            return !overlaysGranted || !accessibilityGranted || PrefManager.getInstance(context).firstRun || !Utils.canRunHiddenCommands(context)
+            return !overlaysGranted || !accessibilityGranted || PrefManager.getInstance(context).firstRun
         }
 
         fun hasWss(context: Context): Boolean {
@@ -211,23 +211,15 @@ class IntroActivity : IntroActivity() {
 
         addOnNavigationBlockedListener { index, _ ->
             if (index == indexOfSlide(wssSlide)) {
-                if (Utils.canRunHiddenCommands(this)) {
-                    AlertDialog.Builder(this)
-                            .setTitle(R.string.are_you_sure)
-                            .setMessage(R.string.skip_wss_message)
-                            .setPositiveButton(android.R.string.yes) { _, _ ->
-                                prefs.edit().putBoolean("has_confirmed_skip_wss", true).apply()
-                                nextSlide()
-                            }
-                            .setNegativeButton(android.R.string.no, null)
-                            .show()
-                } else {
-                    AlertDialog.Builder(this)
-                            .setTitle(R.string.sorry)
-                            .setMessage(R.string.android_p_wss)
-                            .setPositiveButton(android.R.string.ok, null)
-                            .show()
-                }
+                AlertDialog.Builder(this)
+                        .setTitle(R.string.are_you_sure)
+                        .setMessage(R.string.skip_wss_message)
+                        .setPositiveButton(android.R.string.yes) { _, _ ->
+                            prefs.edit().putBoolean("has_confirmed_skip_wss", true).apply()
+                            nextSlide()
+                        }
+                        .setNegativeButton(android.R.string.no, null)
+                        .show()
             }
         }
 

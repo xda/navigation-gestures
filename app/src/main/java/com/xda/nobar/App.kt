@@ -119,7 +119,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
             if (IntroActivity.hasWss(this)) allowHiddenMethods()
 
-            if (!Utils.canRunHiddenCommands(this) || IntroActivity.needsToRun(this)) {
+            if (IntroActivity.needsToRun(this)) {
                 IntroActivity.start(this)
             }
 
@@ -172,7 +172,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 gestureListeners.forEach { it.onGestureStateChange(bar, prefManager.isActive) }
             }
             PrefManager.HIDE_NAV -> {
-                navbarListeners.forEach { it.onNavStateChange(prefManager.navHidden) }
+                navbarListeners.forEach { it.onNavStateChange(prefManager.shouldUseOverscanMethod) }
             }
             PrefManager.USE_ROOT -> {
                 if (prefManager.isActive) {
@@ -379,9 +379,15 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
      * @return true if hidden
      */
     fun isNavBarHidden(): Boolean {
-        val overscan = getOverscan()
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            val overscan = Rect(0, 0, 0, 0)
 
-        return overscan.bottom < 0 || overscan.top < 0 || overscan.left < 0 || overscan.right < 0
+            (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(overscan)
+
+            overscan.bottom < 0 || overscan.top < 0 || overscan.left < 0 || overscan.right < 0
+        } else {
+            prefManager.shouldUseOverscanMethod
+        }
     }
 
     /**
@@ -439,18 +445,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
             if (!pillShown) removeImmersiveHelper()
         }
-    }
-
-    /**
-     * Get the current screen overscan
-     * @return the overscan as a Rect
-     */
-    fun getOverscan(): Rect {
-        val rect = Rect(0, 0, 0, 0)
-
-        (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(rect)
-
-        return rect
     }
 
     /**
@@ -715,8 +709,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
         @SuppressLint("WrongConstant")
         override fun onGlobalLayout() {
-            if (!Utils.canRunHiddenCommands(this@App)) return
-
             keyboardShown = imm.inputMethodWindowVisibleHeight > 0
 
             logicHandler.post {

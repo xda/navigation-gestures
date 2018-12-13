@@ -1,9 +1,7 @@
 package com.xda.nobar.activities
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -12,7 +10,6 @@ import android.view.LayoutInflater
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
@@ -57,12 +54,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             IntroActivity.start(this)
         }
 
-        if (!Utils.canRunHiddenCommands(this)) {
-            finish()
-            return
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED)
+        if (IntroActivity.hasWss(this))
             allowHiddenMethods()
 
         setContentView(R.layout.activity_main)

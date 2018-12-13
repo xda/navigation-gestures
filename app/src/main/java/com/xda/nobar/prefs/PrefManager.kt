@@ -162,8 +162,6 @@ class PrefManager private constructor(private val context: Context) {
         set(value) {
             putBoolean(IS_ACTIVE, value)
         }
-    val navHidden: Boolean
-        get() = getBoolean(HIDE_NAV, false)
     var showHiddenToast: Boolean
         get() = getBoolean(SHOW_HIDDEN_TOAST, true)
         set(value) {
