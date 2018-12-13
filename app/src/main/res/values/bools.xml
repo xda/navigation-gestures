@@ -14,7 +14,7 @@
     <bool name="orig_nav_in_immersive_default">false</bool>
     <bool name="immersive_nav_default">false</bool>
     <bool name="sectioned_pill_default">false</bool>
-    <bool name="show_shadow_default">true</bool>
+    <bool name="show_shadow_default">false</bool>
     <bool name="feedback_sound_default">true</bool>
     <bool name="auto_hide_default">false</bool>
     <bool name="alternate_home_default">false</bool>
