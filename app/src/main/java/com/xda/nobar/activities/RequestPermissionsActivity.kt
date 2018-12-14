@@ -33,6 +33,7 @@ class RequestPermissionsActivity : AppCompatActivity() {
             if (extras != null) intent.putExtras(extras)
             intent.putExtra(EXTRA_CLASS_NAME, className)
             intent.putExtra(EXTRA_REQUEST_CODE, requestCode)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
             context.startActivity(intent)
         }

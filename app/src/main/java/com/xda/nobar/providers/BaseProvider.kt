@@ -161,5 +161,5 @@ abstract class BaseProvider: AppWidgetProvider() {
 
     internal open fun onVisibilityChanged(context: Context, cocktailId: Int, visibility: Int) {}
 
-    internal open fun onUpdate(context: Context, manager: SlookCocktailManager, ids: IntArray) {}
+    internal open fun onUpdate(context: Context, manager: SlookCocktailManager, ids: IntArray?) {}
 }

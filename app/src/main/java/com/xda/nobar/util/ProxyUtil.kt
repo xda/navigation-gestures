@@ -49,13 +49,18 @@ private val iStatusBarManager: Any
 fun expandNotificationsPanel() {
     val manager = iStatusBarManager
     manager::class.java.getMethod("expandNotificationsPanel")
-            .invoke(iStatusBarManager)
+            .invoke(manager)
 }
 
 fun expandSettingsPanel() {
     val manager = iStatusBarManager
-    manager::class.java.getMethod("expandSettingsPanel", String::class.java)
-            .invoke(iStatusBarManager, null)
+    try {
+        manager::class.java.getMethod("expandSettingsPanel", String::class.java)
+                .invoke(manager, null)
+    } catch (e: Exception) {
+        manager::class.java.getMethod("expandSettingsPanel")
+                .invoke(manager)
+    }
 }
 
 fun SearchManager.launchAssist() {
