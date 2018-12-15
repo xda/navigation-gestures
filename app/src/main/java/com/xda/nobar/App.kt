@@ -152,7 +152,9 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 immersiveHelperView.immersiveListener = uiHandler
             }
 
-            appOps.startWatchingMode(AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW, packageName, this)
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                appOps.startWatchingMode(AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW, packageName, this)
+            }
         }
     }
 
