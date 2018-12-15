@@ -41,7 +41,7 @@ private val iStatusBarManager: Any
         val serviceMan = Class.forName("android.os.ServiceManager")
         val checkService = serviceMan.getMethod("checkService", String::class.java)
         val stub = Class.forName("com.android.internal.statusbar.IStatusBarService\$Stub")
-        val asInterface = stub.getMethod("asInferface", IBinder::class.java)
+        val asInterface = stub.getMethod("asInterface", IBinder::class.java)
 
         return asInterface.invoke(null, checkService.invoke(null, "statusbar"))
     }
