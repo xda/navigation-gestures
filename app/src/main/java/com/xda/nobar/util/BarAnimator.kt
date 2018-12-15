@@ -73,8 +73,10 @@ class BarAnimator(private val bar: BarView) {
                 .setInterpolator(BarView.ENTER_INTERPOLATOR)
                 .setDuration(bar.getAnimationDurationMs())
                 .withEndAction {
-                    SpringAnimation(bar, SpringAnimation.SCALE_X, BarView.SCALE_NORMAL)
-                            .start()
+                    bar.animate()
+                            .scaleX(BarView.SCALE_NORMAL)
+                            .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                            .duration = bar.getAnimationDurationMs()
                 }
     }
 
@@ -85,10 +87,11 @@ class BarAnimator(private val bar: BarView) {
                 .setInterpolator(BarView.ENTER_INTERPOLATOR)
                 .setDuration(bar.getAnimationDurationMs())
                 .withEndAction {
-                    SpringAnimation(bar, SpringAnimation.SCALE_X, BarView.SCALE_NORMAL)
-                            .start()
-                    SpringAnimation(bar, SpringAnimation.X, 0f)
-                            .start()
+                    bar.animate()
+                            .scaleX(BarView.SCALE_NORMAL)
+                            .x(0f)
+                            .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                            .duration = bar.getAnimationDurationMs()
                 }
     }
 
@@ -99,10 +102,11 @@ class BarAnimator(private val bar: BarView) {
                 .setInterpolator(BarView.ENTER_INTERPOLATOR)
                 .setDuration(bar.getAnimationDurationMs())
                 .withEndAction {
-                    SpringAnimation(bar, SpringAnimation.SCALE_X, BarView.SCALE_NORMAL)
-                            .start()
-                    SpringAnimation(bar, SpringAnimation.X, 0f)
-                            .start()
+                    bar.animate()
+                            .scaleX(BarView.SCALE_NORMAL)
+                            .x(0f)
+                            .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                            .duration = bar.getAnimationDurationMs()
                 }
     }
 
@@ -113,10 +117,11 @@ class BarAnimator(private val bar: BarView) {
                 .setInterpolator(BarView.ENTER_INTERPOLATOR)
                 .setDuration(bar.getAnimationDurationMs())
                 .withEndAction {
-                    SpringAnimation(bar, SpringAnimation.SCALE_Y, BarView.SCALE_NORMAL)
-                            .start()
-                    SpringAnimation(bar, SpringAnimation.Y, 0f)
-                            .start()
+                    bar.animate()
+                            .scaleY(BarView.SCALE_NORMAL)
+                            .y(0f)
+                            .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                            .duration = bar.getAnimationDurationMs()
                 }
     }
 
@@ -126,8 +131,10 @@ class BarAnimator(private val bar: BarView) {
                 .setInterpolator(BarView.ENTER_INTERPOLATOR)
                 .setDuration(bar.getAnimationDurationMs())
                 .withEndAction {
-                    SpringAnimation(bar, SpringAnimation.SCALE_X, BarView.SCALE_NORMAL)
-                            .start()
+                    bar.animate()
+                            .scaleX(BarView.SCALE_NORMAL)
+                            .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                            .duration = bar.getAnimationDurationMs()
                 }
     }
 
@@ -138,10 +145,11 @@ class BarAnimator(private val bar: BarView) {
                 .setInterpolator(BarView.ENTER_INTERPOLATOR)
                 .setDuration(bar.getAnimationDurationMs())
                 .withEndAction {
-                    SpringAnimation(bar, SpringAnimation.SCALE_Y, BarView.SCALE_NORMAL)
-                            .start()
-                    SpringAnimation(bar, SpringAnimation.Y, 0f)
-                            .start()
+                    bar.animate()
+                            .scaleY(BarView.SCALE_NORMAL)
+                            .y(0f)
+                            .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                            .duration = bar.getAnimationDurationMs()
                 }
     }
 
@@ -156,8 +164,10 @@ class BarAnimator(private val bar: BarView) {
                             .setInterpolator(BarView.ENTER_INTERPOLATOR)
                             .setDuration(bar.getAnimationDurationMs())
                             .withEndAction {
-                                SpringAnimation(bar, SpringAnimation.SCALE_X, BarView.SCALE_NORMAL)
-                                        .start()
+                                bar.animate()
+                                        .scaleX(BarView.SCALE_NORMAL)
+                                        .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                                        .duration = bar.getAnimationDurationMs()
                             }
                 }
     }

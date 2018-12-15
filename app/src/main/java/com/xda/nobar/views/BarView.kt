@@ -19,7 +19,6 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -57,9 +56,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         const val ALPHA_HIDDEN = 0.2f
         const val ALPHA_ACTIVE = 1.0f
         const val ALPHA_GONE = 0.0f
-
-        const val BRIGHTEN_INACTIVE = 0.0f
-        const val BRIGHTEN_ACTIVE = 0.5f
 
         const val SCALE_NORMAL = 1.0f
         const val SCALE_MID = 0.7f
