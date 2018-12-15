@@ -389,7 +389,9 @@ class SettingsActivity : AppCompatActivity() {
                     val res = prefManager.getIntentKey(it.key)
                     it.summary = String.format(Locale.getDefault(),
                             resources.getString(R.string.prem_intent),
-                            if (res > 0) resources.getString(res) else "")
+                            try {
+                                if (res > 0) resources.getString(res) else ""
+                            } catch (e: Exception) { "" })
                 }
             }
         }
