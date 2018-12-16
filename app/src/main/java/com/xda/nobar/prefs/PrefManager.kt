@@ -42,6 +42,7 @@ class PrefManager private constructor(private val context: Context) {
         const val ORIG_NAV_IN_IMMERSIVE = "orig_nav_in_immersive"
         const val SECTIONED_PILL = "sectioned_pill"
         const val LOCKSCREEN_OVERSCAN = "lockscreen_overscan"
+        const val SHOW_NAV_WITH_KEYBOARD = "keyboard_nav"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
@@ -166,6 +167,11 @@ class PrefManager private constructor(private val context: Context) {
         get() = getBoolean(SHOW_HIDDEN_TOAST, true)
         set(value) {
             putBoolean(SHOW_HIDDEN_TOAST, value)
+        }
+    var showNavWithKeyboard: Boolean
+        get() = getBoolean(SHOW_NAV_WITH_KEYBOARD, false)
+        set(value) {
+            putBoolean(SHOW_NAV_WITH_KEYBOARD, value)
         }
 
     /**

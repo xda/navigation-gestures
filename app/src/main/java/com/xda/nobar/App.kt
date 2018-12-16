@@ -427,7 +427,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
      */
     fun showNav(callListeners: Boolean = true, removeImmersive: Boolean = true) {
         if (IntroActivity.hasWss(this)) {
-            if (removeImmersive && prefManager.useImmersiveWhenNavHidden) immersiveHelperView.exitNavImmersive()
+            if (removeImmersive && prefManager.useImmersiveWhenNavHidden)
+                immersiveHelperView.exitNavImmersive()
 
             handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
 
@@ -713,6 +714,16 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
         override fun onGlobalLayout() {
             keyboardShown = imm.inputMethodWindowVisibleHeight > 0
 
+            if (prefManager.showNavWithKeyboard) {
+                if (keyboardShown) {
+                    showNav(false)
+                    disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYBOARD)
+                }
+                else if (prefManager.shouldUseOverscanMethod) {
+                    disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYBOARD)
+                }
+            }
+
             logicHandler.post {
                 if (Utils.checkTouchWiz(this@App)) {
                     try {
@@ -733,8 +744,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                         e.printStackTrace()
                     }
                 }
-
-                if (!isNavBarHidden() && prefManager.shouldUseOverscanMethod) hideNav()
 
                 val rot = wm.defaultDisplay.rotation
                 if (oldRot != rot) {
