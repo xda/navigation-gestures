@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.Switch
+import androidx.preference.AndroidResources
 import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreference
 import com.xda.nobar.R
@@ -38,10 +39,7 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
 
-        var switch = holder.itemView.findViewById<Switch>(context.resources.getIdentifier("switch_widget", "id", "android"))
-        if (switch == null) {
-            switch = holder.itemView.findViewById(context.resources.getIdentifier("switchWidget", "id", "android"))
-        }
+        val switch = holder.itemView.findViewById<Switch>(AndroidResources.ANDROID_R_SWITCH_WIDGET)
 
         switch.apply {
             setOnClickListener {  }

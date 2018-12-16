@@ -26,6 +26,7 @@ android {
         vectorDrawables.useSupportLibrary = true
         setProperty("archivesBaseName", "NoBar_" + versionName)
     }
+
     buildTypes {
         release {
             minifyEnabled false
