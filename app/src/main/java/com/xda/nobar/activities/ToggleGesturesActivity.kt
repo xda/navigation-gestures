@@ -2,7 +2,7 @@ package com.xda.nobar.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.xda.nobar.App
+import com.xda.nobar.util.app
 
 /**
  * Simple activity to toggle NoBar's gestures
@@ -13,7 +13,8 @@ class ToggleGesturesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!IntroActivity.needsToRun(this)) (application as App).toggleGestureBar()
+        if (!IntroActivity.needsToRun(this))
+            app.toggleGestureBar()
 
         finish()
     }

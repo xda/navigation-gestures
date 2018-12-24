@@ -47,8 +47,6 @@ import java.util.*
 class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
     companion object {
         const val EDGE_TYPE_ACTIVE = 2
-
-        var isValidPremium: Boolean = false
     }
 
     val wm by lazy { getSystemService(Context.WINDOW_SERVICE) as WindowManager }
@@ -84,6 +82,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
     var pillShown = false
     var helperAdded = false
     var keyboardShown = false
+    var isValidPremium = false
 
     private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
     private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()

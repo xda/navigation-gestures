@@ -40,8 +40,6 @@ import com.xda.nobar.views.ItemView
 class SectionableListPreference(context: Context, attributeSet: AttributeSet) : Preference(context, attributeSet), OnItemChosenListener {
     var defaultValue: String? = null
 
-    val app = context.applicationContext as App
-
     private val sections = ArrayList<Section>()
     private var dialog: AlertDialog? = null
 

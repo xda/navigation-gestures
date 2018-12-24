@@ -4,9 +4,9 @@ import android.annotation.TargetApi
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
+import com.xda.nobar.util.app
 import com.xda.nobar.views.BarView
 
 /**
@@ -14,8 +14,6 @@ import com.xda.nobar.views.BarView
  */
 @TargetApi(24)
 class GestureToggle : TileService(), OnGestureStateChangeListener {
-    private val app by lazy { application as App }
-
     override fun onCreate() {
         app.addGestureActivationListener(this)
     }

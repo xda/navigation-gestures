@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
@@ -18,6 +17,7 @@ import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.util.Utils
 import com.xda.nobar.util.allowHiddenMethods
+import com.xda.nobar.util.app
 import com.xda.nobar.views.BarView
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -37,7 +37,6 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         }
     }
 
-    private val app by lazy { application as App }
     private val prefManager by lazy { PrefManager.getInstance(this) }
 
     private val navListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->

@@ -12,6 +12,7 @@ import com.xda.nobar.activities.IntroActivity
 import com.xda.nobar.util.POLICY_CONTROL
 import com.xda.nobar.util.Utils
 import com.xda.nobar.util.Utils.checkTouchWiz
+import com.xda.nobar.util.app
 import kotlin.math.absoluteValue
 
 @Suppress("DEPRECATION")
@@ -27,7 +28,6 @@ class ImmersiveHelperView(context: Context) : View(context) {
         y = 0
         gravity = Gravity.LEFT or Gravity.BOTTOM
     }
-    val app = Utils.getHandler(context)
 
     var shouldReAddOnDetach = false
     var immersiveListener: ((isImmersive: Boolean) -> Unit)? = null
@@ -47,20 +47,20 @@ class ImmersiveHelperView(context: Context) : View(context) {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        app.helperAdded = true
+        context.app.helperAdded = true
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
         if (shouldReAddOnDetach) {
-            app.addImmersiveHelper(false)
+            context.app.addImmersiveHelper(false)
             shouldReAddOnDetach = false
-        } else app.helperAdded = false
+        } else context.app.helperAdded = false
     }
 
     fun enterNavImmersive() {
-        app.handler.post {
+        context.app.handler.post {
             systemUiVisibility = systemUiVisibility or
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -70,7 +70,7 @@ class ImmersiveHelperView(context: Context) : View(context) {
     }
 
     fun exitNavImmersive() {
-        app.handler.post {
+        context.app.handler.post {
             systemUiVisibility = systemUiVisibility and
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv() and
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
@@ -111,17 +111,17 @@ class ImmersiveHelperView(context: Context) : View(context) {
     }
 
     private fun getProperScreenHeightForRotation(): Int {
-        val rotation = app.wm.defaultDisplay.rotation
+        val rotation = context.app.wm.defaultDisplay.rotation
         val screenHeight = Utils.getRealScreenSize(context).y
         val navHeight = Utils.getNavBarHeight(context)
 
         return when (rotation) {
             Surface.ROTATION_90,
             Surface.ROTATION_270 -> {
-                screenHeight + if (app.prefManager.useTabletMode) if (app.navHidden) navHeight else 0 else 0
+                screenHeight + if (context.app.prefManager.useTabletMode) if (context.app.navHidden) navHeight else 0 else 0
             }
             else -> {
-                screenHeight + if (app.navHidden) Utils.getNavBarHeight(context) else 0
+                screenHeight + if (context.app.navHidden) Utils.getNavBarHeight(context) else 0
             }
         }
     }

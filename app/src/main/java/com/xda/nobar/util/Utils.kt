@@ -17,7 +17,6 @@ import android.util.TypedValue
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
 import com.xda.nobar.activities.IntroActivity
@@ -65,17 +64,6 @@ object Utils {
 
     fun dpAsPx(context: Context, dpVal: Float) =
             Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal, context.resources.displayMetrics))
-
-    /**
-     * Retrieve the OHM handler
-     * @param context context object
-     * @return the OHM handler instance
-     * @throws IllegalStateException if the application context is not correct
-     */
-    fun getHandler(context: Context): App {
-        val app = context.applicationContext
-        return app as? App ?: throw IllegalStateException("Bad app context: ${app.javaClass.simpleName}")
-    }
 
     /**
      * Get the height of the navigation bar

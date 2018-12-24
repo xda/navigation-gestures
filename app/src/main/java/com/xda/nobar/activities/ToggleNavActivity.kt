@@ -2,7 +2,7 @@ package com.xda.nobar.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.xda.nobar.App
+import com.xda.nobar.util.app
 
 /**
  * Simple activity to toggle NoBar's navbar hiding
@@ -13,8 +13,7 @@ class ToggleNavActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val handler = application as App
-        handler.toggleNavState()
+        app.toggleNavState()
 
         finish()
     }

@@ -8,14 +8,12 @@ import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.lzyzsd.circleprogress.ArcProgress
-import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.adapters.BaseSelectAdapter
 import com.xda.nobar.prefs.PrefManager
@@ -38,8 +36,6 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
     internal abstract val adapter: BaseSelectAdapter<Info>
 
     internal var isCreated = false
-
-    internal val app by lazy { application as App }
 
     internal val origAppSet = ArrayList<Info>()
     internal val list by lazy { findViewById<RecyclerView>(R.id.list) }

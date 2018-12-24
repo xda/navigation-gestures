@@ -17,9 +17,6 @@ import com.xda.nobar.util.ActionHolder
 import com.xda.nobar.util.Utils
 
 
-/**
- * Where most of the magic happens
- */
 class Actions : AccessibilityService(), ReceiverCallback {
     companion object {
         const val BASE = "com.xda.nobar.action"

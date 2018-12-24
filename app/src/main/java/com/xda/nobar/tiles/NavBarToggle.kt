@@ -8,14 +8,13 @@ import android.service.quicksettings.TileService
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
+import com.xda.nobar.util.app
 
 /**
  * QS Tile to toggle navbar
  */
 @TargetApi(24)
 class NavBarToggle : TileService(), OnNavBarHideStateChangeListener {
-    private val app by lazy { application as App }
-    
     override fun onCreate() {
         app.addNavBarHideListener(this)
     }

@@ -17,8 +17,6 @@ import com.xda.nobar.activities.MainActivity
  * Used to prevent the device from killing NoBar
  */
 class ForegroundService : Service() {
-    private val app by lazy { application as App }
-
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
