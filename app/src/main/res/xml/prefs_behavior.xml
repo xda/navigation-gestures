@@ -19,6 +19,14 @@
             android:icon="@drawable/ic_keyboard_black_24dp"
             />
 
+        <SwitchPreference
+            android:title="@string/audio_feedback"
+            android:summary="@string/audio_feedback_desc"
+            android:key="audio_feedback"
+            android:defaultValue="@bool/feedback_sound_default"
+            android:icon="@drawable/ic_hearing_black_24dp"
+            />
+
         <Preference
             android:title="@string/nav_blacklist"
             android:summary="@string/nav_blacklist_desc"

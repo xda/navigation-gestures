@@ -114,6 +114,7 @@
     <string name="touchwiz">TouchWiz</string>
     <string name="disable">Disable</string>
     <string name="show_nav_with_keyboard">Show NavBar with Keyboard</string>
+    <string name="audio_feedback">Audio Feedback</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -159,6 +160,7 @@
     <string name="emui_desc">EMUI\'s battery management has been known to cause issues with Navigation Gestures, breaking its functionality. We recommend disabling it for this app.</string>
     <string name="touchwiz_desc">TouchWiz\'s battery management has been known to cause issues with Navigation Gestures, breaking its functionality. We recommend disabling it for this app.</string>
     <string name="show_nav_with_keyboard_desc">Enable the native navigation bar when the software keyboard is activated.</string>
+    <string name="audio_feedback_desc">Play a sound when a gesture is performed.</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
