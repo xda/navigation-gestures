@@ -98,7 +98,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     val params = WindowManager.LayoutParams()
     val hiddenPillReasons = HiddenPillReasonManager()
     val gestureDetector = GestureManager()
-    val rootActions = RootActions(context)
 
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val animator = BarAnimator(this)
@@ -990,12 +989,23 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 if (Utils.isAccessibilityAction(context, which)) {
                     if (app.prefManager.useRoot && Shell.rootAccess()) {
                         when (which) {
-                            actionHolder.typeHome -> rootActions.home()
-                            actionHolder.typeRecents -> rootActions.recents()
-                            actionHolder.typeBack -> rootActions.back()
-                            actionHolder.typeSwitch -> rootActions.switch()
-                            actionHolder.typeSplit -> rootActions.split()
-                            actionHolder.premTypePower -> Utils.runPremiumAction(context, App.isValidPremium) { rootActions.power() }
+                            actionHolder.typeHome -> app.rootWrapper.actions?.goHome()
+                            actionHolder.typeRecents -> app.rootWrapper.actions?.openRecents()
+                            actionHolder.typeBack -> app.rootWrapper.actions?.goBack()
+
+                            actionHolder.typeSwitch -> runNougatAction {
+                                app.rootWrapper.actions?.switchApps()
+                            }
+                            actionHolder.typeSplit -> runNougatAction {
+                                app.rootWrapper.actions?.splitScreen()
+                            }
+
+                            actionHolder.premTypePower -> runPremiumAction {
+                                app.rootWrapper.actions?.openPowerMenu()
+                            }
+                            actionHolder.premTypeLockScreen -> runPremiumAction {
+                                app.rootWrapper.actions?.lockScreen()
+                            }
                         }
                     } else {
                         if (which == actionHolder.typeHome
@@ -1122,8 +1132,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     }
                     actionHolder.premTypeLockScreen -> runPremiumAction {
                         runSystemSettingsAction {
-                            if (app.prefManager.useRoot && Shell.rootAccess()) {
-                                rootActions.lock()
+                            if (app.prefManager.useRoot
+                                    && Shell.rootAccess()) {
+                                app.rootWrapper.actions?.lockScreen()
                             } else {
                                 ActionReceiver.turnScreenOff(context)
                             }

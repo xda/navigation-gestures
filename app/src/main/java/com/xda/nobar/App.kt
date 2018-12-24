@@ -31,6 +31,7 @@ import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.providers.BaseProvider
+import com.xda.nobar.root.RootWrapper
 import com.xda.nobar.services.Actions
 import com.xda.nobar.services.ForegroundService
 import com.xda.nobar.util.*
@@ -55,17 +56,20 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
     val appOps by lazy { getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager }
     val nm by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
     val imm by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
+    val rootWrapper by lazy { RootWrapper(this) }
 
     private val stateHandler = ScreenStateHandler()
     private val carModeHandler = CarModeHandler()
-    private val premiumHelper by lazy { PremiumHelper(this, OnLicenseCheckResultListener { valid, reason ->
-        isValidPremium = valid
-        prefManager.validPrem = valid
+    private val premiumHelper by lazy {
+        PremiumHelper(this, OnLicenseCheckResultListener { valid, reason ->
+            isValidPremium = valid
+            prefManager.validPrem = valid
 
-        licenseCheckListeners.forEach { it.onResult(valid, reason) }
+            licenseCheckListeners.forEach { it.onResult(valid, reason) }
 
-        Actions.updatePremium(this, isValidPremium)
-    })}
+            Actions.updatePremium(this, isValidPremium)
+        })
+    }
 
     private val premiumInstallListener = PremiumInstallListener()
     private val permissionListener = PermissionReceiver()
@@ -109,6 +113,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
         if (isRightProcess()) {
             if (prefManager.crashlyticsIdEnabled) Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
+            if (!prefManager.firstRun
+                    && Shell.rootAccess()) rootWrapper.onCreate()
 
             val watchDog = ANRWatchDog()
             watchDog.setReportMainThreadOnly()
@@ -175,12 +181,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             }
             PrefManager.HIDE_NAV -> {
                 navbarListeners.forEach { it.onNavStateChange(prefManager.shouldUseOverscanMethod) }
-            }
-            PrefManager.USE_ROOT -> {
-                if (prefManager.isActive) {
-                    if (prefManager.useRoot) bar.rootActions.onCreate()
-                    else bar.rootActions.onDestroy()
-                }
             }
             PrefManager.ROT270_FIX -> {
                 if (prefManager.useRot270Fix) uiHandler.handleRot()
@@ -306,7 +306,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
     private fun addImmersiveHelperUnconditionally() {
         try {
             wm.addView(immersiveHelperView, immersiveHelperView.params)
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     /**
@@ -327,7 +328,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     try {
                         bar.shouldReAddOnDetach = false
                         wm.removeView(bar)
-                    } catch (e: Exception) {}
+                    } catch (e: Exception) {
+                    }
 
                     if (!navHidden) removeImmersiveHelper()
                 }
@@ -342,7 +344,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             try {
                 immersiveHelperView.shouldReAddOnDetach = forRefresh
                 wm.removeView(immersiveHelperView)
-            } catch (e: Exception) {}
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -476,10 +479,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
             addImmersiveHelper()
             ContextCompat.startForegroundService(this, Intent(this, ForegroundService::class.java))
-
-            if (prefManager.useRoot) {
-                //TODO: Re-implement
-            }
         }
     }
 
@@ -507,10 +506,12 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             }
         }
     }
+
     private fun addBarInternalUnconditionally() {
         try {
             wm.addView(bar, bar.params)
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     /**
@@ -638,7 +639,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             logicHandler.post {
                 try {
                     handleNewEvent(info ?: return@post)
-                } catch (e: NullPointerException) {}
+                } catch (e: NullPointerException) {
+                }
             }
         }
 
@@ -718,8 +720,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 if (keyboardShown) {
                     showNav(false)
                     disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYBOARD)
-                }
-                else if (prefManager.shouldUseOverscanMethod) {
+                } else if (prefManager.shouldUseOverscanMethod) {
                     disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYBOARD)
                 }
             }
@@ -799,7 +800,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                             removeBar(false)
                         }
 
-                    } catch (e: NullPointerException) {}
+                    } catch (e: NullPointerException) {
+                    }
                 }
             }
         }
@@ -869,7 +871,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                         bar.params.width = prefManager.customWidth
                         bar.params.height = prefManager.customHeight
                         bar.updateLayout(bar.params)
-                    } catch (e: NullPointerException) {}
+                    } catch (e: NullPointerException) {
+                    }
                 }
 
                 if (prefManager.shouldUseOverscanMethod) {
@@ -904,7 +907,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     }
 
                     Surface.ROTATION_180 -> {
-                        IWindowManager.setOverscan(0, -getAdjustedNavBarHeight(), 0 ,0)
+                        IWindowManager.setOverscan(0, -getAdjustedNavBarHeight(), 0, 0)
                     }
 
                     Surface.ROTATION_270 -> {

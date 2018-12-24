@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -15,7 +14,6 @@ import com.xda.nobar.interfaces.ReceiverCallback
 import com.xda.nobar.receivers.ActionReceiver
 import com.xda.nobar.receivers.StartupReceiver
 import com.xda.nobar.util.ActionHolder
-import com.xda.nobar.util.RootActions
 import com.xda.nobar.util.Utils
 
 
@@ -46,7 +44,6 @@ class Actions : AccessibilityService(), ReceiverCallback {
     }
 
     private val receiver = ActionHandler()
-    private val rootActions by lazy { RootActions(this) }
 
     private val handler = Handler()
 
@@ -105,7 +102,6 @@ class Actions : AccessibilityService(), ReceiverCallback {
 
     override fun onDestroy() {
         receiver.destroy(this)
-        rootActions.onDestroy()
     }
 
     private fun runNougatAction(action: () -> Unit) = Utils.runNougatAction(this, action)

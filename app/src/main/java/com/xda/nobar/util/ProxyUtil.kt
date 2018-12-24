@@ -2,13 +2,17 @@ package com.xda.nobar.util
 
 import android.annotation.SuppressLint
 import android.app.SearchManager
+import android.content.Context
 import android.graphics.Rect
 import android.hardware.input.InputManager
 import android.os.Bundle
 import android.os.IBinder
+import android.os.UserHandle
 import android.view.Display
 import android.view.InputEvent
 import android.view.inputmethod.InputMethodManager
+import com.xda.nobar.App
+import com.xda.nobar.BuildConfig
 
 const val POLICY_CONTROL = "policy_control"
 
@@ -20,8 +24,8 @@ val InputMethodManager.inputMethodWindowVisibleHeight: Int
 
 val inputManager: InputManager
     get() =
-            InputManager::class.java.getMethod("getInstance")
-                    .invoke(null) as InputManager
+        InputManager::class.java.getMethod("getInstance")
+                .invoke(null) as InputManager
 
 fun Display.getOverscanInsets(out: Rect) {
     val method = this::class.java.getMethod("getOverscanInsets", Rect::class.java)
@@ -64,8 +68,7 @@ fun expandSettingsPanel() {
 }
 
 fun SearchManager.launchAssist() {
-    this::class.java.getMethod("launchAssist", String::class.java).
-            invoke(this, null)
+    this::class.java.getMethod("launchAssist", String::class.java).invoke(this, null)
 }
 
 fun SearchManager.launchLegacyAssist() {
@@ -79,3 +82,28 @@ fun InputManager.injectInputEvent(event: InputEvent, mode: Int) {
 }
 
 fun checkEMUI() = getSystemProperty("ro.build.version.emui") != null
+
+val iPackageManager: Any
+    @SuppressLint("PrivateApi")
+    get() {
+        val aThreadClass = Class.forName("android.app.ActivityThread")
+        return aThreadClass.getMethod("getPackageManager")
+                .invoke(null)
+    }
+
+fun grantPermission(permission: String): Boolean {
+    val iPM = iPackageManager
+
+    val grantRuntimePermission = iPM::class.java
+            .getMethod("grantRuntimePermission", String::class.java,
+                    String::class.java, UserHandle::class.java)
+
+    val userCurrent =
+            UserHandle::class.java.getConstructor(Int::class.java).newInstance(-2)
+
+    return grantRuntimePermission
+            .invoke(iPM, BuildConfig.APPLICATION_ID, permission, userCurrent) as Boolean
+}
+
+val Context.app: App
+    get() = applicationContext as App

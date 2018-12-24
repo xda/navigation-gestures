@@ -25,8 +25,6 @@ class ForegroundService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        if (app.prefManager.useRoot) app.bar.rootActions.onCreate()
-
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
@@ -49,6 +47,5 @@ class ForegroundService : Service() {
     }
 
     override fun onDestroy() {
-        app.bar.rootActions.onDestroy()
     }
 }

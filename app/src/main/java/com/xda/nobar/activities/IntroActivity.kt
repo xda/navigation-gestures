@@ -23,10 +23,7 @@ import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
 import com.topjohnwu.superuser.Shell
 import com.xda.nobar.R
 import com.xda.nobar.prefs.PrefManager
-import com.xda.nobar.util.Utils
-import com.xda.nobar.util.allowHiddenMethods
-import com.xda.nobar.util.checkEMUI
-import com.xda.nobar.util.getSystemProperty
+import com.xda.nobar.util.*
 import kotlinx.android.synthetic.main.slide_welcome.*
 
 /**
@@ -125,11 +122,12 @@ class IntroActivity : IntroActivity() {
             .buttonCtaLabel(R.string.grant)
             .buttonCtaClickListener {
                 if (Shell.rootAccess()) {
+                    app.rootWrapper.onCreate()
                     AlertDialog.Builder(this)
                             .setTitle(R.string.root_found)
                             .setMessage(R.string.root_found_desc)
                             .setPositiveButton(R.string.use_root) { _, _ ->
-                                Shell.su("pm grant $packageName ${Manifest.permission.WRITE_SECURE_SETTINGS}").submit()
+                                app.rootWrapper.actions?.grantPermission(Manifest.permission.WRITE_SECURE_SETTINGS)
                             }
                             .setNegativeButton(R.string.non_root) { _, _ ->
                                 nonRootDialog()
