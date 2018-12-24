@@ -30,4 +30,9 @@
         android:icon="@drawable/ic_fullscreen_black_24dp"
         android:key="full_overscan" />
 
+    <!--<SwitchPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="use_root"-->
+        <!--android:title="@string/use_root" />-->
+
 </PreferenceScreen>

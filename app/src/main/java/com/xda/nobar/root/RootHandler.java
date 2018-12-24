@@ -16,16 +16,21 @@ import eu.chainfire.librootjava.RootIPC;
 import eu.chainfire.librootjava.RootJava;
 
 public class RootHandler {
-    private static Handler handler = new Handler(Looper.getMainLooper());
+    private static Handler handler;
 
     public static void main(String[] args) {
+        Looper.prepare();
+        handler = new Handler();
+
         RootJava.restoreOriginalLdLibraryPath();
 
         IBinder actions = new RootActionsImpl();
 
         try {
             new RootIPC(BuildConfig.APPLICATION_ID, actions, 0, 30 * 1000, true);
-        } catch (RootIPC.TimeoutException ignored) {}
+        } catch (RootIPC.TimeoutException e) {
+            e.printStackTrace();
+        }
     }
 
     public static class RootActionsImpl extends RootActions.Stub {
@@ -36,15 +41,19 @@ public class RootHandler {
 
         @Override
         public void sendKeyEvent(int code) {
+            long now = SystemClock.uptimeMillis();
+
             injectKeyEvent(createKeyEvent(
+                    now,
                     KeyEvent.ACTION_DOWN,
                     code,
-                    0
+                    0, 0
             ));
             injectKeyEvent(createKeyEvent(
+                    now,
                     KeyEvent.ACTION_UP,
                     code,
-                    0
+                    0, 0
             ));
         }
 
@@ -57,15 +66,12 @@ public class RootHandler {
 
         @Override
         public void sendLongKeyEvent(int code) {
-            sendKeyEvent(code);
+            long now = SystemClock.uptimeMillis();
 
-            injectKeyEvent(createKeyEvent(
-                    KeyEvent.ACTION_DOWN,
-                    code,
-                    1
-            ));
+            KeyEvent event = createKeyEvent(now, KeyEvent.ACTION_DOWN, code, 0, KeyEvent.FLAG_LONG_PRESS);
+            injectKeyEvent(event);
 
-            sendKeyEvent(code);
+            injectKeyEvent(createKeyEvent(now, KeyEvent.ACTION_UP, code, 0, 0));
         }
 
         @Override
@@ -100,7 +106,7 @@ public class RootHandler {
 
         @Override
         public void openPowerMenu() {
-
+            sendLongKeyEvent(KeyEvent.KEYCODE_POWER);
         }
 
         private void injectKeyEvent(KeyEvent event) {
@@ -110,15 +116,14 @@ public class RootHandler {
                     0);
         }
 
-        private KeyEvent createKeyEvent(int action, int code, int repeat) {
-            long now = SystemClock.uptimeMillis();
-
+        private KeyEvent createKeyEvent(long now, int action, int code, int repeat, int flags) {
             return new KeyEvent(
                     now, now,
                     action, code,
                     repeat, 0,
                     KeyCharacterMap.VIRTUAL_KEYBOARD,
-                    0, 0, InputDevice.SOURCE_KEYBOARD
+                    0, flags,
+                    InputDevice.SOURCE_KEYBOARD
             );
         }
     }
