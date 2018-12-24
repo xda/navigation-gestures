@@ -2,7 +2,6 @@ package com.xda.nobar.util
 
 import android.annotation.SuppressLint
 import android.app.SearchManager
-import android.content.Context
 import android.graphics.Rect
 import android.hardware.input.InputManager
 import android.os.Bundle
@@ -11,7 +10,6 @@ import android.os.UserHandle
 import android.view.Display
 import android.view.InputEvent
 import android.view.inputmethod.InputMethodManager
-import com.xda.nobar.App
 import com.xda.nobar.BuildConfig
 
 const val POLICY_CONTROL = "policy_control"
@@ -104,6 +102,3 @@ fun grantPermission(permission: String): Boolean {
     return grantRuntimePermission
             .invoke(iPM, BuildConfig.APPLICATION_ID, permission, userCurrent) as Boolean
 }
-
-val Context.app: App
-    get() = applicationContext as App

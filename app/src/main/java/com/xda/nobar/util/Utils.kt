@@ -17,6 +17,7 @@ import android.util.TypedValue
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.DialogActivity
 import com.xda.nobar.activities.IntroActivity
@@ -323,3 +324,6 @@ fun FragmentManager.beginAnimatedTransaction() =
     beginTransaction()
             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
                     android.R.anim.fade_in, android.R.anim.fade_out)
+
+val Context.app: App
+    get() = applicationContext as App
