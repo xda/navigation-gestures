@@ -43,6 +43,7 @@ class PrefManager private constructor(private val context: Context) {
         const val SECTIONED_PILL = "sectioned_pill"
         const val LOCKSCREEN_OVERSCAN = "lockscreen_overscan"
         const val SHOW_NAV_WITH_KEYBOARD = "keyboard_nav"
+        const val CONFIRMED_SKIP_WSS = "has_confirmed_skip_wss"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
@@ -115,8 +116,11 @@ class PrefManager private constructor(private val context: Context) {
         get() = getBoolean(ROT270_FIX, context.resources.getBoolean(R.bool.rot_fix_default))
     val useRot180Fix: Boolean
         get() = getBoolean(ROT180_FIX, context.resources.getBoolean(R.bool.rot_fix_default))
-    val useTabletMode: Boolean
+    var useTabletMode: Boolean
         get() = getBoolean(TABLET_MODE, context.resources.getBoolean(R.bool.tablet_mode_default))
+        set(value) {
+            putBoolean(TABLET_MODE, value)
+        }
     val feedbackSound: Boolean
         get() = getBoolean(AUDIO_FEEDBACK, context.resources.getBoolean(R.bool.feedback_sound_default))
     var firstRun: Boolean
@@ -172,6 +176,11 @@ class PrefManager private constructor(private val context: Context) {
         get() = getBoolean(SHOW_NAV_WITH_KEYBOARD, false)
         set(value) {
             putBoolean(SHOW_NAV_WITH_KEYBOARD, value)
+        }
+    var confirmedSkipWss: Boolean
+        get() = getBoolean(CONFIRMED_SKIP_WSS, false)
+        set(value) {
+            putBoolean(CONFIRMED_SKIP_WSS, value)
         }
 
     /**
