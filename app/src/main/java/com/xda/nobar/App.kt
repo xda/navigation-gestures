@@ -411,9 +411,11 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 else {
                     uiHandler.handleRot()
                 }
-                Utils.forceNavBlack(this)
-                if (Utils.checkTouchWiz(this) && !prefManager.useImmersiveWhenNavHidden) {
-                    Utils.forceTouchWizNavEnabled(this)
+
+                forceNavBlack()
+
+                if (isTouchWiz && !prefManager.useImmersiveWhenNavHidden) {
+                    touchWizNavEnabled = true
                 }
 
                 handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(true) } }
@@ -435,10 +437,10 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
 
             IWindowManager.setOverscan(0, 0, 0, 0)
-            Utils.clearBlackNav(this)
+            clearBlackNav()
 
-            if (Utils.checkTouchWiz(this)) {
-                Utils.undoForceTouchWizNavEnabled(this)
+            if (isTouchWiz) {
+                touchWizNavEnabled = false
             }
 
             navHidden = false
@@ -464,7 +466,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
     }
 
     fun getAdjustedNavBarHeight() =
-            Utils.getNavBarHeight(this) - if (prefManager.useFullOverscan) 0 else 1
+            navBarHeight - if (prefManager.useFullOverscan) 0 else 1
 
     fun addBarInternal(isRefresh: Boolean = true) {
         handler.post {
@@ -545,7 +547,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                         Intent.ACTION_SCREEN_ON,
                         Intent.ACTION_BOOT_COMPLETED,
                         Intent.ACTION_LOCKED_BOOT_COMPLETED -> {
-                            if (Utils.isOnKeyguard(this@App)) {
+                            if (isOnKeyguard) {
                                 if (prefManager.shouldntKeepOverscanOnLock) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             } else {
                                 disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
@@ -725,7 +727,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             }
 
             logicHandler.post {
-                if (Utils.checkTouchWiz(this@App)) {
+                if (isTouchWiz) {
                     try {
                         val SemCocktailBarManager = Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
 
@@ -823,7 +825,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 Settings.Global.getUriFor("navigationbar_current_color"),
                 Settings.Global.getUriFor("navigationbar_use_theme_default") -> {
                     if (isNavBarHidden()
-                            && IntroActivity.hasWss(this@App)) Utils.forceNavBlack(this@App)
+                            && IntroActivity.hasWss(this@App)) forceNavBlack()
                 }
 
                 Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) -> {

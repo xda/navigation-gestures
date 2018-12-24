@@ -14,7 +14,7 @@ import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.util.AppInfo
 import com.xda.nobar.util.AppInfoSorterCallback
-import com.xda.nobar.util.Utils
+import com.xda.nobar.util.toBitmapDrawable
 
 /**
  * For use by BaseAppSelectActivity
@@ -55,7 +55,7 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
             view.context.resources
         }
         icon.background = try {
-            Utils.getBitmapDrawable(remoteResources.getDrawable(app.icon), holder.view.context.resources)
+            holder.view.context.resources.toBitmapDrawable(remoteResources.getDrawable(app.icon))
                     ?: view.context.resources.getDrawable(R.drawable.blank)
         } catch (e: Resources.NotFoundException) {
             ContextCompat.getDrawable(view.context, R.drawable.blank)

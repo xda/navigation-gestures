@@ -36,7 +36,7 @@ class IntroActivity : IntroActivity() {
 
         fun needsToRun(context: Context): Boolean {
             val overlaysGranted = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) Settings.canDrawOverlays(context) else true
-            val accessibilityGranted = Utils.isAccessibilityEnabled(context)
+            val accessibilityGranted = context.isAccessibilityEnabled
 
             return !overlaysGranted || !accessibilityGranted || PrefManager.getInstance(context).firstRun
         }
@@ -112,7 +112,7 @@ class IntroActivity : IntroActivity() {
                     Toast.makeText(this, resources.getText(R.string.accessibility_msg), Toast.LENGTH_LONG).show()
                 }
             }
-    ) { Utils.isAccessibilityEnabled(this) }
+    ) { isAccessibilityEnabled }
 
     //Write Secure Settings slide: prompt the user to grant this permission; used for hiding the navbar
     private val wssSlide = DynamicForwardFragmentSlide(FragmentSlide.Builder()
@@ -235,7 +235,7 @@ class IntroActivity : IntroActivity() {
                 addSlide(overlaySlide)
             }
 
-            if (!Utils.isAccessibilityEnabled(this)) {
+            if (!isAccessibilityEnabled) {
                 addSlide(accessibilitySlide)
             }
 
@@ -244,7 +244,7 @@ class IntroActivity : IntroActivity() {
             }
 
             if (prefManager.firstRun && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                if (Utils.checkTouchWiz(this) && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1)
+                if (isTouchWiz && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1)
                     addSlide(touchwizMSlide)
 
                 if (checkEMUI())

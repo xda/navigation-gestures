@@ -16,11 +16,10 @@ import android.widget.ScrollView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.preference.Preference
-import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnItemChosenListener
 import com.xda.nobar.util.ActionHolder
-import com.xda.nobar.util.Utils
+import com.xda.nobar.util.dpAsPx
 import com.xda.nobar.views.ItemView
 
 /**
@@ -194,11 +193,11 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     fun onCreateDialogView(): View {
         val topContainer = LinearLayout(context)
         topContainer.orientation = LinearLayout.VERTICAL
-        topContainer.setPaddingRelative(0, Utils.dpAsPx(context, 8), 0, 0)
+        topContainer.setPaddingRelative(0, context.dpAsPx(8), 0, 0)
 
         val topView = View(context)
         val bottomView = View(context)
-        val viewParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpAsPx(context, 1f))
+        val viewParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, context.dpAsPx(1))
         topView.layoutParams = viewParams
         bottomView.layoutParams = viewParams
 
@@ -252,11 +251,11 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
 
             gravity = Gravity.CENTER_VERTICAL
 
-            height = Utils.dpAsPx(context, 48)
+            height = context.dpAsPx(48)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
 
             setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
-            setPaddingRelative(Utils.dpAsPx(context, 16), 0, 0, 0)
+            setPaddingRelative(context.dpAsPx(16), 0, 0, 0)
         }
     }
 

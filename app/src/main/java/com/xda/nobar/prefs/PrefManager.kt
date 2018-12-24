@@ -5,8 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.preference.PreferenceManager
 import com.xda.nobar.R
-import com.xda.nobar.util.ActionHolder
-import com.xda.nobar.util.Utils
+import com.xda.nobar.util.*
 import java.util.*
 import kotlin.collections.HashSet
 import kotlin.collections.set
@@ -188,17 +187,17 @@ class PrefManager private constructor(private val context: Context) {
      * @return the color, as a ColorInt
      */
     val pillBGColor: Int
-        get() = getInt(PILL_BG, Utils.getDefaultPillBGColor(context))
+        get() = getInt(PILL_BG, context.defaultPillBGColor)
     /**
      * Get the user-defined or default pill border color
      * @return the color, as a ColorInt
      */
     val pillFGColor: Int
-        get() = getInt(PILL_FG, Utils.getDefaultPillFGColor(context))
+        get() = getInt(PILL_FG, context.defaultPillFGColor)
     val pillCornerRadiusDp: Int
         get() = getInt(PILL_CORNER_RADIUS, context.resources.getInteger(R.integer.default_corner_radius_dp))
     val pillCornerRadiusPx: Int
-        get() = Utils.dpAsPx(context, pillCornerRadiusDp)
+        get() = context.dpAsPx(pillCornerRadiusDp)
     val animationDurationMs: Int
         get() = getInt(ANIM_DURATION, context.resources.getInteger(R.integer.default_anim_duration))
     val xThresholdDp: Int
@@ -206,9 +205,9 @@ class PrefManager private constructor(private val context: Context) {
     val yThresholdDp: Int
         get() = getInt(Y_THRESHOLD, context.resources.getInteger(R.integer.default_y_threshold_dp))
     val xThresholdPx: Int
-        get() = Utils.dpAsPx(context, xThresholdDp)
+        get() = context.dpAsPx(xThresholdDp)
     val yThresholdPx: Int
-        get() = Utils.dpAsPx(context, yThresholdDp)
+        get() = context.dpAsPx(yThresholdDp)
     val autoHideTime: Int
         get() = getInt(AUTO_HIDE_PILL_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
     val hideInFullscreenTime: Int
@@ -222,14 +221,14 @@ class PrefManager private constructor(private val context: Context) {
             return if (usePixelsY)
                 getInt(CUSTOM_Y, defaultY)
             else
-                (percent * Utils.getRealScreenSize(context).y).toInt()
+                (percent * context.realScreenSize.y).toInt()
         }
     val homeYPercent: Int
         get() = (getInt(CUSTOM_Y_PERCENT, defaultYPercent) * 0.05f).toInt()
     val homeX: Int
         get() {
             val percent = (homeXPercent / 100f)
-            val screenWidthHalf = Utils.getRealScreenSize(context).x / 2f - customWidth / 2f
+            val screenWidthHalf = context.realScreenSize.x / 2f - customWidth / 2f
 
             return if (usePixelsX)
                 getInt(CUSTOM_X, 0)
@@ -241,7 +240,7 @@ class PrefManager private constructor(private val context: Context) {
     val customWidth: Int
         get() {
             val percent = (customWidthPercent / 100f)
-            val screenWidth = Utils.getRealScreenSize(context).x
+            val screenWidth = context.realScreenSize.x
 
             return if (usePixelsW)
                 getInt(CUSTOM_WIDTH, context.resources.getDimensionPixelSize(R.dimen.pill_width_default))
@@ -264,14 +263,14 @@ class PrefManager private constructor(private val context: Context) {
             return if (usePixelsH)
                 getInt(CUSTOM_HEIGHT, context.resources.getDimensionPixelSize(R.dimen.pill_height_default))
             else
-                (percent * Utils.getRealScreenSize(context).y).toInt()
+                (percent * context.realScreenSize.y).toInt()
         }
     val customHeightPercent: Int
         get() = (getInt(CUSTOM_HEIGHT_PERCENT, context.resources.getInteger(R.integer.default_pill_height_percent)) / 10f).toInt()
     val defaultYPercent: Int
-        get() = ((Utils.getNavBarHeight(context) / 2f - customHeight / 2f) / Utils.getRealScreenSize(context).y * 2000f).toInt()
+        get() = ((context.navBarHeight / 2f - customHeight / 2f) / context.realScreenSize.y * 2000f).toInt()
     val defaultY: Int
-        get() = ((Utils.getNavBarHeight(context) / 2f - customHeight / 2f)).toInt()
+        get() = ((context.navBarHeight / 2f - customHeight / 2f)).toInt()
     val holdTime: Int
         get() = getInt(HOLD_TIME, context.resources.getInteger(R.integer.default_hold_time))
     val vibrationDuration: Int

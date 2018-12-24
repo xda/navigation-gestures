@@ -14,7 +14,8 @@ import com.xda.nobar.interfaces.ReceiverCallback
 import com.xda.nobar.receivers.ActionReceiver
 import com.xda.nobar.receivers.StartupReceiver
 import com.xda.nobar.util.ActionHolder
-import com.xda.nobar.util.Utils
+import com.xda.nobar.util.runNougatAction
+import com.xda.nobar.util.runPremiumAction
 
 
 class Actions : AccessibilityService(), ReceiverCallback {
@@ -100,9 +101,6 @@ class Actions : AccessibilityService(), ReceiverCallback {
     override fun onDestroy() {
         receiver.destroy(this)
     }
-
-    private fun runNougatAction(action: () -> Unit) = Utils.runNougatAction(this, action)
-    private fun runPremiumAction(action: () -> Unit) = Utils.runPremiumAction(this, validPremium, action)
 
     /**
      * Special BroadcastReceiver to handle actions sent to this service by {@link com.xda.nobar.views.BarView}

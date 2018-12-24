@@ -9,10 +9,7 @@ import android.view.Surface
 import android.view.View
 import android.view.WindowManager
 import com.xda.nobar.activities.IntroActivity
-import com.xda.nobar.util.POLICY_CONTROL
-import com.xda.nobar.util.Utils
-import com.xda.nobar.util.Utils.checkTouchWiz
-import com.xda.nobar.util.app
+import com.xda.nobar.util.*
 import kotlin.math.absoluteValue
 
 @Suppress("DEPRECATION")
@@ -65,7 +62,7 @@ class ImmersiveHelperView(context: Context) : View(context) {
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 
-            if (checkTouchWiz(context)) Utils.forceTouchWizNavNotEnabled(context)
+            if (context.isTouchWiz) context.touchWizNavEnabled = false
         }
     }
 
@@ -75,7 +72,7 @@ class ImmersiveHelperView(context: Context) : View(context) {
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv() and
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
 
-            if (checkTouchWiz(context)) Utils.forceTouchWizNavEnabled(context)
+            if (context.isTouchWiz) context.touchWizNavEnabled = true
         }
     }
 
@@ -112,8 +109,8 @@ class ImmersiveHelperView(context: Context) : View(context) {
 
     private fun getProperScreenHeightForRotation(): Int {
         val rotation = context.app.wm.defaultDisplay.rotation
-        val screenHeight = Utils.getRealScreenSize(context).y
-        val navHeight = Utils.getNavBarHeight(context)
+        val screenHeight = context.realScreenSize.y
+        val navHeight = context.navBarHeight
 
         return when (rotation) {
             Surface.ROTATION_90,
@@ -121,7 +118,7 @@ class ImmersiveHelperView(context: Context) : View(context) {
                 screenHeight + if (context.app.prefManager.useTabletMode) if (context.app.navHidden) navHeight else 0 else 0
             }
             else -> {
-                screenHeight + if (context.app.navHidden) Utils.getNavBarHeight(context) else 0
+                screenHeight + if (context.app.navHidden) navHeight else 0
             }
         }
     }

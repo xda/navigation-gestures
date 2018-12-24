@@ -15,9 +15,9 @@ import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.prefs.PrefManager
-import com.xda.nobar.util.Utils
 import com.xda.nobar.util.allowHiddenMethods
 import com.xda.nobar.util.app
+import com.xda.nobar.util.isAccessibilityEnabled
 import com.xda.nobar.views.BarView
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         activate.isChecked = prefManager.isActive
         activate.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { button, isChecked ->
             if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this))
-                    && Utils.isAccessibilityEnabled(this)) {
+                    && isAccessibilityEnabled) {
                 if (isChecked) app.addBar() else app.removeBar()
                 app.setGestureState(isChecked)
             } else {

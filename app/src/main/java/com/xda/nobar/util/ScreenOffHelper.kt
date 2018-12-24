@@ -94,7 +94,7 @@ class ScreenOffHelper(private val app: App) {
     @Suppress("DEPRECATION")
     class LockView(context: Context) : LinearLayout(context) {
         private val params = WindowManager.LayoutParams().apply {
-            val size = Utils.getRealScreenSize(context)
+            val size = context.realScreenSize
             width = size.x
             height = size.y
             flags = WindowManager.LayoutParams.FLAG_FULLSCREEN or

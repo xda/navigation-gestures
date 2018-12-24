@@ -17,9 +17,7 @@ import com.xda.nobar.R
 import com.xda.nobar.prefs.CustomPreferenceCategory
 import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.prefs.SectionableListPreference
-import com.xda.nobar.util.ActionHolder
-import com.xda.nobar.util.Utils
-import com.xda.nobar.util.beginAnimatedTransaction
+import com.xda.nobar.util.*
 import tk.zwander.seekbarpreference.SeekBarPreference
 import java.util.*
 
@@ -298,7 +296,7 @@ class SettingsActivity : AppCompatActivity() {
                 putBoolean("auto_hide_pill", false)
 
                 putInt("custom_width_percent", 1000)
-                putInt("custom_height", Utils.minPillHeightPx(activity!!) + Utils.dpAsPx(activity!!, 7f))
+                putInt("custom_height", activity!!.minPillHeightPx + activity!!.dpAsPx(7))
                 putInt("custom_y_percent", 0)
                 putInt("pill_corner_radius", 0)
                 putInt("pill_bg", Color.TRANSPARENT)
@@ -463,8 +461,8 @@ class SettingsActivity : AppCompatActivity() {
             val pillColor = findPreference(PrefManager.PILL_BG) as ColorPreferenceCompat
             val pillBorderColor = findPreference(PrefManager.PILL_FG) as ColorPreferenceCompat
 
-            pillColor.setDefaultValue(Utils.getDefaultPillBGColor(activity!!))
-            pillBorderColor.setDefaultValue(Utils.getDefaultPillFGColor(activity!!))
+            pillColor.setDefaultValue(activity!!.defaultPillBGColor)
+            pillBorderColor.setDefaultValue(activity!!.defaultPillFGColor)
 
             pillColor.saveValue(prefManager.pillBGColor)
             pillBorderColor.saveValue(prefManager.pillFGColor)
@@ -494,20 +492,20 @@ class SettingsActivity : AppCompatActivity() {
             val xPixels = screen.findPreference("custom_x") as SeekBarPreference
             val yPixels = screen.findPreference("custom_y") as SeekBarPreference
 
-            widthPixels.minValue = Utils.minPillWidthPx(activity!!)
-            heightPixels.minValue = Utils.minPillHeightPx(activity!!)
-            xPixels.minValue = Utils.minPillXPx(activity!!)
-            yPixels.minValue = Utils.minPillYPx(activity!!)
+            heightPixels.minValue = activity!!.minPillHeightPx
+            widthPixels.minValue = activity!!.minPillWidthPx
+            xPixels.minValue = activity!!.minPillXPx
+            yPixels.minValue = activity!!.minPillYPx
 
-            widthPixels.maxValue = Utils.maxPillWidthPx(activity!!)
-            heightPixels.maxValue = Utils.maxPillHeightPx(activity!!)
-            yPixels.maxValue = Utils.maxPillYPx(activity!!)
-            xPixels.maxValue = Utils.maxPillXPx(activity!!)
+            heightPixels.maxValue = activity!!.maxPillHeightPx
+            widthPixels.maxValue = activity!!.maxPillWidthPx
+            yPixels.maxValue = activity!!.maxPillYPx
+            xPixels.maxValue = activity!!.maxPillXPx
 
             yPercent.setDefaultValue(prefManager.defaultYPercent)
             yPixels.setDefaultValue(prefManager.defaultY)
-            widthPixels.setDefaultValue(Utils.defPillWidthPx(activity!!))
-            heightPixels.setDefaultValue(Utils.defPillHeightPx(activity!!))
+            widthPixels.setDefaultValue(activity!!.defPillWidthPx)
+            heightPixels.setDefaultValue(activity!!.defPillHeightPx)
 
             val listener = Preference.OnPreferenceChangeListener { pref, newValue ->
                 val new = newValue.toString().toBoolean()
