@@ -16,9 +16,6 @@ object IWindowManager {
     private var iWindowManager: Any? = null
 
     init {
-//        if (canRunCommands()) {
-//
-//        }
         iWindowManagerClass = Class.forName("android.view.IWindowManager")
         val stubClass = Class.forName("android.view.IWindowManager\$Stub")
         val serviceManagerClass = Class.forName("android.os.ServiceManager")

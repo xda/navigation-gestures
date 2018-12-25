@@ -32,6 +32,35 @@ import com.xda.nobar.views.BarView
 val Context.app: App
     get() = applicationContext as App
 
+var Context.blackNav: Boolean
+    get() = throw IllegalAccessException("This field has no read value")
+    set(value) {
+        val prefManager = PrefManager.getInstance(this)
+
+        if (!IntroActivity.needsToRun(this)
+                && prefManager.shouldUseOverscanMethod
+                && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (value) {
+                val color = Color.BLACK
+                val nColor = Settings.Global.getString(contentResolver, PrefManager.NAVIGATIONBAR_COLOR)
+                val nCurrentColor = Settings.Global.getString(contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR)
+                val nUTD = Settings.Global.getString(contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT)
+
+                if (nColor != color.toString()) prefManager.navigationBarColor = nColor
+                if (nCurrentColor != color.toString()) prefManager.navigationBarCurrentColor = nCurrentColor
+                if (nUTD != "0") prefManager.navigationBarUseThemeDefault = nUTD
+
+                Settings.Global.putInt(contentResolver, PrefManager.NAVIGATIONBAR_COLOR, color)
+                Settings.Global.putInt(contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR, color)
+                Settings.Global.putInt(contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT, 0)
+            } else {
+                Settings.Global.putString(contentResolver, PrefManager.NAVIGATIONBAR_COLOR, prefManager.navigationBarColor)
+                Settings.Global.putString(contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR, prefManager.navigationBarCurrentColor)
+                Settings.Global.putString(contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT, prefManager.navigationBarUseThemeDefault)
+            }
+        }
+    }
+
 val Context.defaultPillBGColor: Int
     get() = ContextCompat.getColor(this, R.color.pill_color)
 
@@ -149,47 +178,9 @@ var Context.touchWizNavEnabled: Boolean
         Settings.Global.putString(contentResolver, "navigationbar_hide_bar_enabled", if (value) "1" else null)
     }
 
+
 fun Context.allowHiddenMethods() {
     Settings.Global.putInt(contentResolver, "hidden_api_policy_p_apps", 1)
-}
-
-fun FragmentManager.beginAnimatedTransaction() =
-        beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
-                        android.R.anim.fade_in, android.R.anim.fade_out)
-
-/**
- * Clear the navigation bar color
- * Used when showing the software nav
- */
-fun Context.clearBlackNav() {
-    val prefManager = PrefManager.getInstance(this)
-    if (!IntroActivity.needsToRun(this) && prefManager.shouldUseOverscanMethod && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-        Settings.Global.putString(contentResolver, PrefManager.NAVIGATIONBAR_COLOR, prefManager.navigationBarColor)
-        Settings.Global.putString(contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR, prefManager.navigationBarCurrentColor)
-        Settings.Global.putString(contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT, prefManager.navigationBarUseThemeDefault)
-    }
-}
-
-/**
- * Force the navigation bar black, to mask the white line people are complaining so much about
- */
-fun Context.forceNavBlack() {
-    val prefManager = PrefManager.getInstance(this)
-    val color = Color.argb(0xff, 0x00, 0x00, 0x00)
-    val nColor = Settings.Global.getString(contentResolver, PrefManager.NAVIGATIONBAR_COLOR)
-    val nCurrentColor = Settings.Global.getString(contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR)
-    val nUTD = Settings.Global.getString(contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT)
-
-    if (nColor != color.toString()) prefManager.navigationBarColor = nColor
-    if (nCurrentColor != color.toString()) prefManager.navigationBarCurrentColor = nCurrentColor
-    if (nUTD != "0") prefManager.navigationBarUseThemeDefault = nUTD
-
-    if (!IntroActivity.needsToRun(this) && prefManager.shouldUseOverscanMethod && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-        Settings.Global.putInt(contentResolver, PrefManager.NAVIGATIONBAR_COLOR, color)
-        Settings.Global.putInt(contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR, color)
-        Settings.Global.putInt(contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT, 0)
-    }
 }
 
 /**
@@ -274,26 +265,33 @@ fun Context.runSystemSettingsAction(action: () -> Unit): Boolean {
     return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(this)
 }
 
-/* Resources */
+/* FragmentManager */
+
+fun FragmentManager.beginAnimatedTransaction() =
+        beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                        android.R.anim.fade_in, android.R.anim.fade_out)
+
+/* Drawable */
 
 /**
  * Stolen from HalogenOS
  * https://github.com/halogenOS/android_frameworks_base/blob/XOS-8.1/packages/SystemUI/src/com/android/systemui/tuner/LockscreenFragment.java
  */
-fun Resources.toBitmapDrawable(drawable: Drawable): BitmapDrawable? {
-    if (drawable is BitmapDrawable) return drawable
+fun Drawable.toBitmapDrawable(resources: Resources): BitmapDrawable? {
+    if (this is BitmapDrawable) return this
 
     val canvas = Canvas()
     canvas.drawFilter = PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG, Paint.FILTER_BITMAP_FLAG)
 
     return try {
-        val bmp = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val bmp = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
         canvas.setBitmap(bmp)
 
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
+        setBounds(0, 0, canvas.width, canvas.height)
+        draw(canvas)
 
-        BitmapDrawable(this, bmp)
+        BitmapDrawable(resources, bmp)
     } catch (e: IllegalArgumentException) {
         null
     }

@@ -412,7 +412,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     uiHandler.handleRot()
                 }
 
-                forceNavBlack()
+                blackNav = true
 
                 if (isTouchWiz && !prefManager.useImmersiveWhenNavHidden) {
                     touchWizNavEnabled = true
@@ -437,7 +437,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
 
             IWindowManager.setOverscan(0, 0, 0, 0)
-            clearBlackNav()
+            blackNav = false
 
             if (isTouchWiz) {
                 touchWizNavEnabled = false
@@ -825,7 +825,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 Settings.Global.getUriFor("navigationbar_current_color"),
                 Settings.Global.getUriFor("navigationbar_use_theme_default") -> {
                     if (isNavBarHidden()
-                            && IntroActivity.hasWss(this@App)) forceNavBlack()
+                            && IntroActivity.hasWss(this@App)) blackNav = true
                 }
 
                 Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) -> {

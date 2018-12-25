@@ -55,7 +55,7 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
             view.context.resources
         }
         icon.background = try {
-            holder.view.context.resources.toBitmapDrawable(remoteResources.getDrawable(app.icon))
+            remoteResources.getDrawable(app.icon).toBitmapDrawable(view.context.resources)
                     ?: view.context.resources.getDrawable(R.drawable.blank)
         } catch (e: Resources.NotFoundException) {
             ContextCompat.getDrawable(view.context, R.drawable.blank)
