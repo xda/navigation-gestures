@@ -1,11 +1,10 @@
-package com.xda.nobar.prefs
+package com.xda.nobar.util
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.preference.PreferenceManager
 import com.xda.nobar.R
-import com.xda.nobar.util.*
 import java.util.*
 import kotlin.collections.HashSet
 import kotlin.collections.set

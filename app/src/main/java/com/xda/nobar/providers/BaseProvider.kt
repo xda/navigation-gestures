@@ -14,7 +14,7 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
 import com.xda.nobar.R
-import com.xda.nobar.activities.SettingsActivity
+import com.xda.nobar.activities.ui.SettingsActivity
 import com.xda.nobar.util.app
 import dalvik.system.DexFile
 import java.io.IOException

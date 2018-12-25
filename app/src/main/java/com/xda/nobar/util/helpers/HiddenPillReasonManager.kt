@@ -1,4 +1,4 @@
-package com.xda.nobar.util
+package com.xda.nobar.util.helpers
 
 import java.util.*
 

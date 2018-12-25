@@ -1,4 +1,4 @@
-package com.xda.nobar.util
+package com.xda.nobar.adapters.info
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList

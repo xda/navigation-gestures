@@ -1,4 +1,4 @@
-package com.xda.nobar.activities
+package com.xda.nobar.activities.selectors
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.lzyzsd.circleprogress.ArcProgress
 import com.xda.nobar.R
 import com.xda.nobar.adapters.BaseSelectAdapter
-import com.xda.nobar.prefs.PrefManager
+import com.xda.nobar.util.PrefManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import java.util.*

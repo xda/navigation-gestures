@@ -8,7 +8,7 @@ import android.view.Gravity
 import android.view.Surface
 import android.view.View
 import android.view.WindowManager
-import com.xda.nobar.activities.IntroActivity
+import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.util.*
 import kotlin.math.absoluteValue
 

@@ -1,4 +1,4 @@
-package com.xda.nobar.util
+package com.xda.nobar.adapters.info
 
 import android.os.Parcel
 import android.os.Parcelable

@@ -2,6 +2,7 @@ package com.xda.nobar.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.util.app
 
 /**

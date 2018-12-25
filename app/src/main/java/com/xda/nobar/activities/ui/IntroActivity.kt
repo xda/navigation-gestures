@@ -1,4 +1,4 @@
-package com.xda.nobar.activities
+package com.xda.nobar.activities.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -22,7 +22,8 @@ import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
 import com.topjohnwu.superuser.Shell
 import com.xda.nobar.R
-import com.xda.nobar.prefs.PrefManager
+import com.xda.nobar.activities.MainActivity
+import com.xda.nobar.util.PrefManager
 import com.xda.nobar.util.*
 import kotlinx.android.synthetic.main.slide_welcome.*
 
@@ -47,7 +48,7 @@ class IntroActivity : IntroActivity() {
 
         fun start(context: Context, extras: Bundle = Bundle()) {
             Exception().printStackTrace()
-            val launch = Intent(context, com.xda.nobar.activities.IntroActivity::class.java)
+            val launch = Intent(context, com.xda.nobar.activities.ui.IntroActivity::class.java)
             launch.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK)
             launch.putExtras(extras)
 

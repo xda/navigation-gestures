@@ -1,4 +1,4 @@
-package com.xda.nobar.activities
+package com.xda.nobar.activities.selectors
 
 import android.Manifest
 import android.app.Activity
@@ -8,7 +8,7 @@ import android.os.Bundle
 import com.xda.nobar.R
 import com.xda.nobar.adapters.AppSelectAdapter
 import com.xda.nobar.interfaces.OnAppSelectedListener
-import com.xda.nobar.util.AppInfo
+import com.xda.nobar.adapters.info.AppInfo
 import java.util.*
 import kotlin.collections.ArrayList
 

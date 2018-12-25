@@ -34,6 +34,6 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.xda.nobar"
-            android:targetClass="com.xda.nobar.activities.SettingsActivity" />
+            android:targetClass="com.xda.nobar.activities.ui.SettingsActivity" />
     </shortcut>
 </shortcuts>

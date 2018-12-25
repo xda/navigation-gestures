@@ -1,4 +1,4 @@
-package com.xda.nobar.activities
+package com.xda.nobar.activities.ui
 
 import android.content.*
 import android.net.Uri
@@ -11,7 +11,7 @@ import androidx.preference.SwitchPreference
 import com.crashlytics.android.Crashlytics
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.R
-import com.xda.nobar.prefs.PrefManager
+import com.xda.nobar.util.PrefManager
 import com.xda.nobar.util.beginAnimatedTransaction
 
 /**

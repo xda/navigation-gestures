@@ -1,4 +1,4 @@
-package com.xda.nobar.util
+package com.xda.nobar.util.helpers
 
 /**
  * Base class for managing the reasons for why certain features are currently disabled

@@ -11,10 +11,13 @@ import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.xda.nobar.R
+import com.xda.nobar.activities.ui.HelpAboutActivity
+import com.xda.nobar.activities.ui.IntroActivity
+import com.xda.nobar.activities.ui.SettingsActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
-import com.xda.nobar.prefs.PrefManager
+import com.xda.nobar.util.PrefManager
 import com.xda.nobar.util.allowHiddenMethods
 import com.xda.nobar.util.app
 import com.xda.nobar.util.isAccessibilityEnabled

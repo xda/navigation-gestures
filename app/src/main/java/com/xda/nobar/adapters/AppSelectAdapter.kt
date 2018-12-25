@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.SortedList
 import com.rey.material.widget.CheckedImageView
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnAppSelectedListener
-import com.xda.nobar.util.AppInfo
-import com.xda.nobar.util.AppInfoSorterCallback
+import com.xda.nobar.adapters.info.AppInfo
+import com.xda.nobar.adapters.info.AppInfoSorterCallback
 import com.xda.nobar.util.toBitmapDrawable
 
 /**

@@ -1,4 +1,4 @@
-package com.xda.nobar.activities
+package com.xda.nobar.activities.ui
 
 import android.os.Bundle
 import android.view.MenuItem

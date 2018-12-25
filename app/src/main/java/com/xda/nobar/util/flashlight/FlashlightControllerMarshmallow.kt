@@ -1,4 +1,4 @@
-package com.xda.nobar.util
+package com.xda.nobar.util.flashlight
 
 import android.annotation.TargetApi
 import android.content.Context

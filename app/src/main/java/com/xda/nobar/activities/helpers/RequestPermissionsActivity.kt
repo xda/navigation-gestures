@@ -1,4 +1,4 @@
-package com.xda.nobar.activities
+package com.xda.nobar.activities.helpers
 
 import android.content.ComponentName
 import android.content.Context

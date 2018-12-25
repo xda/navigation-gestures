@@ -1,4 +1,4 @@
-package com.xda.nobar.activities
+package com.xda.nobar.activities.selectors
 
 import android.app.Activity
 import android.content.ComponentName
@@ -8,7 +8,7 @@ import android.provider.MediaStore
 import com.xda.nobar.R
 import com.xda.nobar.adapters.IntentSelectorAdapter
 import com.xda.nobar.interfaces.OnIntentSelectedListener
-import com.xda.nobar.util.IntentInfo
+import com.xda.nobar.adapters.info.IntentInfo
 
 class IntentSelectorActivity : BaseAppSelectActivity<Int, IntentInfo>() {
     companion object {

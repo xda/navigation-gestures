@@ -1,4 +1,4 @@
-package com.xda.nobar.util
+package com.xda.nobar.util.helpers
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -10,6 +10,7 @@ import android.provider.Settings
 import android.view.WindowManager
 import android.widget.LinearLayout
 import com.xda.nobar.App
+import com.xda.nobar.util.realScreenSize
 
 /**
  * Use this class to lock the screen

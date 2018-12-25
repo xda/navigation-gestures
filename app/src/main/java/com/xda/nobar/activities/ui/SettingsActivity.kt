@@ -1,4 +1,4 @@
-package com.xda.nobar.activities
+package com.xda.nobar.activities.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -14,8 +14,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
 import com.jaredrummler.android.colorpicker.ColorPreferenceCompat
 import com.xda.nobar.R
+import com.xda.nobar.activities.selectors.AppLaunchSelectActivity
+import com.xda.nobar.activities.selectors.BaseAppSelectActivity
+import com.xda.nobar.activities.selectors.BlacklistSelectorActivity
+import com.xda.nobar.activities.selectors.IntentSelectorActivity
 import com.xda.nobar.prefs.CustomPreferenceCategory
-import com.xda.nobar.prefs.PrefManager
+import com.xda.nobar.util.PrefManager
 import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.util.*
 import tk.zwander.seekbarpreference.SeekBarPreference

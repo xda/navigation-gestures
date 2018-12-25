@@ -21,10 +21,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.xda.nobar.App
 import com.xda.nobar.R
-import com.xda.nobar.activities.DialogActivity
-import com.xda.nobar.activities.IntroActivity
+import com.xda.nobar.activities.helpers.DialogActivity
+import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.interfaces.OnDialogChoiceMadeListener
-import com.xda.nobar.prefs.PrefManager
 import com.xda.nobar.views.BarView
 
 /* Context */

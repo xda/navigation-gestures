@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.SortedList
 import com.rey.material.widget.CheckedImageView
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnIntentSelectedListener
-import com.xda.nobar.util.IntentInfo
-import com.xda.nobar.util.IntentInfoSorterCallback
+import com.xda.nobar.adapters.info.IntentInfo
+import com.xda.nobar.adapters.info.IntentInfoSorterCallback
 
 class IntentSelectorAdapter(private val callback: OnIntentSelectedListener, private val context: Context) : BaseSelectAdapter<IntentInfo>() {
     override val apps = SortedList<IntentInfo>(IntentInfo::class.java, IntentInfoSorterCallback(this, context))

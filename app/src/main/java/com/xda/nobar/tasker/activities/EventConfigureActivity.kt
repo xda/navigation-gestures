@@ -4,13 +4,13 @@ import android.os.Bundle
 import com.joaomgcd.taskerpluginlibrary.config.TaskerPluginConfig
 import com.joaomgcd.taskerpluginlibrary.config.TaskerPluginConfigHelper
 import com.joaomgcd.taskerpluginlibrary.input.TaskerInput
-import com.xda.nobar.activities.BaseAppSelectActivity
+import com.xda.nobar.activities.selectors.BaseAppSelectActivity
 import com.xda.nobar.adapters.AppSelectAdapter
 import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.tasker.inputs.EventInput
 import com.xda.nobar.tasker.runners.EventRunner
 import com.xda.nobar.util.ActionHolder
-import com.xda.nobar.util.AppInfo
+import com.xda.nobar.adapters.info.AppInfo
 
 class EventConfigureActivity : BaseAppSelectActivity<String, AppInfo>(), TaskerPluginConfig<EventInput> {
     override val context by lazy { this }
