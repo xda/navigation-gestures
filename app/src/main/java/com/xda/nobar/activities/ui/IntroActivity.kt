@@ -41,10 +41,6 @@ class IntroActivity : IntroActivity() {
             return !overlaysGranted || !accessibilityGranted || PrefManager.getInstance(context).firstRun
         }
 
-        fun hasWss(context: Context): Boolean {
-            return context.checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED
-        }
-
         fun start(context: Context, extras: Bundle = Bundle()) {
             val launch = Intent(context, com.xda.nobar.activities.ui.IntroActivity::class.java)
             launch.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -140,7 +136,7 @@ class IntroActivity : IntroActivity() {
                     nonRootDialog()
                 }
             }) {
-        prefManager.confirmedSkipWss || (if (hasWss(this)) {
+        prefManager.confirmedSkipWss || (if (hasWss) {
             allowHiddenMethods()
             true
         } else false)
@@ -214,7 +210,7 @@ class IntroActivity : IntroActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!needsToRun(this) && hasWss(this)) {
+        if (!needsToRun(this) && hasWss) {
             didntNeedToRun = true
             finish()
             return

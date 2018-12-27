@@ -6,6 +6,7 @@ import android.app.KeyguardManager
 import android.app.UiModeManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.*
@@ -77,6 +78,11 @@ val Context.defPillWidthDp: Int
 
 val Context.defPillWidthPx: Int
     get() = dpAsPx(defPillWidthDp)
+
+val Context.hasWss: Boolean
+    get() =
+        checkCallingOrSelfPermission(android.Manifest.permission.WRITE_SECURE_SETTINGS) ==
+                PackageManager.PERMISSION_GRANTED
 
 /**
  * Check if the accessibility service is currently enabled
@@ -174,7 +180,7 @@ val Context.realScreenSize: Point
 var Context.touchWizNavEnabled: Boolean
     get() = Settings.Global.getInt(contentResolver, "navigationbar_hide_bar_enabled", 0) == 0
     set(value) {
-        if (IntroActivity.hasWss(this))
+        if (hasWss)
             Settings.Global.putString(contentResolver, "navigationbar_hide_bar_enabled", if (value) "1" else null)
     }
 
@@ -238,7 +244,7 @@ fun Context.runPremiumAction(action: () -> Unit): Boolean {
 }
 
 fun Context.runSecureSettingsAction(action: () -> Boolean): Boolean {
-    return if (IntroActivity.hasWss(this)) {
+    return if (hasWss) {
         action.invoke()
     } else {
         IntroActivity.startForWss(this)

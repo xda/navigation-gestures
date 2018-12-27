@@ -17,10 +17,7 @@ import com.xda.nobar.activities.ui.SettingsActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
-import com.xda.nobar.util.PrefManager
-import com.xda.nobar.util.allowHiddenMethods
-import com.xda.nobar.util.app
-import com.xda.nobar.util.isAccessibilityEnabled
+import com.xda.nobar.util.*
 import com.xda.nobar.views.BarView
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -44,7 +41,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
 
     private val navListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
         app.toggleNavState(!isChecked)
-        if (!IntroActivity.hasWss(this)) onNavStateChange(!isChecked)
+        if (!hasWss) onNavStateChange(!isChecked)
     }
 
     private var currentPremReason: String? = null
@@ -56,7 +53,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             IntroActivity.start(this)
         }
 
-        if (IntroActivity.hasWss(this))
+        if (hasWss)
             allowHiddenMethods()
 
         setContentView(R.layout.activity_main)

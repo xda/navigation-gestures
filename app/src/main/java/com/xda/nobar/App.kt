@@ -125,7 +125,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 Crashlytics.logException(it)
             }
 
-            if (IntroActivity.hasWss(this)) allowHiddenMethods()
+            if (hasWss) allowHiddenMethods()
 
             if (IntroActivity.needsToRun(this)) {
                 IntroActivity.start(this)
@@ -403,7 +403,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
         logicHandler.post {
             if (prefManager.shouldUseOverscanMethod
                     && disabledNavReasonManager.isEmpty()
-                    && IntroActivity.hasWss(this)) {
+                    && hasWss) {
                 addImmersiveHelper()
 
                 if (!prefManager.useRot270Fix
@@ -432,7 +432,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
      * Show the navbar
      */
     fun showNav(callListeners: Boolean = true, removeImmersive: Boolean = true) {
-        if (IntroActivity.hasWss(this)) {
+        if (hasWss) {
             if (removeImmersive && prefManager.useImmersiveWhenNavHidden)
                 immersiveHelperView.exitNavImmersive()
 
@@ -826,8 +826,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 Settings.Global.getUriFor("navigationbar_color"),
                 Settings.Global.getUriFor("navigationbar_current_color"),
                 Settings.Global.getUriFor("navigationbar_use_theme_default") -> {
-                    if (isNavBarHidden()
-                            && IntroActivity.hasWss(this@App)) blackNav = true
+                    if (isNavBarHidden() && hasWss) blackNav = true
                 }
 
                 Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) -> {
