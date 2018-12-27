@@ -70,8 +70,10 @@ fun SearchManager.launchAssist() {
 }
 
 fun SearchManager.launchLegacyAssist() {
-    this::class.java.getMethod("launchLegacyAssist", String::class.java, Int::class.java, Bundle::class.java)
-            .invoke(this, null, -2, null)
+    try {
+        this::class.java.getMethod("launchLegacyAssist", String::class.java, Int::class.java, Bundle::class.java)
+                .invoke(this, null, -2, null)
+    } catch (e: Exception) {}
 }
 
 fun InputManager.injectInputEvent(event: InputEvent, mode: Int) {

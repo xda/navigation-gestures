@@ -34,6 +34,7 @@ import com.xda.nobar.R
 import com.xda.nobar.activities.helpers.RequestPermissionsActivity
 import com.xda.nobar.activities.helpers.ScreenshotActivity
 import com.xda.nobar.activities.selectors.IntentSelectorActivity
+import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.receivers.ActionReceiver
 import com.xda.nobar.services.Actions
 import com.xda.nobar.tasker.activities.EventConfigureActivity
@@ -124,7 +125,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         set(value) {
             field = value
             orientationEventListener.disable()
-            handler.postDelayed({
+            handler?.postDelayed({
                 val currentAcc = Settings.System.getInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
                 if (currentAcc == 0) {
                     val rotation = when (currentDegree) {
@@ -1198,8 +1199,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     }
                     actionHolder.premTypeBatterySaver -> {
                         context.runPremiumAction {
-                            val current = Settings.Global.getInt(context.contentResolver, "low_power", 0)
-                            Settings.Global.putInt(context.contentResolver, "low_power", if (current == 0) 1 else 0)
+                            if (!IntroActivity.hasWss(context)) {
+                                IntroActivity.start(context, Bundle().apply { putBoolean(IntroActivity.EXTRA_WSS_ONLY, true) })
+                            } else {
+                                val current = Settings.Global.getInt(context.contentResolver, "low_power", 0)
+                                Settings.Global.putInt(context.contentResolver, "low_power", if (current == 0) 1 else 0)
+                            }
                         }
                     }
                     actionHolder.premTypeScreenTimeout -> {

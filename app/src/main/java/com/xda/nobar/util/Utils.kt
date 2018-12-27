@@ -174,7 +174,8 @@ val Context.realScreenSize: Point
 var Context.touchWizNavEnabled: Boolean
     get() = Settings.Global.getInt(contentResolver, "navigationbar_hide_bar_enabled", 0) == 0
     set(value) {
-        Settings.Global.putString(contentResolver, "navigationbar_hide_bar_enabled", if (value) "1" else null)
+        if (IntroActivity.hasWss(this))
+            Settings.Global.putString(contentResolver, "navigationbar_hide_bar_enabled", if (value) "1" else null)
     }
 
 
