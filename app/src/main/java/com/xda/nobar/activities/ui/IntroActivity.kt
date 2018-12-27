@@ -23,7 +23,6 @@ import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
 import com.topjohnwu.superuser.Shell
 import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
-import com.xda.nobar.util.PrefManager
 import com.xda.nobar.util.*
 import kotlinx.android.synthetic.main.slide_welcome.*
 
@@ -115,7 +114,7 @@ class IntroActivity : IntroActivity() {
             }
     ) { isAccessibilityEnabled }
 
-    //Write Secure Settings slide: prompt the user to grant this permission; used for hiding the navbar
+    //Write Secure Settings slide: prompt the user to grant this permission; used for hiding the navbar and some other stuff
     private val wssSlide = DynamicForwardFragmentSlide(FragmentSlide.Builder()
             .background(R.color.slide_4)
             .backgroundDark(R.color.slide_4_dark)
