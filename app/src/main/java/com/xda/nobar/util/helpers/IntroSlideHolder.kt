@@ -135,7 +135,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                 .backgroundDark(R.color.slide_6_dark)
                 .title(R.string.touchwiz)
                 .description(R.string.touchwiz_desc)
-                .buttonCtaLabel(R.string.disable)
+                .buttonCtaLabel(R.string.tell_me_how)
                 .buttonCtaClickListener {
                     //TODO: Instructions
                 }

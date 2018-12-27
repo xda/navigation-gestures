@@ -116,6 +116,7 @@
     <string name="show_nav_with_keyboard">Show NavBar with Keyboard</string>
     <string name="audio_feedback">Audio Feedback</string>
     <string name="battery_optimizations">Battery Optimizations</string>
+    <string name="tell_me_how">Tell Me How</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
