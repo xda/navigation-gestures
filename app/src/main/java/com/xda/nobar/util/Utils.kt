@@ -2,6 +2,7 @@
 
 package com.xda.nobar.util
 
+import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.app.UiModeManager
 import android.content.Context
@@ -163,6 +164,9 @@ val Context.navBarHeight: Int
         } else resources.getDimensionPixelSize(resources.getIdentifier("navigation_bar_height", "dimen", "android"))
     }
 
+val Context.prefManager: PrefManager
+    get() = PrefManager.getInstance(this)
+
 /**
  * Get the device's screen size
  * @return device's resolution (in px) as a Point
@@ -200,6 +204,15 @@ fun Context.dpAsPx(dpVal: Float) =
 
 fun Context.dpAsPx(dpVal: Int) =
         dpAsPx(dpVal.toFloat())
+
+@SuppressLint("BatteryLife")
+fun Context.requestBatteryExemption() {
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+        val batt = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:$packageName"))
+        batt.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(batt)
+    }
+}
 
 /**
  * Run action if device is on Nougat or later

@@ -1,12 +1,8 @@
 package com.xda.nobar.activities.ui
 
-import android.Manifest
-import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -14,16 +10,14 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import com.heinrichreimersoftware.materialintro.app.IntroActivity
 import com.heinrichreimersoftware.materialintro.app.SlideFragment
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
-import com.topjohnwu.superuser.Shell
 import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
 import com.xda.nobar.util.*
+import com.xda.nobar.util.helpers.IntroSlideHolder
 import kotlinx.android.synthetic.main.slide_welcome.*
 
 /**
@@ -55,157 +49,8 @@ class IntroActivity : IntroActivity() {
     }
 
     private var didntNeedToRun = false
-    private val prefManager by lazy { PrefManager.getInstance(this) }
 
-    private val welcomeSlide = FragmentSlide.Builder()
-            .background(R.color.slide_1)
-            .backgroundDark(R.color.slide_1_dark)
-            .fragment(WelcomeFragment())
-            .build()
-
-    private val missingPermsSlide = SimpleSlide.Builder()
-            .background(R.color.slide_1)
-            .backgroundDark(R.color.slide_1_dark)
-            .title(R.string.missing_perms)
-            .description(R.string.missing_perms_desc)
-            .build()
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private val overlaySlide = DynamicForwardSlide(SimpleSlide.Builder()
-            .title(R.string.draw_over_apps)
-            .description(R.string.draw_over_apps_desc)
-            .image(R.drawable.nav_overlay)
-            .background(R.color.slide_2)
-            .backgroundDark(R.color.slide_2_dark)
-            .buttonCtaLabel(R.string.grant)
-            .buttonCtaClickListener {
-                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-                intent.data = Uri.parse("package:$packageName")
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-                try {
-                    startActivity(intent)
-                } catch (e: ActivityNotFoundException) {
-                    intent.data = null
-                    startActivity(intent)
-                }
-            }
-    ) { Settings.canDrawOverlays(this) }
-
-    private val accessibilitySlide = DynamicForwardSlide(SimpleSlide.Builder()
-            .title(R.string.accessibility)
-            .description(R.string.accessibility_desc)
-            .image(R.drawable.nav_acc)
-            .background(R.color.slide_3)
-            .backgroundDark(R.color.slide_3_dark)
-            .buttonCtaLabel(R.string.grant)
-            .buttonCtaClickListener {
-                val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-                try {
-                    startActivity(intent)
-                } catch (e: ActivityNotFoundException) {
-                    intent.action = Settings.ACTION_SETTINGS
-                    startActivity(intent)
-                    Toast.makeText(this, resources.getText(R.string.accessibility_msg), Toast.LENGTH_LONG).show()
-                }
-            }
-    ) { isAccessibilityEnabled }
-
-    //Write Secure Settings slide: prompt the user to grant this permission; used for hiding the navbar and some other stuff
-    private val wssSlide = DynamicForwardFragmentSlide(FragmentSlide.Builder()
-            .background(R.color.slide_4)
-            .backgroundDark(R.color.slide_4_dark)
-            .fragment(WriteSecureFragment())
-            .buttonCtaLabel(R.string.grant)
-            .buttonCtaClickListener {
-                if (Shell.rootAccess()) {
-                    app.rootWrapper.onCreate()
-                    AlertDialog.Builder(this)
-                            .setTitle(R.string.root_found)
-                            .setMessage(R.string.root_found_desc)
-                            .setPositiveButton(R.string.use_root) { _, _ ->
-                                app.rootWrapper.actions?.grantPermission(Manifest.permission.WRITE_SECURE_SETTINGS)
-                            }
-                            .setNegativeButton(R.string.non_root) { _, _ ->
-                                nonRootDialog()
-                            }
-                            .show()
-                } else {
-                    nonRootDialog()
-                }
-            }) {
-        prefManager.confirmedSkipWss || (if (hasWss) {
-            allowHiddenMethods()
-            true
-        } else false)
-    }
-
-    private val emuiSlide = SimpleSlide.Builder()
-            .background(R.color.slide_4)
-            .backgroundDark(R.color.slide_4_dark)
-            .title(R.string.emui)
-            .description(R.string.emui_desc)
-            .buttonCtaLabel(R.string.show_me_how)
-            .buttonCtaClickListener {
-                val emuiBatt = Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://support.doubletwist.com/hc/en-us/articles/360001504071-How-to-turn-off-battery-optimization-on-Huawei-devices"))
-                emuiBatt.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(emuiBatt)
-            }
-            .build()
-
-    @SuppressLint("BatteryLife")
-    @RequiresApi(Build.VERSION_CODES.M)
-    private val touchwizMSlide = SimpleSlide.Builder()
-            .background(R.color.slide_6)
-            .backgroundDark(R.color.slide_6_dark)
-            .title(R.string.touchwiz)
-            .description(R.string.touchwiz_desc)
-            .buttonCtaLabel(R.string.disable)
-            .buttonCtaClickListener {
-                val batt = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:$packageName"))
-                batt.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(batt)
-            }
-            .build()
-
-    private val qsSlide = SimpleSlide.Builder()
-            .title(R.string.qs_tile)
-            .description(R.string.nougat_qs_reminder)
-            .image(R.drawable.qs)
-            .background(R.color.slide_6)
-            .backgroundDark(R.color.slide_6_dark)
-            .build()
-
-    private val warnSlide = SimpleSlide.Builder()
-            .title(R.string.warning)
-            .description(R.string.warning_desc)
-            .background(R.color.slide_7)
-            .backgroundDark(R.color.slide_7_dark)
-            .build()
-
-    private val whiteBarSlide = SimpleSlide.Builder()
-            .title(R.string.white_bar)
-            .description(R.string.white_bar_desc)
-            .background(R.color.slide_4)
-            .backgroundDark(R.color.slide_4_dark)
-            .build()
-
-    private val compatibilitySlide = SimpleSlide.Builder()
-            .title(R.string.compatibility)
-            .description(R.string.compatibility_desc)
-            .background(R.color.slide_3)
-            .backgroundDark(R.color.slide_3_dark)
-            .build()
-
-    private val allSetSlide = SimpleSlide.Builder()
-            .title(R.string.ready)
-            .description(if (prefManager.firstRun) R.string.ready_first_run_desc else R.string.ready_desc)
-            .background(R.color.slide_5)
-            .backgroundDark(R.color.slide_5_dark)
-            .build()
+    private val slides by lazy { IntroSlideHolder(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -220,46 +65,53 @@ class IntroActivity : IntroActivity() {
         isButtonBackVisible = true
 
         if (intent.hasExtra(EXTRA_WSS_ONLY)) { //The following logic will be used if the user tries to hide the navbar, but didn't grant WSS during the initial setup
-            addSlide(wssSlide)
+            addSlide(slides.wssSlide)
         } else {
             //Only show the intro if the device is able to run the needed commands. Otherwise, show failure screen
             if (prefManager.firstRun) {
-                addSlide(welcomeSlide)
+                addSlide(slides.welcomeSlide)
             } else {
-                addSlide(missingPermsSlide)
+                addSlide(slides.missingPermsSlide)
             }
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1
                     && !Settings.canDrawOverlays(this)) {
-                addSlide(overlaySlide)
+                addSlide(slides.overlaySlide)
             }
 
             if (!isAccessibilityEnabled) {
-                addSlide(accessibilitySlide)
+                addSlide(slides.accessibilitySlide)
             }
 
-            if (checkCallingOrSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
-                addSlide(wssSlide)
+            if (!hasWss) {
+                addSlide(slides.wssSlide)
             }
 
-            if (prefManager.firstRun && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            if (prefManager.firstRun) {
                 if (isTouchWiz && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1)
-                    addSlide(touchwizMSlide)
+                    addSlide(slides.touchWizMSlide)
 
                 if (checkEMUI())
-                    addSlide(emuiSlide)
+                    addSlide(slides.emuiSlide)
 
-                addSlide(qsSlide)
-                addSlide(warnSlide)
-                addSlide(whiteBarSlide)
-                addSlide(compatibilitySlide)
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                    addSlide(slides.qsSlide)
+                }
+
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    addSlide(slides.batterySlide)
+                }
+
+                addSlide(slides.warnSlide)
+                addSlide(slides.whiteBarSlide)
+                addSlide(slides.compatibilitySlide)
             }
 
-            addSlide(allSetSlide)
+            addSlide(slides.allSetSlide)
         }
 
         addOnNavigationBlockedListener { index, _ ->
-            if (index == indexOfSlide(wssSlide)) {
+            if (index == indexOfSlide(slides.wssSlide)) {
                 AlertDialog.Builder(this)
                         .setTitle(R.string.are_you_sure)
                         .setMessage(R.string.skip_wss_message)
@@ -288,23 +140,6 @@ class IntroActivity : IntroActivity() {
 
         prefManager.firstRun = false
         if (!didntNeedToRun) MainActivity.start(this)
-    }
-
-    private fun nonRootDialog() {
-        try {
-            AlertDialog.Builder(this)
-                    .setTitle(R.string.run_command)
-                    .setMessage(R.string.run_command_desc)
-                    .setPositiveButton(R.string.got_it, null)
-                    .setNegativeButton(R.string.need_help) { _, _ ->
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse("https://youtu.be/Yg44Tu6oxnQ")
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
-                    }
-                    .show()
-        } catch (e: Exception) {
-        }
     }
 
     /**
