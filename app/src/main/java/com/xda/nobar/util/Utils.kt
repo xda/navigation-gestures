@@ -38,6 +38,7 @@ var Context.blackNav: Boolean
         val prefManager = PrefManager.getInstance(this)
 
         if (!IntroActivity.needsToRun(this)
+                && hasWss
                 && prefManager.shouldUseOverscanMethod
                 && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             if (value) {
@@ -186,7 +187,7 @@ var Context.touchWizNavEnabled: Boolean
 
 
 fun Context.allowHiddenMethods() {
-    Settings.Global.putInt(contentResolver, "hidden_api_policy_p_apps", 1)
+    if (hasWss) Settings.Global.putInt(contentResolver, "hidden_api_policy_p_apps", 1)
 }
 
 /**

@@ -53,8 +53,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             IntroActivity.start(this)
         }
 
-        if (hasWss)
-            allowHiddenMethods()
+        allowHiddenMethods()
 
         setContentView(R.layout.activity_main)
         setUpActionBar()

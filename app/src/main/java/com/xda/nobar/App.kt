@@ -125,7 +125,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 Crashlytics.logException(it)
             }
 
-            if (hasWss) allowHiddenMethods()
+            allowHiddenMethods()
 
             if (IntroActivity.needsToRun(this)) {
                 IntroActivity.start(this)
