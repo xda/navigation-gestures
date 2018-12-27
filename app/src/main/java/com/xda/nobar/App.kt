@@ -24,12 +24,11 @@ import com.github.anrwatchdog.ANRWatchDog
 import com.topjohnwu.superuser.BusyBox
 import com.topjohnwu.superuser.ContainerApp
 import com.topjohnwu.superuser.Shell
-import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.activities.helpers.RequestPermissionsActivity
+import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
-import com.xda.nobar.util.PrefManager
 import com.xda.nobar.providers.BaseProvider
 import com.xda.nobar.root.RootWrapper
 import com.xda.nobar.services.Actions
@@ -364,15 +363,14 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
     }
 
     fun toggleNavState(hidden: Boolean = prefManager.shouldUseOverscanMethod) {
-        if (IntroActivity.hasWss(this)) {
+        runSecureSettingsAction {
             setNavState(!hidden)
 
             if (hidden) showNav()
             else hideNav()
 
             BaseProvider.sendUpdate(this)
-        } else {
-            IntroActivity.start(this, Bundle().apply { putBoolean(IntroActivity.EXTRA_WSS_ONLY, true) })
+            true
         }
     }
 

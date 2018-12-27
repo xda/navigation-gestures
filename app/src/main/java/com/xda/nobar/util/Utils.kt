@@ -237,6 +237,15 @@ fun Context.runPremiumAction(action: () -> Unit): Boolean {
     return app.isValidPremium
 }
 
+fun Context.runSecureSettingsAction(action: () -> Boolean): Boolean {
+    return if (IntroActivity.hasWss(this)) {
+        action.invoke()
+    } else {
+        IntroActivity.startForWss(this)
+        false
+    }
+}
+
 /**
  * Run an action that requires WRITE_SETTINGS
  * Otherwise show a dialog prompting for permission

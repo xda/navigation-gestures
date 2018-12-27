@@ -46,12 +46,15 @@ class IntroActivity : IntroActivity() {
         }
 
         fun start(context: Context, extras: Bundle = Bundle()) {
-            Exception().printStackTrace()
             val launch = Intent(context, com.xda.nobar.activities.ui.IntroActivity::class.java)
             launch.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK)
             launch.putExtras(extras)
 
             context.startActivity(launch)
+        }
+
+        fun startForWss(context: Context) {
+            start(context, Bundle().apply { putBoolean(EXTRA_WSS_ONLY, true) })
         }
     }
 
