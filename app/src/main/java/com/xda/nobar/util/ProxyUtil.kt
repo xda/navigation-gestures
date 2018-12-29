@@ -81,7 +81,7 @@ fun InputManager.injectInputEvent(event: InputEvent, mode: Int) {
             .invoke(this, event, mode)
 }
 
-fun checkEMUI() = getSystemProperty("ro.build.version.emui") != null
+fun checkEMUI() = !getSystemProperty("ro.build.version.emui").isNullOrEmpty()
 
 val iPackageManager: Any
     @SuppressLint("PrivateApi")

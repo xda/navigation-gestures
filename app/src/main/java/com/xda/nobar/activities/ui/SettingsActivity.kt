@@ -18,7 +18,6 @@ import com.xda.nobar.activities.selectors.AppLaunchSelectActivity
 import com.xda.nobar.activities.selectors.BaseAppSelectActivity
 import com.xda.nobar.activities.selectors.BlacklistSelectorActivity
 import com.xda.nobar.activities.selectors.IntentSelectorActivity
-import com.xda.nobar.prefs.CustomPreferenceCategory
 import com.xda.nobar.prefs.PixelDPSwitch
 import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.util.*
@@ -128,11 +127,9 @@ class SettingsActivity : AppCompatActivity() {
         private val listPrefs = ArrayList<SectionableListPreference>()
         private val actionHolder by lazy { ActionHolder.getInstance(activity!!) }
 
-        private val sectionedScreen by lazy { preferenceManager.inflateFromResource(activity, R.xml.prefs_sectioned, null) }
-        private val sectionedCategory by lazy { sectionedScreen.findPreference("section_gestures") as PreferenceCategory }
-        private val sectionedCategoryHolder by lazy { findPreference("sectioned_pill_cat") as CustomPreferenceCategory }
-        private val swipeUpCategory by lazy { findPreference("swipe_up_cat") as CustomPreferenceCategory }
-        private val swipeUpHoldCategory by lazy { findPreference("swipe_up_hold_cat") as CustomPreferenceCategory }
+        private val sectionedCategory by lazy { findPreference("section_gestures") as PreferenceCategory }
+        private val swipeUp by lazy { findPreference("up") }
+        private val swipeUpHold by lazy { findPreference("up_hold") }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             super.onCreatePreferences(savedInstanceState, rootKey)
@@ -149,15 +146,10 @@ class SettingsActivity : AppCompatActivity() {
             activity?.title = resources.getText(R.string.gestures)
 
             val sectionedPill = findPreference(PrefManager.SECTIONED_PILL) as SwitchPreference
-            if (sectionedPill.isChecked) {
-                sectionedCategoryHolder.addPreference(sectionedCategory)
-                swipeUpCategory.removeAll()
-                swipeUpHoldCategory.removeAll()
-            } else {
-                sectionedCategoryHolder.removePreference(sectionedCategory)
-                swipeUpCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up)))
-                swipeUpHoldCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up_hold)))
-            }
+
+            sectionedCategory.isVisible = sectionedPill.isChecked
+            swipeUp.isVisible = !sectionedPill.isChecked
+            swipeUpHold.isVisible = !sectionedPill.isChecked
 
             refreshListPrefs()
             updateSummaries()
@@ -170,11 +162,13 @@ class SettingsActivity : AppCompatActivity() {
             if (map.keys.contains(key)) updateSummaries()
 
             if (key == PrefManager.SECTIONED_PILL) {
-                if (sharedPreferences.getBoolean(key, false).toString().toBoolean()) {
-                    sectionedCategoryHolder.addPreference(sectionedCategory)
-                    swipeUpCategory.removeAll()
-                    swipeUpHoldCategory.removeAll()
+                val new = sharedPreferences.getBoolean(key, false).toString().toBoolean()
 
+                sectionedCategory.isVisible = new
+                swipeUp.isVisible = !new
+                swipeUpHold.isVisible = !new
+
+                if (new) {
                     refreshListPrefs()
 
                     updateSummaries()
@@ -192,10 +186,6 @@ class SettingsActivity : AppCompatActivity() {
                             .setPositiveButton(android.R.string.yes) { _, _ -> resetSectionedSettings() }
                             .setNegativeButton(R.string.no, null)
                             .show()
-
-                    sectionedCategoryHolder.removePreference(sectionedCategory)
-                    swipeUpCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up)))
-                    swipeUpHoldCategory.addPreference(sectionedScreen.findPreference(resources.getString(R.string.action_up_hold)))
 
                     refreshListPrefs()
                 }
@@ -474,27 +464,20 @@ class SettingsActivity : AppCompatActivity() {
 
         @SuppressLint("RestrictedApi")
         private fun setup() {
-            val screen = preferenceManager.inflateFromResource(activity, R.xml.prefs_appearance_dimens, null)
-
             val pixelsW = findPreference("use_pixels_width") as PixelDPSwitch
             val pixelsH = findPreference("use_pixels_height") as PixelDPSwitch
             val pixelsX = findPreference("use_pixels_x") as PixelDPSwitch
             val pixelsY = findPreference("use_pixels_y") as PixelDPSwitch
 
-            val catW = findPreference("cat_width") as CustomPreferenceCategory
-            val catH = findPreference("cat_height") as CustomPreferenceCategory
-            val catX = findPreference("cat_x") as CustomPreferenceCategory
-            val catY = findPreference("cat_y") as CustomPreferenceCategory
+            val widthPercent = findPreference("custom_width_percent") as SeekBarPreference
+            val heightPercent = findPreference("custom_height_percent") as SeekBarPreference
+            val xPercent = findPreference("custom_x_percent") as SeekBarPreference
+            val yPercent = findPreference("custom_y_percent") as SeekBarPreference
 
-            val widthPercent = screen.findPreference("custom_width_percent") as SeekBarPreference
-            val heightPercent = screen.findPreference("custom_height_percent") as SeekBarPreference
-            val xPercent = screen.findPreference("custom_x_percent") as SeekBarPreference
-            val yPercent = screen.findPreference("custom_y_percent") as SeekBarPreference
-
-            val widthPixels = screen.findPreference("custom_width") as SeekBarPreference
-            val heightPixels = screen.findPreference("custom_height") as SeekBarPreference
-            val xPixels = screen.findPreference("custom_x") as SeekBarPreference
-            val yPixels = screen.findPreference("custom_y") as SeekBarPreference
+            val widthPixels = findPreference("custom_width") as SeekBarPreference
+            val heightPixels = findPreference("custom_height") as SeekBarPreference
+            val xPixels = findPreference("custom_x") as SeekBarPreference
+            val yPixels = findPreference("custom_y") as SeekBarPreference
 
             heightPixels.minValue = activity!!.minPillHeightPx
             widthPixels.minValue = activity!!.minPillWidthPx
@@ -516,23 +499,23 @@ class SettingsActivity : AppCompatActivity() {
 
                 when (pref) {
                     pixelsW -> {
-                        catW.removeAll()
-                        catW.addPreference(if (new) widthPixels else widthPercent)
+                        widthPixels.isVisible = new
+                        widthPercent.isVisible = !new
                     }
 
                     pixelsH -> {
-                        catH.removeAll()
-                        catH.addPreference(if (new) heightPixels else heightPercent)
+                        heightPixels.isVisible = new
+                        heightPercent.isVisible = !new
                     }
 
                     pixelsX -> {
-                        catX.removeAll()
-                        catX.addPreference(if (new) xPixels else xPercent)
+                        xPixels.isVisible = new
+                        xPercent.isVisible = !new
                     }
 
                     pixelsY -> {
-                        catY.removeAll()
-                        catY.addPreference(if (new) yPixels else yPercent)
+                        yPixels.isVisible = new
+                        yPercent.isVisible = !new
                     }
                 }
 
