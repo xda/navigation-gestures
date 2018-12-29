@@ -68,7 +68,6 @@
     <string name="system">System</string>
     <string name="media">Media</string>
     <string name="apps">Apps</string>
-    <string name="loading">Loading…</string>
     <string name="orig_nav_in_immersive">Show Navigation Bar in Fullscreen</string>
     <string name="enable_in_car_mode">Show Pill in Car Mode</string>
     <string name="use_pixels">Use Pixels for %s</string>
