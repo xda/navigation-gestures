@@ -222,8 +222,8 @@ class PrefManager private constructor(private val context: Context) {
             else
                 (percent * context.realScreenSize.y).toInt()
         }
-    val homeYPercent: Int
-        get() = (getInt(CUSTOM_Y_PERCENT, defaultYPercent) * 0.05f).toInt()
+    val homeYPercent: Float
+        get() = getInt(CUSTOM_Y_PERCENT, defaultYPercentUnscaled) * 0.05f
     val homeX: Int
         get() {
             val percent = (homeXPercent / 100f)
@@ -234,8 +234,8 @@ class PrefManager private constructor(private val context: Context) {
             else
                 (percent * screenWidthHalf).toInt()
         }
-    val homeXPercent: Int
-        get() = (getInt(CUSTOM_X_PERCENT, context.resources.getInteger(R.integer.default_pill_x_pos_percent)) / 10f).toInt()
+    val homeXPercent: Float
+        get() = getInt(CUSTOM_X_PERCENT, context.resources.getInteger(R.integer.default_pill_x_pos_percent)) / 10f
     val customWidth: Int
         get() {
             val percent = (customWidthPercent / 100f)
@@ -246,8 +246,8 @@ class PrefManager private constructor(private val context: Context) {
             else
                 (percent * screenWidth).toInt()
         }
-    val customWidthPercent: Int
-        get() = (getInt(CUSTOM_WIDTH_PERCENT, context.resources.getInteger(R.integer.default_pill_width_percent)) / 10f).toInt()
+    val customWidthPercent: Float
+        get() = getInt(CUSTOM_WIDTH_PERCENT, context.resources.getInteger(R.integer.default_pill_width_percent)) / 10f
     val customHeight: Int
         get() {
             var defHeight = customHeightWithoutHitbox
@@ -264,9 +264,9 @@ class PrefManager private constructor(private val context: Context) {
             else
                 (percent * context.realScreenSize.y).toInt()
         }
-    val customHeightPercent: Int
-        get() = (getInt(CUSTOM_HEIGHT_PERCENT, context.resources.getInteger(R.integer.default_pill_height_percent)) / 10f).toInt()
-    val defaultYPercent: Int
+    val customHeightPercent: Float
+        get() = getInt(CUSTOM_HEIGHT_PERCENT, context.resources.getInteger(R.integer.default_pill_height_percent)) / 10f
+    val defaultYPercentUnscaled: Int
         get() = ((context.navBarHeight / 2f - customHeight / 2f) / context.realScreenSize.y * 2000f).toInt()
     val defaultY: Int
         get() = ((context.navBarHeight / 2f - customHeight / 2f)).toInt()

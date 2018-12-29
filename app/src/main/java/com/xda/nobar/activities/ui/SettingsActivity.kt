@@ -489,7 +489,7 @@ class SettingsActivity : AppCompatActivity() {
             xPixels.maxValue = activity!!.maxPillXPx
             yPixels.maxValue = activity!!.maxPillYPx
 
-            yPercent.setDefaultValue(prefManager.defaultYPercent)
+            yPercent.setDefaultValue(prefManager.defaultYPercentUnscaled)
             yPixels.setDefaultValue(prefManager.defaultY)
             widthPixels.setDefaultValue(activity!!.defPillWidthPx)
             heightPixels.setDefaultValue(activity!!.defPillHeightPx)
