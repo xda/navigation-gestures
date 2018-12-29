@@ -142,7 +142,9 @@ val Context.minPillWidthPx: Int
 val Context.minPillXPx: Int
     get() {
         val prefManager = PrefManager.getInstance(this)
-        return -(realScreenSize.x.toFloat() / 2f - prefManager.customWidth.toFloat() / 2f).toInt()
+        val halfScreen = realScreenSize.x / 2f
+        val halfWidth = prefManager.customWidth / 2f
+        return if (halfScreen == halfWidth) -halfScreen.toInt() else -(halfScreen - halfWidth).toInt()
     }
 
 val Context.minPillYDp: Int
