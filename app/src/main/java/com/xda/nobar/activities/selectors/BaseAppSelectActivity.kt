@@ -13,7 +13,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.lzyzsd.circleprogress.ArcProgress
+import com.rey.material.widget.ProgressView
 import com.xda.nobar.R
 import com.xda.nobar.adapters.BaseSelectAdapter
 import com.xda.nobar.util.PrefManager
@@ -39,7 +39,7 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
 
     internal val origAppSet = ArrayList<Info>()
     internal val list by lazy { findViewById<RecyclerView>(R.id.list) }
-    internal val loader by lazy { findViewById<ArcProgress>(R.id.progress) }
+    internal val loader by lazy { findViewById<ProgressView>(R.id.progress) }
 
     internal lateinit var searchItem: MenuItem
 
@@ -155,7 +155,7 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
             }
 
             val index = appList.indexOf(info)
-            val percent = (index.toFloat() / appList.size.toFloat() * 100).toInt()
+            val percent = index.toFloat() / appList.size.toFloat()
 
             runOnUiThread {
                 loader.progress = percent

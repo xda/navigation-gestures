@@ -6,18 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".activities.selectors.AppLaunchSelectActivity">
 
-    <com.github.lzyzsd.circleprogress.ArcProgress
+    <com.rey.material.widget.ProgressView
         android:id="@+id/progress"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        app:arc_bottom_text="@string/loading"
-        app:arc_bottom_text_size="18sp"
-        app:arc_finished_color="@color/colorAccent"
-        app:arc_stroke_width="8dp"
-        app:arc_suffix_text_size="32sp"
-        app:arc_text_color="@color/colorAccent"
-        app:arc_text_size="48sp"
-        app:arc_unfinished_color="@color/color_disabled"
+        app:pv_progressMode="determinate"
+        app:pv_circular="true"
+        app:pv_progress="0.5"
+        app:pv_secondaryProgress="1"
+        app:pv_progressStyle="@style/Material.Drawable.CircularProgress.Determinate.Colored"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

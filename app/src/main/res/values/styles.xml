@@ -40,4 +40,12 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
+    <style name="Material.Drawable.CircularProgress.Determinate.Colored"
+        parent="Material.Drawable.CircularProgress.Determinate">
+        <item name="cpd_strokeColor">@color/colorAccent</item>
+        <item name="cpd_strokeSecondaryColor">@color/color_disabled</item>
+        <item name="cpd_strokeSize">8dp</item>
+        <item name="cpd_maxSweepAngle">0</item>
+    </style>
+
 </resources>
