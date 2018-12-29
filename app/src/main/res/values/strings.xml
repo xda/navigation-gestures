@@ -210,13 +210,15 @@
 
     <!--Libraries-->
     <string name="material_intro">Material Intro (Fork)</string>
-    <string name="slider_pref">MaterialSeekBarPreference (Fork)</string>
+    <string name="slider_pref">SeekBarPreference</string>
     <string name="color_picker">Color Picker (Fork)</string>
-    <string name="circle_progress">Circle Progress</string>
-    <string name="rx_java">RxJava/RxAndroid</string>
     <string name="tasker_plugin">Tasker Plugin Library</string>
     <string name="edge_sdk">Galaxy Edge SDK</string>
     <string name="anr_watchdog">ANR-WatchDog</string>
+    <string name="gson">Gson</string>
+    <string name="material">Material (Fork)</string>
+    <string name="libsu">libsu</string>
+    <string name="librootjava">libRootJava</string>
     
     <!--Intent Names-->
     <string name="google_music_search">Google Music Search</string>
