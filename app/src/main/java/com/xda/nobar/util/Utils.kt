@@ -175,11 +175,8 @@ val Context.realScreenSize: Point
     get() {
         val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val display = windowManager.defaultDisplay
-        val size = Point()
 
-        display.getRealSize(size)
-
-        return size
+        return Point().apply { display.getRealSize(this) }
     }
 
 var Context.touchWizNavEnabled: Boolean

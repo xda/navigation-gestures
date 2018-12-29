@@ -19,7 +19,7 @@ import com.xda.nobar.activities.selectors.BaseAppSelectActivity
 import com.xda.nobar.activities.selectors.BlacklistSelectorActivity
 import com.xda.nobar.activities.selectors.IntentSelectorActivity
 import com.xda.nobar.prefs.CustomPreferenceCategory
-import com.xda.nobar.util.PrefManager
+import com.xda.nobar.prefs.PixelDPSwitch
 import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.util.*
 import tk.zwander.seekbarpreference.SeekBarPreference
@@ -290,7 +290,7 @@ class SettingsActivity : AppCompatActivity() {
 
         private fun setSectionedSettings() {
             preferenceManager.sharedPreferences.edit().apply {
-                putBoolean("use_pixels_width", false)
+                putBoolean("use_pixels_wUnwanted commercidth", false)
                 putBoolean("use_pixels_height", true)
                 putBoolean("use_pixels_y", false)
                 putBoolean("larger_hitbox", false)
@@ -476,10 +476,10 @@ class SettingsActivity : AppCompatActivity() {
         private fun setup() {
             val screen = preferenceManager.inflateFromResource(activity, R.xml.prefs_appearance_dimens, null)
 
-            val pixelsW = findPreference("use_pixels_width") as SwitchPreference
-            val pixelsH = findPreference("use_pixels_height") as SwitchPreference
-            val pixelsX = findPreference("use_pixels_x") as SwitchPreference
-            val pixelsY = findPreference("use_pixels_y") as SwitchPreference
+            val pixelsW = findPreference("use_pixels_width") as PixelDPSwitch
+            val pixelsH = findPreference("use_pixels_height") as PixelDPSwitch
+            val pixelsX = findPreference("use_pixels_x") as PixelDPSwitch
+            val pixelsY = findPreference("use_pixels_y") as PixelDPSwitch
 
             val catW = findPreference("cat_width") as CustomPreferenceCategory
             val catH = findPreference("cat_height") as CustomPreferenceCategory
@@ -503,8 +503,8 @@ class SettingsActivity : AppCompatActivity() {
 
             heightPixels.maxValue = activity!!.maxPillHeightPx
             widthPixels.maxValue = activity!!.maxPillWidthPx
-            yPixels.maxValue = activity!!.maxPillYPx
             xPixels.maxValue = activity!!.maxPillXPx
+            yPixels.maxValue = activity!!.maxPillYPx
 
             yPercent.setDefaultValue(prefManager.defaultYPercent)
             yPixels.setDefaultValue(prefManager.defaultY)

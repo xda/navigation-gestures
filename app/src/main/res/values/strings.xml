@@ -63,6 +63,7 @@
     <string name="are_you_sure">Are you sure?</string>
     <string name="color_prefs">Colors</string>
     <string name="dimension_prefs">Dimensions</string>
+    <string name="dimension">Dimension</string>
     <string name="navigation">Navigation</string>
     <string name="system">System</string>
     <string name="media">Media</string>
@@ -70,7 +71,7 @@
     <string name="loading">Loading…</string>
     <string name="orig_nav_in_immersive">Show Navigation Bar in Fullscreen</string>
     <string name="enable_in_car_mode">Show Pill in Car Mode</string>
-    <string name="use_pixels">Use Pixels for Dimension</string>
+    <string name="use_pixels">Use Pixels for %s</string>
     <string name="sectioned_pill">Split Pill</string>
     <string name="toggle_gestures">Toggle Gestures</string>
     <string name="toggle_nav">Toggle NavBar</string>
@@ -139,7 +140,7 @@
     <string name="larger_hitbox_desc">Enable this to make the pill easier to swipe.</string>
     <string name="hide_nav_summary">Only use this if your device has a software navigation bar.</string>
     <string name="orig_nav_in_immersive_desc">When enabled, the original navigation bar will be accessible with a swipe in fullscreen apps.</string>
-    <string name="use_pixels_desc">Set dimension using pixel count rather than percentages.</string>
+    <string name="use_pixels_desc">Set %s using pixel count rather than percentages.</string>
     <string name="sectioned_pill_desc">Divide the pill into three sections, each with their own set of actions.</string>
     <string name="enable_in_car_mode_desc">When enabled, Navigation Gestures will not disable in Car Mode. Don\'t enable this on TouchWiz devices if you have a software navigation bar.</string>
     <string name="grant_write_settings_desc">Tap OK to allow Navigation Gestures to write to system settings.</string>
