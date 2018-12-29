@@ -292,24 +292,16 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
         }
     }
 
-    fun addImmersiveHelper(shouldRemoveFirst: Boolean = true) {
+    fun addImmersiveHelper() {
         handler.post {
-            try {
-                if (shouldRemoveFirst) {
-                    immersiveHelperView.shouldReAddOnDetach = true
-                    wm.removeView(immersiveHelperView)
-                } else addImmersiveHelperUnconditionally()
-            } catch (e: Exception) {
-                addImmersiveHelperUnconditionally()
-            }
+            if (!helperAdded) addImmersiveHelperInternal()
         }
     }
 
-    private fun addImmersiveHelperUnconditionally() {
+    private fun addImmersiveHelperInternal() {
         try {
             wm.addView(immersiveHelperView, immersiveHelperView.params)
-        } catch (e: Exception) {
-        }
+        } catch (e: Exception) {}
     }
 
     /**
@@ -341,13 +333,11 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
         }
     }
 
-    fun removeImmersiveHelper(forRefresh: Boolean = false) {
+    fun removeImmersiveHelper() {
         handler.post {
             try {
-                immersiveHelperView.shouldReAddOnDetach = forRefresh
                 wm.removeView(immersiveHelperView)
-            } catch (e: Exception) {
-            }
+            } catch (e: Exception) {}
         }
     }
 
@@ -764,7 +754,9 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     }
                 }
 
-                removeImmersiveHelper(true)
+                handler.post {
+                    immersiveHelperView.requestLayout()
+                }
 
                 if (isPillShown()) {
                     try {

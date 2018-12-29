@@ -25,7 +25,6 @@ class ImmersiveHelperView(context: Context) : View(context) {
         gravity = Gravity.LEFT or Gravity.BOTTOM
     }
 
-    var shouldReAddOnDetach = false
     var immersiveListener: ((isImmersive: Boolean) -> Unit)? = null
 
     init {
@@ -49,10 +48,7 @@ class ImmersiveHelperView(context: Context) : View(context) {
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
-        if (shouldReAddOnDetach) {
-            context.app.addImmersiveHelper(false)
-            shouldReAddOnDetach = false
-        } else context.app.helperAdded = false
+        context.app.helperAdded = false
     }
 
     fun enterNavImmersive() {
