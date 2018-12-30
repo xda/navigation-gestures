@@ -219,7 +219,7 @@
     <string name="material">Material (Fork)</string>
     <string name="libsu">libsu</string>
     <string name="librootjava">libRootJava</string>
-    
+
     <!--Intent Names-->
     <string name="google_music_search">Google Music Search</string>
     <string name="google_weather">Google Weather Results</string>
@@ -239,7 +239,7 @@
 
     <!--Buttons-->
     <string name="no">No</string>
-    
+
     <!--Split Pill Recommendations-->
     <string name="rec_set_transparent">\u2022 Pill becomes fully transparent</string>
     <string name="rec_set_y">\u2022 Pill moves to the bottom of the screen</string>

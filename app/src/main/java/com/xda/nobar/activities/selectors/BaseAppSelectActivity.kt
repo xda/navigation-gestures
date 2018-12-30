@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rey.material.widget.ProgressView
 import com.xda.nobar.R
 import com.xda.nobar.adapters.BaseSelectAdapter
-import com.xda.nobar.util.PrefManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import java.util.*
@@ -38,6 +37,8 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
     internal val origAppSet = ArrayList<Info>()
     internal val list by lazy { findViewById<RecyclerView>(R.id.list) }
     internal val loader by lazy { findViewById<ProgressView>(R.id.progress) }
+    internal val key: String?
+        get() = intent.getStringExtra(EXTRA_KEY)
 
     internal lateinit var searchItem: MenuItem
 
@@ -173,8 +174,6 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
             }
         }
     }
-
-    internal fun getKey() = intent.getStringExtra(EXTRA_KEY)
 
     internal fun passAppInfo(intent: Intent, info: Info) {
         val bundle = Bundle()

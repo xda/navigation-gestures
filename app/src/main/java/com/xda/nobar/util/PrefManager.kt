@@ -3,8 +3,13 @@ package com.xda.nobar.util
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.net.Uri
 import android.preference.PreferenceManager
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import com.xda.nobar.R
+import com.xda.nobar.adapters.info.ShortcutInfo
+import com.xda.nobar.util.helpers.UriJsonHandler
 import java.util.*
 import kotlin.collections.HashSet
 import kotlin.collections.set
@@ -81,6 +86,7 @@ class PrefManager private constructor(private val context: Context) {
         const val SUFFIX_ACTIVITY = "_activity"
         const val SUFFIX_PACKAGE = "_package"
         const val SUFFIX_DISPLAYNAME = "_displayname"
+        const val SUFFIX_SHORTCUT = "shortcut"
 
         @SuppressLint("StaticFieldLeak")
         private var instance: PrefManager? = null
@@ -305,11 +311,42 @@ class PrefManager private constructor(private val context: Context) {
             else putString(NAVIGATIONBAR_USE_THEME_DEFAULT, value)
         }
 
-    fun getIntentKey(baseKey: String) = getInt(baseKey + SUFFIX_INTENT, 0)
+    fun getIntentKey(baseKey: String?) = getInt(baseKey + SUFFIX_INTENT, 0)
     fun saveIntentKey(baseKey: String?, res: Int) = putInt(baseKey + SUFFIX_INTENT, res)
-    fun getPackage(baseKey: String) = getString("$baseKey$SUFFIX_PACKAGE")
-    fun getActivity(baseKey: String) = getString("$baseKey$SUFFIX_ACTIVITY")
-    fun getDisplayName(baseKey: String) = getString("$baseKey$SUFFIX_DISPLAYNAME")
+    fun getPackage(baseKey: String?): String? = getString("$baseKey$SUFFIX_PACKAGE")
+    fun getActivity(baseKey: String?): String? = getString("$baseKey$SUFFIX_ACTIVITY")
+    fun getDisplayName(baseKey: String?): String? = getString("$baseKey$SUFFIX_DISPLAYNAME")
+    fun getShortcut(baseKey: String?): ShortcutInfo? {
+        return GsonBuilder()
+                .registerTypeAdapter(Uri::class.java, UriJsonHandler())
+                .create()
+                .fromJson<ShortcutInfo>(
+                        getString((baseKey ?: return null) + SUFFIX_SHORTCUT)
+                                ?: return null,
+                        object : TypeToken<ShortcutInfo>() {}.type
+                )
+    }
+
+    fun putPackage(baseKey: String, value: String) =
+            putString(baseKey + SUFFIX_PACKAGE, value)
+
+    fun putActivity(baseKey: String, value: String) =
+            putString(baseKey + SUFFIX_ACTIVITY, value)
+
+    fun putDisplayName(baseKey: String, value: String) =
+            putString(baseKey + SUFFIX_DISPLAYNAME, value)
+
+    fun putShortcut(baseKey: String, shortcutInfo: ShortcutInfo?) =
+            putString(baseKey + SUFFIX_SHORTCUT,
+                    try {
+                        GsonBuilder()
+                                .registerTypeAdapter(Uri::class.java, UriJsonHandler())
+                                .create()
+                                .toJson(shortcutInfo)
+                    } catch (e: Exception) {
+                        null
+                    }
+            )
 
     /**
      * Load the actions corresponding to each gesture
@@ -356,7 +393,8 @@ class PrefManager private constructor(private val context: Context) {
             map[actionHolder.actionUpHoldCenter] = upHoldCenter
             map[actionHolder.actionUpRight] = upRight
             map[actionHolder.actionUpHoldRight] = upHoldRight
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     /**
@@ -412,6 +450,6 @@ class PrefManager private constructor(private val context: Context) {
     fun putBoolean(key: String, value: Boolean) = prefs.edit().putBoolean(key, value).apply()
     fun putFloat(key: String, value: Float) = prefs.edit().putFloat(key, value).apply()
     fun putInt(key: String, value: Int) = prefs.edit().putInt(key, value).apply()
-    fun putString(key: String, value: String) = prefs.edit().putString(key, value).apply()
+    fun putString(key: String, value: String?) = prefs.edit().putString(key, value).apply()
     fun putStringSet(key: String, set: Set<String>) = prefs.edit().putStringSet(key, set).apply()
 }

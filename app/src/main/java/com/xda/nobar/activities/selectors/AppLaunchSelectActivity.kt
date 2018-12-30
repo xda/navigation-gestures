@@ -6,12 +6,11 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.preference.PreferenceManager
 import com.xda.nobar.R
 import com.xda.nobar.adapters.AppSelectAdapter
-import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.adapters.info.AppInfo
+import com.xda.nobar.interfaces.OnAppSelectedListener
+import com.xda.nobar.util.prefManager
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -33,19 +32,17 @@ class AppLaunchSelectActivity : BaseAppSelectActivity<Any, AppInfo>() {
     override val adapter = AppSelectAdapter(true, true, OnAppSelectedListener { info ->
         if (isForActivitySelect()) {
             val intent = Intent(this, ActivityLaunchSelectActivity::class.java)
-            intent.putExtra(CHECKED_ACTIVITY, this.intent.getStringExtra(CHECKED_ACTIVITY))
-            intent.putExtra(EXTRA_KEY, this.intent.getStringExtra(EXTRA_KEY))
+            intent.putExtras(this.intent)
             passAppInfo(intent, info)
             startActivityForResult(intent, ACTIVITY_REQ)
         } else {
-            PreferenceManager.getDefaultSharedPreferences(this@AppLaunchSelectActivity)
-                    .edit()
-                    .putString("${intent.getStringExtra(EXTRA_KEY)}_package", "${info.packageName}/${info.activity}")
-                    .putString("${intent.getStringExtra(EXTRA_KEY)}_displayname", info.displayName)
-                    .apply()
+            prefManager.apply {
+                putPackage(key!!, "${info.packageName}/${info.activity}")
+                putDisplayName(key!!, info.displayName)
+            }
 
             val resultIntent = Intent()
-            resultIntent.putExtra(EXTRA_KEY, intent.getStringExtra(EXTRA_KEY))
+            resultIntent.putExtras(intent)
             resultIntent.putExtra(EXTRA_RESULT_DISPLAY_NAME, info.displayName)
             resultIntent.putExtra(FOR_ACTIVITY_SELECT, false)
             setResult(Activity.RESULT_OK, resultIntent)
@@ -59,15 +56,9 @@ class AppLaunchSelectActivity : BaseAppSelectActivity<Any, AppInfo>() {
         title = resources.getText(if (isForActivitySelect()) R.string.prem_launch_activity_no_format else R.string.prem_launch_app_no_format)
     }
 
-    override fun canRun() = intent != null && intent.hasExtra(EXTRA_KEY)
+    override fun canRun() = intent != null && key != null
 
     override fun showUpAsCheckMark() = false
-
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-
-        if (isForActivitySelect()) title = resources.getText(R.string.prem_launch_activity_no_format)
-    }
 
     override fun loadAppList(): ArrayList<Any> {
         return if (isForActivitySelect()) {
@@ -108,7 +99,7 @@ class AppLaunchSelectActivity : BaseAppSelectActivity<Any, AppInfo>() {
 
     override fun onBackPressed() {
         val resultIntent = Intent()
-        resultIntent.putExtra(EXTRA_KEY, intent.getStringExtra(EXTRA_KEY))
+        resultIntent.putExtras(intent)
         setResult(Activity.RESULT_CANCELED, resultIntent)
         finish()
     }

@@ -112,6 +112,8 @@
         <activity android:name=".activities.selectors.BlacklistSelectorActivity" />
         <activity android:name=".activities.selectors.ActivityLaunchSelectActivity" />
         <activity android:name=".activities.selectors.IntentSelectorActivity" />
+        <activity android:name=".activities.selectors.ShortcutSelectActivity"
+            android:label="@string/prem_launch_shortcut_no_format" />
         <activity
             android:name=".tasker.activities.ToggleGestureActivity"
             android:exported="true"

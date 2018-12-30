@@ -5,27 +5,27 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.preference.PreferenceManager
 import com.xda.nobar.adapters.AppSelectAdapter
 import com.xda.nobar.adapters.info.AppInfo
 import com.xda.nobar.interfaces.OnAppSelectedListener
+import com.xda.nobar.util.prefManager
 
 class ActivityLaunchSelectActivity : BaseAppSelectActivity<ActivityInfo, AppInfo>() {
     override val adapter = AppSelectAdapter(true, true, OnAppSelectedListener { info ->
-        PreferenceManager.getDefaultSharedPreferences(this@ActivityLaunchSelectActivity)
-                .edit()
-                .putString("${intent.getStringExtra(EXTRA_KEY)}_activity", "${info.packageName}/${info.activity}")
-                .putString("${intent.getStringExtra(EXTRA_KEY)}_displayname", "${getPassedAppInfo()?.displayName}/${info.displayName}")
-                .apply()
+        prefManager.apply {
+            putActivity(key!!, "${info.packageName}/${info.activity}")
+            putDisplayName(key!!, "${getPassedAppInfo()?.displayName}/${info.displayName}")
+        }
 
         val resultIntent = Intent()
-        resultIntent.putExtra(EXTRA_KEY, intent.getStringExtra(EXTRA_KEY))
-        resultIntent.putExtra(AppLaunchSelectActivity.EXTRA_RESULT_DISPLAY_NAME, "${getPassedAppInfo()?.displayName}/${info.displayName}")
+        resultIntent.putExtras(intent)
+        resultIntent.putExtra(AppLaunchSelectActivity.EXTRA_RESULT_DISPLAY_NAME,
+                "${getPassedAppInfo()?.displayName}/${info.displayName}")
         setResult(Activity.RESULT_OK, resultIntent)
         finish()
     }, true)
 
-    override fun canRun() = intent.hasExtra(APPINFO)
+    override fun canRun() = intent.hasExtra(APPINFO) && key != null
 
     override fun showUpAsCheckMark() = false
 

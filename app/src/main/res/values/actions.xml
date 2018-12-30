@@ -39,6 +39,8 @@
     <string name="prem_intent_no_format">Send Intent (Premium)</string>
     <string name="prem_toggle_battery_saver">Toggle Battery Saver (Premium)</string>
     <string name="prem_toggle_screen_timeout">Toggle Screen Timeout (Premium)</string>
+    <string name="prem_launch_shortcut_no_format">Launch Shortcut (Premium)</string>
+    <string name="prem_launch_shortcut">Launch Shortcut (Premium) (%s)</string>
 
     <!--Action Values-->
     <string name="type_no_action">-1</string>
@@ -80,6 +82,7 @@
     <string name="prem_type_intent">35</string>
     <string name="prem_type_battery_saver">36</string>
     <string name="prem_type_screen_timeout">37</string>
+    <string name="prem_type_launch_shortcut">38</string>
 
     <!--Main Action Keys-->
     <string name="action_left">left</string>

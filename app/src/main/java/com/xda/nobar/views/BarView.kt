@@ -1113,7 +1113,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }
                     }
                     actionHolder.premTypeLaunchActivity -> context.runPremiumAction {
-                        val activity = context.app.prefManager.getActivity(key) ?: return@runPremiumAction
+                        val activity = context.prefManager.getActivity(key) ?: return@runPremiumAction
 
                         val p = activity.split("/")[0]
                         val c = activity.split("/")[1]
@@ -1124,6 +1124,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                         try {
                             context.startActivity(launch)
+                        } catch (e: Exception) {}
+                    }
+                    actionHolder.premTypeLaunchShortcut -> context.runPremiumAction {
+                        val shortcut = context.prefManager.getShortcut(key) ?: return@runPremiumAction
+                        val intent = shortcut.intent ?: return@runPremiumAction
+
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                        try {
+                            context.startActivity(intent)
                         } catch (e: Exception) {}
                     }
                     actionHolder.premTypeLockScreen -> context.runPremiumAction {

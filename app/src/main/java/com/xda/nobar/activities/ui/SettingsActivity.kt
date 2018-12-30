@@ -1,7 +1,6 @@
 package com.xda.nobar.activities.ui
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
@@ -14,10 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
 import com.jaredrummler.android.colorpicker.ColorPreferenceCompat
 import com.xda.nobar.R
-import com.xda.nobar.activities.selectors.AppLaunchSelectActivity
-import com.xda.nobar.activities.selectors.BaseAppSelectActivity
-import com.xda.nobar.activities.selectors.BlacklistSelectorActivity
-import com.xda.nobar.activities.selectors.IntentSelectorActivity
+import com.xda.nobar.activities.selectors.*
+import com.xda.nobar.adapters.info.ShortcutInfo
 import com.xda.nobar.prefs.PixelDPSwitch
 import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.util.*
@@ -31,6 +28,7 @@ class SettingsActivity : AppCompatActivity() {
     companion object {
         const val REQ_APP = 10
         const val REQ_INTENT = 11
+        const val REQ_SHORTCUT = 12
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -193,49 +191,52 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            if (requestCode == REQ_APP) {
-                val key = data?.getStringExtra(BaseAppSelectActivity.EXTRA_KEY)
-                val appName = data?.getStringExtra(AppLaunchSelectActivity.EXTRA_RESULT_DISPLAY_NAME)
-                val forActivity = data?.getBooleanExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, false) == true
+            when (requestCode) {
+                REQ_APP -> {
+                    val key = data?.getStringExtra(BaseAppSelectActivity.EXTRA_KEY) ?: return
+                    val appName = data.getStringExtra(AppLaunchSelectActivity.EXTRA_RESULT_DISPLAY_NAME)
+                    val forActivity = data.getBooleanExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, false)
 
-                when (resultCode) {
-                    Activity.RESULT_OK -> {
-                        updateAppLaunchSummary(key ?: return, appName ?: return)
-                    }
+                    (findPreference(key) as SectionableListPreference?)?.apply {
+                        val pack = if (forActivity) prefManager.getActivity(key) else prefManager.getPackage(key)
+                        if (pack == null) {
+                            saveValue(actionHolder.typeNoAction.toString())
+                        } else {
+                            saveValueWithoutListener((if (forActivity) actionHolder.premTypeLaunchActivity else actionHolder.premTypeLaunchApp).toString())
 
-                    Activity.RESULT_CANCELED -> {
-                        listPrefs.forEach {
-                            if (it.key == key) {
-                                val pack = if (forActivity) prefManager.getActivity(it.key) else prefManager.getPackage(it.key)
-                                if (pack == null) {
-                                    it.saveValue(actionHolder.typeNoAction.toString())
-                                } else {
-                                    it.saveValueWithoutListener((if (forActivity) actionHolder.premTypeLaunchActivity else actionHolder.premTypeLaunchApp).toString())
-                                }
+                            if (forActivity) {
+                                updateActivityLaunchSummary(key, appName ?: return)
+                            } else {
+                                updateAppLaunchSummary(key, appName ?: return)
                             }
                         }
                     }
                 }
-            } else if (requestCode == REQ_INTENT) {
-                val key = data?.getStringExtra(BaseAppSelectActivity.EXTRA_KEY)
+                REQ_INTENT -> {
+                    val key = data?.getStringExtra(BaseAppSelectActivity.EXTRA_KEY) ?: return
 
-                when (resultCode) {
-                    Activity.RESULT_OK -> {
-                        val res = prefManager.getIntentKey(key ?: return)
-                        updateIntentSummary(key, res)
+                    (findPreference(key) as SectionableListPreference?)?.apply {
+                        val res = prefManager.getIntentKey(key)
+
+                        if (res < 1) {
+                            saveValue(actionHolder.typeNoAction.toString())
+                        } else {
+                            saveValueWithoutListener(actionHolder.premTypeIntent.toString())
+                            updateIntentSummary(key!!, res)
+                        }
                     }
+                }
+                REQ_SHORTCUT -> {
+                    val key = data?.getStringExtra(BaseAppSelectActivity.EXTRA_KEY) ?: return
 
-                    Activity.RESULT_CANCELED -> {
-                        listPrefs.forEach {
-                            if (key != null && key == it.key) {
-                                val res = prefManager.getIntentKey(key)
+                    (findPreference(key) as SectionableListPreference?)?.apply {
+                        val shortcut = prefManager.getShortcut(key)
 
-                                if (res < 1) {
-                                    it.saveValue(actionHolder.typeNoAction.toString())
-                                } else {
-                                    it.saveValueWithoutListener(actionHolder.premTypeIntent.toString())
-                                }
-                            }
+                        if (shortcut == null) {
+                            saveValue(actionHolder.typeNoAction.toString())
+                        } else {
+                            saveValueWithoutListener(actionHolder.premTypeLaunchShortcut.toString())
+                            updateShortcutSummary(key!!, shortcut)
                         }
                     }
                 }
@@ -271,6 +272,12 @@ class SettingsActivity : AppCompatActivity() {
                         intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
 
                         startActivityForResult(intent, REQ_INTENT)
+                    } else if (newValue == actionHolder.premTypeLaunchShortcut.toString()) {
+                        val intent = Intent(activity, ShortcutSelectActivity::class.java)
+
+                        intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
+
+                        startActivityForResult(intent, REQ_SHORTCUT)
                     }
 
                     true
@@ -348,21 +355,45 @@ class SettingsActivity : AppCompatActivity() {
             updateSummaries()
         }
 
+        private fun updateActivityLaunchSummary(key: String, activityName: String) {
+            findPreference(key)?.apply {
+                summary = String.format(
+                        Locale.getDefault(),
+                        resources.getString(R.string.prem_launch_activity),
+                        activityName
+                )
+            }
+        }
+
         private fun updateAppLaunchSummary(key: String, appName: String) {
-            listPrefs.forEach {
-                if (key == it.key) {
-                    it.summary = String.format(Locale.getDefault(), it.summary.toString(), appName)
-                    return
-                }
+            findPreference(key)?.apply {
+                summary = String.format(
+                        Locale.getDefault(),
+                        resources.getString(R.string.prem_launch_app),
+                        appName
+                )
             }
         }
 
         private fun updateIntentSummary(key: String, res: Int) {
-            listPrefs.forEach {
-                if (key == it.key) {
-                    it.summary = String.format(Locale.getDefault(), it.summary.toString(), resources.getString(res))
-                    return
-                }
+            if (res < 1) return
+
+            findPreference(key)?.apply {
+                summary = String.format(
+                        Locale.getDefault(),
+                        resources.getString(R.string.prem_intent),
+                        resources.getString(res)
+                )
+            }
+        }
+
+        private fun updateShortcutSummary(key: String, shortcut: ShortcutInfo) {
+            findPreference(key)?.apply {
+                summary = String.format(
+                        Locale.getDefault(),
+                        resources.getString(R.string.prem_launch_shortcut),
+                        shortcut.label
+                )
             }
         }
 
@@ -373,17 +404,19 @@ class SettingsActivity : AppCompatActivity() {
                 if (it.getSavedValue() == actionHolder.premTypeLaunchApp.toString() || it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()) {
                     val forActivity = it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()
                     val packageInfo = (if (forActivity) prefManager.getActivity(it.key) else prefManager.getPackage(it.key)) ?: return@forEach
+                    val disp = prefManager.getDisplayName(it.key) ?: packageInfo.split("/")[0]
 
-                    it.summary = String.format(Locale.getDefault(),
-                            resources.getString(if (forActivity) R.string.prem_launch_activity else R.string.prem_launch_app),
-                            prefManager.getDisplayName(it.key) ?: packageInfo.split("/")[0])
+                    if (forActivity) {
+                        updateActivityLaunchSummary(it.key, disp)
+                    } else {
+                        updateAppLaunchSummary(it.key, disp)
+                    }
                 } else if (it.getSavedValue() == actionHolder.premTypeIntent.toString()) {
                     val res = prefManager.getIntentKey(it.key)
-                    it.summary = String.format(Locale.getDefault(),
-                            resources.getString(R.string.prem_intent),
-                            try {
-                                if (res > 0) resources.getString(res) else ""
-                            } catch (e: Exception) { "" })
+                    updateIntentSummary(it.key, res)
+                } else if (it.getSavedValue() == actionHolder.premTypeLaunchShortcut.toString()) {
+                    val shortcut = prefManager.getShortcut(it.key) ?: return
+                    updateShortcutSummary(it.key, shortcut)
                 }
             }
         }

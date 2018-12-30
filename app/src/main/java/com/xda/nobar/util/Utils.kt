@@ -337,3 +337,22 @@ fun BarView.isAccessibilityAction(action: Int): Boolean {
             actionHolder.premTypePower
     ).contains(action)
 }
+
+/* Drawable */
+
+fun Drawable.toBitmap(): Bitmap? {
+    return when (this) {
+        is BitmapDrawable -> bitmap
+        else -> {
+            (if (intrinsicWidth <= 0 || intrinsicHeight <= 0) {
+                Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+            } else {
+                Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+            })?.apply {
+                val canvas = Canvas(this)
+                setBounds(0, 0, canvas.width, canvas.height)
+                draw(canvas)
+            }
+        }
+    }
+}

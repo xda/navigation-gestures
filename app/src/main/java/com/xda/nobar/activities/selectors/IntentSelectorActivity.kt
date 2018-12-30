@@ -92,15 +92,15 @@ class IntentSelectorActivity : BaseAppSelectActivity<Int, IntentInfo>() {
 
     override val adapter by lazy {
         IntentSelectorAdapter(OnIntentSelectedListener {
-            prefManager.saveIntentKey(getKey(), it.id)
+            prefManager.saveIntentKey(key, it.id)
             val resultIntent = Intent()
-            resultIntent.putExtra(EXTRA_KEY, intent.getStringExtra(EXTRA_KEY))
+            resultIntent.putExtras(intent)
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
         }, this)
     }
 
-    override fun canRun() = intent != null && intent.hasExtra(EXTRA_KEY)
+    override fun canRun() = intent != null && key != null
 
     override fun loadAppList(): ArrayList<Int> {
         return ArrayList(INTENTS.keys)
@@ -109,7 +109,7 @@ class IntentSelectorActivity : BaseAppSelectActivity<Int, IntentInfo>() {
     override fun loadAppInfo(info: Int): IntentInfo? {
         return IntentInfo(
                 info,
-                prefManager.getIntentKey(getKey()) == info
+                prefManager.getIntentKey(key!!) == info
         )
     }
 
