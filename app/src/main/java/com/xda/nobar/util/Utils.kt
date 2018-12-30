@@ -26,9 +26,13 @@ import com.xda.nobar.R
 import com.xda.nobar.activities.helpers.DialogActivity
 import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.interfaces.OnDialogChoiceMadeListener
+import com.xda.nobar.util.helpers.ActionHolder
 import com.xda.nobar.views.BarView
 
 /* Context */
+
+val Context.actionHolder: ActionHolder
+    get() = ActionHolder.getInstance(this)
 
 val Context.app: App
     get() = applicationContext as App
@@ -328,7 +332,6 @@ fun Drawable.toBitmapDrawable(resources: Resources): BitmapDrawable? {
 /* BarView */
 
 fun BarView.isAccessibilityAction(action: Int): Boolean {
-    val actionHolder = ActionHolder.getInstance(context)
     return arrayListOf(
             actionHolder.typeHome,
             actionHolder.typeRecents,

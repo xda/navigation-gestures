@@ -13,7 +13,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.xda.nobar.interfaces.ReceiverCallback
 import com.xda.nobar.receivers.ActionReceiver
 import com.xda.nobar.receivers.StartupReceiver
-import com.xda.nobar.util.ActionHolder
+import com.xda.nobar.util.actionHolder
 import com.xda.nobar.util.runNougatAction
 import com.xda.nobar.util.runPremiumAction
 
@@ -73,7 +73,6 @@ class Actions : AccessibilityService(), ReceiverCallback {
     override fun onActionReceived(intent: Intent?) {
         when(intent?.action) {
             ACTION -> {
-                val actionHolder = ActionHolder.getInstance(this)
                 when (intent.getIntExtra(EXTRA_ACTION, actionHolder.typeNoAction)) {
                     actionHolder.typeHome -> {
                         performGlobalAction(GLOBAL_ACTION_HOME)

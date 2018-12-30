@@ -317,7 +317,7 @@ class PrefManager private constructor(private val context: Context) {
      */
     fun getActionsList(map: HashMap<String, Int>) {
         try {
-            val actionHolder = ActionHolder.getInstance(context)
+            val actionHolder = context.actionHolder
 
             val left = getString(actionHolder.actionLeft, actionHolder.typeBack.toString())!!.toInt()
             val right = getString(actionHolder.actionRight, actionHolder.typeRecents.toString())!!.toInt()

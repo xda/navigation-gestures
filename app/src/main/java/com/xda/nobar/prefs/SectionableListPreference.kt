@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.preference.Preference
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnItemChosenListener
-import com.xda.nobar.util.ActionHolder
+import com.xda.nobar.util.helpers.ActionHolder
 import com.xda.nobar.util.dpAsPx
 import com.xda.nobar.views.ItemView
 
