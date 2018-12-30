@@ -32,7 +32,7 @@ import com.xda.nobar.views.BarView
 /* Context */
 
 val Context.actionHolder: ActionHolder
-    get() = ActionHolder.getInstance(this)
+    get() = ActionHolder.getInstance(applicationContext)
 
 val Context.app: App
     get() = applicationContext as App
