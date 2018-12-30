@@ -175,12 +175,14 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     override fun onClick() {
         val builder = AlertDialog.Builder(context)
         onPrepareDialogBuilder(builder)
-        builder.show()
+
+        dialog = builder.show()
     }
 
     private fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
         var whichButton = DialogInterface.BUTTON_NEGATIVE
 
+        builder.setTitle(R.string.actions)
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
             whichButton = DialogInterface.BUTTON_POSITIVE
             callChangeListener(getPersistedString(tempValue))
@@ -190,7 +192,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         builder.setOnDismissListener { onDialogClosed(whichButton == DialogInterface.BUTTON_POSITIVE) }
     }
 
-    fun onCreateDialogView(): View {
+    private fun onCreateDialogView(): View {
         val topContainer = LinearLayout(context)
         topContainer.orientation = LinearLayout.VERTICAL
         topContainer.setPaddingRelative(0, context.dpAsPx(8), 0, 0)
@@ -229,7 +231,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         return topContainer
     }
 
-    fun onDialogClosed(positiveResult: Boolean) {
+    private fun onDialogClosed(positiveResult: Boolean) {
         if (positiveResult) saveValue(tempValue)
     }
 
