@@ -137,7 +137,10 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                 .description(R.string.touchwiz_desc)
                 .buttonCtaLabel(R.string.tell_me_how)
                 .buttonCtaClickListener {
-                    //TODO: Instructions
+                    val touchwiz = Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://www.xda-developers.com/?page_id=244047"))
+                    touchwiz.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(touchwiz)
                 }
                 .build()
     }
