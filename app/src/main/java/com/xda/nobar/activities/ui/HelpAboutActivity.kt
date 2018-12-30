@@ -11,8 +11,8 @@ import androidx.preference.SwitchPreference
 import com.crashlytics.android.Crashlytics
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.R
-import com.xda.nobar.util.PrefManager
 import com.xda.nobar.util.beginAnimatedTransaction
+import com.xda.nobar.util.prefManager
 
 /**
  * Information about the app
@@ -188,7 +188,7 @@ class HelpAboutActivity : AppCompatActivity() {
         private fun updateCrashlyticsId(enabled: Boolean) {
             val id = findPreference("crashlytics_id")
 
-            id.summary = if (enabled) PrefManager.getInstance(activity!!).crashlyticsId else ""
+            id.summary = if (enabled) activity!!.prefManager.crashlyticsId else ""
             Crashlytics.setUserIdentifier(id.summary.toString())
         }
     }

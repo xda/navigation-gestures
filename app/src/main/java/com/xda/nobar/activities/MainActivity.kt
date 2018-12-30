@@ -37,8 +37,6 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         }
     }
 
-    private val prefManager by lazy { PrefManager.getInstance(this) }
-
     private val navListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
         app.toggleNavState(!isChecked)
         if (!hasWss) onNavStateChange(!isChecked)

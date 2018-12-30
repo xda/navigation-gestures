@@ -40,8 +40,6 @@ val Context.app: App
 var Context.blackNav: Boolean
     get() = throw IllegalAccessException("This field has no read value")
     set(value) {
-        val prefManager = PrefManager.getInstance(this)
-
         if (!IntroActivity.needsToRun(this)
                 && hasWss
                 && prefManager.shouldUseOverscanMethod
@@ -145,7 +143,6 @@ val Context.minPillWidthPx: Int
 
 val Context.minPillXPx: Int
     get() {
-        val prefManager = PrefManager.getInstance(this)
         val halfScreen = realScreenSize.x / 2f
         val halfWidth = prefManager.customWidth / 2f
         return if (halfScreen == halfWidth) -halfScreen.toInt() else -(halfScreen - halfWidth).toInt()
@@ -164,14 +161,13 @@ val Context.minPillYPx: Int
 val Context.navBarHeight: Int
     get() {
         val uim = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        val prefManager = PrefManager.getInstance(this)
         return if (uim.currentModeType == Configuration.UI_MODE_TYPE_CAR && prefManager.enableInCarMode) {
             resources.getDimensionPixelSize(resources.getIdentifier("navigation_bar_height_car_mode", "dimen", "android"))
         } else resources.getDimensionPixelSize(resources.getIdentifier("navigation_bar_height", "dimen", "android"))
     }
 
 val Context.prefManager: PrefManager
-    get() = PrefManager.getInstance(this)
+    get() = PrefManager.getInstance(applicationContext)
 
 /**
  * Get the device's screen size

@@ -26,8 +26,6 @@ import java.util.*
  * Manages the basic logic of each
  */
 abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCompatActivity(), SearchView.OnQueryTextListener {
-    internal val prefManager by lazy { PrefManager.getInstance(this) }
-
     internal companion object {
         const val APPINFO = "app_info"
         const val EXTRA_KEY = "key"

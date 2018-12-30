@@ -76,7 +76,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
     private val permissionListener = PermissionReceiver()
 
     val immersiveHelperView by lazy { ImmersiveHelperView(this) }
-    val prefManager by lazy { PrefManager.getInstance(this) }
     val screenOffHelper by lazy { ScreenOffHelper(this) }
 
     private var isInOtherWindowApp = false
