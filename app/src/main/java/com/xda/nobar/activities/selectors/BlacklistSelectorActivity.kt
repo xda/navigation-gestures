@@ -7,8 +7,9 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import com.xda.nobar.R
 import com.xda.nobar.adapters.AppSelectAdapter
-import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.adapters.info.AppInfo
+import com.xda.nobar.interfaces.OnAppSelectedListener
+import com.xda.nobar.util.prefManager
 import java.util.*
 import kotlin.collections.ArrayList
 

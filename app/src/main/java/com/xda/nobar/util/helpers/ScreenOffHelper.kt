@@ -10,6 +10,7 @@ import android.provider.Settings
 import android.view.WindowManager
 import android.widget.LinearLayout
 import com.xda.nobar.App
+import com.xda.nobar.util.prefManager
 import com.xda.nobar.util.realScreenSize
 
 /**
