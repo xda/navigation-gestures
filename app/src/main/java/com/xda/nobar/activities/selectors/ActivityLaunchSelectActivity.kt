@@ -7,8 +7,8 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.preference.PreferenceManager
 import com.xda.nobar.adapters.AppSelectAdapter
-import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.adapters.info.AppInfo
+import com.xda.nobar.interfaces.OnAppSelectedListener
 
 class ActivityLaunchSelectActivity : BaseAppSelectActivity<ActivityInfo, AppInfo>() {
     override val adapter = AppSelectAdapter(true, true, OnAppSelectedListener { info ->
@@ -37,8 +37,14 @@ class ActivityLaunchSelectActivity : BaseAppSelectActivity<ActivityInfo, AppInfo
 
     override fun loadAppList(): ArrayList<ActivityInfo> {
         val info = packageManager.getPackageInfo(getPassedAppInfo()?.packageName, PackageManager.GET_ACTIVITIES)
+        val activities = ArrayList(info.activities.toList())
+        val shortcuts = packageManager.queryIntentActivities(Intent(Intent.ACTION_CREATE_SHORTCUT), PackageManager.GET_RESOLVED_FILTER)
+                .map { it.activityInfo }
+                .map { it.name }
 
-        return ArrayList(info.activities.toList())
+        activities.removeAll { shortcuts.contains(it.name) }
+
+        return activities
     }
 
     override fun loadAppInfo(info: ActivityInfo): AppInfo? {
