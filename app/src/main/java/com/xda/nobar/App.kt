@@ -754,10 +754,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     }
                 }
 
-                handler.post {
-                    immersiveHelperView.requestLayout()
-                }
-
                 if (isPillShown()) {
                     try {
                         if (!prefManager.useImmersiveWhenNavHidden) immersiveHelperView.exitNavImmersive()
