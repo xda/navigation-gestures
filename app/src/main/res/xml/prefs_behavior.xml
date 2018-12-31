@@ -3,14 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.xda.nobar.prefs.CollapsiblePreferenceCategory
-        android:title="@string/blacklisting">
-
-        <SwitchPreference
-            android:title="@string/dont_keep_overscan_on_lockscreen"
-            android:summary="@string/dont_keep_overscan_on_lockscreen_desc"
-            android:key="lockscreen_overscan"
-            android:icon="@drawable/border_clear"
-            />
+        android:title="@string/general">
 
         <SwitchPreference
             android:title="@string/show_nav_with_keyboard"
@@ -25,6 +18,18 @@
             android:key="audio_feedback"
             android:defaultValue="@bool/feedback_sound_default"
             android:icon="@drawable/hearing"
+            />
+
+    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
+
+    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
+        android:title="@string/blacklisting">
+
+        <SwitchPreference
+            android:title="@string/dont_keep_overscan_on_lockscreen"
+            android:summary="@string/dont_keep_overscan_on_lockscreen_desc"
+            android:key="lockscreen_overscan"
+            android:icon="@drawable/border_clear"
             />
 
         <Preference

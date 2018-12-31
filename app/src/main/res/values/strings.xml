@@ -119,6 +119,7 @@
     <string name="battery_optimizations">Battery Optimizations</string>
     <string name="tell_me_how">Tell Me How</string>
     <string name="actions">Actions</string>
+    <string name="general">General</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
