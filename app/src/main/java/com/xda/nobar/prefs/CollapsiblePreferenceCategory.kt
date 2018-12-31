@@ -1,6 +1,7 @@
 package com.xda.nobar.prefs
 
 import android.content.Context
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.widget.ImageView
 import androidx.preference.PreferenceCategory
@@ -14,10 +15,12 @@ class CollapsiblePreferenceCategory(context: Context, attributeSet: AttributeSet
     var expanded = false
         set(value) {
             if (!value) {
+                generateSummary()
                 setExpandedVisibilities()
                 hideAllPrefs()
             } else {
                 resetVisibilities()
+                summary = null
             }
 
             field = value
@@ -70,5 +73,15 @@ class CollapsiblePreferenceCategory(context: Context, attributeSet: AttributeSet
 
             findPreference(it)?.isVisible = vis!!
         }
+    }
+
+    private fun generateSummary() {
+        val children = ArrayList<String>()
+
+        for (i in 0 until preferenceCount) {
+            children.add((getPreference(i).title ?: continue).toString())
+        }
+
+        summary = TextUtils.join(", ", children)
     }
 }
