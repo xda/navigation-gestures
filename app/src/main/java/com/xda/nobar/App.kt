@@ -83,6 +83,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
     var helperAdded = false
     var keyboardShown = false
     var isValidPremium = false
+        get() = field || BuildConfig.DEBUG
 
     private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
     private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()

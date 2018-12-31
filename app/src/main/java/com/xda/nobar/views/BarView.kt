@@ -88,8 +88,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     private val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
     private val flashlightController =
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) FlashlightControllerMarshmallow(context)
-        else FlashlightControllerLollipop(context)
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) FlashlightControllerMarshmallow(context)
+            else FlashlightControllerLollipop(context)
 
     var view: View = View.inflate(context, R.layout.pill, this)
     var lastTouchTime = -1L
@@ -552,12 +552,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             context.app.prefManager.showHiddenToast = false
         }
     }
-    
+
     fun updateLayout(params: WindowManager.LayoutParams = this.params) {
         handler?.post {
             try {
                 wm.updateViewLayout(this, params)
-            } catch (e: Exception) {}
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -937,7 +938,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         private fun sendAction(action: String) {
             if (action.isEligible()) {
-                when(getSection(origAdjX)) {
+                when (getSection(origAdjX)) {
                     FIRST_SECTION -> sendActionInternal("${action}_left")
                     SECOND_SECTION -> sendActionInternal("${action}_center")
                     THIRD_SECTION -> sendActionInternal("${action}_right")
@@ -1109,11 +1110,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                             try {
                                 context.startActivity(launch)
-                            } catch (e: Exception) {}
+                            } catch (e: Exception) {
+                            }
                         }
                     }
                     actionHolder.premTypeLaunchActivity -> context.runPremiumAction {
-                        val activity = context.prefManager.getActivity(key) ?: return@runPremiumAction
+                        val activity = context.prefManager.getActivity(key)
+                                ?: return@runPremiumAction
 
                         val p = activity.split("/")[0]
                         val c = activity.split("/")[1]
@@ -1124,17 +1127,21 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                         try {
                             context.startActivity(launch)
-                        } catch (e: Exception) {}
+                        } catch (e: Exception) {
+                        }
                     }
                     actionHolder.premTypeLaunchShortcut -> context.runPremiumAction {
-                        val shortcut = context.prefManager.getShortcut(key) ?: return@runPremiumAction
-                        val intent = shortcut.intent ?: return@runPremiumAction
-
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
                         try {
+                            val shortcut = context.prefManager.getShortcut(key)
+                                    ?: return@runPremiumAction
+                            val intent = (shortcut.intent ?: return@runPremiumAction).clone() as Intent
+
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
                             context.startActivity(intent)
-                        } catch (e: Exception) {}
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                     actionHolder.premTypeLockScreen -> context.runPremiumAction {
                         context.runSystemSettingsAction {
@@ -1300,7 +1307,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                 if (!isHidden && !isActing) {
                     if (isPinned) {
-                       if (context.app.prefManager.shouldUseOverscanMethod) context.app.showNav()
+                        if (context.app.prefManager.shouldUseOverscanMethod) context.app.showNav()
                     } else {
                         isActing = true
                         sendAction(actionHolder.actionHold)
@@ -1309,7 +1316,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
 
             override fun onDoubleTap(ev: MotionEvent): Boolean {
-                return if (!isHidden &&!isActing) {
+                return if (!isHidden && !isActing) {
                     isActing = true
                     sendAction(actionHolder.actionDouble)
                     true
