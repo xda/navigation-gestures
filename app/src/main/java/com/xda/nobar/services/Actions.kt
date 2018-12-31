@@ -22,17 +22,9 @@ class Actions : AccessibilityService(), ReceiverCallback {
     companion object {
         const val BASE = "com.xda.nobar.action"
         const val ACTION = "$BASE.ACTION"
-        const val PREMIUM_UPDATE = "$BASE.PREM_UPDATE"
 
         const val EXTRA_ACTION = "action"
         const val EXTRA_GESTURE = "gesture"
-        const val EXTRA_PREM = "premium"
-
-        fun updatePremium(context: Context, premium: Boolean) {
-            val options = Bundle()
-            options.putBoolean(EXTRA_PREM, premium)
-            sendAction(context, PREMIUM_UPDATE, options)
-        }
 
         fun sendAction(context: Context, action: String, options: Bundle) {
             val intent = Intent(action)
@@ -44,8 +36,6 @@ class Actions : AccessibilityService(), ReceiverCallback {
     private val receiver = ActionHandler()
 
     private val handler = Handler()
-
-    private var validPremium = false
 
     override fun onServiceConnected() {
         receiver.register(this, this)
@@ -89,9 +79,6 @@ class Actions : AccessibilityService(), ReceiverCallback {
                     actionHolder.premTypePower -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }
                 }
             }
-            PREMIUM_UPDATE -> {
-                validPremium = intent.getBooleanExtra(EXTRA_PREM, validPremium)
-            }
         }
     }
 
@@ -112,7 +99,6 @@ class Actions : AccessibilityService(), ReceiverCallback {
 
             val filter = IntentFilter()
             filter.addAction(ACTION)
-            filter.addAction(PREMIUM_UPDATE)
 
             LocalBroadcastManager.getInstance(context).registerReceiver(this, filter)
         }

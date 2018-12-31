@@ -67,8 +67,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             prefManager.validPrem = valid
 
             licenseCheckListeners.forEach { it.onResult(valid, reason) }
-
-            Actions.updatePremium(this, isValidPremium)
         })
     }
 
