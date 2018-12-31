@@ -4,7 +4,7 @@
     android:focusable="true"
     android:clickable="true"
     android:layout_gravity="end"
-    app:srcCompat="@drawable/ic_settings_black_24dp"
+    app:srcCompat="@drawable/settings"
     android:tint="#fff"
     android:scaleType="center"
     android:layout_width="48dp"

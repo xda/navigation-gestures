@@ -10,7 +10,7 @@
         android:title="@string/hide_pill_on_keyboard"
         android:summaryOn="@string/auto_hide_pill_desc_enabled"
         android:key="hide_pill_on_keyboard"
-        android:icon="@drawable/ic_keyboard_hide_black_24dp"
+        android:icon="@drawable/keyboard_hide"
         android:defaultValue="@bool/hide_on_keyboard_default"
         app:view_defaultValue="@integer/default_auto_hide_time"
         app:minValue="@integer/min_auto_hide_time"
@@ -21,13 +21,13 @@
     <Preference
         android:title="@string/fix_for_other_windows"
         android:summary="@string/fix_for_other_windows_desc"
-        android:icon="@drawable/ic_autorenew_black_24dp"
+        android:icon="@drawable/autorenew"
         android:key="window_fix" />
 
     <SwitchPreference
         android:title="@string/full_overscan"
         android:summary="@string/full_overscan_desc"
-        android:icon="@drawable/ic_fullscreen_black_24dp"
+        android:icon="@drawable/fullscreen"
         android:key="full_overscan" />
 
     <!--<SwitchPreference-->

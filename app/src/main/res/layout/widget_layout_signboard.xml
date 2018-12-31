@@ -29,7 +29,7 @@
                 android:layout_height="160px"
                 android:background="@drawable/circle"
                 android:padding="40px"
-                android:src="@drawable/ic_gesture_black_24dp"
+                android:src="@drawable/gesture"
                 android:tint="@color/color_disabled" />
 
         </LinearLayout>
@@ -46,7 +46,7 @@
                 android:layout_height="160px"
                 android:background="@drawable/circle"
                 android:padding="40px"
-                android:src="@drawable/ic_border_bottom_black_24dp"
+                android:src="@drawable/border_bottom"
                 android:tint="@color/color_disabled" />
 
         </LinearLayout>
@@ -63,7 +63,7 @@
                 android:layout_height="160px"
                 android:background="@drawable/circle"
                 android:padding="40px"
-                android:src="@drawable/ic_fullscreen_black_24dp"
+                android:src="@drawable/fullscreen"
                 android:tint="@color/color_disabled" />
 
         </LinearLayout>
@@ -74,7 +74,7 @@
             android:layout_height="160px"
             android:background="@drawable/circle"
             android:padding="50px"
-            android:src="@drawable/ic_settings_black_24dp" />
+            android:src="@drawable/settings" />
 
     </LinearLayout>
 

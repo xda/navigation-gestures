@@ -68,7 +68,7 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
         supportActionBar?.setDisplayShowHomeEnabled(true)
         if (showUpAsCheckMark()) {
             supportActionBar?.setDisplayShowCustomEnabled(true)
-            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_done_black_24dp)
+            supportActionBar?.setHomeAsUpIndicator(R.drawable.done)
         }
 
         setContentView(R.layout.activity_app_launch_select)

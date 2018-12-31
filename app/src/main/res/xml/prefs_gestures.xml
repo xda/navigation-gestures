@@ -9,7 +9,7 @@
         android:key="sectioned_pill"
         android:defaultValue="@bool/sectioned_pill_default" />
 
-    <PreferenceCategory
+    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
         android:title="@string/sections"
         android:key="section_gestures"
         app:isPreferenceVisible="false">
@@ -68,9 +68,9 @@
             app:section_data_names="@array/action_section_data_names"
             app:section_data_values="@array/action_section_data_values" />
 
-    </PreferenceCategory>
+    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
 
-    <PreferenceCategory
+    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
         android:title="@string/taps"
         android:key="taps">
 
@@ -101,9 +101,9 @@
             app:section_data_names="@array/action_section_data_names"
             app:section_data_values="@array/action_section_data_values" />
 
-    </PreferenceCategory>
+    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
 
-    <PreferenceCategory
+    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
         android:title="@string/swipes"
         android:key="swipes">
 
@@ -179,6 +179,6 @@
             app:section_data_names="@array/action_section_data_names"
             app:section_data_values="@array/action_section_data_values" />
 
-    </PreferenceCategory>
+    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
 
 </PreferenceScreen>

@@ -3,5 +3,5 @@
     <background
         android:drawable="@color/colorPrimary" />
     <foreground
-        android:drawable="@drawable/ic_border_clear_accent_108dp" />
+        android:drawable="@drawable/border_clear_108" />
 </adaptive-icon>

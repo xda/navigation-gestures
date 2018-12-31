@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cocktail-provider
     label="@string/app_name"
-    previewImage="@drawable/ic_gesture_black_24dp"
+    previewImage="@drawable/gesture"
     updatePeriodMills="4800000"
     cocktailWidth="550"
     configure="com.xda.nobar.activities.MainActivity"

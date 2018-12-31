@@ -63,6 +63,7 @@
     <string name="are_you_sure">Are you sure?</string>
     <string name="color_prefs">Colors</string>
     <string name="dimension_prefs">Dimensions</string>
+    <string name="position_prefs">Position</string>
     <string name="dimension">Dimension</string>
     <string name="navigation">Navigation</string>
     <string name="system">System</string>

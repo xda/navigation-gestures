@@ -4,5 +4,5 @@
         android:drawable="@color/colorPrimary" />
 
     <foreground
-        android:drawable="@drawable/ic_gesture_accent_108dp" />
+        android:drawable="@drawable/gesture_accent_108" />
 </adaptive-icon>

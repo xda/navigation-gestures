@@ -127,7 +127,7 @@
             android:clickable="true"
             android:focusable="true"
             android:scaleType="center"
-            android:src="@drawable/ic_refresh_black_24dp" />
+            android:src="@drawable/refresh" />
 
     </LinearLayout>
 

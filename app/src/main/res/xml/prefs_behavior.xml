@@ -2,21 +2,21 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory
+    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
         android:title="@string/blacklisting">
 
         <SwitchPreference
             android:title="@string/dont_keep_overscan_on_lockscreen"
             android:summary="@string/dont_keep_overscan_on_lockscreen_desc"
             android:key="lockscreen_overscan"
-            android:icon="@drawable/ic_border_clear_black_24dp"
+            android:icon="@drawable/border_clear"
             />
 
         <SwitchPreference
             android:title="@string/show_nav_with_keyboard"
             android:summary="@string/show_nav_with_keyboard_desc"
             android:key="keyboard_nav"
-            android:icon="@drawable/ic_keyboard_black_24dp"
+            android:icon="@drawable/keyboard"
             />
 
         <SwitchPreference
@@ -24,32 +24,32 @@
             android:summary="@string/audio_feedback_desc"
             android:key="audio_feedback"
             android:defaultValue="@bool/feedback_sound_default"
-            android:icon="@drawable/ic_hearing_black_24dp"
+            android:icon="@drawable/hearing"
             />
 
         <Preference
             android:title="@string/nav_blacklist"
             android:summary="@string/nav_blacklist_desc"
-            android:icon="@drawable/ic_border_bottom_black_24dp"
+            android:icon="@drawable/border_bottom"
             android:key="nav_blacklist"
             />
 
         <Preference
             android:title="@string/bar_blacklist"
             android:summary="@string/bar_blacklist_desc"
-            android:icon="@drawable/ic_gesture_outline_black_24dp"
+            android:icon="@drawable/gesture_outline"
             android:key="bar_blacklist"
             />
 
-    </PreferenceCategory>
+    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
 
-    <PreferenceCategory
+    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
         android:title="@string/look_feel">
 
         <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/vibration_duration"
             android:key="vibration_duration"
-            android:icon="@drawable/ic_timer_black_24dp"
+            android:icon="@drawable/timer"
             app:minValue="@integer/min_vibe_time"
             app:maxValue="@integer/max_vibe_tme"
             app:units="ms"
@@ -59,15 +59,15 @@
         <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/anim_duration"
             android:key="anim_duration"
-            android:icon="@drawable/ic_timer_black_24dp"
+            android:icon="@drawable/timer"
             app:minValue="@integer/min_anim_duration"
             app:maxValue="@integer/max_anim_duration"
             android:defaultValue="@integer/default_anim_duration"
             />
 
-    </PreferenceCategory>
+    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
 
-    <PreferenceCategory
+    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
         android:title="@string/pill_hiding">
 
         <com.xda.nobar.prefs.SeekBarSwitchPreference
@@ -75,7 +75,7 @@
             android:summaryOff="@string/auto_hide_pill_desc_disabled"
             android:summaryOn="@string/auto_hide_pill_desc_enabled"
             android:key="auto_hide_pill"
-            android:icon="@drawable/ic_visibility_off_black_24dp"
+            android:icon="@drawable/visibility_off"
             android:disableDependentsState="true"
             app:view_defaultValue="@integer/default_auto_hide_time"
             app:minValue="@integer/min_auto_hide_time"
@@ -90,7 +90,7 @@
             android:summaryOff="@string/hide_in_fullscreen_desc"
             android:summaryOn="@string/auto_hide_pill_desc_enabled"
             android:key="hide_in_fullscreen"
-            android:icon="@drawable/ic_visibility_off_black_24dp"
+            android:icon="@drawable/visibility_off"
             android:defaultValue="@bool/hide_in_fullscreen_default"
             app:view_defaultValue="@integer/default_auto_hide_time"
             app:minValue="@integer/min_auto_hide_time"
@@ -100,7 +100,7 @@
 
         <SwitchPreference
             android:title="@string/static_pill"
-            android:icon="@drawable/ic_swap_vert_black_24dp"
+            android:icon="@drawable/swap_vertical"
             android:summary="@string/static_pill_desc"
             android:key="static_pill"
             android:defaultValue="@bool/static_pill_default"
@@ -108,15 +108,15 @@
 
         <SwitchPreference
             android:title="@string/enable_in_car_mode"
-            android:icon="@drawable/ic_directions_car_black_24dp"
+            android:icon="@drawable/car"
             android:summary="@string/enable_in_car_mode_desc"
             android:key="enable_in_car_mode"
             android:defaultValue="@bool/car_mode_default"
             />
 
-    </PreferenceCategory>
+    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
 
-    <PreferenceCategory
+    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
         android:title="@string/sensitivity">
 
         <SwitchPreference
@@ -128,7 +128,7 @@
 
         <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/x_threshold"
-            android:icon="@drawable/ic_swap_horiz_black_24dp"
+            android:icon="@drawable/swap_horizontal"
             android:defaultValue="@integer/default_x_threshold_dp"
             app:minValue="@integer/min_x_threshold_dp"
             app:maxValue="@integer/max_x_threshold_dp"
@@ -138,7 +138,7 @@
 
         <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/y_threshold"
-            android:icon="@drawable/ic_swap_vert_black_24dp"
+            android:icon="@drawable/swap_vertical"
             android:defaultValue="@integer/default_y_threshold_dp"
             app:minValue="@integer/min_y_threshold_dp"
             app:maxValue="@integer/max_y_threshold_dp"
@@ -149,13 +149,13 @@
         <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/hold_time"
             android:key="hold_time"
-            android:icon="@drawable/ic_timer_black_24dp"
+            android:icon="@drawable/timer"
             app:minValue="@integer/min_hold_time"
             app:maxValue="@integer/max_hold_time"
             app:units="ms"
             android:defaultValue="@integer/default_hold_time"
             />
 
-    </PreferenceCategory>
+    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
 
 </PreferenceScreen>

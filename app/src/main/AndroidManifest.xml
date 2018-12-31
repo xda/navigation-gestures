@@ -117,7 +117,7 @@
         <activity
             android:name=".tasker.activities.ToggleGestureActivity"
             android:exported="true"
-            android:icon="@drawable/ic_gesture_black_24dp"
+            android:icon="@drawable/gesture"
             android:label="@string/toggle_gestures_prem">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
@@ -126,7 +126,7 @@
         <activity
             android:name=".tasker.activities.ToggleNavActivity"
             android:exported="true"
-            android:icon="@drawable/ic_border_bottom_black_24dp"
+            android:icon="@drawable/border_bottom"
             android:label="@string/toggle_nav_prem">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
@@ -135,7 +135,7 @@
         <activity
             android:name=".tasker.activities.EventConfigureActivity"
             android:exported="true"
-            android:icon="@drawable/ic_gesture_black_24dp"
+            android:icon="@drawable/gesture"
             android:label="@string/prem_tasker_event">
             <intent-filter>
                 <action android:name="net.dinglisch.android.tasker.ACTION_EDIT_EVENT" />
@@ -144,7 +144,7 @@
 
         <service
             android:name=".tiles.GestureToggle"
-            android:icon="@drawable/ic_gesture_black_24dp"
+            android:icon="@drawable/gesture"
             android:label="@string/gestures_off"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
@@ -153,7 +153,7 @@
         </service>
         <service
             android:name=".tiles.NavBarToggle"
-            android:icon="@drawable/ic_border_bottom_black_24dp"
+            android:icon="@drawable/border_bottom"
             android:label="@string/nav_shown"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
@@ -249,7 +249,7 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_border_bottom_black_24dp" />
+            android:resource="@drawable/border_bottom" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
