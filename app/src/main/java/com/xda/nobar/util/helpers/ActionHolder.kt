@@ -110,10 +110,41 @@ class ActionHolder private constructor(private val context: Context) {
         }
     }
 
-    fun hasAction(gesture: String) =
-            HashMap<String, Int>().apply {
-                context.prefManager.getActionsList(this)
-            }[gesture] != typeNoAction
+    fun hasAnyOfActions(vararg gestures: String): Boolean {
+        val map = HashMap<String, Int>().apply {
+            context.prefManager.getActionsList(this)
+        }
+
+        gestures.forEach {
+            if (map[it] != typeNoAction) return true
+        }
+
+        return false
+    }
+
+    fun hasAllOfActions(vararg gestures: String): Boolean {
+        val map = HashMap<String, Int>().apply {
+            context.prefManager.getActionsList(this)
+        }
+
+        gestures.forEach {
+            if (map[it].run { this == null || this == typeNoAction }) return false
+        }
+
+        return true
+    }
+
+    fun hasSomeUpAction() =
+            hasAnyOfActions(
+                    actionUp,
+                    actionUpHold,
+                    actionUpLeft,
+                    actionUpHoldLeft,
+                    actionUpCenter,
+                    actionUpHoldCenter,
+                    actionUpRight,
+                    actionUpHoldRight
+            )
 
     val typeNoAction by lazy { context.resources.getString(R.string.type_no_action).toInt() }
     val typeBack by lazy { context.resources.getString(R.string.type_back).toInt() }

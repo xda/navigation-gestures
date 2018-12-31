@@ -882,25 +882,25 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             return if (!isHidden && !isActing) {
                 when {
-                    context.actionHolder.run { hasAction(actionLeft) || hasAction(actionLeftHold) }
+                    context.actionHolder.run { hasAnyOfActions(actionLeft, actionLeftHold) }
                             && distanceX < -xThresh
                             && distanceY.absoluteValue <= distanceX.absoluteValue -> { //left swipe
                         isSwipeLeft = true
                         true
                     }
-                    context.actionHolder.run { hasAction(actionRight) || hasAction(actionRightHold) }
+                    context.actionHolder.run { hasAnyOfActions(actionRight, actionRightHold) }
                             && distanceX > xThresh
                             && distanceY.absoluteValue <= distanceX.absoluteValue -> { //right swipe
                         isSwipeRight = true
                         true
                     }
-                    context.actionHolder.run { hasAction(actionDown) || hasAction(actionDownHold) }
+                    context.actionHolder.run { hasAnyOfActions(actionDown, actionDownHold) }
                             && distanceY > yThreshDown
                             && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe and down hold-swipe
                         isSwipeDown = true
                         true
                     }
-                    context.actionHolder.run { hasAction(actionUp) || hasAction(actionUpHold) }
+                    context.actionHolder.hasSomeUpAction()
                             && distanceY < -yThreshUp
                             && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
                         isSwipeUp = true
@@ -1302,7 +1302,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         inner class Detector : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapUp(ev: MotionEvent): Boolean {
-                return if (!context.actionHolder.hasAction(actionHolder.actionDouble) && !isActing && !wasHidden) {
+                return if (!context.actionHolder.hasAnyOfActions(actionHolder.actionDouble) && !isActing && !wasHidden) {
                     isOverrideTap = true
                     sendAction(actionHolder.actionTap)
                     isActing = false
