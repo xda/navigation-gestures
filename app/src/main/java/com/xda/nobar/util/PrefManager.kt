@@ -70,6 +70,7 @@ class PrefManager private constructor(private val context: Context) {
         const val ANIM_DURATION = "anim_duration"
         const val X_THRESHOLD = "x_threshold"
         const val Y_THRESHOLD = "y_threshold"
+        const val Y_THRESHOLD_DOWN = "y_threshold_down"
         const val AUTO_HIDE_PILL_PROGRESS = "auto_hide_pill_progress"
         const val HIDE_IN_FULLSCREEN_PROGRESS = "hide_in_fullscreen_progress"
         const val HIDE_PILL_ON_KEYBOARD_PROGRESS = "hide_pill_on_keyboard_progress"
@@ -209,12 +210,16 @@ class PrefManager private constructor(private val context: Context) {
         get() = getInt(ANIM_DURATION, context.resources.getInteger(R.integer.default_anim_duration))
     val xThresholdDp: Int
         get() = getInt(X_THRESHOLD, context.resources.getInteger(R.integer.default_x_threshold_dp))
-    val yThresholdDp: Int
+    val yThresholdUpDp: Int
         get() = getInt(Y_THRESHOLD, context.resources.getInteger(R.integer.default_y_threshold_dp))
+    val yThresholdDownDp: Int
+        get() = getInt(Y_THRESHOLD_DOWN, context.resources.getInteger(R.integer.default_y_threshold_dp))
     val xThresholdPx: Int
         get() = context.dpAsPx(xThresholdDp)
-    val yThresholdPx: Int
-        get() = context.dpAsPx(yThresholdDp)
+    val yThresholdUpPx: Int
+        get() = context.dpAsPx(yThresholdUpDp)
+    val yThresholdDownPx: Int
+        get() = context.dpAsPx(yThresholdDownDp)
     val autoHideTime: Int
         get() = getInt(AUTO_HIDE_PILL_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
     val hideInFullscreenTime: Int

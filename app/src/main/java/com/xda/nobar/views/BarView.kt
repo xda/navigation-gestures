@@ -876,8 +876,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             val distanceX = motionEvent.rawX - origX
             val distanceY = motionEvent.rawY - origY
-            val xThresh = context.app.prefManager.xThresholdPx
-            val yThresh = context.app.prefManager.yThresholdPx
+            val xThresh = context.prefManager.xThresholdPx
+            val yThreshUp = context.prefManager.yThresholdUpPx
+            val yThreshDown = context.prefManager.yThresholdDownDp
 
             return if (!isHidden && !isActing) {
                 when {
@@ -889,11 +890,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         isSwipeRight = true
                         true
                     }
-                    distanceY > yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe and down hold-swipe
+                    distanceY > yThreshDown && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe and down hold-swipe
                         isSwipeDown = true
                         true
                     }
-                    distanceY < -yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
+                    distanceY < -yThreshUp && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
                         isSwipeUp = true
                         true
                     }
@@ -901,7 +902,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
             } else if (isHidden
                     && !isActing
-                    && distanceY < -yThresh
+                    && distanceY < -yThreshUp
                     && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
                 if (isHidden && !isPillHidingOrShowing && !beingTouched) {
                     vibrate(getVibrationDuration().toLong())

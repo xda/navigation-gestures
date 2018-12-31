@@ -94,7 +94,8 @@
     <string name="bar_blacklist">Hide Pill in Selected Apps</string>
     <string name="imm_blacklist">Immersive Blacklist</string>
     <string name="x_threshold">Horizontal (X) Swipe Distance</string>
-    <string name="y_threshold">Vertical (Y) Swipe Distance</string>
+    <string name="y_threshold">Vertical (Y) Up-Swipe Distance</string>
+    <string name="y_threshold_down">Vertical (Y) Down-Swipe Distance</string>
     <string name="hide_after_set_time">Hide Pill After Specified Delay</string>
     <string name="blacklisting">Blacklisting</string>
     <string name="look_feel">Look &amp; Feel</string>
