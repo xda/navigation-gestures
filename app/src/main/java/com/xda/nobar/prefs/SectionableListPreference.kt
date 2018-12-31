@@ -18,8 +18,8 @@ import androidx.core.content.ContextCompat
 import androidx.preference.Preference
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnItemChosenListener
-import com.xda.nobar.util.helpers.ActionHolder
 import com.xda.nobar.util.dpAsPx
+import com.xda.nobar.util.helpers.ActionHolder
 import com.xda.nobar.views.ItemView
 
 /**
@@ -185,7 +185,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         builder.setTitle(R.string.actions)
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
             whichButton = DialogInterface.BUTTON_POSITIVE
-            callChangeListener(getPersistedString(tempValue))
+            tempValue = getPersistedString(tempValue)
         }
 
         builder.setView(onCreateDialogView())
