@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.SortedList
 import com.xda.nobar.R
 import com.xda.nobar.adapters.info.ShortcutInfo
@@ -33,7 +34,7 @@ class ShortcutSelectAdapter(
         val res = view.context.packageManager.getResourcesForApplication(item.packageName)
 
         view.icon.background = try {
-            res.getDrawable(item.icon).toBitmapDrawable(view.context.resources)
+            ResourcesCompat.getDrawable(res, item.icon, res.newTheme())?.toBitmapDrawable(view.context.resources)
         } catch (e: Exception) {
             ContextCompat.getDrawable(view.context, R.drawable.blank)
         }
