@@ -2,6 +2,7 @@ package com.xda.nobar.util
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.preference.PreferenceManager
@@ -9,7 +10,8 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.xda.nobar.R
 import com.xda.nobar.adapters.info.ShortcutInfo
-import com.xda.nobar.util.helpers.UriJsonHandler
+import com.xda.nobar.util.helpers.GsonIntentHandler
+import com.xda.nobar.util.helpers.GsonUriHandler
 import java.util.*
 import kotlin.collections.HashSet
 import kotlin.collections.set
@@ -318,7 +320,8 @@ class PrefManager private constructor(private val context: Context) {
     fun getDisplayName(baseKey: String?): String? = getString("$baseKey$SUFFIX_DISPLAYNAME")
     fun getShortcut(baseKey: String?): ShortcutInfo? {
         return GsonBuilder()
-                .registerTypeAdapter(Uri::class.java, UriJsonHandler())
+                .registerTypeAdapter(Uri::class.java, GsonUriHandler())
+                .registerTypeAdapter(Intent::class.java, GsonIntentHandler())
                 .create()
                 .fromJson<ShortcutInfo>(
                         getString((baseKey ?: return null) + SUFFIX_SHORTCUT)
@@ -340,7 +343,8 @@ class PrefManager private constructor(private val context: Context) {
             putString(baseKey + SUFFIX_SHORTCUT,
                     try {
                         GsonBuilder()
-                                .registerTypeAdapter(Uri::class.java, UriJsonHandler())
+                                .registerTypeAdapter(Uri::class.java, GsonUriHandler())
+                                .registerTypeAdapter(Intent::class.java, GsonIntentHandler())
                                 .create()
                                 .toJson(shortcutInfo)
                     } catch (e: Exception) {
