@@ -2,6 +2,7 @@ package com.xda.nobar.util.helpers
 
 import android.content.Context
 import com.xda.nobar.R
+import com.xda.nobar.util.prefManager
 
 class ActionHolder private constructor(private val context: Context) {
     companion object {
@@ -39,28 +40,30 @@ class ActionHolder private constructor(private val context: Context) {
     val actionUpRight: String by lazy { context.resources.getString(R.string.action_up_right) }
     val actionUpHoldRight: String by lazy { context.resources.getString(R.string.action_up_hold_right) }
 
-    val actionsList by lazy { arrayListOf(
-            actionLeft,
-            actionRight,
-            actionUp,
-            actionDown,
-            actionDouble,
-            actionHold,
-            actionTap,
-            actionUpHold,
-            actionLeftHold,
-            actionRightHold,
-            actionDownHold,
-            actionUpLeft,
-            actionUpHoldLeft,
-            actionUpCenter,
-            actionUpHoldCenter,
-            actionUpRight,
-            actionUpHoldRight
-    ) }
+    val actionsList by lazy {
+        arrayListOf(
+                actionLeft,
+                actionRight,
+                actionUp,
+                actionDown,
+                actionDouble,
+                actionHold,
+                actionTap,
+                actionUpHold,
+                actionLeftHold,
+                actionRightHold,
+                actionDownHold,
+                actionUpLeft,
+                actionUpHoldLeft,
+                actionUpCenter,
+                actionUpHoldCenter,
+                actionUpRight,
+                actionUpHoldRight
+        )
+    }
 
     fun name(action: String): String? {
-        val res = when(action) {
+        val res = when (action) {
             actionLeft -> R.string.left
             actionRight -> R.string.right
             actionUp -> R.string.up
@@ -85,7 +88,7 @@ class ActionHolder private constructor(private val context: Context) {
     }
 
     fun icon(action: String): Int {
-        return when(action) {
+        return when (action) {
             actionLeft -> R.drawable.swipe_left
             actionRight -> R.drawable.swipe_right
             actionUp -> R.drawable.swipe_up
@@ -106,6 +109,11 @@ class ActionHolder private constructor(private val context: Context) {
             else -> 0
         }
     }
+
+    fun hasAction(gesture: String) =
+            HashMap<String, Int>().apply {
+                context.prefManager.getActionsList(this)
+            }[gesture] != typeNoAction
 
     val typeNoAction by lazy { context.resources.getString(R.string.type_no_action).toInt() }
     val typeBack by lazy { context.resources.getString(R.string.type_back).toInt() }

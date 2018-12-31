@@ -882,19 +882,27 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             return if (!isHidden && !isActing) {
                 when {
-                    distanceX < -xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //left swipe
+                    context.actionHolder.run { hasAction(actionLeft) || hasAction(actionLeftHold) }
+                            && distanceX < -xThresh
+                            && distanceY.absoluteValue <= distanceX.absoluteValue -> { //left swipe
                         isSwipeLeft = true
                         true
                     }
-                    distanceX > xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //right swipe
+                    context.actionHolder.run { hasAction(actionRight) || hasAction(actionRightHold) }
+                            && distanceX > xThresh
+                            && distanceY.absoluteValue <= distanceX.absoluteValue -> { //right swipe
                         isSwipeRight = true
                         true
                     }
-                    distanceY > yThreshDown && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe and down hold-swipe
+                    context.actionHolder.run { hasAction(actionDown) || hasAction(actionDownHold) }
+                            && distanceY > yThreshDown
+                            && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe and down hold-swipe
                         isSwipeDown = true
                         true
                     }
-                    distanceY < -yThreshUp && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
+                    context.actionHolder.run { hasAction(actionUp) || hasAction(actionUpHold) }
+                            && distanceY < -yThreshUp
+                            && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
                         isSwipeUp = true
                         true
                     }
@@ -1294,7 +1302,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         inner class Detector : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapUp(ev: MotionEvent): Boolean {
-                return if (actionMap[actionHolder.actionDouble] == actionHolder.typeNoAction && !isActing && !wasHidden) {
+                return if (!context.actionHolder.hasAction(actionHolder.actionDouble) && !isActing && !wasHidden) {
                     isOverrideTap = true
                     sendAction(actionHolder.actionTap)
                     isActing = false
