@@ -23,8 +23,8 @@ class ShortcutSelectActivity : BaseAppSelectActivity<ActivityInfo, ShortcutInfo>
         selectedInfo = it
 
         val configIntent = Intent(Intent.ACTION_CREATE_SHORTCUT)
-        configIntent.`package` = it.activityInfo.packageName
-        configIntent.component = ComponentName(it.activityInfo.packageName, it.activityInfo.name)
+        configIntent.`package` = it.packageName
+        configIntent.component = ComponentName(it.packageName, it.clazz)
 
         startActivityForResult(configIntent, CODE_CONFIG)
     })
@@ -42,9 +42,11 @@ class ShortcutSelectActivity : BaseAppSelectActivity<ActivityInfo, ShortcutInfo>
 
     override fun loadAppInfo(info: ActivityInfo): ShortcutInfo? {
         return ShortcutInfo(
-                info,
+                info.name,
+                info.packageName,
+                info.iconResource,
                 info.loadLabel(packageManager).toString(),
-                info.name == prefManager.getShortcut(key)?.activityInfo?.name
+                info.name == prefManager.getShortcut(key)?.clazz
         )
     }
 
@@ -54,7 +56,7 @@ class ShortcutSelectActivity : BaseAppSelectActivity<ActivityInfo, ShortcutInfo>
 
         ArrayList(origAppSet).forEach {
             val title = it.label.toLowerCase()
-            val summary = it.activityInfo.packageName + "/" + it.activityInfo.name
+            val summary = it.packageName + "/" + it.clazz
 
             if (title.contains(lowercase) || summary.contains(lowercase)) {
                 filteredList.add(it)

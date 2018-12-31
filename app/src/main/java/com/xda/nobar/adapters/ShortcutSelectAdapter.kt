@@ -28,12 +28,12 @@ class ShortcutSelectAdapter(
         val view = holder.view
 
         view.title.text = item.label
-        view.summary.text = "${item.activityInfo.packageName}/${item.activityInfo.name}"
+        view.summary.text = "${item.packageName}/${item.clazz}"
 
-        val res = view.context.packageManager.getResourcesForApplication(item.activityInfo.packageName)
+        val res = view.context.packageManager.getResourcesForApplication(item.packageName)
 
         view.icon.background = try {
-            res.getDrawable(item.activityInfo.iconResource).toBitmapDrawable(view.context.resources)
+            res.getDrawable(item.icon).toBitmapDrawable(view.context.resources)
         } catch (e: Exception) {
             ContextCompat.getDrawable(view.context, R.drawable.blank)
         }

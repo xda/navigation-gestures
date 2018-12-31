@@ -7,7 +7,7 @@ class ShortcutInfoSorterCallback(
         private val adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>
 ) : SortedList.Callback<ShortcutInfo>() {
     override fun areItemsTheSame(item1: ShortcutInfo?, item2: ShortcutInfo?) =
-            item1?.activityInfo?.name == item2?.activityInfo?.name
+            item1?.clazz == item2?.clazz
 
     override fun onMoved(fromPosition: Int, toPosition: Int) {
         adapter.notifyItemMoved(fromPosition, toPosition)
@@ -26,7 +26,7 @@ class ShortcutInfoSorterCallback(
     }
 
     override fun compare(o1: ShortcutInfo, o2: ShortcutInfo) =
-            o1.activityInfo.name.compareTo(o2.activityInfo.name)
+            o1.clazz.compareTo(o2.clazz)
 
     override fun areContentsTheSame(oldItem: ShortcutInfo?, newItem: ShortcutInfo?) =
             areItemsTheSame(oldItem, newItem)

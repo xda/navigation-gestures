@@ -222,7 +222,7 @@ class SettingsActivity : AppCompatActivity() {
                             saveValue(actionHolder.typeNoAction.toString())
                         } else {
                             saveValueWithoutListener(actionHolder.premTypeIntent.toString())
-                            updateIntentSummary(key!!, res)
+                            updateIntentSummary(key, res)
                         }
                     }
                 }
@@ -236,7 +236,7 @@ class SettingsActivity : AppCompatActivity() {
                             saveValue(actionHolder.typeNoAction.toString())
                         } else {
                             saveValueWithoutListener(actionHolder.premTypeLaunchShortcut.toString())
-                            updateShortcutSummary(key!!, shortcut)
+                            updateShortcutSummary(key, shortcut)
                         }
                     }
                 }
