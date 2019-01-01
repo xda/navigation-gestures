@@ -39,7 +39,7 @@ class CollapsiblePreferenceCategory(context: Context, attributeSet: AttributeSet
     override fun onAttached() {
         super.onAttached()
 
-        generateSummary()
+        expanded = expanded
     }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
