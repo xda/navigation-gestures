@@ -42,9 +42,16 @@ class AppearanceFragment : BasePrefFragment() {
     @SuppressLint("RestrictedApi")
     private fun setup() {
         val pixelsW = findPreference("use_pixels_width") as PixelDPSwitch
+        pixelsW.isChecked = prefManager.usePixelsW
+
         val pixelsH = findPreference("use_pixels_height") as PixelDPSwitch
+        pixelsH.isChecked = prefManager.usePixelsH
+
         val pixelsX = findPreference("use_pixels_x") as PixelDPSwitch
+        pixelsX.isChecked = prefManager.usePixelsX
+
         val pixelsY = findPreference("use_pixels_y") as PixelDPSwitch
+        pixelsY.isChecked = prefManager.usePixelsY
 
         val widthPercent = findPreference("custom_width_percent") as SeekBarPreference
         val heightPercent = findPreference("custom_height_percent") as SeekBarPreference

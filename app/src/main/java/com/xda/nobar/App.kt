@@ -273,7 +273,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                             else
                                 WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
                     flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
+                            WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
                     format = PixelFormat.TRANSLUCENT
                     softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 
