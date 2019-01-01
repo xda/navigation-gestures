@@ -3,8 +3,8 @@ package com.xda.nobar.activities.ui
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.PreferenceFragmentCompat
 import com.xda.nobar.R
+import com.xda.nobar.fragments.settings.LibraryPrefs
 import com.xda.nobar.util.beginAnimatedTransaction
 
 /**
@@ -37,15 +37,4 @@ class LibraryActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    class LibraryPrefs : PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            addPreferencesFromResource(R.xml.prefs_lib)
-        }
-
-        override fun onResume() {
-            super.onResume()
-
-            activity?.title = resources.getString(R.string.libraries)
-        }
-    }
 }
