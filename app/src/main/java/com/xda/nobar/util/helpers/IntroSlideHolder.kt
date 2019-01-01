@@ -1,8 +1,6 @@
 package com.xda.nobar.util.helpers
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.ContextWrapper
@@ -10,11 +8,15 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
 import com.topjohnwu.superuser.Shell
 import com.xda.nobar.R
-import com.xda.nobar.activities.ui.IntroActivity
+import com.xda.nobar.fragments.intro.DynamicForwardFragmentSlide
+import com.xda.nobar.fragments.intro.DynamicForwardSlide
+import com.xda.nobar.fragments.intro.WelcomeFragment
+import com.xda.nobar.fragments.intro.WriteSecureFragment
 import com.xda.nobar.util.*
 
 @SuppressLint("InlinedApi")
@@ -23,7 +25,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
         FragmentSlide.Builder()
                 .background(R.color.slide_1)
                 .backgroundDark(R.color.slide_1_dark)
-                .fragment(IntroActivity.WelcomeFragment())
+                .fragment(WelcomeFragment())
                 .build()
     }
 
@@ -37,7 +39,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
     }
 
     val overlaySlide by lazy {
-        IntroActivity.DynamicForwardSlide(SimpleSlide.Builder()
+        DynamicForwardSlide(SimpleSlide.Builder()
                 .title(R.string.draw_over_apps)
                 .description(R.string.draw_over_apps_desc)
                 .image(R.drawable.nav_overlay)
@@ -60,7 +62,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
     }
 
     val accessibilitySlide by lazy {
-        IntroActivity.DynamicForwardSlide(SimpleSlide.Builder()
+        DynamicForwardSlide(SimpleSlide.Builder()
                 .title(R.string.accessibility)
                 .description(R.string.accessibility_desc)
                 .image(R.drawable.nav_acc)
@@ -84,10 +86,10 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
 
     //Write Secure Settings slide: prompt the user to grant this permission; used for hiding the navbar and some other stuff
     val wssSlide by lazy {
-        IntroActivity.DynamicForwardFragmentSlide(FragmentSlide.Builder()
+        DynamicForwardFragmentSlide(FragmentSlide.Builder()
                 .background(R.color.slide_4)
                 .backgroundDark(R.color.slide_4_dark)
-                .fragment(IntroActivity.WriteSecureFragment())
+                .fragment(WriteSecureFragment())
                 .buttonCtaLabel(R.string.grant)
                 .buttonCtaClickListener {
                     if (Shell.rootAccess()) {
@@ -96,7 +98,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                                 .setTitle(R.string.root_found)
                                 .setMessage(R.string.root_found_desc)
                                 .setPositiveButton(R.string.use_root) { _, _ ->
-                                    app.rootWrapper.actions?.grantPermission(Manifest.permission.WRITE_SECURE_SETTINGS)
+                                    app.rootWrapper.actions?.grantPermission(android.Manifest.permission.WRITE_SECURE_SETTINGS)
                                 }
                                 .setNegativeButton(R.string.non_root) { _, _ ->
                                     nonRootDialog()

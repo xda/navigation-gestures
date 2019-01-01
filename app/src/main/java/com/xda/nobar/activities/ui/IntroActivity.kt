@@ -3,22 +3,14 @@ package com.xda.nobar.activities.ui
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.heinrichreimersoftware.materialintro.app.IntroActivity
-import com.heinrichreimersoftware.materialintro.app.SlideFragment
-import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
-import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
 import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
 import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.IntroSlideHolder
-import kotlinx.android.synthetic.main.slide_welcome.*
 
 /**
  * Introduction activity for Navigation Gestures
@@ -140,89 +132,5 @@ class IntroActivity : IntroActivity() {
 
         prefManager.firstRun = false
         if (!didntNeedToRun) MainActivity.start(this)
-    }
-
-    /**
-     * The first slide: show a welcome
-     * Uses a custom layout to show a video instead of an image
-     */
-    class WelcomeFragment : SlideFragment() {
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-            return inflater.inflate(R.layout.slide_welcome, container, false)
-        }
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
-
-            mi_title.text = resources.getText(R.string.welcome)
-            mi_description.text = resources.getText(R.string.app_purpose)
-        }
-
-        override fun onResume() {
-            super.onResume()
-            try {
-                val uri = Uri.parse("android.resource://${context?.packageName}/${R.raw.nav_gesture}")
-                mi_image?.setVideoURI(uri)
-
-                mi_image?.setOnPreparedListener {
-                    it.isLooping = true
-                }
-
-                mi_image?.start()
-            } catch (e: Exception) {
-                mi_image?.visibility = View.GONE
-            }
-        }
-    }
-
-    /**
-     * Similar to WelcomeFragment but with a different video
-     */
-    class WriteSecureFragment : SlideFragment() {
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-            return inflater.inflate(R.layout.slide_welcome, container, false)
-        }
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
-
-            mi_title.text = resources.getText(R.string.write_secure_settings)
-            mi_description.text = resources.getText(R.string.write_secure_settings_desc)
-        }
-
-        override fun onResume() {
-            super.onResume()
-            try {
-                val uri = Uri.parse("android.resource://${context?.packageName}/${R.raw.hide_nav}")
-                mi_image?.setVideoURI(uri)
-
-                mi_image?.setOnPreparedListener {
-                    it.isLooping = true
-                }
-
-                mi_image?.start()
-            } catch (e: Exception) {
-                mi_image?.visibility = View.GONE
-            }
-        }
-    }
-
-    /**
-     * The library only checks once if the user can go forward in the simple builder
-     * so we need to wrap that builder
-     */
-    class DynamicForwardSlide(builder: SimpleSlide.Builder, private val action: () -> Boolean) : SimpleSlide(builder) {
-        override fun canGoForward(): Boolean {
-            return action.invoke()
-        }
-    }
-
-    /**
-     * Same as DynamicForwardSlide but for FragmentSlides
-     */
-    class DynamicForwardFragmentSlide(builder: FragmentSlide.Builder, private val action: () -> Boolean) : FragmentSlide(builder) {
-        override fun canGoForward(): Boolean {
-            return action.invoke()
-        }
     }
 }
