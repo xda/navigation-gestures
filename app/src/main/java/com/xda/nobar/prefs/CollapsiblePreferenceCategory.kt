@@ -4,28 +4,29 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.widget.ImageView
+import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
+import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceViewHolder
 import com.xda.nobar.R
 
 class CollapsiblePreferenceCategory(context: Context, attributeSet: AttributeSet) : PreferenceCategory(context, attributeSet) {
-
-    private val expandedVisibilities = HashMap<String, Boolean>()
-
     var expanded = false
         set(value) {
+            field = value
+
             if (!value) {
                 generateSummary()
-                setExpandedVisibilities()
-                hideAllPrefs()
+                super.removeAll()
             } else {
-                resetVisibilities()
                 summary = null
+                wrappedPrefs.forEach {
+                    super.addPreference(it)
+                }
             }
-
-            field = value
-            notifyChanged()
         }
+
+    private val wrappedPrefs = ArrayList<Preference>()
 
     init {
         layoutResource = R.layout.pref_cat_collapsible
@@ -33,6 +34,12 @@ class CollapsiblePreferenceCategory(context: Context, attributeSet: AttributeSet
 
         val array = context.theme.obtainStyledAttributes(attributeSet, R.styleable.CollapsiblePreferenceCategory, 0, 0)
         expanded = array.getBoolean(R.styleable.CollapsiblePreferenceCategory_default_expanded, expanded)
+    }
+
+    override fun onAttached() {
+        super.onAttached()
+
+        generateSummary()
     }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
@@ -46,41 +53,45 @@ class CollapsiblePreferenceCategory(context: Context, attributeSet: AttributeSet
         }
     }
 
-    override fun onAttached() {
-        super.onAttached()
-
-        expanded = expanded
+    override fun addPreference(preference: Preference): Boolean {
+        wrappedPrefs.add(preference)
+        return if (expanded) super.addPreference(preference)
+        else false
     }
 
-    private fun setExpandedVisibilities() {
-        expandedVisibilities.clear()
-
-        for (i in 0 until preferenceCount) {
-            val pref = getPreference(i)
-            expandedVisibilities[pref.key] = pref.isVisible
-        }
+    override fun removePreference(preference: Preference): Boolean {
+        wrappedPrefs.remove(preference)
+        return if (expanded) super.removePreference(preference)
+        else false
     }
 
-    private fun hideAllPrefs() {
-        for (i in 0 until preferenceCount) {
-            getPreference(i).isVisible = false
-        }
+    override fun getPreference(index: Int): Preference {
+        return wrappedPrefs[index]
     }
 
-    private fun resetVisibilities() {
-        expandedVisibilities.keys.forEach {
-            val vis = expandedVisibilities[it]
-
-            findPreference(it)?.isVisible = vis!!
+    override fun findPreference(key: CharSequence): Preference? {
+        wrappedPrefs.forEach {
+            if (it.key == key) return it
+            else if (it is PreferenceGroup) {
+                val pref = it.findPreference(key)
+                if (pref != null) return pref
+            }
         }
+
+        return null
+    }
+
+    override fun getPreferenceCount(): Int {
+        return if (expanded) super.getPreferenceCount() else 0
+    }
+
+    override fun removeAll() {
+        wrappedPrefs.clear()
+        super.removeAll()
     }
 
     private fun generateSummary() {
-        val children = ArrayList<String>()
-
-        for (i in 0 until preferenceCount) {
-            children.add((getPreference(i).title ?: continue).toString())
-        }
+        val children = wrappedPrefs.map { it.title }
 
         summary = TextUtils.join(", ", children)
     }
