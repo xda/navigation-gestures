@@ -1,8 +1,10 @@
 package com.xda.nobar.util
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Rect
+import android.os.Build
 import android.os.IBinder
 import android.view.Display
 
@@ -12,16 +14,17 @@ import android.view.Display
  */
 @SuppressLint("PrivateApi")
 object IWindowManager {
-    private var iWindowManagerClass: Class<*>? = null
-    private var iWindowManager: Any? = null
+    var NAV_BAR_LEFT = 1 shl 0
+    val NAV_BAR_RIGHT = 1 shl 1
+    val NAV_BAR_BOTTOM = 1 shl 2
 
-    init {
-        iWindowManagerClass = Class.forName("android.view.IWindowManager")
+    private val iWindowManagerClass: Class<*> = Class.forName("android.view.IWindowManager")
+    private val iWindowManager: Any = run {
         val stubClass = Class.forName("android.view.IWindowManager\$Stub")
         val serviceManagerClass = Class.forName("android.os.ServiceManager")
 
         val binder = serviceManagerClass.getMethod("checkService", String::class.java).invoke(null, Context.WINDOW_SERVICE)
-        iWindowManager = stubClass.getMethod("asInterface", IBinder::class.java).invoke(null, binder)
+        stubClass.getMethod("asInterface", IBinder::class.java).invoke(null, binder)
     }
 
     /**
@@ -34,8 +37,8 @@ object IWindowManager {
     fun setOverscan(left: Int, top: Int, right: Int, bottom: Int): Boolean {
         return try {
             iWindowManagerClass
-                    ?.getMethod("setOverscan", Int::class.java, Int::class.java, Int::class.java, Int::class.java, Int::class.java)
-                    ?.invoke(iWindowManager, Display.DEFAULT_DISPLAY, left, top, right, bottom)
+                    .getMethod("setOverscan", Int::class.java, Int::class.java, Int::class.java, Int::class.java, Int::class.java)
+                    .invoke(iWindowManager, Display.DEFAULT_DISPLAY, left, top, right, bottom)
             canRunCommands()
         } catch (e: Throwable) {
             false
@@ -59,8 +62,8 @@ object IWindowManager {
     fun getStableInsetsForDefaultDisplay(rect: Rect): Boolean {
         return try {
             iWindowManagerClass
-                    ?.getMethod("getStableInsets", Int::class.java, Rect::class.java)
-                    ?.invoke(iWindowManager, Display.DEFAULT_DISPLAY, rect)
+                    .getMethod("getStableInsets", Int::class.java, Rect::class.java)
+                    .invoke(iWindowManager, Display.DEFAULT_DISPLAY, rect)
             true
         } catch (e: Exception) {
             false
@@ -70,10 +73,21 @@ object IWindowManager {
     fun hasNavigationBar(): Boolean {
         return try {
             iWindowManagerClass
-                    ?.getMethod("hasNavigationBar")
-                    ?.invoke(iWindowManager) as Boolean
+                    .getMethod("hasNavigationBar")
+                    .invoke(iWindowManager) as Boolean
         } catch (e: Exception) {
             false
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.P)
+    fun getNavBarPosition(): Int {
+        return try {
+            iWindowManagerClass
+                    .getMethod("getNavBarPosition")
+                    .invoke(iWindowManager) as Int
+        } catch (e: Exception) {
+            Integer.MIN_VALUE
         }
     }
 }

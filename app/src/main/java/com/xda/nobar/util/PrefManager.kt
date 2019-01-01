@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.preference.PreferenceManager
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -121,10 +122,13 @@ class PrefManager private constructor(private val context: Context) {
         get() = getBoolean(STATIC_PILL, context.resources.getBoolean(R.bool.static_pill_default))
     val useRot270Fix: Boolean
         get() = getBoolean(ROT270_FIX, context.resources.getBoolean(R.bool.rot_fix_default))
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.P
     val useRot180Fix: Boolean
         get() = getBoolean(ROT180_FIX, context.resources.getBoolean(R.bool.rot_fix_default))
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.P
     var useTabletMode: Boolean
         get() = getBoolean(TABLET_MODE, context.resources.getBoolean(R.bool.tablet_mode_default))
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.P
         set(value) {
             putBoolean(TABLET_MODE, value)
         }

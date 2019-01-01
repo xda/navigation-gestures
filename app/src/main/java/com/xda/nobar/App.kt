@@ -137,7 +137,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
             isValidPremium = prefManager.validPrem
 
-            PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this)
+            PreferenceManager.getDefaultSharedPreferences(this)
+                    .registerOnSharedPreferenceChangeListener(this)
 
             refreshPremium()
 
@@ -148,7 +149,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
             if (prefManager.useRot270Fix
                     || prefManager.useRot180Fix
-                    || prefManager.useTabletMode) uiHandler.handleRot()
+                    || prefManager.useTabletMode
+                    || Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) uiHandler.handleRot()
 
             if (!IntroActivity.needsToRun(this)) {
                 addImmersiveHelper()
@@ -396,7 +398,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
                 if (!prefManager.useRot270Fix
                         && !prefManager.useTabletMode
-                        && !prefManager.useRot180Fix)
+                        && !prefManager.useRot180Fix
+                        && Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
                     IWindowManager.setOverscan(0, 0, 0, -getAdjustedNavBarHeight())
                 else {
                     uiHandler.handleRot()
@@ -867,6 +870,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     if (prefManager.useRot270Fix) handle270()
                     if (prefManager.useRot180Fix) handle180()
                     if (prefManager.useTabletMode) handleTablet()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) handlePie()
                 }
             }
         }
@@ -900,6 +904,75 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
                     Surface.ROTATION_270 -> {
                         IWindowManager.setOverscan(0, 0, -getAdjustedNavBarHeight(), 0)
+                    }
+                }
+            }
+        }
+
+        private fun handlePie() {
+            if (prefManager.shouldUseOverscanMethod) {
+                val navSide = IWindowManager.getNavBarPosition()
+                val rotation = wm.defaultDisplay.rotation
+
+                when (navSide) {
+                    IWindowManager.NAV_BAR_LEFT -> {
+                        when (rotation) {
+                            Surface.ROTATION_0 -> {
+                                IWindowManager.setOverscan(-getAdjustedNavBarHeight(), 0, 0, 0)
+                            }
+
+                            Surface.ROTATION_90 -> {
+                                IWindowManager.setOverscan(0, -getAdjustedNavBarHeight(), 0, 0)
+                            }
+
+                            Surface.ROTATION_180 -> {
+                                IWindowManager.setOverscan(0, 0, -getAdjustedNavBarHeight(), 0)
+                            }
+
+                            Surface.ROTATION_270 -> {
+                                IWindowManager.setOverscan(0, 0, 0, -getAdjustedNavBarHeight())
+                            }
+                        }
+                    }
+
+                    IWindowManager.NAV_BAR_RIGHT -> {
+                        when (rotation) {
+                            Surface.ROTATION_0 -> {
+                                IWindowManager.setOverscan(0, 0, -getAdjustedNavBarHeight(), 0)
+                            }
+
+                            Surface.ROTATION_90 -> {
+                                IWindowManager.setOverscan(0, 0, 0, -getAdjustedNavBarHeight())
+                            }
+
+                            Surface.ROTATION_180 -> {
+                                IWindowManager.setOverscan(-getAdjustedNavBarHeight(), 0, 0, 0)
+                            }
+
+                            Surface.ROTATION_270 -> {
+                                IWindowManager.setOverscan(0, -getAdjustedNavBarHeight(), 0, 0)
+                            }
+                        }
+                    }
+
+                    IWindowManager.NAV_BAR_BOTTOM -> {
+                        when (rotation) {
+                            Surface.ROTATION_0 -> {
+                                IWindowManager.setOverscan(0, 0, 0, -getAdjustedNavBarHeight())
+                            }
+
+                            Surface.ROTATION_90 -> {
+                                IWindowManager.setOverscan(-getAdjustedNavBarHeight(), 0, 0, 0)
+                            }
+
+                            Surface.ROTATION_180 -> {
+                                IWindowManager.setOverscan(0, -getAdjustedNavBarHeight(), 0, 0)
+                            }
+
+                            Surface.ROTATION_270 -> {
+                                IWindowManager.setOverscan(0, 0, -getAdjustedNavBarHeight(), 0)
+                            }
+                        }
                     }
                 }
             }

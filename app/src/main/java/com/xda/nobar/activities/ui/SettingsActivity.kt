@@ -659,19 +659,25 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun setUpRotListeners() {
+            val rot180Fix = findPreference("rot180_fix") as SwitchPreference
             val rot270Fix = findPreference("rot270_fix") as SwitchPreference
             val tabletMode = findPreference("tablet_mode") as SwitchPreference
 
-            if (rot270Fix.isChecked) {
-                tabletMode.isChecked = false
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                if (rot270Fix.isChecked) {
+                    tabletMode.isChecked = false
+                    tabletMode.isEnabled = false
+                }
+
+                if (tabletMode.isChecked) {
+                    rot270Fix.isChecked = false
+                    rot270Fix.isEnabled = false
+                }
+            } else {
+                rot180Fix.isEnabled = false
+                rot270Fix.isEnabled = false
                 tabletMode.isEnabled = false
             }
-
-            if (tabletMode.isChecked) {
-                rot270Fix.isChecked = false
-                rot270Fix.isEnabled = false
-            }
-
         }
 
         private fun setUpImmersiveListeners() {
