@@ -34,7 +34,7 @@ fun Display.getOverscanInsets(out: Rect) {
 fun getSystemProperty(prop: String): String? {
     return Class.forName("android.os.SystemProperties")
             .getMethod("get", String::class.java)
-            .invoke(null, prop) as String
+            .invoke(null, prop) as String?
 }
 
 private val iStatusBarManager: Any
