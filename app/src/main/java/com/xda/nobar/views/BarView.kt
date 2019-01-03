@@ -244,19 +244,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             adjustPillShadow()
         }
         if (key == PrefManager.STATIC_PILL) {
-            if (context.app.prefManager.dontMoveForKeyboard) {
-                params.flags = params.flags or
-                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
-                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
-            } else {
-                params.flags = params.flags or
-                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM and
-                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
-                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-            }
-
-            updateLayout(params)
+            setMoveForKeyboard(!context.prefManager.dontMoveForKeyboard)
         }
         if (key == PrefManager.AUDIO_FEEDBACK) {
             isSoundEffectsEnabled = context.app.prefManager.feedbackSound
@@ -631,6 +619,21 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             pill.layoutParams = this
         }
+    }
+
+    fun setMoveForKeyboard(move: Boolean) {
+        if (move) {
+            params.flags = params.flags or
+                    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+            params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+        }
+        else {
+            params.flags = params.flags and
+                    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+            params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+        }
+
+        updateLayout()
     }
 
     /**

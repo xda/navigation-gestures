@@ -274,13 +274,12 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                                 WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
                     flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                             WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
-                            WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                     format = PixelFormat.TRANSLUCENT
                     softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 
                     if (prefManager.dontMoveForKeyboard) {
-                        flags = flags or
-                                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
+                        flags = flags and
                                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
                         softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
                     }
@@ -718,6 +717,18 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 } else if (prefManager.shouldUseOverscanMethod) {
                     disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYBOARD)
                 }
+            }
+
+            if (!prefManager.dontMoveForKeyboard) {
+                if (keyboardShown) {
+                    bar.params.flags = bar.params.flags and
+                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
+                } else {
+                    bar.params.flags = bar.params.flags or
+                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                }
+
+                bar.updateLayout()
             }
 
             logicHandler.post {
