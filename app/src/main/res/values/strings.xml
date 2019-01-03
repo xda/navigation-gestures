@@ -99,6 +99,7 @@
     <string name="hide_after_set_time">Hide Pill After Specified Delay</string>
     <string name="blacklisting">Blacklisting</string>
     <string name="look_feel">Look &amp; Feel</string>
+    <string name="durations">Durations</string>
     <string name="pill_hiding">Pill Hiding</string>
     <string name="sensitivity">Sensitivity</string>
     <string name="back_to_default">Go back to default settings?</string>
