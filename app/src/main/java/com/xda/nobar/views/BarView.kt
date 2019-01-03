@@ -1036,221 +1036,225 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         fun handleAction(which: Int, key: String) {
             GlobalScope.launch {
-                when (which) {
-                    actionHolder.typeAssist -> {
-                        val assist = Intent(RecognizerIntent.ACTION_WEB_SEARCH)
-                        assist.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-
-                        try {
-                            context.startActivity(assist)
-                        } catch (e: Exception) {
-                            assist.action = RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE
+                try {
+                    when (which) {
+                        actionHolder.typeAssist -> {
+                            val assist = Intent(RecognizerIntent.ACTION_WEB_SEARCH)
+                            assist.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
                             try {
                                 context.startActivity(assist)
                             } catch (e: Exception) {
-                                assist.action = "android.intent.action.VOICE_ASSIST"
+                                assist.action = RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE
 
                                 try {
                                     context.startActivity(assist)
                                 } catch (e: Exception) {
-                                    assist.action = Intent.ACTION_VOICE_COMMAND
+                                    assist.action = "android.intent.action.VOICE_ASSIST"
 
                                     try {
                                         context.startActivity(assist)
                                     } catch (e: Exception) {
-                                        assist.action = Intent.ACTION_ASSIST
+                                        assist.action = Intent.ACTION_VOICE_COMMAND
 
                                         try {
                                             context.startActivity(assist)
                                         } catch (e: Exception) {
-                                            val searchMan = context.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+                                            assist.action = Intent.ACTION_ASSIST
 
-                                            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-                                                try {
-                                                    searchMan.launchAssist()
-                                                } catch (e: Exception) {
+                                            try {
+                                                context.startActivity(assist)
+                                            } catch (e: Exception) {
+                                                val searchMan = context.getSystemService(Context.SEARCH_SERVICE) as SearchManager
 
-                                                    searchMan.launchLegacyAssist()
+                                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                                                    try {
+                                                        searchMan.launchAssist()
+                                                    } catch (e: Exception) {
+
+                                                        searchMan.launchLegacyAssist()
+                                                    }
+                                                } else {
+                                                    val launchAssistAction = searchMan::class.java
+                                                            .getMethod("launchAssistAction", Int::class.java, String::class.java, Int::class.java)
+                                                    launchAssistAction.invoke(searchMan, 1, null, -2)
                                                 }
-                                            } else {
-                                                val launchAssistAction = searchMan::class.java
-                                                        .getMethod("launchAssistAction", Int::class.java, String::class.java, Int::class.java)
-                                                launchAssistAction.invoke(searchMan, 1, null, -2)
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                    actionHolder.typeOhm -> {
-                        val ohm = Intent("com.xda.onehandedmode.intent.action.TOGGLE_OHM")
-                        ohm.setClassName("com.xda.onehandedmode", "com.xda.onehandedmode.receivers.OHMReceiver")
-                        context.sendBroadcast(ohm)
-                    }
-                    actionHolder.typeHome -> {
-                        val homeIntent = Intent(Intent.ACTION_MAIN)
-                        homeIntent.addCategory(Intent.CATEGORY_HOME)
-                        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        context.startActivity(homeIntent)
-                    }
-                    actionHolder.premTypePlayPause -> context.runPremiumAction {
-                        audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
-                        audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
-                    }
-                    actionHolder.premTypePrev -> context.runPremiumAction {
-                        audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-                        audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-                    }
-                    actionHolder.premTypeNext -> context.runPremiumAction {
-                        audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
-                        audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
-                    }
-                    actionHolder.premTypeSwitchIme -> context.runPremiumAction {
-                        imm.showInputMethodPicker()
-                    }
-                    actionHolder.premTypeLaunchApp -> context.runPremiumAction {
-                        val launchPackage = context.app.prefManager.getPackage(key)
+                        actionHolder.typeOhm -> {
+                            val ohm = Intent("com.xda.onehandedmode.intent.action.TOGGLE_OHM")
+                            ohm.setClassName("com.xda.onehandedmode", "com.xda.onehandedmode.receivers.OHMReceiver")
+                            context.sendBroadcast(ohm)
+                        }
+                        actionHolder.typeHome -> {
+                            val homeIntent = Intent(Intent.ACTION_MAIN)
+                            homeIntent.addCategory(Intent.CATEGORY_HOME)
+                            homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            context.startActivity(homeIntent)
+                        }
+                        actionHolder.premTypePlayPause -> context.runPremiumAction {
+                            audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
+                            audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
+                        }
+                        actionHolder.premTypePrev -> context.runPremiumAction {
+                            audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+                            audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
+                        }
+                        actionHolder.premTypeNext -> context.runPremiumAction {
+                            audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
+                            audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
+                        }
+                        actionHolder.premTypeSwitchIme -> context.runPremiumAction {
+                            imm.showInputMethodPicker()
+                        }
+                        actionHolder.premTypeLaunchApp -> context.runPremiumAction {
+                            val launchPackage = context.app.prefManager.getPackage(key)
 
-                        if (launchPackage != null) {
-                            val launch = Intent(Intent.ACTION_MAIN)
-                            launch.addCategory(Intent.CATEGORY_LAUNCHER)
+                            if (launchPackage != null) {
+                                val launch = Intent(Intent.ACTION_MAIN)
+                                launch.addCategory(Intent.CATEGORY_LAUNCHER)
+                                launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                launch.`package` = launchPackage.split("/")[0]
+                                launch.component = ComponentName(launch.`package`!!, launchPackage.split("/")[1])
+
+                                try {
+                                    context.startActivity(launch)
+                                } catch (e: Exception) {
+                                }
+                            }
+                        }
+                        actionHolder.premTypeLaunchActivity -> context.runPremiumAction {
+                            val activity = context.prefManager.getActivity(key)
+                                    ?: return@runPremiumAction
+
+                            val p = activity.split("/")[0]
+                            val c = activity.split("/")[1]
+
+                            val launch = Intent()
+                            launch.component = ComponentName(p, c)
                             launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            launch.`package` = launchPackage.split("/")[0]
-                            launch.component = ComponentName(launch.`package`!!, launchPackage.split("/")[1])
 
                             try {
                                 context.startActivity(launch)
                             } catch (e: Exception) {
                             }
                         }
-                    }
-                    actionHolder.premTypeLaunchActivity -> context.runPremiumAction {
-                        val activity = context.prefManager.getActivity(key)
-                                ?: return@runPremiumAction
+                        actionHolder.premTypeLaunchShortcut -> context.runPremiumAction {
+                            try {
+                                val shortcut = context.prefManager.getShortcut(key)
+                                        ?: return@runPremiumAction
+                                val intent = (shortcut.intent ?: return@runPremiumAction).clone() as Intent
 
-                        val p = activity.split("/")[0]
-                        val c = activity.split("/")[1]
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-                        val launch = Intent()
-                        launch.component = ComponentName(p, c)
-                        launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-                        try {
-                            context.startActivity(launch)
-                        } catch (e: Exception) {
-                        }
-                    }
-                    actionHolder.premTypeLaunchShortcut -> context.runPremiumAction {
-                        try {
-                            val shortcut = context.prefManager.getShortcut(key)
-                                    ?: return@runPremiumAction
-                            val intent = (shortcut.intent ?: return@runPremiumAction).clone() as Intent
-
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-                            context.startActivity(intent)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                    actionHolder.premTypeLockScreen -> context.runPremiumAction {
-                        context.runSystemSettingsAction {
-                            if (context.app.prefManager.useRoot
-                                    && Shell.rootAccess()) {
-                                context.app.rootWrapper.actions?.lockScreen()
-                            } else {
-                                ActionReceiver.turnScreenOff(context)
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
                         }
-                    }
-                    actionHolder.premTypeScreenshot -> context.runPremiumAction {
-                        val screenshot = Intent(context, ScreenshotActivity::class.java)
-                        screenshot.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        context.startActivity(screenshot)
-                    }
-                    actionHolder.premTypeRot -> context.runPremiumAction {
-                        context.runSystemSettingsAction {
-                            orientationEventListener.enable()
-                        }
-                    }
-                    actionHolder.premTypeTaskerEvent -> context.runPremiumAction {
-                        EventConfigureActivity::class.java.requestQuery(context, EventUpdate(key))
-                    }
-                    actionHolder.typeToggleNav -> {
-                        ActionReceiver.toggleNav(context)
-                    }
-                    actionHolder.premTypeFlashlight -> context.runPremiumAction {
-                        flashlightController.flashlightEnabled = !flashlightController.flashlightEnabled
-                    }
-                    actionHolder.premTypeVolumePanel -> context.runPremiumAction {
-                        audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
-                    }
-                    actionHolder.premTypeBluetooth -> context.runPremiumAction {
-                        val adapter = BluetoothAdapter.getDefaultAdapter()
-                        if (adapter.isEnabled) adapter.disable() else adapter.enable()
-                    }
-                    actionHolder.premTypeWiFi -> context.runPremiumAction {
-                        wifiManager.isWifiEnabled = !wifiManager.isWifiEnabled
-                    }
-                    actionHolder.premTypeIntent -> context.runPremiumAction {
-                        val broadcast = IntentSelectorActivity.INTENTS[context.app.prefManager.getIntentKey(key)]
-                        val type = broadcast?.which
-
-                        try {
-                            when (type) {
-                                IntentSelectorActivity.ACTIVITY -> {
-                                    broadcast.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    context.startActivity(broadcast)
-                                }
-                                IntentSelectorActivity.SERVICE -> ContextCompat.startForegroundService(context, broadcast)
-                                IntentSelectorActivity.BROADCAST -> context.sendBroadcast(broadcast)
-                            }
-                        } catch (e: SecurityException) {
-                            when (broadcast?.action) {
-                                MediaStore.ACTION_VIDEO_CAPTURE,
-                                MediaStore.ACTION_IMAGE_CAPTURE -> {
-                                    RequestPermissionsActivity.createAndStart(context,
-                                            arrayOf(Manifest.permission.CAMERA),
-                                            ComponentName(context, BarView::class.java),
-                                            Bundle().apply {
-                                                putInt(Actions.EXTRA_ACTION, which)
-                                                putString(Actions.EXTRA_GESTURE, key)
-                                            }
-                                    )
+                        actionHolder.premTypeLockScreen -> context.runPremiumAction {
+                            context.runSystemSettingsAction {
+                                if (context.app.prefManager.useRoot
+                                        && Shell.rootAccess()) {
+                                    context.app.rootWrapper.actions?.lockScreen()
+                                } else {
+                                    ActionReceiver.turnScreenOff(context)
                                 }
                             }
-                        } catch (e: ActivityNotFoundException) {
-                            Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
                         }
-                    }
-                    actionHolder.premTypeBatterySaver -> {
-                        context.runPremiumAction {
-                            context.runSecureSettingsAction {
-                                val current = Settings.Global.getInt(context.contentResolver, "low_power", 0)
-                                Settings.Global.putInt(context.contentResolver, "low_power", if (current == 0) 1 else 0)
+                        actionHolder.premTypeScreenshot -> context.runPremiumAction {
+                            val screenshot = Intent(context, ScreenshotActivity::class.java)
+                            screenshot.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            context.startActivity(screenshot)
+                        }
+                        actionHolder.premTypeRot -> context.runPremiumAction {
+                            context.runSystemSettingsAction {
+                                orientationEventListener.enable()
                             }
                         }
+                        actionHolder.premTypeTaskerEvent -> context.runPremiumAction {
+                            EventConfigureActivity::class.java.requestQuery(context, EventUpdate(key))
+                        }
+                        actionHolder.typeToggleNav -> {
+                            ActionReceiver.toggleNav(context)
+                        }
+                        actionHolder.premTypeFlashlight -> context.runPremiumAction {
+                            flashlightController.flashlightEnabled = !flashlightController.flashlightEnabled
+                        }
+                        actionHolder.premTypeVolumePanel -> context.runPremiumAction {
+                            audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
+                        }
+                        actionHolder.premTypeBluetooth -> context.runPremiumAction {
+                            val adapter = BluetoothAdapter.getDefaultAdapter()
+                            if (adapter.isEnabled) adapter.disable() else adapter.enable()
+                        }
+                        actionHolder.premTypeWiFi -> context.runPremiumAction {
+                            wifiManager.isWifiEnabled = !wifiManager.isWifiEnabled
+                        }
+                        actionHolder.premTypeIntent -> context.runPremiumAction {
+                            val broadcast = IntentSelectorActivity.INTENTS[context.app.prefManager.getIntentKey(key)]
+                            val type = broadcast?.which
+
+                            try {
+                                when (type) {
+                                    IntentSelectorActivity.ACTIVITY -> {
+                                        broadcast.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        context.startActivity(broadcast)
+                                    }
+                                    IntentSelectorActivity.SERVICE -> ContextCompat.startForegroundService(context, broadcast)
+                                    IntentSelectorActivity.BROADCAST -> context.sendBroadcast(broadcast)
+                                }
+                            } catch (e: SecurityException) {
+                                when (broadcast?.action) {
+                                    MediaStore.ACTION_VIDEO_CAPTURE,
+                                    MediaStore.ACTION_IMAGE_CAPTURE -> {
+                                        RequestPermissionsActivity.createAndStart(context,
+                                                arrayOf(Manifest.permission.CAMERA),
+                                                ComponentName(context, BarView::class.java),
+                                                Bundle().apply {
+                                                    putInt(Actions.EXTRA_ACTION, which)
+                                                    putString(Actions.EXTRA_GESTURE, key)
+                                                }
+                                        )
+                                    }
+                                }
+                            } catch (e: ActivityNotFoundException) {
+                                Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        actionHolder.premTypeBatterySaver -> {
+                            context.runPremiumAction {
+                                context.runSecureSettingsAction {
+                                    val current = Settings.Global.getInt(context.contentResolver, "low_power", 0)
+                                    Settings.Global.putInt(context.contentResolver, "low_power", if (current == 0) 1 else 0)
+                                }
+                            }
+                        }
+                        actionHolder.premTypeScreenTimeout -> {
+                            context.runPremiumAction { ActionReceiver.toggleScreenOn(context) }
+                        }
+                        actionHolder.premTypeNotif -> context.runPremiumAction {
+                            expandNotificationsPanel()
+                        }
+                        actionHolder.premTypeQs -> context.runPremiumAction {
+                            expandSettingsPanel()
+                        }
+                        actionHolder.premTypeVibe -> {
+                            //TODO: Implement
+                        }
+                        actionHolder.premTypeSilent -> {
+                            //TODO: Implement
+                        }
+                        actionHolder.premTypeMute -> {
+                            //TODO: Implement
+                        }
                     }
-                    actionHolder.premTypeScreenTimeout -> {
-                        context.runPremiumAction { ActionReceiver.toggleScreenOn(context) }
-                    }
-                    actionHolder.premTypeNotif -> context.runPremiumAction {
-                        expandNotificationsPanel()
-                    }
-                    actionHolder.premTypeQs -> context.runPremiumAction {
-                        expandSettingsPanel()
-                    }
-                    actionHolder.premTypeVibe -> {
-                        //TODO: Implement
-                    }
-                    actionHolder.premTypeSilent -> {
-                        //TODO: Implement
-                    }
-                    actionHolder.premTypeMute -> {
-                        //TODO: Implement
-                    }
+                } catch (e: Exception) {
+                    Toast.makeText(context, R.string.unable_to_execute_action, Toast.LENGTH_SHORT).show()
                 }
             }
         }

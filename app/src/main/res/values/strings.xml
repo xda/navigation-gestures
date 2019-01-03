@@ -210,6 +210,7 @@
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="unable_to_launch">Unable to launch target.</string>
     <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
+    <string name="unable_to_execute_action">Unable to execute action.</string>
 
     <!--Libraries-->
     <string name="material_intro">Material Intro (Fork)</string>
