@@ -594,7 +594,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     fun vibrate(duration: Long) {
         handler?.post {
             if (isSoundEffectsEnabled) {
-                playSoundEffect(SoundEffectConstants.CLICK)
+                try {
+                    playSoundEffect(SoundEffectConstants.CLICK)
+                } catch (e: Exception) {}
             }
         }
 
