@@ -1017,16 +1017,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             }
                         }
                     } else {
-//                        if (which == actionHolder.typeHome
-//                                && context.app.prefManager.useAlternateHome) {
-//                            handleAction(which, key)
-//                        } else {
-//                            val options = Bundle()
-//                            options.putInt(Actions.EXTRA_ACTION, which)
-//                            options.putString(Actions.EXTRA_GESTURE, key)
-//
-//                            Actions.sendAction(context, Actions.ACTION, options)
-//                        }
+                        val options = Bundle()
+                        options.putInt(Actions.EXTRA_ACTION, which)
+                        options.putString(Actions.EXTRA_GESTURE, key)
+
+                        Actions.sendAction(context, Actions.ACTION, options)
                     }
                 } else {
                     handleAction(which, key)
