@@ -329,7 +329,7 @@ fun Drawable.toBitmapDrawable(resources: Resources): BitmapDrawable? {
 
 fun BarView.isAccessibilityAction(action: Int): Boolean {
     return arrayListOf(
-            actionHolder.typeHome,
+//            actionHolder.typeHome,
             actionHolder.typeRecents,
             actionHolder.typeBack,
             actionHolder.typeSwitch,
