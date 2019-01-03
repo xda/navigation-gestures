@@ -1,12 +1,13 @@
 package com.xda.nobar.prefs
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.widget.ImageView
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
-import androidx.preference.PreferenceGroup
+import androidx.preference.PreferenceManager
 import androidx.preference.PreferenceViewHolder
 import com.xda.nobar.R
 
@@ -15,18 +16,20 @@ class CollapsiblePreferenceCategory(context: Context, attributeSet: AttributeSet
         set(value) {
             field = value
 
+            wrappedGroup.isVisible = value
+
             if (!value) {
                 generateSummary()
-                super.removeAll()
             } else {
                 summary = null
-                wrappedPrefs.forEach {
-                    super.addPreference(it)
-                }
             }
         }
 
-    private val wrappedPrefs = ArrayList<Preference>()
+    private val wrappedGroup = object : PreferenceCategory(context) {
+        init {
+            layoutResource = R.layout.zero_height_pref
+        }
+    }
 
     init {
         layoutResource = R.layout.pref_cat_collapsible
@@ -34,6 +37,14 @@ class CollapsiblePreferenceCategory(context: Context, attributeSet: AttributeSet
 
         val array = context.theme.obtainStyledAttributes(attributeSet, R.styleable.CollapsiblePreferenceCategory, 0, 0)
         expanded = array.getBoolean(R.styleable.CollapsiblePreferenceCategory_default_expanded, expanded)
+    }
+
+    @SuppressLint("RestrictedApi")
+    override fun onAttachedToHierarchy(preferenceManager: PreferenceManager?) {
+        super.onAttachedToHierarchy(preferenceManager)
+
+        if (!wrappedGroup.isAttached)
+            super.addPreference(wrappedGroup)
     }
 
     override fun onAttached() {
@@ -54,44 +65,35 @@ class CollapsiblePreferenceCategory(context: Context, attributeSet: AttributeSet
     }
 
     override fun addPreference(preference: Preference): Boolean {
-        wrappedPrefs.add(preference)
-        return if (expanded) super.addPreference(preference)
-        else false
+        return wrappedGroup.addPreference(preference)
     }
 
     override fun removePreference(preference: Preference): Boolean {
-        wrappedPrefs.remove(preference)
-        return if (expanded) super.removePreference(preference)
-        else false
+        return wrappedGroup.removePreference(preference)
     }
 
     override fun getPreference(index: Int): Preference {
-        return wrappedPrefs[index]
+        return super.getPreference(index)
     }
 
     override fun findPreference(key: CharSequence): Preference? {
-        wrappedPrefs.forEach {
-            if (it.key == key) return it
-            else if (it is PreferenceGroup) {
-                val pref = it.findPreference(key)
-                if (pref != null) return pref
-            }
-        }
-
-        return null
+        return super.findPreference(key)
     }
 
     override fun getPreferenceCount(): Int {
-        return if (expanded) super.getPreferenceCount() else 0
+        return super.getPreferenceCount()
     }
 
     override fun removeAll() {
-        wrappedPrefs.clear()
         super.removeAll()
     }
 
     private fun generateSummary() {
-        val children = wrappedPrefs.map { it.title }
+        val children = ArrayList<String>()
+
+        for (i in 0 until wrappedGroup.preferenceCount) {
+            children.add(wrappedGroup.getPreference(i).title.toString())
+        }
 
         summary = TextUtils.join(", ", children)
     }
