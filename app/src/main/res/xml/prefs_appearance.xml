@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
         android:title="@string/color_prefs">
 
         <SwitchPreference
@@ -28,9 +28,9 @@
             app:cpv_allowCustom="true"
             />
 
-    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
-    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
         android:title="@string/dimension_prefs"
         android:key="dimens">
 
@@ -100,9 +100,9 @@
             android:key="custom_height"
             />
 
-    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
-    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
         android:title="@string/position_prefs"
         android:key="position">
 
@@ -162,6 +162,6 @@
             android:key="custom_y"
             />
 
-    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
 </PreferenceScreen>

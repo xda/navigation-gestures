@@ -16,8 +16,4 @@
     <declare-styleable name="PixelDPSwitch">
         <attr name="dimension_name" format="string|reference" />
     </declare-styleable>
-
-    <declare-styleable name="CollapsiblePreferenceCategory">
-        <attr name="default_expanded" format="boolean|reference" />
-    </declare-styleable>
 </resources>

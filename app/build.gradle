@@ -69,6 +69,7 @@ dependencies {
     implementation 'com.github.zacharee:material-intro:7c39514ec5'
     implementation 'com.github.zacharee:colorpicker:4b78682602'
     implementation 'com.github.zacharee:material:a2ab4a2d3c'
+    implementation 'com.github.zacharee:CollapsiblePreferenceCategory:79d5b49d67'
     implementation project(':seekbar')
 
     //Other

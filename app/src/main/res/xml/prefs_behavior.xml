@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
         android:title="@string/general">
 
         <SwitchPreference
@@ -28,9 +28,9 @@
             android:defaultValue="@bool/static_pill_default"
             />
 
-    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
-    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
         android:title="@string/pill_hiding">
 
         <com.xda.nobar.prefs.SeekBarSwitchPreference
@@ -69,9 +69,9 @@
             android:defaultValue="@bool/car_mode_default"
             />
 
-    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
-    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
         android:title="@string/blacklisting">
 
         <SwitchPreference
@@ -95,9 +95,9 @@
             android:key="bar_blacklist"
             />
 
-    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
-    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
         android:title="@string/durations">
 
         <tk.zwander.seekbarpreference.SeekBarPreference
@@ -129,9 +129,9 @@
             android:defaultValue="@integer/default_hold_time"
             />
 
-    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
-    <com.xda.nobar.prefs.CollapsiblePreferenceCategory
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
         android:title="@string/sensitivity">
 
         <SwitchPreference
@@ -171,6 +171,6 @@
             android:key="y_threshold_down"
             />
 
-    </com.xda.nobar.prefs.CollapsiblePreferenceCategory>
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
 </PreferenceScreen>
