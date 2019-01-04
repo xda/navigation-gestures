@@ -4,6 +4,9 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceScreen
+import androidx.recyclerview.widget.RecyclerView
+import com.xda.nobar.adapters.prefs.CollapsiblePreferenceGroupAdapter
 import com.xda.nobar.util.prefManager
 
 abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -23,5 +26,9 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
         super.onDestroy()
 
         preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onCreateAdapter(preferenceScreen: PreferenceScreen): RecyclerView.Adapter<*> {
+        return CollapsiblePreferenceGroupAdapter(preferenceScreen)
     }
 }

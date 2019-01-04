@@ -29,6 +29,13 @@ class CollapsiblePreferenceCategory(context: Context, attributeSet: AttributeSet
         init {
             layoutResource = R.layout.zero_height_pref
         }
+
+        override fun onBindViewHolder(holder: PreferenceViewHolder) {
+            super.onBindViewHolder(holder)
+
+            holder.isDividerAllowedAbove = false
+            holder.isDividerAllowedBelow = false
+        }
     }
 
     init {
@@ -70,22 +77,6 @@ class CollapsiblePreferenceCategory(context: Context, attributeSet: AttributeSet
 
     override fun removePreference(preference: Preference): Boolean {
         return wrappedGroup.removePreference(preference)
-    }
-
-    override fun getPreference(index: Int): Preference {
-        return super.getPreference(index)
-    }
-
-    override fun findPreference(key: CharSequence): Preference? {
-        return super.findPreference(key)
-    }
-
-    override fun getPreferenceCount(): Int {
-        return super.getPreferenceCount()
-    }
-
-    override fun removeAll() {
-        super.removeAll()
     }
 
     private fun generateSummary() {
