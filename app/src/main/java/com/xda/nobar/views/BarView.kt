@@ -1220,7 +1220,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                     }
                                 }
                             } catch (e: ActivityNotFoundException) {
-                                Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
+                                context.app.handler.post {
+                                    Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
                         actionHolder.premTypeBatterySaver -> {
