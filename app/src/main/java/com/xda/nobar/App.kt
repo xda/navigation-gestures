@@ -19,6 +19,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.crashlytics.android.Crashlytics
 import com.github.anrwatchdog.ANRWatchDog
 import com.topjohnwu.superuser.BusyBox
@@ -1022,6 +1023,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
         fun register() {
             val filter = IntentFilter()
             filter.addAction(RequestPermissionsActivity.ACTION_RESULT)
+            LocalBroadcastManager.getInstance(this@App)
+                    .registerReceiver(this, filter)
         }
 
         override fun onReceive(context: Context?, intent: Intent?) {

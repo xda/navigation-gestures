@@ -63,7 +63,7 @@ class RequestPermissionsActivity : AppCompatActivity() {
         if (requestCode == req) {
             val intent = Intent(ACTION_RESULT)
             intent.putExtra(EXTRA_RESULT_CODE, grantResults)
-            intent.putExtras(this.intent.extras ?: Bundle())
+            intent.putExtras(this.intent)
 
             sendBroadcast(intent, Manifest.permission.RECEIVE_BROADCAST)
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
