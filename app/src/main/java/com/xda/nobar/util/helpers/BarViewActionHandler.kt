@@ -301,4 +301,34 @@ class BarViewActionHandler(private val bar: BarView) {
             }
         }
     }
+
+    fun sendAccessibilityAction(which: Int, key: String) {
+        val options = Bundle()
+        options.putInt(Actions.EXTRA_ACTION, which)
+        options.putString(Actions.EXTRA_GESTURE, key)
+
+        Actions.sendAction(context, Actions.ACTION, options)
+    }
+
+    fun sendRootAction(which: Int, key: String) {
+        when (which) {
+            bar.actionHolder.typeHome -> context.app.rootWrapper.actions?.goHome()
+            bar.actionHolder.typeRecents -> context.app.rootWrapper.actions?.openRecents()
+            bar.actionHolder.typeBack -> context.app.rootWrapper.actions?.goBack()
+
+            bar.actionHolder.typeSwitch -> context.runNougatAction {
+                context.app.rootWrapper.actions?.switchApps()
+            }
+            bar.actionHolder.typeSplit -> context.runNougatAction {
+                context.app.rootWrapper.actions?.splitScreen()
+            }
+
+            bar.actionHolder.premTypePower -> context.runPremiumAction {
+                context.app.rootWrapper.actions?.openPowerMenu()
+            }
+            bar.actionHolder.premTypeLockScreen -> context.runPremiumAction {
+                context.app.rootWrapper.actions?.lockScreen()
+            }
+        }
+    }
 }

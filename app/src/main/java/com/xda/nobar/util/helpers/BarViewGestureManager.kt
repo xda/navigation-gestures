@@ -9,7 +9,6 @@ import android.view.MotionEvent
 import android.view.SoundEffectConstants
 import androidx.dynamicanimation.animation.DynamicAnimation
 import com.topjohnwu.superuser.Shell
-import com.xda.nobar.services.Actions
 import com.xda.nobar.util.*
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.BarView.Companion.ALPHA_ACTIVE
@@ -370,7 +369,9 @@ class BarViewGestureManager(private val bar: BarView) {
 
             vibrate(context.prefManager.vibrationDuration.toLong())
 
-            if (key == bar.actionHolder.actionDouble) bar.handler?.postDelayed({ vibrate(context.prefManager.vibrationDuration.toLong()) }, context.prefManager.vibrationDuration.toLong())
+            if (key == bar.actionHolder.actionDouble)
+                bar.handler?.postDelayed({ vibrate(context.prefManager.vibrationDuration.toLong()) },
+                        context.prefManager.vibrationDuration.toLong())
 
             if (which == bar.actionHolder.typeHide) {
                 bar.hidePill(false, null, true)
@@ -387,37 +388,22 @@ class BarViewGestureManager(private val bar: BarView) {
                 bar.actionHolder.actionDownHold -> bar.animator.jiggleDownHold()
             }
 
-            if (key == bar.actionHolder.actionUp || key == bar.actionHolder.actionLeft || key == bar.actionHolder.actionRight) {
+            if (key == bar.actionHolder.actionUp
+                    || key == bar.actionHolder.actionLeft
+                    || key == bar.actionHolder.actionRight) {
                 bar.animate(null, ALPHA_ACTIVE)
             }
 
             if (bar.isAccessibilityAction(which)) {
                 if (context.app.prefManager.useRoot && Shell.rootAccess()) {
-                    when (which) {
-                        bar.actionHolder.typeHome -> context.app.rootWrapper.actions?.goHome()
-                        bar.actionHolder.typeRecents -> context.app.rootWrapper.actions?.openRecents()
-                        bar.actionHolder.typeBack -> context.app.rootWrapper.actions?.goBack()
-
-                        bar.actionHolder.typeSwitch -> context.runNougatAction {
-                            context.app.rootWrapper.actions?.switchApps()
-                        }
-                        bar.actionHolder.typeSplit -> context.runNougatAction {
-                            context.app.rootWrapper.actions?.splitScreen()
-                        }
-
-                        bar.actionHolder.premTypePower -> context.runPremiumAction {
-                            context.app.rootWrapper.actions?.openPowerMenu()
-                        }
-                        bar.actionHolder.premTypeLockScreen -> context.runPremiumAction {
-                            context.app.rootWrapper.actions?.lockScreen()
-                        }
-                    }
+                    actionHandler.sendRootAction(which, key)
                 } else {
-                    val options = Bundle()
-                    options.putInt(Actions.EXTRA_ACTION, which)
-                    options.putString(Actions.EXTRA_GESTURE, key)
-
-                    Actions.sendAction(context, Actions.ACTION, options)
+                    if (which == bar.actionHolder.typeHome
+                            && !context.prefManager.useAlternateHome) {
+                        actionHandler.handleAction(which, key)
+                    } else {
+                        actionHandler.sendAccessibilityAction(which, key)
+                    }
                 }
             } else {
                 actionHandler.handleAction(which, key)
