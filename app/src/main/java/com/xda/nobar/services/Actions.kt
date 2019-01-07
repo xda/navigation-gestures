@@ -64,6 +64,9 @@ class Actions : AccessibilityService(), ReceiverCallback {
         when(intent?.action) {
             ACTION -> {
                 when (intent.getIntExtra(EXTRA_ACTION, actionHolder.typeNoAction)) {
+                    actionHolder.typeHome -> {
+                        performGlobalAction(GLOBAL_ACTION_HOME)
+                    }
                     actionHolder.typeRecents -> {
                         performGlobalAction(GLOBAL_ACTION_RECENTS)
                     }
