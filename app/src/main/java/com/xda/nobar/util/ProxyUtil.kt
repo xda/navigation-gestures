@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.graphics.Rect
 import android.hardware.input.InputManager
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.os.UserHandle
 import android.view.Display
 import android.view.InputEvent
 import android.view.inputmethod.InputMethodManager
@@ -94,13 +94,24 @@ val iPackageManager: Any
 fun grantPermission(permission: String): Boolean {
     val iPM = iPackageManager
 
-    val grantRuntimePermission = iPM::class.java
-            .getMethod("grantRuntimePermission", String::class.java,
-                    String::class.java, UserHandle::class.java)
+    return try {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            val grantRuntimePermission = iPM::class.java
+                    .getMethod("grantRuntimePermission", String::class.java,
+                            String::class.java, Int::class.java)
 
-    val userCurrent =
-            UserHandle::class.java.getConstructor(Int::class.java).newInstance(-2)
+            grantRuntimePermission
+                    .invoke(iPM, BuildConfig.APPLICATION_ID, permission, -2)
+        } else {
+            val grantPermission = iPM::class.java
+                    .getMethod("grantPermission", String::class.java, String::class.java)
 
-    return grantRuntimePermission
-            .invoke(iPM, BuildConfig.APPLICATION_ID, permission, userCurrent) as Boolean
+            grantPermission
+                    .invoke(iPM, BuildConfig.APPLICATION_ID, permission)
+        }
+
+        true
+    } catch (e: Exception) {
+        false
+    }
 }
