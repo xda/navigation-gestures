@@ -1,7 +1,7 @@
 package com.xda.nobar.adapters.info
 
-import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Simple helper class that contains relevant app information
@@ -11,22 +11,14 @@ import android.os.Parcelable
  * @param displayName the display name of the app
  * @param isChecked whether or not this item should appear as checked in a list
  */
-open class AppInfo(val packageName: String, val activity: String, val displayName: String, val icon: Int, var isChecked: Boolean) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString()!!,
-            parcel.readString()!!,
-            parcel.readString()!!,
-            parcel.readInt(),
-            parcel.readInt() == 1)
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(packageName)
-        dest.writeString(activity)
-        dest.writeString(displayName)
-        dest.writeInt(icon)
-        dest.writeInt(if (isChecked) 1 else 0)
-    }
-
+@Parcelize
+open class AppInfo(
+        val packageName: String,
+        val activity: String,
+        val displayName: String,
+        val icon: Int,
+        var isChecked: Boolean
+) : Parcelable {
     override fun describeContents(): Int {
         return 0
     }
@@ -48,15 +40,5 @@ open class AppInfo(val packageName: String, val activity: String, val displayNam
         result = 31 * result + icon
         result = 31 * result + isChecked.hashCode()
         return result
-    }
-
-    companion object CREATOR : Parcelable.Creator<AppInfo> {
-        override fun createFromParcel(parcel: Parcel): AppInfo {
-            return AppInfo(parcel)
-        }
-
-        override fun newArray(size: Int): Array<AppInfo?> {
-            return arrayOfNulls(size)
-        }
     }
 }

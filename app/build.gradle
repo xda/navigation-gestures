@@ -44,6 +44,10 @@ android {
     }
 }
 
+androidExtensions {
+    experimental = true
+}
+
 static def getDate() {
     return new Date().format('yy_MM_dd_HHmm_ss')
 }
