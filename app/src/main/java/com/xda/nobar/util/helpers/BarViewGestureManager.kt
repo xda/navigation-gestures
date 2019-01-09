@@ -399,10 +399,10 @@ class BarViewGestureManager(private val bar: BarView) {
                     actionHandler.sendRootAction(which, key)
                 } else {
                     if (which == bar.actionHolder.typeHome
-                            && !context.prefManager.useAlternateHome) {
-                        actionHandler.sendAccessibilityAction(which, key)
-                    } else {
+                            && context.prefManager.useAlternateHome) {
                         actionHandler.handleAction(which, key)
+                    } else {
+                        actionHandler.sendAccessibilityAction(which, key)
                     }
                 }
             } else {
