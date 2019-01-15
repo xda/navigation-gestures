@@ -1,3 +1,1 @@
-include ':app', ':seekbar'
-
-project(':seekbar').projectDir = file('/mnt/AA387BDB387BA54B/StudioProjects/SeekBarPreference/library/')
+include ':app'

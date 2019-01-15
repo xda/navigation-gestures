@@ -41,10 +41,10 @@ class MainFragment : PreferenceFragmentCompat() {
             true
         }
 
-        findPreference("gestures").onPreferenceClickListener = listener
-        findPreference("appearance").onPreferenceClickListener = listener
-        findPreference("behavior").onPreferenceClickListener = listener
-        findPreference("compatibility").onPreferenceClickListener = listener
-        findPreference("experimental").onPreferenceClickListener = listener
+        findPreference<Preference>("gestures").onPreferenceClickListener = listener
+        findPreference<Preference>("appearance").onPreferenceClickListener = listener
+        findPreference<Preference>("behavior").onPreferenceClickListener = listener
+        findPreference<Preference>("compatibility").onPreferenceClickListener = listener
+        findPreference<Preference>("experimental").onPreferenceClickListener = listener
     }
 }

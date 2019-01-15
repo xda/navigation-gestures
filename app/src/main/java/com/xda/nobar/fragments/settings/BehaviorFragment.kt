@@ -20,8 +20,8 @@ class BehaviorFragment : BasePrefFragment() {
     }
 
     private fun setBlacklistListeners() {
-        val barBL = findPreference("bar_blacklist")
-        val navBL = findPreference("nav_blacklist")
+        val barBL = findPreference<Preference>("bar_blacklist")
+        val navBL = findPreference<Preference>("nav_blacklist")
 
         val listener = Preference.OnPreferenceClickListener {
             val which = when (it.key) {

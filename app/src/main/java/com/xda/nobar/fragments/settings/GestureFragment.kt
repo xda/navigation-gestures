@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceGroup
 import androidx.preference.SwitchPreference
@@ -35,8 +36,8 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
     private val actionHolder by lazy { activity!!.actionHolder }
 
     private val sectionedCategory by lazy { findPreference("section_gestures") as PreferenceCategory }
-    private val swipeUp by lazy { findPreference("up") }
-    private val swipeUpHold by lazy { findPreference("up_hold") }
+    private val swipeUp by lazy { findPreference<Preference>("up") }
+    private val swipeUpHold by lazy { findPreference<Preference>("up_hold") }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -265,7 +266,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
     }
 
     private fun updateActivityLaunchSummary(key: String, activityName: String) {
-        findPreference(key)?.apply {
+        findPreference<Preference?>(key)?.apply {
             summary = String.format(
                     Locale.getDefault(),
                     resources.getString(R.string.prem_launch_activity),
@@ -275,7 +276,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
     }
 
     private fun updateAppLaunchSummary(key: String, appName: String) {
-        findPreference(key)?.apply {
+        findPreference<Preference?>(key)?.apply {
             summary = String.format(
                     Locale.getDefault(),
                     resources.getString(R.string.prem_launch_app),
@@ -287,7 +288,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
     private fun updateIntentSummary(key: String, res: Int) {
         if (res < 1) return
 
-        findPreference(key)?.apply {
+        findPreference<Preference?>(key)?.apply {
             summary = String.format(
                     Locale.getDefault(),
                     resources.getString(R.string.prem_intent),
@@ -297,7 +298,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
     }
 
     private fun updateShortcutSummary(key: String, shortcut: ShortcutInfo) {
-        findPreference(key)?.apply {
+        findPreference<Preference?>(key)?.apply {
             summary = String.format(
                     Locale.getDefault(),
                     resources.getString(R.string.prem_launch_shortcut),

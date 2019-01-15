@@ -21,9 +21,9 @@ class LibraryActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
         supportFragmentManager
-                ?.beginAnimatedTransaction()
-                ?.replace(R.id.content, LibraryPrefs())
-                ?.commit()
+                .beginAnimatedTransaction()
+                .replace(R.id.content, LibraryPrefs())
+                .commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

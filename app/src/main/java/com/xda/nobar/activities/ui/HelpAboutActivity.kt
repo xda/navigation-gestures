@@ -20,9 +20,9 @@ class HelpAboutActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         supportFragmentManager
-                ?.beginAnimatedTransaction()
-                ?.replace(R.id.content, HelpFragment())
-                ?.commit()
+                .beginAnimatedTransaction()
+                .replace(R.id.content, HelpFragment())
+                .commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

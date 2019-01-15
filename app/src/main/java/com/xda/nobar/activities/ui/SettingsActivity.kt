@@ -25,10 +25,10 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
         supportFragmentManager
-                ?.beginAnimatedTransaction()
-                ?.replace(R.id.content, MainFragment())
-                ?.addToBackStack("main")
-                ?.commit()
+                .beginAnimatedTransaction()
+                .replace(R.id.content, MainFragment())
+                .addToBackStack("main")
+                .commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -46,13 +46,9 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun handleBackPressed() {
-        if (supportFragmentManager != null) {
-            if (supportFragmentManager.backStackEntryCount > 1) {
-                supportFragmentManager
-                        .popBackStack()
-            } else {
-                finish()
-            }
+        if (supportFragmentManager.backStackEntryCount > 1) {
+            supportFragmentManager
+                    .popBackStack()
         } else {
             finish()
         }

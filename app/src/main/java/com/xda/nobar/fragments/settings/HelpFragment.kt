@@ -4,6 +4,7 @@ import android.content.*
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.crashlytics.android.Crashlytics
@@ -31,7 +32,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun fillInVersion() {
-        val pref = findPreference("version")
+        val pref = findPreference<Preference>("version")
 
         pref.summary = BuildConfig.VERSION_NAME
         pref.setOnPreferenceClickListener {
@@ -52,7 +53,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun addTutorialListener() {
-        val pref = findPreference("tutorial_video")
+        val pref = findPreference<Preference>("tutorial_video")
 
         pref.setOnPreferenceClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
@@ -64,7 +65,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun addEmailListener() {
-        val pref = findPreference("email_us")
+        val pref = findPreference<Preference>("email_us")
 
         pref.setOnPreferenceClickListener {
             val intent = Intent(Intent.ACTION_SENDTO)
@@ -84,7 +85,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun addThreadListener() {
-        val pref = findPreference("xda_thread")
+        val pref = findPreference<Preference>("xda_thread")
         val intent = Intent(Intent.ACTION_VIEW)
 
         intent.data = Uri.parse("https://forum.xda-developers.com/android/apps-games/official-xda-navigation-gestures-iphone-t3792361")
@@ -96,7 +97,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun addOtherAppsListener() {
-        val pref = findPreference("other_apps")
+        val pref = findPreference<Preference>("other_apps")
         val intent = Intent(Intent.ACTION_VIEW)
 
         intent.data = Uri.parse("https://play.google.com/store/apps/developer?id=XDA")
@@ -108,7 +109,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun addPremiumListener() {
-        val pref = findPreference("buy_premium")
+        val pref = findPreference<Preference>("buy_premium")
         val intent = Intent(Intent.ACTION_VIEW)
 
         intent.data = Uri.parse("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
@@ -120,7 +121,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun addLibListener() {
-        val pref = findPreference("libraries")
+        val pref = findPreference<Preference>("libraries")
         val intent = Intent(activity, LibraryActivity::class.java)
 
         pref.setOnPreferenceClickListener {
@@ -131,7 +132,7 @@ class HelpFragment : PreferenceFragmentCompat() {
 
     private fun crashlyticsStuff() {
         val switch = findPreference("enable_crashlytics_id") as SwitchPreference
-        val id = findPreference("crashlytics_id")
+        val id = findPreference<Preference>("crashlytics_id")
 
         switch.setOnPreferenceChangeListener { _, newValue ->
             updateCrashlyticsId(newValue.toString().toBoolean())
@@ -155,7 +156,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun updateCrashlyticsId(enabled: Boolean) {
-        val id = findPreference("crashlytics_id")
+        val id = findPreference<Preference>("crashlytics_id")
 
         id.summary = if (enabled) activity!!.prefManager.crashlyticsId else ""
         Crashlytics.setUserIdentifier(id.summary.toString())

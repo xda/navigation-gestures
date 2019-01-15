@@ -3,6 +3,7 @@ package com.xda.nobar.fragments.settings
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
+import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.xda.nobar.R
 import com.xda.nobar.activities.selectors.BlacklistSelectorActivity
@@ -87,7 +88,7 @@ class CompatibilityFragment : BasePrefFragment() {
     private fun setUpImmersiveListeners() {
         val origNav = findPreference("orig_nav_in_immersive") as SwitchPreference
         val immNav = findPreference("use_immersive_mode_when_nav_hidden") as SwitchPreference
-        val immBL = findPreference("immersive_blacklist")
+        val immBL = findPreference<Preference>("immersive_blacklist")
 
         if (origNav.isChecked) {
             immNav.isChecked = false

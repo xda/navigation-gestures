@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.xda.nobar.Manifest
 
 /**
  * Use this activity to request permissions from a non-activity context
@@ -65,7 +64,6 @@ class RequestPermissionsActivity : AppCompatActivity() {
             intent.putExtra(EXTRA_RESULT_CODE, grantResults)
             intent.putExtras(this.intent)
 
-            sendBroadcast(intent, Manifest.permission.RECEIVE_BROADCAST)
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
         }
 
