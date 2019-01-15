@@ -181,6 +181,13 @@ val Context.realScreenSize: Point
         return Point().apply { display.getRealSize(this) }
     }
 
+val Context.rotation: Int
+    get() {
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+        return windowManager.defaultDisplay.rotation
+    }
+
 var Context.touchWizNavEnabled: Boolean
     get() = Settings.Global.getInt(contentResolver, "navigationbar_hide_bar_enabled", 0) == 0
     set(value) {

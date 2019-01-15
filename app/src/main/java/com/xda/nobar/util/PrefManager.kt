@@ -50,6 +50,7 @@ class PrefManager private constructor(private val context: Context) {
         const val LOCKSCREEN_OVERSCAN = "lockscreen_overscan"
         const val SHOW_NAV_WITH_KEYBOARD = "keyboard_nav"
         const val CONFIRMED_SKIP_WSS = "has_confirmed_skip_wss"
+        const val ANCHOR_PILL = "anchor_pill"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
@@ -161,6 +162,8 @@ class PrefManager private constructor(private val context: Context) {
         get() = getBoolean(SECTIONED_PILL, context.resources.getBoolean(R.bool.sectioned_pill_default))
     val hidePillWhenKeyboardShown: Boolean
         get() = getBoolean(HIDE_PILL_ON_KEYBOARD, context.resources.getBoolean(R.bool.hide_on_keyboard_default))
+    val anchorPill: Boolean
+        get() = getBoolean(ANCHOR_PILL, context.resources.getBoolean(R.bool.anchor_pill_default))
     var useImmersiveWhenNavHidden: Boolean
         get() = getBoolean(USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN, context.resources.getBoolean(R.bool.immersive_nav_default))
         set(value) {

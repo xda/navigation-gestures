@@ -5,16 +5,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.*
 import android.preference.PreferenceManager
 import android.util.AttributeSet
-import android.view.MotionEvent
-import android.view.SoundEffectConstants
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
@@ -59,20 +57,44 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var view: View = View.inflate(context, R.layout.pill, this)
     var shouldReAddOnDetach = false
 
-    val params = WindowManager.LayoutParams()
+    val params = WindowManager.LayoutParams().apply {
+        x = adjustedHomeX
+        y = adjustedHomeY
+        width = adjustedWidth
+        height = adjustedHeight
+        gravity = Gravity.CENTER or Gravity.TOP
+        type =
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                else
+                    WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
+        flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+        format = PixelFormat.TRANSLUCENT
+        softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+
+        if (context.prefManager.dontMoveForKeyboard) {
+            flags = flags and
+                    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+            softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+        }
+    }
     val hiddenPillReasons = HiddenPillReasonManager()
 
     val adjustedHomeY: Int
-        get() = if (isVertical) {
-            context.realScreenSize.y - context.prefManager.homeX - context.prefManager.customWidth
-        } else {
-            context.realScreenSize.y - context.prefManager.homeY - context.prefManager.customHeight
-        }
+        get() = if (context.prefManager.anchorPill) actualHomeX else actualHomeY
+
+    private val actualHomeY: Int
+        get() = context.realScreenSize.y - context.prefManager.homeY - context.prefManager.customHeight
 
     val zeroY: Int
-        get() = context.realScreenSize.y - context.prefManager.customHeight
+        get() = if (context.prefManager.anchorPill) 0 else context.realScreenSize.y - context.prefManager.customHeight
 
     val adjustedHomeX: Int
+        get() = if (context.prefManager.anchorPill) actualHomeY else actualHomeX
+
+    private val actualHomeX: Int
         get() {
             val diff = try {
                 val screenSize = context.realScreenSize
@@ -85,10 +107,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             return context.prefManager.homeX - if (immersiveNav && !context.prefManager.useTabletMode) (diff / 2f).toInt() else 0
         }
 
-    var isVertical = false
-        set(value) {
-            field = value
-        }
+    val adjustedWidth: Int
+        get() = context.prefManager.run { if (anchorPill) customHeight else customWidth }
+
+    val adjustedHeight: Int
+        get() = context.prefManager.run { if (anchorPill) customWidth else customHeight }
 
     private val horizontalGestureManager = BarViewGestureManagerHorizontal(this)
     private val verticalGestureManager = BarViewGestureManagerVertical(this)
@@ -118,20 +141,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         currentGestureDetector.loadActionMap()
         PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(this)
-        isSoundEffectsEnabled = context.app.prefManager.feedbackSound
+        isSoundEffectsEnabled = context.prefManager.feedbackSound
 
         val layers = pill.background as LayerDrawable
         (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-            setColor(context.app.prefManager.pillBGColor)
-            cornerRadius = context.app.prefManager.pillCornerRadiusPx.toFloat()
+            setColor(context.prefManager.pillBGColor)
+            cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
         }
         (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-            setStroke(context.dpAsPx(1), context.app.prefManager.pillFGColor)
-            cornerRadius = context.app.prefManager.pillCornerRadiusPx.toFloat()
+            setStroke(context.dpAsPx(1), context.prefManager.pillFGColor)
+            cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
         }
 
         (pill_tap_flash.background as GradientDrawable).apply {
-            cornerRadius = context.app.prefManager.pillCornerRadiusPx.toFloat()
+            cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
         }
 
         adjustPillShadow()
@@ -143,7 +166,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        if (context.app.prefManager.largerHitbox) {
+        if (context.prefManager.largerHitbox) {
             val margins = getPillMargins()
             margins.top = resources.getDimensionPixelSize(R.dimen.pill_margin_top_large_hitbox)
             changePillMargins(margins)
@@ -153,7 +176,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         show(null)
 
-        if (context.app.prefManager.autoHide) {
+        if (context.prefManager.autoHide) {
             hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
             scheduleHide()
         }
@@ -170,25 +193,29 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         if (key == PrefManager.IS_ACTIVE) {
-            if (!context.app.prefManager.isActive) {
+            if (!context.prefManager.isActive) {
                 currentGestureDetector.actionHandler.flashlightController.onDestroy()
             }
         }
 
+        if (key == PrefManager.ANCHOR_PILL) {
+            handleAnchorUpdate()
+        }
+
         if (key != null && key.contains("use_pixels")) {
-            params.width = context.app.prefManager.customWidth
-            params.height = context.app.prefManager.customHeight
+            params.width = adjustedWidth
+            params.height = adjustedHeight
             params.x = adjustedHomeX
             params.y = adjustedHomeY
             updateLayout(params)
         }
         if (key == PrefManager.CUSTOM_WIDTH_PERCENT || key == PrefManager.CUSTOM_WIDTH) {
-            params.width = context.app.prefManager.customWidth
+            params.width = adjustedWidth
             params.x = adjustedHomeX
             updateLayout(params)
         }
         if (key == PrefManager.CUSTOM_HEIGHT_PERCENT || key == PrefManager.CUSTOM_HEIGHT) {
-            params.height = context.app.prefManager.customHeight
+            params.height = adjustedHeight
             params.y = adjustedHomeY
             updateLayout(params)
         }
@@ -203,10 +230,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (key == PrefManager.PILL_BG || key == PrefManager.PILL_FG) {
             val layers = pill.background as LayerDrawable
             (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-                setColor(context.app.prefManager.pillBGColor)
+                setColor(context.prefManager.pillBGColor)
             }
             (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-                setStroke(context.dpAsPx(1), context.app.prefManager.pillFGColor)
+                setStroke(context.dpAsPx(1), context.prefManager.pillFGColor)
             }
         }
         if (key == PrefManager.SHOW_SHADOW) {
@@ -216,31 +243,31 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             setMoveForKeyboard(!context.prefManager.dontMoveForKeyboard)
         }
         if (key == PrefManager.AUDIO_FEEDBACK) {
-            isSoundEffectsEnabled = context.app.prefManager.feedbackSound
+            isSoundEffectsEnabled = context.prefManager.feedbackSound
         }
         if (key == PrefManager.PILL_CORNER_RADIUS) {
             val layers = pill.background as LayerDrawable
             (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-                cornerRadius = context.dpAsPx(context.app.prefManager.pillCornerRadiusDp).toFloat()
+                cornerRadius = context.dpAsPx(context.prefManager.pillCornerRadiusDp).toFloat()
             }
             (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-                cornerRadius = context.dpAsPx(context.app.prefManager.pillCornerRadiusDp).toFloat()
+                cornerRadius = context.dpAsPx(context.prefManager.pillCornerRadiusDp).toFloat()
             }
             (pill_tap_flash.background as GradientDrawable).apply {
-                cornerRadius = context.app.prefManager.pillCornerRadiusPx.toFloat()
+                cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
             }
         }
         if (key == PrefManager.LARGER_HITBOX) {
-            val enabled = context.app.prefManager.largerHitbox
+            val enabled = context.prefManager.largerHitbox
             val margins = getPillMargins()
-            params.height = context.app.prefManager.customHeight
+            params.height = context.prefManager.customHeight
             params.y = adjustedHomeY
             margins.top = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
             updateLayout(params)
             changePillMargins(margins)
         }
         if (key == PrefManager.AUTO_HIDE_PILL) {
-            if (context.app.prefManager.autoHide) {
+            if (context.prefManager.autoHide) {
                 hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
                 if (!isHidden) scheduleHide()
             } else {
@@ -387,9 +414,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private fun parseHideTime(reason: String) =
             when (reason) {
-                HiddenPillReasonManager.AUTO -> context.app.prefManager.autoHideTime.toLong()
-                HiddenPillReasonManager.FULLSCREEN -> context.app.prefManager.hideInFullscreenTime.toLong()
-                HiddenPillReasonManager.KEYBOARD -> context.app.prefManager.hideOnKeyboardTime.toLong()
+                HiddenPillReasonManager.AUTO -> context.prefManager.autoHideTime.toLong()
+                HiddenPillReasonManager.FULLSCREEN -> context.prefManager.hideInFullscreenTime.toLong()
+                HiddenPillReasonManager.KEYBOARD -> context.prefManager.hideOnKeyboardTime.toLong()
                 else -> throw IllegalArgumentException("$reason is not a valid hide reason")
             }
 
@@ -484,9 +511,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * Show a toast when the pill is hidden. Only shows once.
      */
     private fun showHiddenToast() {
-        if (context.app.prefManager.showHiddenToast) {
+        if (context.prefManager.showHiddenToast) {
             Toast.makeText(context, resources.getString(R.string.pill_hidden), Toast.LENGTH_LONG).show()
-            context.app.prefManager.showHiddenToast = false
+            context.prefManager.showHiddenToast = false
         }
     }
 
@@ -504,7 +531,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @return the duration, in ms
      */
     fun getAnimationDurationMs(): Long {
-        return context.app.prefManager.animationDurationMs.toLong()
+        return context.prefManager.animationDurationMs.toLong()
     }
 
     /**
@@ -512,7 +539,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     private fun animateActiveLayer(alpha: Float) {
         pill_tap_flash.apply {
-            val alphaRatio = Color.alpha(context.app.prefManager.pillBGColor).toFloat() / 255f
+            val alphaRatio = Color.alpha(context.prefManager.pillBGColor).toFloat() / 255f
             animate()
                     .setDuration(getAnimationDurationMs())
                     .alpha(alpha * alphaRatio)
@@ -521,9 +548,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private fun adjustPillShadow() {
-        pill.elevation = context.dpAsPx(if (context.app.prefManager.shouldShowShadow) 2 else 0).toFloat()
+        pill.elevation = context.dpAsPx(if (context.prefManager.shouldShowShadow) 2 else 0).toFloat()
         (pill.layoutParams as FrameLayout.LayoutParams).apply {
-            val shadow = context.app.prefManager.shouldShowShadow
+            val shadow = context.prefManager.shouldShowShadow
             marginEnd = if (shadow) context.dpAsPx(DEF_MARGIN_RIGHT_DP) else 0
             marginStart = if (shadow) context.dpAsPx(DEF_MARGIN_LEFT_DP) else 0
             bottomMargin = if (shadow) context.dpAsPx(DEF_MARGIN_BOTTOM_DP) else 0
@@ -567,6 +594,42 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
             } else {
                 vibrator.vibrate(duration)
+            }
+        }
+    }
+
+    fun handleAnchorUpdate() {
+        verticalMode(context.prefManager.anchorPill
+                && context.rotation.run { this == Surface.ROTATION_90 || this == Surface.ROTATION_270 })
+
+        params.x = adjustedHomeX
+        params.y = adjustedHomeY
+        params.width = adjustedWidth
+        params.height = adjustedHeight
+
+        updateLayout()
+    }
+
+    private fun verticalMode(enabled: Boolean) {
+        if (enabled) {
+            currentGestureDetector = verticalGestureManager
+
+            params.gravity = Gravity.TOP or Gravity.RIGHT
+
+            if (!context.prefManager.dontMoveForKeyboard) {
+                params.flags = params.flags and
+                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+            }
+        } else {
+            currentGestureDetector = horizontalGestureManager
+
+            params.gravity = Gravity.TOP or Gravity.CENTER
+
+            if (!context.prefManager.dontMoveForKeyboard) {
+                params.flags = params.flags or
+                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
             }
         }
     }

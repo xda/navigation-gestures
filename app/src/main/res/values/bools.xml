@@ -18,4 +18,5 @@
     <bool name="feedback_sound_default">true</bool>
     <bool name="auto_hide_default">false</bool>
     <bool name="alternate_home_default">false</bool>
+    <bool name="anchor_pill_default">false</bool>
 </resources>

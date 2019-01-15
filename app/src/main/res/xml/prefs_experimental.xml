@@ -4,7 +4,8 @@
 
     <com.xda.nobar.prefs.RedTextWarningPref
         android:title="@string/warning"
-        android:summary="@string/experimental_warning" />
+        android:summary="@string/experimental_warning"
+        />
 
     <com.xda.nobar.prefs.SeekBarSwitchPreference
         android:title="@string/hide_pill_on_keyboard"
@@ -22,13 +23,22 @@
         android:title="@string/fix_for_other_windows"
         android:summary="@string/fix_for_other_windows_desc"
         android:icon="@drawable/autorenew"
-        android:key="window_fix" />
+        android:key="window_fix"
+        />
 
     <SwitchPreference
         android:title="@string/full_overscan"
         android:summary="@string/full_overscan_desc"
         android:icon="@drawable/fullscreen"
-        android:key="full_overscan" />
+        android:key="full_overscan"
+        />
+
+    <SwitchPreference
+        android:title="@string/anchor_pill"
+        android:summary="@string/anchor_pill_desc"
+        android:key="anchor_pill"
+        android:defaultValue="@bool/anchor_pill_default"
+        />
 
     <!--<SwitchPreference-->
         <!--android:defaultValue="false"-->

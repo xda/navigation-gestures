@@ -122,6 +122,7 @@
     <string name="tell_me_how">Tell Me How</string>
     <string name="actions">Actions</string>
     <string name="general">General</string>
+    <string name="anchor_pill">Anchor Pill</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -169,6 +170,7 @@
     <string name="show_nav_with_keyboard_desc">Enable the native navigation bar when the software keyboard is activated.</string>
     <string name="audio_feedback_desc">Play a sound when a gesture is performed.</string>
     <string name="battery_optimizations_desc">Android has a built-in battery optimization feature, which tends to kill Navigation Gestures. Press the button below to disable optimizations for this app.</string>
+    <string name="anchor_pill_desc">When enabled, the pill will stay anchored to the physical bottom of the device.</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>

@@ -262,30 +262,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
     fun addBar(callListeners: Boolean = true) {
         if (disabledBarReasonManager.isEmpty()) {
             handler.post {
-                bar.params.apply {
-                    x = bar.adjustedHomeX
-                    width = prefManager.customWidth
-                    height = prefManager.customHeight
-                    gravity = Gravity.CENTER or Gravity.TOP
-                    y = bar.adjustedHomeY
-                    type =
-                            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
-                                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                            else
-                                WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
-                    flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
-                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                    format = PixelFormat.TRANSLUCENT
-                    softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-
-                    if (prefManager.dontMoveForKeyboard) {
-                        flags = flags and
-                                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                        softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
-                    }
-                }
-
                 if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, true) }
 
                 addBarInternal()
@@ -866,13 +842,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             logicHandler.post {
                 if (pillShown) {
                     try {
-                        bar.params.x = bar.adjustedHomeX
-                        bar.params.y = bar.adjustedHomeY
-                        bar.params.width = prefManager.customWidth
-                        bar.params.height = prefManager.customHeight
-                        bar.updateLayout(bar.params)
-                    } catch (e: NullPointerException) {
-                    }
+                        bar.handleAnchorUpdate()
+                    } catch (e: NullPointerException) {}
                 }
 
                 if (prefManager.shouldUseOverscanMethod) {
