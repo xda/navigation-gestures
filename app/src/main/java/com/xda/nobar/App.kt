@@ -355,7 +355,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
     fun toggleNavState(hidden: Boolean = prefManager.shouldUseOverscanMethod) {
         runSecureSettingsAction {
-            setNavState(!hidden)
+            prefManager.shouldUseOverscanMethod = !hidden
 
             if (hidden) showNav()
             else hideNav()
@@ -453,10 +453,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
      */
     fun setGestureState(activated: Boolean) {
         prefManager.isActive = activated
-    }
-
-    fun setNavState(hidden: Boolean) {
-        prefManager.shouldUseOverscanMethod = hidden
     }
 
     fun getAdjustedNavBarHeight() =
