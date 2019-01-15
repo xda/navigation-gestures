@@ -62,6 +62,34 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     val params = WindowManager.LayoutParams()
     val hiddenPillReasons = HiddenPillReasonManager()
 
+    val adjustedHomeY: Int
+        get() = if (isVertical) {
+            context.realScreenSize.y - context.prefManager.homeX - context.prefManager.customWidth
+        } else {
+            context.realScreenSize.y - context.prefManager.homeY - context.prefManager.customHeight
+        }
+
+    val zeroY: Int
+        get() = context.realScreenSize.y - context.prefManager.customHeight
+
+    val adjustedHomeX: Int
+        get() {
+            val diff = try {
+                val screenSize = context.realScreenSize
+                val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
+                (frame.left + frame.right) - screenSize.x
+            } catch (e: Exception) {
+                0
+            }
+
+            return context.prefManager.homeX - if (immersiveNav && !context.prefManager.useTabletMode) (diff / 2f).toInt() else 0
+        }
+
+    var isVertical = false
+        set(value) {
+            field = value
+        }
+
     private val horizontalGestureManager = BarViewGestureManagerHorizontal(this)
     private val verticalGestureManager = BarViewGestureManagerVertical(this)
 
@@ -150,26 +178,26 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (key != null && key.contains("use_pixels")) {
             params.width = context.app.prefManager.customWidth
             params.height = context.app.prefManager.customHeight
-            params.x = getAdjustedHomeX()
-            params.y = getAdjustedHomeY()
+            params.x = adjustedHomeX
+            params.y = adjustedHomeY
             updateLayout(params)
         }
         if (key == PrefManager.CUSTOM_WIDTH_PERCENT || key == PrefManager.CUSTOM_WIDTH) {
             params.width = context.app.prefManager.customWidth
-            params.x = getAdjustedHomeX()
+            params.x = adjustedHomeX
             updateLayout(params)
         }
         if (key == PrefManager.CUSTOM_HEIGHT_PERCENT || key == PrefManager.CUSTOM_HEIGHT) {
             params.height = context.app.prefManager.customHeight
-            params.y = getAdjustedHomeY()
+            params.y = adjustedHomeY
             updateLayout(params)
         }
         if (key == PrefManager.CUSTOM_Y_PERCENT || key == PrefManager.CUSTOM_Y) {
-            params.y = getAdjustedHomeY()
+            params.y = adjustedHomeY
             updateLayout(params)
         }
         if (key == PrefManager.CUSTOM_X_PERCENT || key == PrefManager.CUSTOM_X) {
-            params.x = getAdjustedHomeX()
+            params.x = adjustedHomeX
             updateLayout(params)
         }
         if (key == PrefManager.PILL_BG || key == PrefManager.PILL_FG) {
@@ -206,7 +234,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             val enabled = context.app.prefManager.largerHitbox
             val margins = getPillMargins()
             params.height = context.app.prefManager.customHeight
-            params.y = getAdjustedHomeY()
+            params.y = adjustedHomeY
             margins.top = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
             updateLayout(params)
             changePillMargins(margins)
@@ -436,26 +464,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         return rect
-    }
-
-    fun getAdjustedHomeY(): Int {
-        return context.realScreenSize.y - context.app.prefManager.homeY - context.app.prefManager.customHeight
-    }
-
-    fun getZeroY(): Int {
-        return context.realScreenSize.y - context.app.prefManager.customHeight
-    }
-
-    fun getAdjustedHomeX(): Int {
-        val diff = try {
-            val screenSize = context.realScreenSize
-            val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
-            (frame.left + frame.right) - screenSize.x
-        } catch (e: Exception) {
-            0
-        }
-
-        return context.app.prefManager.homeX - if (immersiveNav && !context.app.prefManager.useTabletMode) (diff / 2f).toInt() else 0
     }
 
     fun toggleScreenOn(): Boolean {

@@ -263,11 +263,11 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
         if (disabledBarReasonManager.isEmpty()) {
             handler.post {
                 bar.params.apply {
-                    x = bar.getAdjustedHomeX()
+                    x = bar.adjustedHomeX
                     width = prefManager.customWidth
                     height = prefManager.customHeight
                     gravity = Gravity.CENTER or Gravity.TOP
-                    y = bar.getAdjustedHomeY()
+                    y = bar.adjustedHomeY
                     type =
                             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
                                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -866,8 +866,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             logicHandler.post {
                 if (pillShown) {
                     try {
-                        bar.params.x = bar.getAdjustedHomeX()
-                        bar.params.y = bar.getAdjustedHomeY()
+                        bar.params.x = bar.adjustedHomeX
+                        bar.params.y = bar.adjustedHomeY
                         bar.params.width = prefManager.customWidth
                         bar.params.height = prefManager.customHeight
                         bar.updateLayout(bar.params)

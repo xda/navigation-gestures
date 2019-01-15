@@ -68,7 +68,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                             .translationY(0f)
                             .setDuration(bar.getAnimationDurationMs())
                             .withEndAction {
-                                if (bar.params.y == bar.getAdjustedHomeY()) {
+                                if (bar.params.y == bar.adjustedHomeY) {
                                     isActing = false
                                     isSwipeUp = false
                                     isSwipeDown = false
@@ -82,7 +82,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                             .translationX(0f)
                             .setDuration(bar.getAnimationDurationMs())
                             .withEndAction {
-                                if (bar.params.x == bar.getAdjustedHomeX()) {
+                                if (bar.params.x == bar.adjustedHomeX) {
                                     isActing = false
                                     bar.isCarryingOutTouchAction = false
                                 }
@@ -91,13 +91,13 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                 }
 
                 when {
-                    bar.params.x != bar.getAdjustedHomeX() && !bar.isHidden && !bar.isPillHidingOrShowing -> {
+                    bar.params.x != bar.adjustedHomeX && !bar.isHidden && !bar.isPillHidingOrShowing -> {
                         bar.animator.homeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
                             isActing = false
                             bar.isCarryingOutTouchAction = false
                         })
                     }
-                    bar.params.y != bar.getAdjustedHomeY() -> {
+                    bar.params.y != bar.adjustedHomeY -> {
                         bar.animator.homeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
                             isActing = false
                             bar.isCarryingOutTouchAction = false
@@ -137,7 +137,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
 
                     val screenWidth = context.realScreenSize.x
 
-                    if (bar.params.x < screenWidth - screenWidth / 6 - bar.getAdjustedHomeX()
+                    if (bar.params.x < screenWidth - screenWidth / 6 - bar.adjustedHomeX
                             && bar.getAnimationDurationMs() > 0) {
                         bar.params.x -= (velocity / 2).toInt()
                         bar.updateLayout()

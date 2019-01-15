@@ -12,11 +12,11 @@ class BarAnimator(private val bar: BarView) {
     private var horizontalAnimator: SpringAnimation? = null
 
     fun homeY(listener: DynamicAnimation.OnAnimationEndListener) {
-        animateVertically(listener, bar.getAdjustedHomeY())
+        animateVertically(listener, bar.adjustedHomeY)
     }
 
     fun homeX(listener: DynamicAnimation.OnAnimationEndListener) {
-        animateHorizontally(listener, bar.getAdjustedHomeX())
+        animateHorizontally(listener, bar.adjustedHomeX)
     }
 
     fun show(listener: DynamicAnimation.OnAnimationEndListener) {
@@ -24,7 +24,7 @@ class BarAnimator(private val bar: BarView) {
     }
 
     fun hide(listener: DynamicAnimation.OnAnimationEndListener) {
-        animateVertically(listener, bar.getZeroY())
+        animateVertically(listener, bar.zeroY)
     }
 
     fun animateVertically(listener: DynamicAnimation.OnAnimationEndListener? = null,

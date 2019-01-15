@@ -74,7 +74,7 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
                             .translationX(0f)
                             .setDuration(bar.getAnimationDurationMs())
                             .withEndAction {
-                                if (bar.params.x == bar.getAdjustedHomeX()) {
+                                if (bar.params.x == bar.adjustedHomeX) {
                                     isActing = false
                                     isSwipeLeft = false
                                     isSwipeRight = false
@@ -88,7 +88,7 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
                             .translationY(0f)
                             .setDuration(bar.getAnimationDurationMs())
                             .withEndAction {
-                                if (bar.params.y == bar.getAdjustedHomeY()) {
+                                if (bar.params.y == bar.adjustedHomeY) {
                                     isActing = false
                                     bar.isCarryingOutTouchAction = false
                                 }
@@ -97,13 +97,13 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
                 }
 
                 when {
-                    bar.params.y != bar.getAdjustedHomeY() && !bar.isHidden && !bar.isPillHidingOrShowing -> {
+                    bar.params.y != bar.adjustedHomeY && !bar.isHidden && !bar.isPillHidingOrShowing -> {
                         bar.animator.homeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
                             isActing = false
                             bar.isCarryingOutTouchAction = false
                         })
                     }
-                    bar.params.x < bar.getAdjustedHomeX() || bar.params.x > bar.getAdjustedHomeX() -> {
+                    bar.params.x < bar.adjustedHomeX || bar.params.x > bar.adjustedHomeX -> {
                         bar.animator.homeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
                             isActing = false
                             bar.isCarryingOutTouchAction = false
