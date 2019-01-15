@@ -9,6 +9,10 @@ import com.xda.nobar.activities.selectors.BlacklistSelectorActivity
  * Experimental, but mostly working settings
  */
 class ExperimentalFragment : BasePrefFragment() {
+    companion object {
+        const val WINDOW_FIX = "window_fix"
+    }
+
     override val resId = R.xml.prefs_experimental
 
     override fun onResume() {
@@ -20,7 +24,7 @@ class ExperimentalFragment : BasePrefFragment() {
     }
 
     private fun setListeners() {
-        val winFix = findPreference<Preference>("window_fix")
+        val winFix = findPreference<Preference>(WINDOW_FIX)
         winFix.setOnPreferenceClickListener {
             val blIntent = Intent(activity, BlacklistSelectorActivity::class.java)
             blIntent.putExtra(BlacklistSelectorActivity.EXTRA_WHICH, BlacklistSelectorActivity.FOR_WIN)

@@ -13,34 +13,38 @@ import com.xda.nobar.util.PrefManager
  * Compatibility settings
  */
 class CompatibilityFragment : BasePrefFragment() {
+    companion object {
+        const val IMMERSIVE_BLACKLIST = "immersive_blacklist"
+    }
+
     override val resId = R.xml.prefs_compatibility
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
             PrefManager.ROT270_FIX -> {
                 val enabled = sharedPreferences.getBoolean(key, false)
-                val tabletMode = findPreference(PrefManager.TABLET_MODE) as SwitchPreference
+                val tabletMode = findPreference<SwitchPreference>(PrefManager.TABLET_MODE)
 
                 tabletMode.isEnabled = !enabled
                 tabletMode.isChecked = if (enabled) false else tabletMode.isChecked
             }
             PrefManager.TABLET_MODE -> {
                 val enabled = sharedPreferences.getBoolean(key, false)
-                val rot270Fix = findPreference(PrefManager.ROT270_FIX) as SwitchPreference
+                val rot270Fix = findPreference<SwitchPreference>(PrefManager.ROT270_FIX)
 
                 rot270Fix.isEnabled = !enabled
                 rot270Fix.isChecked = if (enabled) false else rot270Fix.isChecked
             }
             PrefManager.ORIG_NAV_IN_IMMERSIVE -> {
                 val enabled = sharedPreferences.getBoolean(key, false)
-                val immNav = findPreference(PrefManager.USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN) as SwitchPreference
+                val immNav = findPreference<SwitchPreference>(PrefManager.USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN)
 
                 immNav.isEnabled = !enabled
                 immNav.isChecked = if (enabled) false else immNav.isChecked
             }
             PrefManager.USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN -> {
                 val enabled = sharedPreferences.getBoolean(key, false)
-                val origNav = findPreference(PrefManager.ORIG_NAV_IN_IMMERSIVE) as SwitchPreference
+                val origNav = findPreference<SwitchPreference>(PrefManager.ORIG_NAV_IN_IMMERSIVE)
 
                 origNav.isEnabled = !enabled
                 origNav.isChecked = if (enabled) false else origNav.isChecked
@@ -64,9 +68,9 @@ class CompatibilityFragment : BasePrefFragment() {
     }
 
     private fun setUpRotListeners() {
-        val rot180Fix = findPreference("rot180_fix") as SwitchPreference
-        val rot270Fix = findPreference("rot270_fix") as SwitchPreference
-        val tabletMode = findPreference("tablet_mode") as SwitchPreference
+        val rot180Fix = findPreference<SwitchPreference>(PrefManager.ROT180_FIX)
+        val rot270Fix = findPreference<SwitchPreference>(PrefManager.ROT270_FIX)
+        val tabletMode = findPreference<SwitchPreference>(PrefManager.TABLET_MODE)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
             if (rot270Fix.isChecked) {
@@ -86,9 +90,9 @@ class CompatibilityFragment : BasePrefFragment() {
     }
 
     private fun setUpImmersiveListeners() {
-        val origNav = findPreference("orig_nav_in_immersive") as SwitchPreference
-        val immNav = findPreference("use_immersive_mode_when_nav_hidden") as SwitchPreference
-        val immBL = findPreference<Preference>("immersive_blacklist")
+        val origNav = findPreference<SwitchPreference>(PrefManager.ORIG_NAV_IN_IMMERSIVE)
+        val immNav = findPreference<SwitchPreference>(PrefManager.USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN)
+        val immBL = findPreference<Preference>(IMMERSIVE_BLACKLIST)
 
         if (origNav.isChecked) {
             immNav.isChecked = false

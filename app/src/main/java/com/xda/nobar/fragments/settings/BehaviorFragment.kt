@@ -9,6 +9,11 @@ import com.xda.nobar.activities.selectors.BlacklistSelectorActivity
  * Behavior settings
  */
 class BehaviorFragment : BasePrefFragment() {
+    companion object {
+        const val BAR_BLACKLIST = "bar_blacklist"
+        const val NAV_BLACKLIST = "nav_blacklist"
+    }
+
     override val resId = R.xml.prefs_behavior
 
     override fun onResume() {
@@ -20,8 +25,8 @@ class BehaviorFragment : BasePrefFragment() {
     }
 
     private fun setBlacklistListeners() {
-        val barBL = findPreference<Preference>("bar_blacklist")
-        val navBL = findPreference<Preference>("nav_blacklist")
+        val barBL = findPreference<Preference>(BAR_BLACKLIST)
+        val navBL = findPreference<Preference>(NAV_BLACKLIST)
 
         val listener = Preference.OnPreferenceClickListener {
             val which = when (it.key) {

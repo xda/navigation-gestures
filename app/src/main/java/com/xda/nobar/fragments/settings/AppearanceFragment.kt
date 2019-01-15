@@ -29,8 +29,8 @@ class AppearanceFragment : BasePrefFragment() {
     }
 
     private fun setListeners() {
-        val pillColor = findPreference(PrefManager.PILL_BG) as ColorPreferenceCompat
-        val pillBorderColor = findPreference(PrefManager.PILL_FG) as ColorPreferenceCompat
+        val pillColor = findPreference<ColorPreferenceCompat>(PrefManager.PILL_BG)
+        val pillBorderColor = findPreference<ColorPreferenceCompat>(PrefManager.PILL_FG)
 
         pillColor.setDefaultValue(activity!!.defaultPillBGColor)
         pillBorderColor.setDefaultValue(activity!!.defaultPillFGColor)
@@ -41,27 +41,27 @@ class AppearanceFragment : BasePrefFragment() {
 
     @SuppressLint("RestrictedApi")
     private fun setup() {
-        val pixelsW = findPreference("use_pixels_width") as PixelDPSwitch
+        val pixelsW = findPreference<PixelDPSwitch>(PrefManager.USE_PIXELS_WIDTH)
         pixelsW.isChecked = prefManager.usePixelsW
 
-        val pixelsH = findPreference("use_pixels_height") as PixelDPSwitch
+        val pixelsH = findPreference<PixelDPSwitch>(PrefManager.USE_PIXELS_HEIGHT)
         pixelsH.isChecked = prefManager.usePixelsH
 
-        val pixelsX = findPreference("use_pixels_x") as PixelDPSwitch
+        val pixelsX = findPreference<PixelDPSwitch>(PrefManager.USE_PIXELS_X)
         pixelsX.isChecked = prefManager.usePixelsX
 
-        val pixelsY = findPreference("use_pixels_y") as PixelDPSwitch
+        val pixelsY = findPreference<PixelDPSwitch>(PrefManager.USE_PIXELS_Y)
         pixelsY.isChecked = prefManager.usePixelsY
 
-        val widthPercent = findPreference("custom_width_percent") as SeekBarPreference
-        val heightPercent = findPreference("custom_height_percent") as SeekBarPreference
-        val xPercent = findPreference("custom_x_percent") as SeekBarPreference
-        val yPercent = findPreference("custom_y_percent") as SeekBarPreference
+        val widthPercent = findPreference<SeekBarPreference>(PrefManager.CUSTOM_WIDTH_PERCENT)
+        val heightPercent = findPreference<SeekBarPreference>(PrefManager.CUSTOM_HEIGHT_PERCENT)
+        val xPercent = findPreference<SeekBarPreference>(PrefManager.CUSTOM_X_PERCENT)
+        val yPercent = findPreference<SeekBarPreference>(PrefManager.CUSTOM_Y_PERCENT)
 
-        val widthPixels = findPreference("custom_width") as SeekBarPreference
-        val heightPixels = findPreference("custom_height") as SeekBarPreference
-        val xPixels = findPreference("custom_x") as SeekBarPreference
-        val yPixels = findPreference("custom_y") as SeekBarPreference
+        val widthPixels = findPreference<SeekBarPreference>(PrefManager.CUSTOM_WIDTH)
+        val heightPixels = findPreference<SeekBarPreference>(PrefManager.CUSTOM_HEIGHT)
+        val xPixels = findPreference<SeekBarPreference>(PrefManager.CUSTOM_X)
+        val yPixels = findPreference<SeekBarPreference>(PrefManager.CUSTOM_Y)
 
         heightPixels.minValue = activity!!.minPillHeightPx
         widthPixels.minValue = activity!!.minPillWidthPx

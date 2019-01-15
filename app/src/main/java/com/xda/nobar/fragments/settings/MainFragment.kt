@@ -10,6 +10,14 @@ import com.xda.nobar.util.beginAnimatedTransaction
  * Main settings page
  */
 class MainFragment : PreferenceFragmentCompat() {
+    companion object {
+        const val GESTURES = "gestures"
+        const val APPEARANCE = "appearance"
+        const val BEHAVIOR = "behavior"
+        const val COMPATIBILITY = "compatibility"
+        const val EXPERIMENTAL = "experimental"
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs_main)
     }
@@ -25,11 +33,11 @@ class MainFragment : PreferenceFragmentCompat() {
     private fun setListeners() {
         val listener = Preference.OnPreferenceClickListener {
             val whichFrag = when (it.key) {
-                "gestures" -> GestureFragment()
-                "appearance" -> AppearanceFragment()
-                "behavior" -> BehaviorFragment()
-                "compatibility" -> CompatibilityFragment()
-                "experimental" -> ExperimentalFragment()
+                GESTURES -> GestureFragment()
+                APPEARANCE -> AppearanceFragment()
+                BEHAVIOR -> BehaviorFragment()
+                COMPATIBILITY -> CompatibilityFragment()
+                EXPERIMENTAL -> ExperimentalFragment()
                 else -> null
             }
 
@@ -41,10 +49,10 @@ class MainFragment : PreferenceFragmentCompat() {
             true
         }
 
-        findPreference<Preference>("gestures").onPreferenceClickListener = listener
-        findPreference<Preference>("appearance").onPreferenceClickListener = listener
-        findPreference<Preference>("behavior").onPreferenceClickListener = listener
-        findPreference<Preference>("compatibility").onPreferenceClickListener = listener
-        findPreference<Preference>("experimental").onPreferenceClickListener = listener
+        findPreference<Preference>(GESTURES).onPreferenceClickListener = listener
+        findPreference<Preference>(APPEARANCE).onPreferenceClickListener = listener
+        findPreference<Preference>(BEHAVIOR).onPreferenceClickListener = listener
+        findPreference<Preference>(COMPATIBILITY).onPreferenceClickListener = listener
+        findPreference<Preference>(EXPERIMENTAL).onPreferenceClickListener = listener
     }
 }

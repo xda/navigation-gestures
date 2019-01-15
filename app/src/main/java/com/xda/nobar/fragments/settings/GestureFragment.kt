@@ -30,14 +30,18 @@ import java.util.*
  */
 @SuppressLint("RestrictedApi")
 class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
+    companion object {
+        const val SECTION_GESTURES = "section_gestures"
+    }
+
     override val resId = R.xml.prefs_gestures
 
     private val listPrefs = ArrayList<SectionableListPreference>()
     private val actionHolder by lazy { activity!!.actionHolder }
 
-    private val sectionedCategory by lazy { findPreference("section_gestures") as PreferenceCategory }
-    private val swipeUp by lazy { findPreference<Preference>("up") }
-    private val swipeUpHold by lazy { findPreference<Preference>("up_hold") }
+    private val sectionedCategory by lazy { findPreference<PreferenceCategory>(SECTION_GESTURES) }
+    private val swipeUp by lazy { findPreference<Preference>(actionHolder.actionUp) }
+    private val swipeUpHold by lazy { findPreference<Preference>(actionHolder.actionUpHold) }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -53,7 +57,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
 
         activity?.title = resources.getText(R.string.gestures)
 
-        val sectionedPill = findPreference(PrefManager.SECTIONED_PILL) as SwitchPreference
+        val sectionedPill = findPreference<SwitchPreference>(PrefManager.SECTIONED_PILL)
 
         sectionedCategory.isVisible = sectionedPill.isChecked
         swipeUp.isVisible = !sectionedPill.isChecked
@@ -107,7 +111,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
                 val appName = data.getStringExtra(AppLaunchSelectActivity.EXTRA_RESULT_DISPLAY_NAME)
                 val forActivity = data.getBooleanExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, false)
 
-                (findPreference(key) as SectionableListPreference?)?.apply {
+                (findPreference<SectionableListPreference?>(key))?.apply {
                     val pack = if (forActivity) prefManager.getActivity(key) else prefManager.getPackage(key)
                     if (pack == null) {
                         saveValue(actionHolder.typeNoAction.toString())
@@ -125,7 +129,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
             SettingsActivity.REQ_INTENT -> {
                 val key = data?.getStringExtra(BaseAppSelectActivity.EXTRA_KEY) ?: return
 
-                (findPreference(key) as SectionableListPreference?)?.apply {
+                (findPreference<SectionableListPreference?>(key))?.apply {
                     val res = prefManager.getIntentKey(key)
 
                     if (res < 1) {
@@ -139,7 +143,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
             SettingsActivity.REQ_SHORTCUT -> {
                 val key = data?.getStringExtra(BaseAppSelectActivity.EXTRA_KEY) ?: return
 
-                (findPreference(key) as SectionableListPreference?)?.apply {
+                (findPreference<SectionableListPreference?>(key))?.apply {
                     val shortcut = prefManager.getShortcut(key)
 
                     if (shortcut == null) {
@@ -197,23 +201,23 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
 
     private fun setSectionedSettings() {
         preferenceManager.sharedPreferences.edit().apply {
-            putBoolean("use_pixels_width", false)
-            putBoolean("use_pixels_height", true)
-            putBoolean("use_pixels_y", false)
-            putBoolean("larger_hitbox", false)
-            putBoolean("hide_in_fullscreen", false)
-            putBoolean("static_pill", true)
-            putBoolean("hide_pill_on_keyboard", false)
-            putBoolean("auto_hide_pill", false)
+            putBoolean(PrefManager.USE_PIXELS_WIDTH, false)
+            putBoolean(PrefManager.USE_PIXELS_HEIGHT, true)
+            putBoolean(PrefManager.USE_PIXELS_Y, false)
+            putBoolean(PrefManager.LARGER_HITBOX, false)
+            putBoolean(PrefManager.HIDE_IN_FULLSCREEN, false)
+            putBoolean(PrefManager.STATIC_PILL, true)
+            putBoolean(PrefManager.HIDE_PILL_ON_KEYBOARD, false)
+            putBoolean(PrefManager.AUTO_HIDE_PILL, false)
 
-            putInt("custom_width_percent", 1000)
-            putInt("custom_height", activity!!.minPillHeightPx + activity!!.dpAsPx(7))
-            putInt("custom_y_percent", 0)
-            putInt("pill_corner_radius", 0)
-            putInt("pill_bg", Color.TRANSPARENT)
-            putInt("pill_fg", Color.TRANSPARENT)
-            putInt("anim_duration", 0)
-            putInt("hold_time", 500)
+            putInt(PrefManager.CUSTOM_WIDTH_PERCENT, 1000)
+            putInt(PrefManager.CUSTOM_HEIGHT, activity!!.minPillHeightPx + activity!!.dpAsPx(7))
+            putInt(PrefManager.CUSTOM_Y_PERCENT, 0)
+            putInt(PrefManager.PILL_CORNER_RADIUS, 0)
+            putInt(PrefManager.PILL_BG, Color.TRANSPARENT)
+            putInt(PrefManager.PILL_FG, Color.TRANSPARENT)
+            putInt(PrefManager.ANIM_DURATION, 0)
+            putInt(PrefManager.HOLD_TIME, 500)
 
             putString(actionHolder.actionTap, actionHolder.typeNoAction.toString())
             putString(actionHolder.actionDouble, actionHolder.typeNoAction.toString())

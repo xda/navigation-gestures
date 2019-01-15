@@ -11,12 +11,24 @@ import com.crashlytics.android.Crashlytics
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.R
 import com.xda.nobar.activities.ui.LibraryActivity
+import com.xda.nobar.util.PrefManager
 import com.xda.nobar.util.prefManager
 
 /**
  * Main fragment for the HelpAboutActivity
  */
 class HelpFragment : PreferenceFragmentCompat() {
+    companion object {
+        const val VERSION = "version"
+        const val TUTORIAL_VIDEO = "tutorial_video"
+        const val EMAIL_US = "email_us"
+        const val XDA_THREAD = "xda_thread"
+        const val OTHER_APPS = "other_apps"
+        const val BUY_PREMIUM = "buy_premium"
+        const val LIBRARIES = "libraries"
+        const val CRASHLYTICS_ID = "crashlytics_id"
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs_about)
 
@@ -32,7 +44,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun fillInVersion() {
-        val pref = findPreference<Preference>("version")
+        val pref = findPreference<Preference>(VERSION)
 
         pref.summary = BuildConfig.VERSION_NAME
         pref.setOnPreferenceClickListener {
@@ -53,7 +65,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun addTutorialListener() {
-        val pref = findPreference<Preference>("tutorial_video")
+        val pref = findPreference<Preference>(TUTORIAL_VIDEO)
 
         pref.setOnPreferenceClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
@@ -65,7 +77,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun addEmailListener() {
-        val pref = findPreference<Preference>("email_us")
+        val pref = findPreference<Preference>(EMAIL_US)
 
         pref.setOnPreferenceClickListener {
             val intent = Intent(Intent.ACTION_SENDTO)
@@ -85,7 +97,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun addThreadListener() {
-        val pref = findPreference<Preference>("xda_thread")
+        val pref = findPreference<Preference>(XDA_THREAD)
         val intent = Intent(Intent.ACTION_VIEW)
 
         intent.data = Uri.parse("https://forum.xda-developers.com/android/apps-games/official-xda-navigation-gestures-iphone-t3792361")
@@ -97,7 +109,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun addOtherAppsListener() {
-        val pref = findPreference<Preference>("other_apps")
+        val pref = findPreference<Preference>(OTHER_APPS)
         val intent = Intent(Intent.ACTION_VIEW)
 
         intent.data = Uri.parse("https://play.google.com/store/apps/developer?id=XDA")
@@ -109,7 +121,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun addPremiumListener() {
-        val pref = findPreference<Preference>("buy_premium")
+        val pref = findPreference<Preference>(BUY_PREMIUM)
         val intent = Intent(Intent.ACTION_VIEW)
 
         intent.data = Uri.parse("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
@@ -121,7 +133,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun addLibListener() {
-        val pref = findPreference<Preference>("libraries")
+        val pref = findPreference<Preference>(LIBRARIES)
         val intent = Intent(activity, LibraryActivity::class.java)
 
         pref.setOnPreferenceClickListener {
@@ -131,8 +143,8 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun crashlyticsStuff() {
-        val switch = findPreference("enable_crashlytics_id") as SwitchPreference
-        val id = findPreference<Preference>("crashlytics_id")
+        val switch = findPreference<SwitchPreference>(PrefManager.ENABLE_CRASHLYTICS_ID)
+        val id = findPreference<Preference>(CRASHLYTICS_ID)
 
         switch.setOnPreferenceChangeListener { _, newValue ->
             updateCrashlyticsId(newValue.toString().toBoolean())
@@ -156,7 +168,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     }
 
     private fun updateCrashlyticsId(enabled: Boolean) {
-        val id = findPreference<Preference>("crashlytics_id")
+        val id = findPreference<Preference>(CRASHLYTICS_ID)
 
         id.summary = if (enabled) activity!!.prefManager.crashlyticsId else ""
         Crashlytics.setUserIdentifier(id.summary.toString())
