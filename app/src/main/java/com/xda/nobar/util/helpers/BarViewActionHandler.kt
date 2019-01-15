@@ -11,6 +11,7 @@ import android.media.AudioManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.RecognizerIntent
@@ -77,6 +78,8 @@ class BarViewActionHandler(private val bar: BarView) {
 
     fun handleAction(which: Int, key: String) {
         GlobalScope.launch {
+            if (Looper.myLooper() == null) Looper.prepare()
+            
             try {
                 when (which) {
                     bar.actionHolder.typeAssist -> {
