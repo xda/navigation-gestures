@@ -76,6 +76,58 @@ class BarViewActionHandler(private val bar: BarView) {
             }, 20)
         }
 
+    fun sendActionInternal(key: String, map: Map<String, Int>) {
+        bar.handler?.post {
+            val which = map[key] ?: return@post
+
+            if (which == bar.actionHolder.typeNoAction) return@post
+
+            if (bar.isHidden || bar.isPillHidingOrShowing) return@post
+
+            bar.vibrate(context.prefManager.vibrationDuration.toLong())
+
+            if (key == bar.actionHolder.actionDouble)
+                bar.handler?.postDelayed({ bar.vibrate(context.prefManager.vibrationDuration.toLong()) },
+                        context.prefManager.vibrationDuration.toLong())
+
+            if (which == bar.actionHolder.typeHide) {
+                bar.hidePill(false, null, true)
+                return@post
+            }
+
+            when (key) {
+                bar.actionHolder.actionDouble -> bar.animator.jiggleDoubleTap()
+                bar.actionHolder.actionHold -> bar.animator.jiggleHold()
+                bar.actionHolder.actionTap -> bar.animator.jiggleTap()
+                bar.actionHolder.actionUpHold -> bar.animator.jiggleHoldUp()
+                bar.actionHolder.actionLeftHold -> bar.animator.jiggleLeftHold()
+                bar.actionHolder.actionRightHold -> bar.animator.jiggleRightHold()
+                bar.actionHolder.actionDownHold -> bar.animator.jiggleDownHold()
+            }
+
+            if (key == bar.actionHolder.actionUp
+                    || key == bar.actionHolder.actionLeft
+                    || key == bar.actionHolder.actionRight) {
+                bar.animate(null, BarView.ALPHA_ACTIVE)
+            }
+
+            if (bar.isAccessibilityAction(which)) {
+                if (context.app.prefManager.useRoot && Shell.rootAccess()) {
+                    sendRootAction(which, key)
+                } else {
+                    if (which == bar.actionHolder.typeHome
+                            && context.prefManager.useAlternateHome) {
+                        handleAction(which, key)
+                    } else {
+                        sendAccessibilityAction(which, key)
+                    }
+                }
+            } else {
+                handleAction(which, key)
+            }
+        }
+    }
+
     fun handleAction(which: Int, key: String) {
         GlobalScope.launch {
             if (Looper.myLooper() == null) Looper.prepare()

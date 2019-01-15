@@ -1033,7 +1033,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                             val which = intent.getIntExtra(Actions.EXTRA_ACTION, -1)
                             val key = intent.getStringExtra(Actions.EXTRA_GESTURE) ?: return
 
-                            bar.gestureDetector.actionHandler.handleAction(which, key)
+                            bar.currentGestureDetector.actionHandler.handleAction(which, key)
                         }
                     }
                 }

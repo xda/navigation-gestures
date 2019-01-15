@@ -13,69 +13,17 @@ import com.xda.nobar.util.*
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.BarView.Companion.ALPHA_ACTIVE
 import kotlinx.android.synthetic.main.pill.view.*
-import java.util.*
 import kotlin.math.absoluteValue
 
 /**
  * Manage all the gestures on the pill
  */
-class BarViewGestureManager(private val bar: BarView) {
-    companion object {
-        private const val FIRST_SECTION = 0
-        private const val SECOND_SECTION = 1
-        private const val THIRD_SECTION = 2
+class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(bar) {
+    override val adjCoord: Float
+        get() = origAdjX
+    override val gestureHandler by lazy { GestureHandler(gestureThread.looper) }
 
-        private const val MSG_UP_HOLD = 0
-        private const val MSG_LEFT_HOLD = 1
-        private const val MSG_RIGHT_HOLD = 2
-        private const val MSG_DOWN_HOLD = 3
-    }
-    
-    val actionMap = HashMap<String, Int>()
-
-    private val context = bar.context
-
-    private var isSwipeUp = false
-    private var isSwipeLeft = false
-    private var isSwipeRight = false
-    private var isSwipeDown = false
-    private var isOverrideTap = false
-    private var wasHidden = false
-    var lastTouchTime = -1L
-
-    var isActing = false
-
-    private var isRunningLongUp = false
-    private var isRunningLongLeft = false
-    private var isRunningLongRight = false
-    private var isRunningLongDown = false
-
-    private var sentLongUp = false
-    private var sentLongLeft = false
-    private var sentLongRight = false
-    private var sentLongDown = false
-
-    private var oldEvent: MotionEvent? = null
-    private var oldY = 0F
-    private var oldX = 0F
-
-    private var origX = 0F
-    private var origY = 0F
-
-    private var origAdjX = 0F
-    private var origAdjY = 0F
-
-    private val manager = GestureDetector(bar.context, Detector())
-    val actionHandler = BarViewActionHandler(bar)
-
-    private val gestureThread = HandlerThread("NoBar-Gesture").apply { start() }
-    private val gestureHandler = GestureHandler(gestureThread.looper)
-
-    fun onTouchEvent(ev: MotionEvent?): Boolean {
-        return handleTouchEvent(ev) || manager.onTouchEvent(ev)
-    }
-
-    private fun handleTouchEvent(ev: MotionEvent?): Boolean {
+    override fun handleTouchEvent(ev: MotionEvent?): Boolean {
         var ultimateReturn = false
 
         when (ev?.action) {
@@ -264,8 +212,6 @@ class BarViewGestureManager(private val bar: BarView) {
             }
         }
 
-        oldEvent = MotionEvent.obtain(ev)
-
         return ultimateReturn
     }
 
@@ -311,7 +257,7 @@ class BarViewGestureManager(private val bar: BarView) {
                 && distanceY < -yThreshUp
                 && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
             if (bar.isHidden && !bar.isPillHidingOrShowing && !bar.beingTouched) {
-                vibrate(context.prefManager.vibrationDuration.toLong())
+                bar.vibrate(context.prefManager.vibrationDuration.toLong())
                 bar.hiddenPillReasons.remove(HiddenPillReasonManager.MANUAL)
                 bar.showPill(null, true)
             }
@@ -319,142 +265,22 @@ class BarViewGestureManager(private val bar: BarView) {
         } else false
     }
 
-    private fun getSectionedUpHoldAction(x: Float): Int? {
-        return if (!context.app.prefManager.sectionedPill) actionMap[bar.actionHolder.actionUpHold]
-        else when (getSection(x)) {
-            FIRST_SECTION -> actionMap[bar.actionHolder.actionUpHoldLeft]
-            SECOND_SECTION -> actionMap[bar.actionHolder.actionUpHoldCenter]
-            else -> actionMap[bar.actionHolder.actionUpHoldRight]
-        }
-    }
-
-    private fun String.isEligible() = arrayListOf(
-            bar.actionHolder.actionUp,
-            bar.actionHolder.actionUpHold
-    ).contains(this) && context.app.prefManager.sectionedPill
-
-    private fun getSection(x: Float): Int {
+    override fun getSection(coord: Float): Int {
         val third = context.app.prefManager.customWidth / 3f
 
         return when {
-            x < third -> FIRST_SECTION
-            x <= (2f * third) -> SECOND_SECTION
+            coord < third -> FIRST_SECTION
+            coord <= (2f * third) -> SECOND_SECTION
             else -> THIRD_SECTION
         }
     }
 
-    private fun sendAction(action: String) {
-        if (action.isEligible()) {
-            when (getSection(origAdjX)) {
-                FIRST_SECTION -> sendActionInternal("${action}_left")
-                SECOND_SECTION -> sendActionInternal("${action}_center")
-                THIRD_SECTION -> sendActionInternal("${action}_right")
-            }
-        } else {
-            sendActionInternal(action)
-        }
-    }
-
-    /**
-     * Parse the action index and broadcast to {@link com.xda.nobar.services.Actions}
-     * @param key one of ActionHolder's variables
-     */
-    private fun sendActionInternal(key: String) {
-        bar.handler?.post {
-            val which = actionMap[key] ?: return@post
-
-            if (which == bar.actionHolder.typeNoAction) return@post
-
-            if (bar.isHidden || bar.isPillHidingOrShowing) return@post
-
-            vibrate(context.prefManager.vibrationDuration.toLong())
-
-            if (key == bar.actionHolder.actionDouble)
-                bar.handler?.postDelayed({ vibrate(context.prefManager.vibrationDuration.toLong()) },
-                        context.prefManager.vibrationDuration.toLong())
-
-            if (which == bar.actionHolder.typeHide) {
-                bar.hidePill(false, null, true)
-                return@post
-            }
-
-            when (key) {
-                bar.actionHolder.actionDouble -> bar.animator.jiggleDoubleTap()
-                bar.actionHolder.actionHold -> bar.animator.jiggleHold()
-                bar.actionHolder.actionTap -> bar.animator.jiggleTap()
-                bar.actionHolder.actionUpHold -> bar.animator.jiggleHoldUp()
-                bar.actionHolder.actionLeftHold -> bar.animator.jiggleLeftHold()
-                bar.actionHolder.actionRightHold -> bar.animator.jiggleRightHold()
-                bar.actionHolder.actionDownHold -> bar.animator.jiggleDownHold()
-            }
-
-            if (key == bar.actionHolder.actionUp
-                    || key == bar.actionHolder.actionLeft
-                    || key == bar.actionHolder.actionRight) {
-                bar.animate(null, ALPHA_ACTIVE)
-            }
-
-            if (bar.isAccessibilityAction(which)) {
-                if (context.app.prefManager.useRoot && Shell.rootAccess()) {
-                    actionHandler.sendRootAction(which, key)
-                } else {
-                    if (which == bar.actionHolder.typeHome
-                            && context.prefManager.useAlternateHome) {
-                        actionHandler.handleAction(which, key)
-                    } else {
-                        actionHandler.sendAccessibilityAction(which, key)
-                    }
-                }
-            } else {
-                actionHandler.handleAction(which, key)
-            }
-        }
-    }
-
-    /**
-     * Load the user's custom gesture/action pairings; default values if a pairing doesn't exist
-     */
-    fun loadActionMap() {
-        context.app.prefManager.getActionsList(actionMap)
-
-        if (actionMap.values.contains(bar.actionHolder.premTypeFlashlight)) {
-            if (!actionHandler.flashlightController.isCreated)
-                actionHandler.flashlightController.onCreate()
-        } else {
-            actionHandler.flashlightController.onDestroy()
-        }
-    }
-
-    /**
-     * Vibrate for the specified duration
-     * @param duration the desired duration
-     */
-    fun vibrate(duration: Long) {
-        bar.handler?.post {
-            if (bar.isSoundEffectsEnabled) {
-                try {
-                    bar.playSoundEffect(SoundEffectConstants.CLICK)
-                } catch (e: Exception) {}
-            }
-        }
-
-        if (duration > 0) {
-            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-                vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
-            } else {
-                vibrator.vibrate(duration)
-            }
-        }
-    }
-
     @SuppressLint("HandlerLeak")
-    private inner class GestureHandler(looper: Looper) : Handler(looper) {
+    inner class GestureHandler(looper: Looper) : Handler(looper) {
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
                 MSG_UP_HOLD -> {
-                    if (getSectionedUpHoldAction(origAdjX) != bar.actionHolder.typeNoAction) {
+                    if (getSectionedUpHoldAction(adjCoord) != bar.actionHolder.typeNoAction) {
                         isRunningLongUp = true
                         sendAction(bar.actionHolder.actionUpHold)
                     }
@@ -480,56 +306,6 @@ class BarViewGestureManager(private val bar: BarView) {
                         sendAction(bar.actionHolder.actionDownHold)
                     }
                 }
-            }
-        }
-    }
-
-    inner class Detector : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapUp(ev: MotionEvent): Boolean {
-            return if (!context.actionHolder.hasAnyOfActions(bar.actionHolder.actionDouble) && !isActing && !wasHidden) {
-                isOverrideTap = true
-                sendAction(bar.actionHolder.actionTap)
-                isActing = false
-                true
-            } else false
-        }
-
-        override fun onLongPress(ev: MotionEvent) {
-            val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            val isPinned = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 && am.lockTaskModeState != ActivityManager.LOCK_TASK_MODE_NONE
-
-            if (!bar.isHidden && !isActing) {
-                if (isPinned) {
-                    if (context.app.prefManager.shouldUseOverscanMethod) context.app.showNav()
-                } else {
-                    isActing = true
-                    sendAction(bar.actionHolder.actionHold)
-                }
-            }
-        }
-
-        override fun onDoubleTap(ev: MotionEvent): Boolean {
-            return if (!bar.isHidden && !isActing) {
-                isActing = true
-                sendAction(bar.actionHolder.actionDouble)
-                true
-            } else false
-        }
-
-        override fun onSingleTapConfirmed(ev: MotionEvent): Boolean {
-            return if (!isOverrideTap && !bar.isHidden) {
-                isActing = false
-
-                sendAction(bar.actionHolder.actionTap)
-                true
-            } else if (bar.isHidden && !bar.isPillHidingOrShowing) {
-                isOverrideTap = false
-                vibrate(context.prefManager.vibrationDuration.toLong())
-                bar.showPill(null, true)
-                true
-            } else {
-                isOverrideTap = false
-                false
             }
         }
     }

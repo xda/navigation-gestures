@@ -12,6 +12,7 @@ import android.os.*
 import android.preference.PreferenceManager
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.SoundEffectConstants
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AccelerateInterpolator
@@ -22,7 +23,9 @@ import android.widget.Toast
 import androidx.dynamicanimation.animation.DynamicAnimation
 import com.xda.nobar.R
 import com.xda.nobar.util.*
-import com.xda.nobar.util.helpers.BarViewGestureManager
+import com.xda.nobar.util.helpers.BarViewGestureManagerHorizontal
+import com.xda.nobar.util.helpers.BarViewGestureManagerVertical
+import com.xda.nobar.util.helpers.BaseBarViewGestureManager
 import com.xda.nobar.util.helpers.HiddenPillReasonManager
 import kotlinx.android.synthetic.main.pill.view.*
 
@@ -58,7 +61,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     val params = WindowManager.LayoutParams()
     val hiddenPillReasons = HiddenPillReasonManager()
-    val gestureDetector = BarViewGestureManager(this)
+
+    private val horizontalGestureManager = BarViewGestureManagerHorizontal(this)
+    private val verticalGestureManager = BarViewGestureManagerVertical(this)
+
+    var currentGestureDetector: BaseBarViewGestureManager = horizontalGestureManager
 
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     val animator = BarAnimator(this)
@@ -81,7 +88,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     init {
         alpha = ALPHA_GONE
 
-        gestureDetector.loadActionMap()
+        currentGestureDetector.loadActionMap()
         PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(this)
         isSoundEffectsEnabled = context.app.prefManager.feedbackSound
 
@@ -126,17 +133,17 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        return gestureDetector.onTouchEvent(event)
+        return currentGestureDetector.onTouchEvent(event)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (gestureDetector.actionMap.keys.contains(key)) {
-            gestureDetector.loadActionMap()
+        if (currentGestureDetector.actionMap.keys.contains(key)) {
+            currentGestureDetector.loadActionMap()
         }
 
         if (key == PrefManager.IS_ACTIVE) {
             if (!context.app.prefManager.isActive) {
-                gestureDetector.actionHandler.flashlightController.onDestroy()
+                currentGestureDetector.actionHandler.flashlightController.onDestroy()
             }
         }
 
@@ -530,6 +537,30 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         updateLayout()
+    }
+
+    /**
+     * Vibrate for the specified duration
+     * @param duration the desired duration
+     */
+    fun vibrate(duration: Long) {
+        handler?.post {
+            if (isSoundEffectsEnabled) {
+                try {
+                    playSoundEffect(SoundEffectConstants.CLICK)
+                } catch (e: Exception) {}
+            }
+        }
+
+        if (duration > 0) {
+            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+                vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                vibrator.vibrate(duration)
+            }
+        }
     }
 
     inner class HideHandler(looper: Looper) : Handler(looper) {
