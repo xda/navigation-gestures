@@ -197,7 +197,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
 
     private fun setSectionedSettings() {
         preferenceManager.sharedPreferences.edit().apply {
-            putBoolean("use_pixels_wUnwanted commercidth", false)
+            putBoolean("use_pixels_width", false)
             putBoolean("use_pixels_height", true)
             putBoolean("use_pixels_y", false)
             putBoolean("larger_hitbox", false)
