@@ -11,9 +11,9 @@
         android:key="tutorial_video" />
 
     <Preference
-        android:title="@string/email_us"
-        android:summary="@string/email_us_desc"
-        android:key="email_us" />
+        android:title="@string/feedback"
+        android:summary="@string/feedback_desc"
+        android:key="feedback" />
 
     <Preference
         android:title="@string/xda_thread"

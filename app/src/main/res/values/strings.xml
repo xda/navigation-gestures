@@ -20,7 +20,7 @@
     <string name="swipes">Swipes</string>
     <string name="version">Version</string>
     <string name="tutorial_video">Tutorial Video</string>
-    <string name="email_us">Email Us</string>
+    <string name="feedback">Feedback</string>
     <string name="xda_thread">XDA Thread</string>
     <string name="other_apps">XDA Apps</string>
     <string name="welcome">Welcome!</string>
@@ -128,7 +128,7 @@
     <string name="appearance_desc">Customize appearance of the navigation pill</string>
     <string name="behavior_desc">Customize how the pill behaves</string>
     <string name="tutorial_video_desc">Wondering how to use the app? We\'re here to help.</string>
-    <string name="email_us_desc">If you have some feedback, we\'d love to hear it!</string>
+    <string name="feedback_desc">Problems? Suggestions? Tell us!</string>
     <string name="xda_thread_desc">Have a question about the app? Visit the XDA thread and ask away.</string>
     <string name="other_apps_desc">XDA has other apps too. Check them out!</string>
     <string name="buy_premium_desc">Unlock more functionality with the premium add-on.</string>

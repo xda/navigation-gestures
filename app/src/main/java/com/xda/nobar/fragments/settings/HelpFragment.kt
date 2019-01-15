@@ -21,7 +21,7 @@ class HelpFragment : PreferenceFragmentCompat() {
     companion object {
         const val VERSION = "version"
         const val TUTORIAL_VIDEO = "tutorial_video"
-        const val EMAIL_US = "email_us"
+        const val FEEDBACK = "feedback"
         const val XDA_THREAD = "xda_thread"
         const val OTHER_APPS = "other_apps"
         const val BUY_PREMIUM = "buy_premium"
@@ -35,7 +35,7 @@ class HelpFragment : PreferenceFragmentCompat() {
         fillInVersion()
         fillInOverscan()
         addTutorialListener()
-        addEmailListener()
+        addFeedbackListener()
         addThreadListener()
         addOtherAppsListener()
         addPremiumListener()
@@ -76,32 +76,24 @@ class HelpFragment : PreferenceFragmentCompat() {
         }
     }
 
-    private fun addEmailListener() {
-        val pref = findPreference<Preference>(EMAIL_US)
+    private fun addFeedbackListener() {
+        val pref = findPreference<Preference>(FEEDBACK)
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/zacharee/nobar-issues"))
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
         pref.setOnPreferenceClickListener {
-            val intent = Intent(Intent.ACTION_SENDTO)
-            intent.data = Uri.parse("mailto:")
-            intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("navigationgestures@xda-developers.com"))
-            intent.putExtra(Intent.EXTRA_SUBJECT, resources.getString(R.string.app_name))
-            intent.putExtra(Intent.EXTRA_TEXT, "Version: ${BuildConfig.VERSION_NAME}")
-            try {
-                startActivity(intent)
-            } catch (e: ActivityNotFoundException) {
-                val clipboardManager = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                clipboardManager.primaryClip = ClipData(ClipDescription("email", arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)), ClipData.Item("navigationgestures@xda-developers.com"))
-                Toast.makeText(activity, resources.getText(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
-            }
+            startActivity(intent)
             true
         }
     }
 
     private fun addThreadListener() {
         val pref = findPreference<Preference>(XDA_THREAD)
-        val intent = Intent(Intent.ACTION_VIEW)
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://forum.xda-developers.com/android/apps-games/official-xda-navigation-gestures-iphone-t3792361"))
 
-        intent.data = Uri.parse("https://forum.xda-developers.com/android/apps-games/official-xda-navigation-gestures-iphone-t3792361")
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
         pref.setOnPreferenceClickListener {
             startActivity(intent)
             true
