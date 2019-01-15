@@ -39,13 +39,6 @@ class Actions : AccessibilityService(), ReceiverCallback {
 
     override fun onServiceConnected() {
         receiver.register(this, this)
-
-        val bc = Intent(this, StartupReceiver::class.java)
-        bc.action = StartupReceiver.ACTION_ACTIVATE
-        sendBroadcast(bc)
-
-        val foreground = Intent(this, ForegroundService::class.java)
-        ContextCompat.startForegroundService(this, foreground)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
