@@ -2,6 +2,7 @@ package com.xda.nobar.util.helpers.bar
 
 import android.annotation.SuppressLint
 import android.os.*
+import android.util.Log
 import android.view.MotionEvent
 import androidx.dynamicanimation.animation.DynamicAnimation
 import com.xda.nobar.util.*
@@ -235,13 +236,13 @@ class BarViewGestureManagerVertical270(bar: BarView) : BaseBarViewGestureManager
                     isSwipeUp = true
                     true
                 }
-                context.actionHolder.run { hasAnyOfActions(actionDown, actionDownHold) }
+                context.actionHolder.hasSomeUpAction()
                         && distanceX > yThreshUp
-                        && distanceY.absoluteValue < distanceX.absoluteValue -> { //left swipe
+                        && distanceY.absoluteValue < distanceX.absoluteValue -> { //right swipe
                     isSwipeRight = true
                     true
                 }
-                context.actionHolder.hasSomeUpAction()
+                context.actionHolder.run { hasAnyOfActions(actionDown, actionDownHold) }
                         && distanceX < -yThreshDown
                         && distanceY.absoluteValue < distanceX.absoluteValue -> { //left swipe
                     isSwipeLeft = true
@@ -266,9 +267,9 @@ class BarViewGestureManagerVertical270(bar: BarView) : BaseBarViewGestureManager
         val third = bar.adjustedHeight / 3f
 
         return when {
-            coord < third -> THIRD_SECTION
+            coord < third -> FIRST_SECTION
             coord <= (2f * third) -> SECOND_SECTION
-            else -> FIRST_SECTION
+            else -> THIRD_SECTION
         }
     }
 

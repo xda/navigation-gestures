@@ -12,6 +12,7 @@ import android.graphics.drawable.LayerDrawable
 import android.os.*
 import android.preference.PreferenceManager
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -27,6 +28,7 @@ import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical
 import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical270
 import com.xda.nobar.util.helpers.bar.BaseBarViewGestureManager
 import kotlinx.android.synthetic.main.pill.view.*
+import kotlin.math.absoluteValue
 
 /**
  * The Pill™©® (not really copyrighted)
@@ -93,7 +95,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         get() = if (isVertical) 0 else context.realScreenSize.y - context.prefManager.customHeight
 
     val adjustedHomeX: Int
-        get() = if (isVertical) context.prefManager.homeY else actualHomeX
+        get() = if (isVertical) anchoredHomeY else actualHomeX
 
     private val actualHomeX: Int
         get() {
@@ -119,6 +121,29 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
 
             return context.prefManager.homeX - if (immersiveNav && !context.prefManager.useTabletMode) (diff / 2f).toInt() else 0
+        }
+
+    private val anchoredHomeY: Int
+        get() {
+            val diff = try {
+                val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
+
+                val rotation = context.rotation
+
+                if (rotation == Surface.ROTATION_270) {
+                    if (!context.prefManager.useRot270Fix)
+                        frame.left.absoluteValue
+                    else
+                        frame.right - context.realScreenSize.y
+                } else {
+                    frame.right - context.realScreenSize.y
+                }
+
+            } catch (e: Exception) {
+                0
+            }
+
+            return context.prefManager.homeY + diff.absoluteValue
         }
 
     val adjustedWidth: Int
