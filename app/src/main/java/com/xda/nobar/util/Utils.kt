@@ -181,8 +181,11 @@ val Context.realScreenSize: Point
 
         val temp = Point().apply { display.getRealSize(this) }
 
-        return rotation.run { if (this == Surface.ROTATION_90
-                || this == Surface.ROTATION_270) Point(temp.y, temp.x) else temp }
+        return rotation.run {
+            if (prefManager.anchorPill
+                    && (this == Surface.ROTATION_90 || this == Surface.ROTATION_270))
+                Point(temp.y, temp.x) else temp
+        }
     }
 
 val Context.rotation: Int

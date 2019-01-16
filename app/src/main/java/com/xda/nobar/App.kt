@@ -8,13 +8,11 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.ContentObserver
-import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.net.Uri
 import android.os.*
 import android.preference.PreferenceManager
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
@@ -840,7 +838,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             logicHandler.post {
                 if (pillShown) {
                     try {
-                        bar.handleAnchorUpdate()
+                        bar.handleRotationOrAnchorUpdate()
                         bar.updateLargerHitbox()
                     } catch (e: NullPointerException) {}
                 }

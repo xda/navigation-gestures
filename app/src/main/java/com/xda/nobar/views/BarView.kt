@@ -215,7 +215,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         if (key == PrefManager.ANCHOR_PILL) {
-            handleAnchorUpdate()
+            handleRotationOrAnchorUpdate()
         }
 
         if (key != null && key.contains("use_pixels")) {
@@ -610,7 +610,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    fun handleAnchorUpdate() {
+    fun handleRotationOrAnchorUpdate() {
         handler?.postDelayed({
             verticalMode(isVertical)
 
