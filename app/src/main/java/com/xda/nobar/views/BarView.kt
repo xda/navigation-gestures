@@ -197,6 +197,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
             scheduleHide()
         }
+
+        handleRotationOrAnchorUpdate()
     }
 
     @SuppressLint("ClickableViewAccessibility")
