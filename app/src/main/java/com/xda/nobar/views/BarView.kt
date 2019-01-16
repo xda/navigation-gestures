@@ -80,7 +80,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     val hiddenPillReasons = HiddenPillReasonManager()
 
     val adjustedHomeY: Int
-        get() = if (isVertical) anchoredHomeX else actualHomeY
+        get() = if (isVertical) (if (is270Vertical) 1 else -1) * anchoredHomeX else actualHomeY
 
     private val actualHomeY: Int
         get() = context.realScreenSize.y - context.prefManager.homeY - context.prefManager.customHeight
@@ -158,7 +158,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     init {
         alpha = ALPHA_GONE
 
-        currentGestureDetector.loadActionMap()
+        currentGestureDetector.singleton.loadActionMap()
         PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(this)
         isSoundEffectsEnabled = context.prefManager.feedbackSound
 
@@ -208,14 +208,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (currentGestureDetector.actionMap.keys.contains(key)) {
-            currentGestureDetector.loadActionMap()
-        }
-
-        if (key == PrefManager.IS_ACTIVE) {
-            if (!context.prefManager.isActive) {
-                verticalGestureManager.actionHandler.flashlightController.onDestroy()
-                horizontalGestureManager.actionHandler.flashlightController.onDestroy()
-            }
+            currentGestureDetector.singleton.loadActionMap()
         }
 
         if (key == PrefManager.ANCHOR_PILL) {
@@ -223,30 +216,28 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         if (key != null && key.contains("use_pixels")) {
-            params.width = adjustedWidth
-            params.height = adjustedHeight
-            params.x = adjustedHomeX
-            params.y = adjustedHomeY
-            updateLayout(params)
+            updatePositionAndDimens()
         }
-        if (key == PrefManager.CUSTOM_WIDTH_PERCENT || key == PrefManager.CUSTOM_WIDTH) {
-            params.width = adjustedWidth
-            params.x = adjustedHomeX
-            updateLayout(params)
+
+        when (key) {
+            PrefManager.CUSTOM_WIDTH,
+            PrefManager.CUSTOM_WIDTH_PERCENT,
+            PrefManager.CUSTOM_HEIGHT,
+            PrefManager.CUSTOM_HEIGHT_PERCENT,
+            PrefManager.CUSTOM_X,
+            PrefManager.CUSTOM_X_PERCENT,
+            PrefManager.CUSTOM_Y,
+            PrefManager.CUSTOM_Y_PERCENT -> {
+                updatePositionAndDimens()
+            }
+
+            PrefManager.IS_ACTIVE -> {
+                if (!context.prefManager.isActive) {
+                    currentGestureDetector.actionHandler.flashlightController.onDestroy()
+                }
+            }
         }
-        if (key == PrefManager.CUSTOM_HEIGHT_PERCENT || key == PrefManager.CUSTOM_HEIGHT) {
-            params.height = adjustedHeight
-            params.y = adjustedHomeY
-            updateLayout(params)
-        }
-        if (key == PrefManager.CUSTOM_Y_PERCENT || key == PrefManager.CUSTOM_Y) {
-            params.y = adjustedHomeY
-            updateLayout(params)
-        }
-        if (key == PrefManager.CUSTOM_X_PERCENT || key == PrefManager.CUSTOM_X) {
-            params.x = adjustedHomeX
-            updateLayout(params)
-        }
+
         if (key == PrefManager.PILL_BG || key == PrefManager.PILL_FG) {
             val layers = pill.background as LayerDrawable
             (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
@@ -400,7 +391,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
                 .apply {
                     if (isVertical) translationX((if (is270Vertical) -1 else 1) * pill.width.toFloat() / 2f)
-                        else translationY(pill.height.toFloat() / 2f)
+                    else translationY(pill.height.toFloat() / 2f)
                 }
                 .start()
     }
@@ -597,8 +588,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             params.flags = params.flags or
                     WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
             params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-        }
-        else {
+        } else {
             params.flags = params.flags and
                     WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
             params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
@@ -616,7 +606,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if (isSoundEffectsEnabled) {
                 try {
                     playSoundEffect(SoundEffectConstants.CLICK)
-                } catch (e: Exception) {}
+                } catch (e: Exception) {
+                }
             }
         }
 
@@ -674,7 +665,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
 
-        currentGestureDetector.loadActionMap()
+        currentGestureDetector.singleton.loadActionMap()
     }
 
     fun updateLargerHitbox() {
@@ -703,6 +694,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         updateLayout(params)
         changePillMargins(margins)
+    }
+
+    private fun updatePositionAndDimens() {
+        params.x = adjustedHomeX
+        params.y = adjustedHomeY
+        params.width = adjustedWidth
+        params.height = adjustedHeight
+        updateLayout()
     }
 
     inner class HideHandler(looper: Looper) : Handler(looper) {

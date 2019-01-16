@@ -1,5 +1,6 @@
 package com.xda.nobar.util.helpers
 
+import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
@@ -24,9 +25,38 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         internal const val MSG_RIGHT_HOLD = 2
         internal const val MSG_DOWN_HOLD = 3
     }
-    
-    val actionMap = HashMap<String, Int>()
 
+    class Singleton private constructor(private val bar: BarView) {
+        companion object {
+            @SuppressLint("StaticFieldLeak")
+            private var instance: Singleton? = null
+
+            fun getInstance(bar: BarView): Singleton {
+                if (instance == null) instance = Singleton(bar)
+
+                return instance!!
+            }
+        }
+
+        val actionMap = HashMap<String, Int>()
+        val context = bar.context
+        val actionHandler = BarViewActionHandler(bar)
+        val gestureThread = HandlerThread("NoBar-Gesture").apply { start() }
+
+        /**
+         * Load the user's custom gesture/action pairings; default values if a pairing doesn't exist
+         */
+        fun loadActionMap() {
+            context.app.prefManager.getActionsList(actionMap)
+
+            if (actionMap.values.contains(bar.actionHolder.premTypeFlashlight)) {
+                if (!actionHandler.flashlightController.isCreated)
+                    actionHandler.flashlightController.onCreate()
+            } else {
+                actionHandler.flashlightController.onDestroy()
+            }
+        }
+    }
     internal abstract val adjCoord: Float
     internal abstract val gestureHandler: Handler
 
@@ -61,28 +91,16 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
     internal var origAdjX = 0F
     internal var origAdjY = 0F
 
+    val singleton = Singleton.getInstance(bar)
+    val actionMap = singleton.actionMap
+
     internal val detector = BaseDetector()
     internal val manager by lazy { GestureDetector(bar.context, detector) }
-    internal val actionHandler = BarViewActionHandler(bar)
-
-    internal val gestureThread = HandlerThread("NoBar-Gesture").apply { start() }
+    internal val actionHandler = singleton.actionHandler
+    internal val gestureThread = singleton.gestureThread
 
     fun onTouchEvent(ev: MotionEvent?): Boolean {
         return handleTouchEvent(ev) || manager.onTouchEvent(ev)
-    }
-
-    /**
-     * Load the user's custom gesture/action pairings; default values if a pairing doesn't exist
-     */
-    fun loadActionMap() {
-        context.app.prefManager.getActionsList(actionMap)
-
-        if (actionMap.values.contains(bar.actionHolder.premTypeFlashlight)) {
-            if (!actionHandler.flashlightController.isCreated)
-                actionHandler.flashlightController.onCreate()
-        } else {
-            actionHandler.flashlightController.onDestroy()
-        }
     }
 
     internal abstract fun getSection(coord: Float): Int
