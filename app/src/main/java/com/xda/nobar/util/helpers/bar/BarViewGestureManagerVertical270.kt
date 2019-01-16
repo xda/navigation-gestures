@@ -1,11 +1,11 @@
-package com.xda.nobar.util.helpers
+package com.xda.nobar.util.helpers.bar
 
 import android.annotation.SuppressLint
 import android.os.*
-import android.util.Log
 import android.view.MotionEvent
 import androidx.dynamicanimation.animation.DynamicAnimation
 import com.xda.nobar.util.*
+import com.xda.nobar.util.helpers.HiddenPillReasonManager
 import com.xda.nobar.views.BarView
 import kotlinx.android.synthetic.main.pill.view.*
 import kotlin.math.absoluteValue

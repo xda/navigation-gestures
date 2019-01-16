@@ -1,4 +1,4 @@
-package com.xda.nobar.util.helpers
+package com.xda.nobar.util.helpers.bar
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager

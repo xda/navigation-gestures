@@ -27,7 +27,7 @@ import com.xda.nobar.R
 import com.xda.nobar.activities.helpers.DialogActivity
 import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.interfaces.OnDialogChoiceMadeListener
-import com.xda.nobar.util.helpers.ActionHolder
+import com.xda.nobar.util.helpers.bar.ActionHolder
 import com.xda.nobar.views.BarView
 
 /* Context */

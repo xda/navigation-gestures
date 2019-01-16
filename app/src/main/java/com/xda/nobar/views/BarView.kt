@@ -22,6 +22,10 @@ import androidx.dynamicanimation.animation.DynamicAnimation
 import com.xda.nobar.R
 import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.*
+import com.xda.nobar.util.helpers.bar.BarViewGestureManagerHorizontal
+import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical
+import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical270
+import com.xda.nobar.util.helpers.bar.BaseBarViewGestureManager
 import kotlinx.android.synthetic.main.pill.view.*
 
 /**
