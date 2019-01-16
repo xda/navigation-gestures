@@ -59,6 +59,7 @@
         <activity
             android:name=".activities.MainActivity"
             android:launchMode="singleInstance"
+            android:configChanges="orientation|screenLayout|screenSize|keyboard"
             android:theme="@style/AppTheme.NoBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
