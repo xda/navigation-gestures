@@ -83,16 +83,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     val hiddenPillReasons = HiddenPillReasonManager()
 
     val adjustedHomeY: Int
-        get() = if (context.prefManager.anchorPill) actualHomeX else actualHomeY
+        get() = if (isVertical) anchoredHomeX else actualHomeY
 
     private val actualHomeY: Int
         get() = context.realScreenSize.y - context.prefManager.homeY - context.prefManager.customHeight
 
     val zeroY: Int
-        get() = if (context.prefManager.anchorPill) 0 else context.realScreenSize.y - context.prefManager.customHeight
+        get() = if (isVertical) 0 else context.realScreenSize.y - context.prefManager.customHeight
 
     val adjustedHomeX: Int
-        get() = if (context.prefManager.anchorPill) actualHomeY else actualHomeX
+        get() = if (isVertical) context.prefManager.homeY else actualHomeX
 
     private val actualHomeX: Int
         get() {
@@ -107,11 +107,28 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             return context.prefManager.homeX - if (immersiveNav && !context.prefManager.useTabletMode) (diff / 2f).toInt() else 0
         }
 
+    private val anchoredHomeX: Int
+        get() {
+            val diff = try {
+                val screenSize = context.realScreenSize
+                val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
+                (frame.top + frame.bottom) - screenSize.y
+            } catch (e: Exception) {
+                0
+            }
+
+            return context.prefManager.homeX - if (immersiveNav && !context.prefManager.useTabletMode) (diff / 2f).toInt() else 0
+        }
+
     val adjustedWidth: Int
-        get() = context.prefManager.run { if (anchorPill) customHeight else customWidth }
+        get() = context.prefManager.run { if (isVertical) customHeight else customWidth }
 
     val adjustedHeight: Int
-        get() = context.prefManager.run { if (anchorPill) customWidth else customHeight }
+        get() = context.prefManager.run { if (isVertical) customWidth else customHeight }
+
+    val isVertical: Boolean
+        get() = context.prefManager.anchorPill
+                && context.rotation.run { this == Surface.ROTATION_270 || this == Surface.ROTATION_90 }
 
     private val horizontalGestureManager = BarViewGestureManagerHorizontal(this)
     private val verticalGestureManager = BarViewGestureManagerVertical(this)
@@ -167,9 +184,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         super.onAttachedToWindow()
 
         if (context.prefManager.largerHitbox) {
-            val margins = getPillMargins()
-            margins.top = resources.getDimensionPixelSize(R.dimen.pill_margin_top_large_hitbox)
-            changePillMargins(margins)
+            updateLargerHitbox()
         }
 
         context.app.pillShown = true
@@ -194,7 +209,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         if (key == PrefManager.IS_ACTIVE) {
             if (!context.prefManager.isActive) {
-                currentGestureDetector.actionHandler.flashlightController.onDestroy()
+                verticalGestureManager.actionHandler.flashlightController.onDestroy()
+                horizontalGestureManager.actionHandler.flashlightController.onDestroy()
             }
         }
 
@@ -258,13 +274,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
         if (key == PrefManager.LARGER_HITBOX) {
-            val enabled = context.prefManager.largerHitbox
-            val margins = getPillMargins()
-            params.height = context.prefManager.customHeight
-            params.y = adjustedHomeY
-            margins.top = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
-            updateLayout(params)
-            changePillMargins(margins)
+            updateLargerHitbox()
         }
         if (key == PrefManager.AUTO_HIDE_PILL) {
             if (context.prefManager.autoHide) {
@@ -376,16 +386,17 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private fun animateHide() {
         pill.animate()
-                .translationY(pill.height.toFloat() / 2f)
                 .alpha(ALPHA_HIDDEN)
                 .setInterpolator(ENTER_INTERPOLATOR)
                 .setDuration(getAnimationDurationMs())
                 .withEndAction {
-                    pill.translationY = pill.height.toFloat() / 2f
-
                     isHidden = true
 
                     isPillHidingOrShowing = false
+                }
+                .apply {
+                    if (isVertical) translationX(pill.width.toFloat() / 2f)
+                        else translationY(pill.height.toFloat() / 2f)
                 }
                 .start()
     }
@@ -441,14 +452,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                     if (reallyForceNotAuto || forceShow) {
                         pill.animate()
-                                .translationY(0f)
                                 .alpha(ALPHA_ACTIVE)
                                 .setInterpolator(EXIT_INTERPOLATOR)
                                 .setDuration(getAnimationDurationMs())
                                 .withEndAction {
-                                    pill.translationY = 0f
-
                                     animateShow(!reallyForceNotAuto)
+                                }
+                                .apply {
+                                    if (isVertical) translationX(0f)
+                                    else translationY(0f)
                                 }
                                 .start()
                     } else isPillHidingOrShowing = false
@@ -472,8 +484,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             (pill.layoutParams as FrameLayout.LayoutParams).apply {
                 bottomMargin = margins.bottom
                 topMargin = margins.top
-                marginStart = margins.left
-                marginEnd = margins.right
+                leftMargin = margins.left
+                rightMargin = margins.right
 
                 pill.layoutParams = pill.layoutParams
             }
@@ -486,8 +498,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         (pill.layoutParams as FrameLayout.LayoutParams).apply {
             rect.bottom = bottomMargin
             rect.top = topMargin
-            rect.left = marginStart
-            rect.right = marginEnd
+            rect.left = leftMargin
+            rect.right = rightMargin
         }
 
         return rect
@@ -551,8 +563,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         pill.elevation = context.dpAsPx(if (context.prefManager.shouldShowShadow) 2 else 0).toFloat()
         (pill.layoutParams as FrameLayout.LayoutParams).apply {
             val shadow = context.prefManager.shouldShowShadow
-            marginEnd = if (shadow) context.dpAsPx(DEF_MARGIN_RIGHT_DP) else 0
-            marginStart = if (shadow) context.dpAsPx(DEF_MARGIN_LEFT_DP) else 0
+            rightMargin = if (shadow) context.dpAsPx(DEF_MARGIN_RIGHT_DP) else 0
+            leftMargin = if (shadow) context.dpAsPx(DEF_MARGIN_LEFT_DP) else 0
             bottomMargin = if (shadow) context.dpAsPx(DEF_MARGIN_BOTTOM_DP) else 0
 
             pill.layoutParams = this
@@ -599,22 +611,25 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun handleAnchorUpdate() {
-        verticalMode(context.prefManager.anchorPill
-                && context.rotation.run { this == Surface.ROTATION_90 || this == Surface.ROTATION_270 })
+        handler?.postDelayed({
+            verticalMode(isVertical)
 
-        params.x = adjustedHomeX
-        params.y = adjustedHomeY
-        params.width = adjustedWidth
-        params.height = adjustedHeight
+            params.x = adjustedHomeX
+            params.y = adjustedHomeY
+            params.width = adjustedWidth
+            params.height = adjustedHeight
 
-        updateLayout()
+            updateLayout()
+
+            adjustPillShadow()
+        }, 200)
     }
 
     private fun verticalMode(enabled: Boolean) {
         if (enabled) {
             currentGestureDetector = verticalGestureManager
 
-            params.gravity = Gravity.TOP or Gravity.RIGHT
+            params.gravity = Gravity.CENTER or Gravity.RIGHT
 
             if (!context.prefManager.dontMoveForKeyboard) {
                 params.flags = params.flags and
@@ -632,6 +647,24 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
             }
         }
+
+        currentGestureDetector.loadActionMap()
+    }
+
+    fun updateLargerHitbox() {
+        val enabled = context.prefManager.largerHitbox
+        val margins = getPillMargins()
+        val m = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
+
+        params.width = adjustedWidth
+        params.height = adjustedHeight
+        params.x = adjustedHomeX
+        params.y = adjustedHomeY
+
+        if (isVertical) margins.left = m else margins.top = m
+
+        updateLayout(params)
+        changePillMargins(margins)
     }
 
     inner class HideHandler(looper: Looper) : Handler(looper) {

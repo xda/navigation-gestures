@@ -18,6 +18,7 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import android.util.TypedValue
+import android.view.Surface
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -178,7 +179,10 @@ val Context.realScreenSize: Point
         val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val display = windowManager.defaultDisplay
 
-        return Point().apply { display.getRealSize(this) }
+        val temp = Point().apply { display.getRealSize(this) }
+
+        return rotation.run { if (this == Surface.ROTATION_90
+                || this == Surface.ROTATION_270) Point(temp.y, temp.x) else temp }
     }
 
 val Context.rotation: Int

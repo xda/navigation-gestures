@@ -86,10 +86,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
     }
 
     internal abstract fun getSection(coord: Float): Int
-    
-    internal open fun handleTouchEvent(ev: MotionEvent?): Boolean {
-        return false
-    }
+    internal abstract fun handleTouchEvent(ev: MotionEvent?): Boolean
 
     internal fun getSectionedUpHoldAction(coord: Float): Int? {
         return if (!context.app.prefManager.sectionedPill) actionMap[bar.actionHolder.actionUpHold]

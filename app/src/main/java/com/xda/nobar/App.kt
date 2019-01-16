@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.*
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
@@ -843,6 +844,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 if (pillShown) {
                     try {
                         bar.handleAnchorUpdate()
+                        bar.updateLargerHitbox()
                     } catch (e: NullPointerException) {}
                 }
 

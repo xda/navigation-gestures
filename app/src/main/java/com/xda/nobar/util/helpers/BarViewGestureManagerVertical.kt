@@ -2,6 +2,7 @@ package com.xda.nobar.util.helpers
 
 import android.annotation.SuppressLint
 import android.os.*
+import android.util.Log
 import android.view.MotionEvent
 import androidx.dynamicanimation.animation.DynamicAnimation
 import com.xda.nobar.util.*
@@ -92,13 +93,13 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
 
                 when {
                     bar.params.x != bar.adjustedHomeX && !bar.isHidden && !bar.isPillHidingOrShowing -> {
-                        bar.animator.homeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                        bar.animator.verticalHomeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
                             isActing = false
                             bar.isCarryingOutTouchAction = false
                         })
                     }
                     bar.params.y != bar.adjustedHomeY -> {
-                        bar.animator.homeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                        bar.animator.verticalHomeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
                             isActing = false
                             bar.isCarryingOutTouchAction = false
                         })
@@ -137,9 +138,9 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
 
                     val screenWidth = context.realScreenSize.x
 
-                    if (bar.params.x < screenWidth - screenWidth / 6 - bar.adjustedHomeX
+                    if (bar.params.x < screenWidth / 6 + bar.adjustedHomeX
                             && bar.getAnimationDurationMs() > 0) {
-                        bar.params.x -= (velocity / 2).toInt()
+                        bar.params.x += (velocity / 2).toInt()
                         bar.updateLayout()
                     }
 
@@ -157,7 +158,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                     oldX = ev.rawX
 
                     if (bar.getAnimationDurationMs() > 0) {
-                        bar.params.x -= (velocity / 2).toInt()
+                        bar.params.x += (velocity / 2).toInt()
                         bar.updateLayout()
                     }
 
@@ -175,8 +176,8 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                     oldY = ev.rawY
 
                     val halfScreen = context.realScreenSize.y / 2f
-                    val bottomParam = bar.params.x - context.app.prefManager.customWidth.toFloat() / 2f
-                    val topParam = bar.params.x + context.app.prefManager.customWidth.toFloat() / 2f
+                    val bottomParam = bar.params.y - context.app.prefManager.customWidth.toFloat() / 2f
+                    val topParam = bar.params.y + context.app.prefManager.customWidth.toFloat() / 2f
 
                     if (bar.getAnimationDurationMs() > 0) {
                         when {
@@ -223,25 +224,25 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
         return if (!bar.isHidden && !isActing) {
             when {
                 context.actionHolder.run { hasAnyOfActions(actionLeft, actionLeftHold) }
-                        && distanceY < -yThreshDown
+                        && distanceY > xThresh
                         && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
                     isSwipeDown = true
                     true
                 }
                 context.actionHolder.run { hasAnyOfActions(actionRight, actionRightHold) }
-                        && distanceY > yThreshUp
+                        && distanceY < -xThresh
                         && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe
                     isSwipeUp = true
                     true
                 }
                 context.actionHolder.run { hasAnyOfActions(actionDown, actionDownHold) }
-                        && distanceX > xThresh
+                        && distanceX > yThreshDown
                         && distanceY.absoluteValue < distanceX.absoluteValue -> { //right swipe
                     isSwipeRight = true
                     true
                 }
                 context.actionHolder.hasSomeUpAction()
-                        && distanceX < -xThresh
+                        && distanceX < -yThreshUp
                         && distanceY.absoluteValue < distanceX.absoluteValue -> { //left swipe
                     isSwipeLeft = true
                     true
@@ -262,12 +263,12 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
     }
 
     override fun getSection(coord: Float): Int {
-        val third = context.app.prefManager.customWidth / 3f
+        val third = bar.adjustedHeight / 3f
 
         return when {
-            coord < third -> FIRST_SECTION
+            coord < third -> THIRD_SECTION
             coord <= (2f * third) -> SECOND_SECTION
-            else -> THIRD_SECTION
+            else -> FIRST_SECTION
         }
     }
 

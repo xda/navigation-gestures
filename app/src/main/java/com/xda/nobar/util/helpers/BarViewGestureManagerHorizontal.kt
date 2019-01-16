@@ -1,17 +1,11 @@
 package com.xda.nobar.util.helpers
 
 import android.annotation.SuppressLint
-import android.app.ActivityManager
-import android.content.Context
 import android.os.*
-import android.view.GestureDetector
 import android.view.MotionEvent
-import android.view.SoundEffectConstants
 import androidx.dynamicanimation.animation.DynamicAnimation
-import com.topjohnwu.superuser.Shell
 import com.xda.nobar.util.*
 import com.xda.nobar.views.BarView
-import com.xda.nobar.views.BarView.Companion.ALPHA_ACTIVE
 import kotlinx.android.synthetic.main.pill.view.*
 import kotlin.math.absoluteValue
 
@@ -98,13 +92,13 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
 
                 when {
                     bar.params.y != bar.adjustedHomeY && !bar.isHidden && !bar.isPillHidingOrShowing -> {
-                        bar.animator.homeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                        bar.animator.horizontalHomeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
                             isActing = false
                             bar.isCarryingOutTouchAction = false
                         })
                     }
                     bar.params.x < bar.adjustedHomeX || bar.params.x > bar.adjustedHomeX -> {
-                        bar.animator.homeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                        bar.animator.horizontalHomeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
                             isActing = false
                             bar.isCarryingOutTouchAction = false
                         })
