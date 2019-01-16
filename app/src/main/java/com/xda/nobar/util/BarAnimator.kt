@@ -16,7 +16,7 @@ class BarAnimator(private val bar: BarView) {
     }
 
     fun verticalHomeY(listener: DynamicAnimation.OnAnimationEndListener) {
-        animateVertically(listener, bar.adjustedHomeX)
+        animateVertically(listener, bar.adjustedHomeY)
     }
 
     fun horizontalHomeX(listener: DynamicAnimation.OnAnimationEndListener) {
@@ -24,7 +24,7 @@ class BarAnimator(private val bar: BarView) {
     }
 
     fun verticalHomeX(listener: DynamicAnimation.OnAnimationEndListener) {
-        animateHorizontally(listener, bar.adjustedHomeY)
+        animateHorizontally(listener, bar.adjustedHomeX)
     }
 
     fun show(listener: DynamicAnimation.OnAnimationEndListener) {
