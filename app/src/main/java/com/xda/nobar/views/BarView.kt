@@ -21,10 +21,7 @@ import android.widget.Toast
 import androidx.dynamicanimation.animation.DynamicAnimation
 import com.xda.nobar.R
 import com.xda.nobar.util.*
-import com.xda.nobar.util.helpers.BarViewGestureManagerHorizontal
-import com.xda.nobar.util.helpers.BarViewGestureManagerVertical
-import com.xda.nobar.util.helpers.BaseBarViewGestureManager
-import com.xda.nobar.util.helpers.HiddenPillReasonManager
+import com.xda.nobar.util.helpers.*
 import kotlinx.android.synthetic.main.pill.view.*
 
 /**
@@ -41,8 +38,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         const val SCALE_MID = 0.7f
         const val SCALE_SMALL = 0.3f
 
-        const val DEF_MARGIN_LEFT_DP = 2
-        const val DEF_MARGIN_RIGHT_DP = 2
+        const val DEF_MARGIN_LEFT_DP = 4
+        const val DEF_MARGIN_RIGHT_DP = 4
         const val DEF_MARGIN_BOTTOM_DP = 2
 
         val ENTER_INTERPOLATOR = DecelerateInterpolator()
@@ -130,8 +127,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         get() = context.prefManager.anchorPill
                 && context.rotation.run { this == Surface.ROTATION_270 || this == Surface.ROTATION_90 }
 
+    val is270Vertical: Boolean
+        get() = isVertical
+                && context.rotation == Surface.ROTATION_270
+
     private val horizontalGestureManager = BarViewGestureManagerHorizontal(this)
     private val verticalGestureManager = BarViewGestureManagerVertical(this)
+    private val vertical270GestureMansger = BarViewGestureManagerVertical270(this)
 
     var currentGestureDetector: BaseBarViewGestureManager = horizontalGestureManager
 
@@ -395,7 +397,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     isPillHidingOrShowing = false
                 }
                 .apply {
-                    if (isVertical) translationX(pill.width.toFloat() / 2f)
+                    if (isVertical) translationX((if (is270Vertical) -1 else 1) * pill.width.toFloat() / 2f)
                         else translationY(pill.height.toFloat() / 2f)
                 }
                 .start()
@@ -563,9 +565,26 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         pill.elevation = context.dpAsPx(if (context.prefManager.shouldShowShadow) 2 else 0).toFloat()
         (pill.layoutParams as FrameLayout.LayoutParams).apply {
             val shadow = context.prefManager.shouldShowShadow
-            rightMargin = if (shadow) context.dpAsPx(DEF_MARGIN_RIGHT_DP) else 0
-            leftMargin = if (shadow) context.dpAsPx(DEF_MARGIN_LEFT_DP) else 0
-            bottomMargin = if (shadow) context.dpAsPx(DEF_MARGIN_BOTTOM_DP) else 0
+
+            val r = if (shadow) context.dpAsPx(DEF_MARGIN_RIGHT_DP) else 0
+            val l = if (shadow) context.dpAsPx(DEF_MARGIN_LEFT_DP) else 0
+            val b = if (shadow) context.dpAsPx(DEF_MARGIN_BOTTOM_DP) else 0
+
+            if (isVertical) {
+                topMargin = r
+                bottomMargin = l
+                if (is270Vertical) {
+                    leftMargin = b
+                    rightMargin = 0
+                } else {
+                    rightMargin = b
+                    leftMargin = 0
+                }
+            } else {
+                rightMargin = r
+                leftMargin = l
+                bottomMargin = b
+            }
 
             pill.layoutParams = this
         }
@@ -622,14 +641,19 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             updateLayout()
 
             adjustPillShadow()
+            updateLargerHitbox()
         }, 200)
     }
 
     private fun verticalMode(enabled: Boolean) {
         if (enabled) {
-            currentGestureDetector = verticalGestureManager
+            val is270 = is270Vertical
 
-            params.gravity = Gravity.CENTER or Gravity.RIGHT
+            currentGestureDetector =
+                    if (is270) vertical270GestureMansger else verticalGestureManager
+
+            params.gravity = Gravity.CENTER or
+                    if (is270) Gravity.LEFT else Gravity.RIGHT
 
             if (!context.prefManager.dontMoveForKeyboard) {
                 params.flags = params.flags and
@@ -661,7 +685,19 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         params.x = adjustedHomeX
         params.y = adjustedHomeY
 
-        if (isVertical) margins.left = m else margins.top = m
+        if (isVertical) {
+            if (is270Vertical) {
+                margins.right = m
+                margins.left = 0
+            } else {
+                margins.left = m
+                margins.right = 0
+            }
+            margins.top = 0
+        } else {
+            margins.left = 0
+            margins.top = m
+        }
 
         updateLayout(params)
         changePillMargins(margins)

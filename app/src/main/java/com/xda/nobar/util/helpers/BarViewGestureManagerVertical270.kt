@@ -13,7 +13,7 @@ import kotlin.math.absoluteValue
 /**
  * Manage all the gestures on the pill
  */
-class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(bar) {
+class BarViewGestureManagerVertical270(bar: BarView) : BaseBarViewGestureManager(bar) {
     override val adjCoord: Float
         get() = origAdjY
     override val gestureHandler by lazy { GestureHandler(gestureThread.looper) }
@@ -40,7 +40,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                 lastTouchTime = -1L
 
                 if (wasHidden) {
-                    isSwipeLeft = false
+                    isSwipeRight = false
                 }
 
                 gestureHandler.removeMessages(MSG_UP_HOLD)
@@ -49,19 +49,19 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                 gestureHandler.removeMessages(MSG_DOWN_HOLD)
 
                 if (isSwipeUp && !isRunningLongUp) {
-                    sendAction(bar.actionHolder.actionRight)
+                    sendAction(bar.actionHolder.actionLeft)
                 }
 
                 if (isSwipeLeft && !isRunningLongLeft) {
-                    sendAction(bar.actionHolder.actionUp)
-                }
-
-                if (isSwipeRight && !isRunningLongRight) {
                     sendAction(bar.actionHolder.actionDown)
                 }
 
+                if (isSwipeRight && !isRunningLongRight) {
+                    sendAction(bar.actionHolder.actionUp)
+                }
+
                 if (isSwipeDown && !isRunningLongDown) {
-                    sendAction(bar.actionHolder.actionLeft)
+                    sendAction(bar.actionHolder.actionRight)
                 }
 
                 if (bar.pill.translationY != 0f) {
@@ -130,7 +130,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
             MotionEvent.ACTION_MOVE -> {
                 ultimateReturn = handlePotentialSwipe(ev)
 
-                if (isSwipeLeft && !isSwipeUp && !isSwipeRight && !isSwipeDown) {
+                if (isSwipeRight && !isSwipeUp && !isSwipeLeft && !isSwipeDown) {
                     if (!isActing) isActing = true
 
                     val velocity = (oldX - ev.rawX)
@@ -140,31 +140,31 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
 
                     if (bar.params.x < screenWidth / 6 + bar.adjustedHomeX
                             && bar.getAnimationDurationMs() > 0) {
-                        bar.params.x += (velocity / 2).toInt()
-                        bar.updateLayout()
-                    }
-
-                    if (!sentLongLeft) {
-                        sentLongLeft = true
-                        gestureHandler.sendEmptyMessageAtTime(MSG_LEFT_HOLD,
-                                SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
-                    }
-                }
-
-                if (isSwipeRight && !isSwipeLeft && !isSwipeDown && !isSwipeUp) {
-                    if (!isActing) isActing = true
-
-                    val velocity = (oldX - ev.rawX)
-                    oldX = ev.rawX
-
-                    if (bar.getAnimationDurationMs() > 0) {
-                        bar.params.x += (velocity / 2).toInt()
+                        bar.params.x -= (velocity / 2).toInt()
                         bar.updateLayout()
                     }
 
                     if (!sentLongRight) {
                         sentLongRight = true
                         gestureHandler.sendEmptyMessageAtTime(MSG_RIGHT_HOLD,
+                                SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+                    }
+                }
+
+                if (isSwipeLeft && !isSwipeRight && !isSwipeDown && !isSwipeUp) {
+                    if (!isActing) isActing = true
+
+                    val velocity = (oldX - ev.rawX)
+                    oldX = ev.rawX
+
+                    if (bar.getAnimationDurationMs() > 0) {
+                        bar.params.x -= (velocity / 2).toInt()
+                        bar.updateLayout()
+                    }
+
+                    if (!sentLongLeft) {
+                        sentLongLeft = true
+                        gestureHandler.sendEmptyMessageAtTime(MSG_LEFT_HOLD,
                                 SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
                     }
                 }
@@ -223,26 +223,26 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
 
         return if (!bar.isHidden && !isActing) {
             when {
-                context.actionHolder.run { hasAnyOfActions(actionLeft, actionLeftHold) }
+                context.actionHolder.run { hasAnyOfActions(actionRight, actionRightHold) }
                         && distanceY > xThresh
                         && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
                     isSwipeDown = true
                     true
                 }
-                context.actionHolder.run { hasAnyOfActions(actionRight, actionRightHold) }
+                context.actionHolder.run { hasAnyOfActions(actionLeft, actionLeftHold) }
                         && distanceY < -xThresh
                         && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe
                     isSwipeUp = true
                     true
                 }
                 context.actionHolder.run { hasAnyOfActions(actionDown, actionDownHold) }
-                        && distanceX > yThreshDown
-                        && distanceY.absoluteValue < distanceX.absoluteValue -> { //right swipe
+                        && distanceX > yThreshUp
+                        && distanceY.absoluteValue < distanceX.absoluteValue -> { //left swipe
                     isSwipeRight = true
                     true
                 }
                 context.actionHolder.hasSomeUpAction()
-                        && distanceX < -yThreshUp
+                        && distanceX < -yThreshDown
                         && distanceY.absoluteValue < distanceX.absoluteValue -> { //left swipe
                     isSwipeLeft = true
                     true
@@ -251,8 +251,8 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
             }
         } else if (bar.isHidden
                 && !isActing
-                && distanceX < -xThresh
-                && distanceY.absoluteValue < distanceX.absoluteValue) { //left swipe
+                && distanceX > yThreshUp
+                && distanceY.absoluteValue < distanceX.absoluteValue) { //right swipe
             if (bar.isHidden && !bar.isPillHidingOrShowing && !bar.beingTouched) {
                 bar.vibrate(context.prefManager.vibrationDuration.toLong())
                 bar.hiddenPillReasons.remove(HiddenPillReasonManager.MANUAL)
@@ -277,30 +277,30 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
                 MSG_LEFT_HOLD -> {
-                    if (getSectionedUpHoldAction(adjCoord) != bar.actionHolder.typeNoAction) {
+                    if (actionMap[bar.actionHolder.actionDownHold] != bar.actionHolder.typeNoAction) {
                         isRunningLongLeft = true
-                        sendAction(bar.actionHolder.actionUpHold)
+                        sendAction(bar.actionHolder.actionDownHold)
                     }
                 }
 
                 MSG_DOWN_HOLD -> {
-                    if (actionMap[bar.actionHolder.actionLeftHold] != bar.actionHolder.typeNoAction) {
-                        isRunningLongDown = true
-                        sendAction(bar.actionHolder.actionLeftHold)
-                    }
-                }
-
-                MSG_UP_HOLD -> {
                     if (actionMap[bar.actionHolder.actionRightHold] != bar.actionHolder.typeNoAction) {
-                        isRunningLongUp = true
+                        isRunningLongDown = true
                         sendAction(bar.actionHolder.actionRightHold)
                     }
                 }
 
+                MSG_UP_HOLD -> {
+                    if (actionMap[bar.actionHolder.actionLeftHold] != bar.actionHolder.typeNoAction) {
+                        isRunningLongUp = true
+                        sendAction(bar.actionHolder.actionLeftHold)
+                    }
+                }
+
                 MSG_RIGHT_HOLD -> {
-                    if (actionMap[bar.actionHolder.actionDownHold] != bar.actionHolder.typeNoAction) {
+                    if (getSectionedUpHoldAction(adjCoord) != bar.actionHolder.typeNoAction) {
                         isRunningLongRight = true
-                        sendAction(bar.actionHolder.actionDownHold)
+                        sendAction(bar.actionHolder.actionUpHold)
                     }
                 }
             }
