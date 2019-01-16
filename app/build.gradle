@@ -85,7 +85,7 @@ dependencies {
     //Other
     implementation 'com.joaomgcd:taskerpluginlibrary:0.1'
     implementation 'com.github.anrwatchdog:anrwatchdog:1.3.0'
-    implementation 'com.github.topjohnwu:libsu:2.1.2'
+    implementation 'com.github.topjohnwu:libsu:2.2.0'
     implementation 'eu.chainfire:librootjava:1.2.0'
 }
 

@@ -1,6 +1,7 @@
 package com.xda.nobar.root
 
 import android.content.Context
+import android.util.Log
 import com.topjohnwu.superuser.Shell
 import com.xda.nobar.RootActions
 import eu.chainfire.librootjava.BuildConfig
@@ -10,7 +11,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class RootWrapper(private val context: Context) {
-    private val receiver = object : RootIPCReceiver<RootActions>(null, 0) {
+    private val receiver = object : RootIPCReceiver<RootActions>(context, 0, RootActions::class.java) {
         override fun onConnect(ipc: RootActions?) {
             actions = ipc
         }
@@ -35,8 +36,6 @@ class RootWrapper(private val context: Context) {
                 Shell.su(*script.toTypedArray())
                         .submit()
             }
-
-            receiver.setContext(context)
         }
     }
 

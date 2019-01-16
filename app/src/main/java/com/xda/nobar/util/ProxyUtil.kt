@@ -7,6 +7,7 @@ import android.hardware.input.InputManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.view.Display
 import android.view.InputEvent
 import android.view.inputmethod.InputMethodManager
@@ -90,28 +91,3 @@ val iPackageManager: Any
         return aThreadClass.getMethod("getPackageManager")
                 .invoke(null)
     }
-
-fun grantPermission(permission: String): Boolean {
-    val iPM = iPackageManager
-
-    return try {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            val grantRuntimePermission = iPM::class.java
-                    .getMethod("grantRuntimePermission", String::class.java,
-                            String::class.java, Int::class.java)
-
-            grantRuntimePermission
-                    .invoke(iPM, BuildConfig.APPLICATION_ID, permission, -2)
-        } else {
-            val grantPermission = iPM::class.java
-                    .getMethod("grantPermission", String::class.java, String::class.java)
-
-            grantPermission
-                    .invoke(iPM, BuildConfig.APPLICATION_ID, permission)
-        }
-
-        true
-    } catch (e: Exception) {
-        false
-    }
-}

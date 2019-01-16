@@ -23,7 +23,6 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.crashlytics.android.Crashlytics
 import com.github.anrwatchdog.ANRWatchDog
-import com.topjohnwu.superuser.BusyBox
 import com.topjohnwu.superuser.ContainerApp
 import com.topjohnwu.superuser.Shell
 import com.xda.nobar.activities.helpers.RequestPermissionsActivity
@@ -110,8 +109,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
         Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR)
         Shell.Config.verboseLogging(BuildConfig.DEBUG)
-
-        BusyBox.setup(this)
 
         if (isRightProcess()) {
             if (prefManager.crashlyticsIdEnabled) Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
