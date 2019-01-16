@@ -4,6 +4,7 @@ import android.Manifest
 import android.accounts.AccountManager
 import android.content.*
 import android.content.pm.PackageManager
+import com.xda.nobar.BuildConfig
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 
 /**
@@ -39,7 +40,7 @@ class PremiumHelper(private val context: Context, private val listener: OnLicens
 
     init {
         val filter = IntentFilter("com.xda.nobar.action.PREMIUM_RESULT")
-        context.registerReceiver(receiver, filter, "com.xda.nobar.permission.VERIFY_LICENSE", null)
+        context.registerReceiver(receiver, filter, if (BuildConfig.DEBUG) null else "com.xda.nobar.permission.VERIFY_LICENSE", null)
     }
 
     fun checkPremium() {
