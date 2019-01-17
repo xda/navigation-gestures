@@ -22,7 +22,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode project.version
-        versionName name + "-" + getDate()
+        versionName name
         vectorDrawables.useSupportLibrary = true
         setProperty("archivesBaseName", "NoBar_" + versionName)
     }
