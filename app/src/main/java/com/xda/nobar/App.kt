@@ -564,7 +564,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             }
 
             if (pillShown) {
-                bar.updateLayout(bar.params)
+                bar.updateLayout()
             }
 
             if (prefManager.shouldUseOverscanMethod) {
@@ -720,6 +720,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                         e.printStackTrace()
                     }
                 }
+
+                bar.updatePositionAndDimens()
 
                 val rot = wm.defaultDisplay.rotation
                 if (oldRot != rot) {

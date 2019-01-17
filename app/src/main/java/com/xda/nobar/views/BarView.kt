@@ -77,11 +77,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         format = PixelFormat.TRANSLUCENT
         softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 
-        if (context.prefManager.dontMoveForKeyboard) {
-            flags = flags and
-                    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-            softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
-        }
+        setMoveForKeyboard(!context.prefManager.dontMoveForKeyboard)
     }
     val hiddenPillReasons = HiddenPillReasonManager()
 
@@ -655,12 +651,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         handler?.postDelayed({
             verticalMode(isVertical)
 
-            params.x = adjustedHomeX
-            params.y = adjustedHomeY
-            params.width = adjustedWidth
-            params.height = adjustedHeight
-
-            updateLayout()
+            updatePositionAndDimens()
 
             adjustPillShadow()
             updateLargerHitbox()
@@ -694,6 +685,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
 
+        updateLayout()
+
         currentGestureDetector.singleton.loadActionMap()
     }
 
@@ -702,10 +695,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         val margins = getPillMargins()
         val m = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
 
-        params.width = adjustedWidth
-        params.height = adjustedHeight
-        params.x = adjustedHomeX
-        params.y = adjustedHomeY
+        updatePositionAndDimens()
 
         if (isVertical) {
             if (is270Vertical) {
@@ -721,11 +711,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             margins.top = m
         }
 
-        updateLayout(params)
         changePillMargins(margins)
     }
 
-    private fun updatePositionAndDimens() {
+    fun updatePositionAndDimens() {
         params.x = adjustedHomeX
         params.y = adjustedHomeY
         params.width = adjustedWidth
