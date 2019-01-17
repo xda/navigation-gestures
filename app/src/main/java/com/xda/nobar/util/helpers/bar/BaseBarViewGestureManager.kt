@@ -3,11 +3,10 @@ package com.xda.nobar.util.helpers.bar
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
-import android.os.Build
-import android.os.Handler
-import android.os.HandlerThread
+import android.os.*
 import android.view.GestureDetector
 import android.view.MotionEvent
+import androidx.annotation.CallSuper
 import com.xda.nobar.util.actionHolder
 import com.xda.nobar.util.app
 import com.xda.nobar.util.prefManager
@@ -24,6 +23,15 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         internal const val MSG_LEFT_HOLD = 1
         internal const val MSG_RIGHT_HOLD = 2
         internal const val MSG_DOWN_HOLD = 3
+
+        internal const val MSG_UP = 4
+        internal const val MSG_LEFT = 5
+        internal const val MSG_RIGHT = 6
+        internal const val MSG_DOWN = 7
+
+        internal const val MSG_TAP = 8
+        internal const val MSG_DOUBLE_TAP = 9
+        internal const val MSG_HOLD = 10
     }
 
     class Singleton private constructor(private val bar: BarView) {
@@ -47,7 +55,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
          * Load the user's custom gesture/action pairings; default values if a pairing doesn't exist
          */
         fun loadActionMap() {
-            context.app.prefManager.getActionsList(actionMap)
+            context.prefManager.getActionsList(actionMap)
 
             if (actionMap.values.contains(bar.actionHolder.premTypeFlashlight)) {
                 if (!actionHandler.flashlightController.isCreated)
@@ -58,7 +66,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         }
     }
     internal abstract val adjCoord: Float
-    internal abstract val gestureHandler: Handler
+    internal abstract val gestureHandler: BaseGestureHandler
 
     internal val context = bar.context
 
@@ -104,7 +112,68 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
     }
 
     internal abstract fun getSection(coord: Float): Int
-    internal abstract fun handleTouchEvent(ev: MotionEvent?): Boolean
+
+    @CallSuper
+    internal open fun handleTouchEvent(ev: MotionEvent?): Boolean {
+        when (ev?.action) {
+            MotionEvent.ACTION_DOWN -> {
+                lastTouchTime = System.currentTimeMillis()
+                wasHidden = bar.isHidden
+                oldY = ev.rawY
+                oldX = ev.rawX
+                origX = ev.rawX
+                origY = ev.rawY
+                origAdjX = ev.x
+                origAdjY = ev.y
+                bar.beingTouched = true
+                bar.isCarryingOutTouchAction = true
+            }
+
+            MotionEvent.ACTION_UP -> {
+                bar.beingTouched = false
+                lastTouchTime = -1L
+            }
+        }
+
+        return false
+    }
+
+    internal fun finishUp() {
+        isRunningLongRight = false
+        isRunningLongLeft = false
+        isRunningLongUp = false
+        isRunningLongDown = false
+
+        sentLongRight = false
+        sentLongLeft = false
+        sentLongUp = false
+        sentLongDown = false
+
+        isSwipeUp = false
+        isSwipeLeft = false
+        isSwipeRight = false
+        isSwipeDown = false
+
+        wasHidden = bar.isHidden
+    }
+
+    internal fun parseSwipe() {
+        if (isSwipeUp) {
+            gestureHandler.sendUp()
+        }
+
+        if (isSwipeLeft) {
+            gestureHandler.sendLeft()
+        }
+
+        if (isSwipeRight) {
+            gestureHandler.sendRight()
+        }
+
+        if (isSwipeDown) {
+            gestureHandler.sendDown()
+        }
+    }
 
     internal fun getSectionedUpHoldAction(coord: Float): Int? {
         return if (!context.app.prefManager.sectionedPill) actionMap[bar.actionHolder.actionUpHold]
@@ -132,11 +201,12 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
             bar.actionHolder.actionUpHold
     ).contains(this) && context.app.prefManager.sectionedPill
 
-    internal open inner class BaseDetector : GestureDetector.SimpleOnGestureListener() {
+    open inner class BaseDetector : GestureDetector.SimpleOnGestureListener() {
         override fun onSingleTapUp(ev: MotionEvent): Boolean {
-            return if (!context.actionHolder.hasAnyOfActions(bar.actionHolder.actionDouble) && !isActing && !wasHidden) {
+            return if (!context.actionHolder.hasAnyOfActions(bar.actionHolder.actionDouble)
+                    && !isActing && !wasHidden) {
                 isOverrideTap = true
-                sendAction(bar.actionHolder.actionTap)
+                gestureHandler.sendTap()
                 isActing = false
                 true
             } else false
@@ -151,7 +221,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
                     if (context.app.prefManager.shouldUseOverscanMethod) context.app.showNav()
                 } else {
                     isActing = true
-                    sendAction(bar.actionHolder.actionHold)
+                    gestureHandler.sendHold()
                 }
             }
         }
@@ -159,7 +229,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         override fun onDoubleTap(ev: MotionEvent): Boolean {
             return if (!bar.isHidden && !isActing) {
                 isActing = true
-                sendAction(bar.actionHolder.actionDouble)
+                gestureHandler.sendDoubleTap()
                 true
             } else false
         }
@@ -168,7 +238,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
             return if (!isOverrideTap && !bar.isHidden) {
                 isActing = false
 
-                sendAction(bar.actionHolder.actionTap)
+                gestureHandler.sendTap()
                 true
             } else if (bar.isHidden && !bar.isPillHidingOrShowing) {
                 isOverrideTap = false
@@ -179,6 +249,123 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
                 isOverrideTap = false
                 false
             }
+        }
+    }
+
+    abstract inner class BaseGestureHandler(looper: Looper) : Handler(looper) {
+        override fun handleMessage(msg: Message?) {
+            when (msg?.what) {
+                MSG_UP_HOLD -> handleLongUp()
+                MSG_DOWN_HOLD -> handleLongDown()
+                MSG_LEFT_HOLD -> handleLongLeft()
+                MSG_RIGHT_HOLD -> handleLongRight()
+
+                MSG_UP -> handleUp()
+                MSG_DOWN -> handleDown()
+                MSG_LEFT -> handleLeft()
+                MSG_RIGHT -> handleRight()
+
+                MSG_TAP -> handleTap()
+                MSG_DOUBLE_TAP -> handleDoubleTap()
+                MSG_HOLD -> handleHold()
+            }
+        }
+
+        internal abstract fun handleLongUp()
+        internal abstract fun handleLongDown()
+        internal abstract fun handleLongLeft()
+        internal abstract fun handleLongRight()
+
+        internal abstract fun handleUp()
+        internal abstract fun handleDown()
+        internal abstract fun handleLeft()
+        internal abstract fun handleRight()
+
+        internal open fun handleTap() {
+            sendAction(bar.actionHolder.actionTap)
+        }
+
+        internal open fun handleDoubleTap() {
+            sendAction(bar.actionHolder.actionDouble)
+        }
+
+        internal open fun handleHold() {
+            sendAction(bar.actionHolder.actionHold)
+        }
+
+        fun clearLongQueues() {
+            removeMessages(MSG_UP_HOLD)
+            removeMessages(MSG_LEFT_HOLD)
+            removeMessages(MSG_RIGHT_HOLD)
+            removeMessages(MSG_DOWN_HOLD)
+        }
+
+        fun queueUpHold() {
+            if (!sentLongUp) {
+                sentLongUp = true
+                sendEmptyMessageAtTime(MSG_UP_HOLD,
+                        SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+            }
+        }
+
+        fun queueDownHold() {
+            if (!sentLongDown) {
+                sentLongDown = true
+                sendEmptyMessageAtTime(MSG_DOWN_HOLD,
+                        SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+            }
+        }
+
+        fun queueLeftHold() {
+            if (!sentLongLeft) {
+                sentLongLeft = true
+                sendEmptyMessageAtTime(MSG_LEFT_HOLD,
+                        SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+            }
+        }
+
+        fun queueRightHold() {
+            if (!sentLongRight) {
+                sentLongRight = true
+                sendEmptyMessageAtTime(MSG_RIGHT_HOLD,
+                        SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+            }
+        }
+
+        fun sendUp() {
+            if (!isRunningLongUp) {
+                sendEmptyMessage(MSG_UP)
+            }
+        }
+
+        fun sendDown() {
+            if (!isRunningLongDown) {
+                sendEmptyMessage(MSG_DOWN)
+            }
+        }
+
+        fun sendLeft() {
+            if (!isRunningLongLeft) {
+                sendEmptyMessage(MSG_LEFT)
+            }
+        }
+
+        fun sendRight() {
+            if (!isRunningLongRight) {
+                sendEmptyMessage(MSG_RIGHT)
+            }
+        }
+
+        fun sendTap() {
+            sendEmptyMessage(MSG_TAP)
+        }
+
+        fun sendDoubleTap() {
+            sendEmptyMessage(MSG_DOUBLE_TAP)
+        }
+
+        fun sendHold() {
+            sendEmptyMessage(MSG_HOLD)
         }
     }
 }

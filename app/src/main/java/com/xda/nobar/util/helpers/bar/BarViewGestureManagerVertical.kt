@@ -19,50 +19,19 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
     override val gestureHandler by lazy { GestureHandler(gestureThread.looper) }
 
     override fun handleTouchEvent(ev: MotionEvent?): Boolean {
+        super.handleTouchEvent(ev)
+
         var ultimateReturn = false
 
         when (ev?.action) {
-            MotionEvent.ACTION_DOWN -> {
-                lastTouchTime = System.currentTimeMillis()
-                wasHidden = bar.isHidden
-                oldY = ev.rawY
-                oldX = ev.rawX
-                origX = ev.rawX
-                origY = ev.rawY
-                origAdjX = ev.x
-                origAdjY = ev.y
-                bar.beingTouched = true
-                bar.isCarryingOutTouchAction = true
-            }
-
             MotionEvent.ACTION_UP -> {
-                bar.beingTouched = false
-                lastTouchTime = -1L
-
                 if (wasHidden) {
                     isSwipeLeft = false
                 }
 
-                gestureHandler.removeMessages(MSG_UP_HOLD)
-                gestureHandler.removeMessages(MSG_LEFT_HOLD)
-                gestureHandler.removeMessages(MSG_RIGHT_HOLD)
-                gestureHandler.removeMessages(MSG_DOWN_HOLD)
+                gestureHandler.clearLongQueues()
 
-                if (isSwipeUp && !isRunningLongUp) {
-                    sendAction(bar.actionHolder.actionRight)
-                }
-
-                if (isSwipeLeft && !isRunningLongLeft) {
-                    sendAction(bar.actionHolder.actionUp)
-                }
-
-                if (isSwipeRight && !isRunningLongRight) {
-                    sendAction(bar.actionHolder.actionDown)
-                }
-
-                if (isSwipeDown && !isRunningLongDown) {
-                    sendAction(bar.actionHolder.actionLeft)
-                }
+                parseSwipe()
 
                 if (bar.pill.translationY != 0f) {
                     bar.pill.animate()
@@ -110,22 +79,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                     }
                 }
 
-                isRunningLongRight = false
-                isRunningLongLeft = false
-                isRunningLongUp = false
-                isRunningLongDown = false
-
-                sentLongRight = false
-                sentLongLeft = false
-                sentLongUp = false
-                sentLongDown = false
-
-                isSwipeUp = false
-                isSwipeLeft = false
-                isSwipeRight = false
-                isSwipeDown = false
-
-                wasHidden = bar.isHidden
+                finishUp()
             }
             MotionEvent.ACTION_MOVE -> {
                 ultimateReturn = handlePotentialSwipe(ev)
@@ -144,11 +98,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                         bar.updateLayout()
                     }
 
-                    if (!sentLongLeft) {
-                        sentLongLeft = true
-                        gestureHandler.sendEmptyMessageAtTime(MSG_LEFT_HOLD,
-                                SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
-                    }
+                    gestureHandler.queueLeftHold()
                 }
 
                 if (isSwipeRight && !isSwipeLeft && !isSwipeDown && !isSwipeUp) {
@@ -162,11 +112,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                         bar.updateLayout()
                     }
 
-                    if (!sentLongRight) {
-                        sentLongRight = true
-                        gestureHandler.sendEmptyMessageAtTime(MSG_RIGHT_HOLD,
-                                SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
-                    }
+                    gestureHandler.queueRightHold()
                 }
 
                 if ((isSwipeUp || isSwipeDown) && !isSwipeLeft && !isSwipeRight) {
@@ -194,16 +140,12 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                         }
                     }
 
-                    if (isSwipeDown && !sentLongDown) {
-                        sentLongDown = true
-                        gestureHandler.sendEmptyMessageAtTime(MSG_DOWN_HOLD,
-                                SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+                    if (isSwipeDown) {
+                        gestureHandler.queueDownHold()
                     }
 
-                    if (isSwipeUp && !sentLongUp) {
-                        sentLongUp = true
-                        gestureHandler.sendEmptyMessageAtTime(MSG_UP_HOLD,
-                                SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+                    if (isSwipeUp) {
+                        gestureHandler.queueUpHold()
                     }
                 }
             }
@@ -273,37 +215,49 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
     }
 
     @SuppressLint("HandlerLeak")
-    inner class GestureHandler(looper: Looper) : Handler(looper) {
-        override fun handleMessage(msg: Message?) {
-            when (msg?.what) {
-                MSG_LEFT_HOLD -> {
-                    if (getSectionedUpHoldAction(adjCoord) != bar.actionHolder.typeNoAction) {
-                        isRunningLongLeft = true
-                        sendAction(bar.actionHolder.actionUpHold)
-                    }
-                }
-
-                MSG_DOWN_HOLD -> {
-                    if (actionMap[bar.actionHolder.actionLeftHold] != bar.actionHolder.typeNoAction) {
-                        isRunningLongDown = true
-                        sendAction(bar.actionHolder.actionLeftHold)
-                    }
-                }
-
-                MSG_UP_HOLD -> {
-                    if (actionMap[bar.actionHolder.actionRightHold] != bar.actionHolder.typeNoAction) {
-                        isRunningLongUp = true
-                        sendAction(bar.actionHolder.actionRightHold)
-                    }
-                }
-
-                MSG_RIGHT_HOLD -> {
-                    if (actionMap[bar.actionHolder.actionDownHold] != bar.actionHolder.typeNoAction) {
-                        isRunningLongRight = true
-                        sendAction(bar.actionHolder.actionDownHold)
-                    }
-                }
+    inner class GestureHandler(looper: Looper) : BaseGestureHandler(looper) {
+        override fun handleLongUp() {
+            if (actionMap[bar.actionHolder.actionRightHold] != bar.actionHolder.typeNoAction) {
+                isRunningLongUp = true
+                sendAction(bar.actionHolder.actionRightHold)
             }
+        }
+
+        override fun handleLongDown() {
+            if (actionMap[bar.actionHolder.actionLeftHold] != bar.actionHolder.typeNoAction) {
+                isRunningLongDown = true
+                sendAction(bar.actionHolder.actionLeftHold)
+            }
+        }
+
+        override fun handleLongLeft() {
+            if (getSectionedUpHoldAction(adjCoord) != bar.actionHolder.typeNoAction) {
+                isRunningLongLeft = true
+                sendAction(bar.actionHolder.actionUpHold)
+            }
+        }
+
+        override fun handleLongRight() {
+            if (actionMap[bar.actionHolder.actionDownHold] != bar.actionHolder.typeNoAction) {
+                isRunningLongRight = true
+                sendAction(bar.actionHolder.actionDownHold)
+            }
+        }
+
+        override fun handleUp() {
+            sendAction(bar.actionHolder.actionRight)
+        }
+
+        override fun handleDown() {
+            sendAction(bar.actionHolder.actionLeft)
+        }
+
+        override fun handleLeft() {
+            sendAction(bar.actionHolder.actionUp)
+        }
+
+        override fun handleRight() {
+            sendAction(bar.actionHolder.actionDown)
         }
     }
 }
