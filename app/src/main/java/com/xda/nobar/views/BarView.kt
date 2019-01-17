@@ -77,7 +77,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         format = PixelFormat.TRANSLUCENT
         softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 
-        setMoveForKeyboard(!context.prefManager.dontMoveForKeyboard)
+        if (context.prefManager.dontMoveForKeyboard) {
+            flags = flags and
+                    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+            softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+        }
     }
     val hiddenPillReasons = HiddenPillReasonManager()
 
@@ -609,17 +613,19 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun setMoveForKeyboard(move: Boolean) {
-        if (move) {
-            params.flags = params.flags or
-                    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-            params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-        } else {
-            params.flags = params.flags and
-                    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-            params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
-        }
+        context.app.handler.post {
+            if (move) {
+                params.flags = params.flags or
+                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+            } else {
+                params.flags = params.flags and
+                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+            }
 
-        updateLayout()
+            updateLayout()
+        }
     }
 
     /**
