@@ -161,7 +161,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
         val distanceY = motionEvent.rawY - origY
         val xThresh = context.prefManager.xThresholdPx
         val yThreshUp = context.prefManager.yThresholdUpPx
-        val yThreshDown = context.prefManager.yThresholdDownDp
+        val yThreshDown = context.prefManager.yThresholdDownPx
 
         return if (!bar.isHidden && !isActing) {
             when {
