@@ -397,7 +397,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Hide" the pill by moving it partially offscreen
      */
     fun hidePill(auto: Boolean, autoReason: String?, overrideBeingTouched: Boolean = false) {
-        handler?.post {
+        context.app.handler.post {
             if (auto && autoReason == null) throw IllegalArgumentException("autoReason must not be null when auto is true")
             if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
 
@@ -474,32 +474,31 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Show" the pill by moving it back to its normal position
      */
     private fun showPillInternal(autoReasonToRemove: String?, forceShow: Boolean = false) {
-        if (isHidden) {
-            handler?.post {
-                if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
-                if (context.app.isPillShown()) {
-                    isPillHidingOrShowing = true
-                    val reallyForceNotAuto = hiddenPillReasons.isEmpty()
+        context.app.handler.post {
+            if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
 
-                    if (reallyForceNotAuto) {
-                        hideHandler.removeMessages(MSG_HIDE)
-                    }
+            if (context.app.isPillShown()) {
+                isPillHidingOrShowing = true
+                val reallyForceNotAuto = hiddenPillReasons.isEmpty()
 
-                    if (reallyForceNotAuto || forceShow) {
-                        pill.animate()
-                                .alpha(ALPHA_ACTIVE)
-                                .setInterpolator(EXIT_INTERPOLATOR)
-                                .setDuration(getAnimationDurationMs())
-                                .withEndAction {
-                                    animateShow(!reallyForceNotAuto)
-                                }
-                                .apply {
-                                    if (isVertical) translationX(0f)
-                                    else translationY(0f)
-                                }
-                                .start()
-                    } else isPillHidingOrShowing = false
+                if (reallyForceNotAuto) {
+                    hideHandler.removeMessages(MSG_HIDE)
                 }
+
+                if (reallyForceNotAuto || forceShow) {
+                    pill.animate()
+                            .alpha(ALPHA_ACTIVE)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .withEndAction {
+                                animateShow(!reallyForceNotAuto)
+                            }
+                            .apply {
+                                if (isVertical) translationX(0f)
+                                else translationY(0f)
+                            }
+                            .start()
+                } else isPillHidingOrShowing = false
             }
         }
     }
@@ -812,14 +811,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         fun hide(reason: String) {
-            val alreadyContains = hiddenPillReasons.contains(reason)
-            hiddenPillReasons.add(reason)
             val msg = Message.obtain(this)
             msg.what = MSG_HIDE
             msg.obj = reason
-            if (!hasMessages(MSG_HIDE, reason)
-                    && !isHidden
-                    && !alreadyContains) sendMessageAtTime(msg, SystemClock.uptimeMillis() + parseHideTime(reason))
+
+            removeMessages(MSG_SHOW)
+            removeMessages(MSG_HIDE, reason)
+
+            if (!isHidden) sendMessageAtTime(msg, SystemClock.uptimeMillis() + parseHideTime(reason))
         }
 
         fun hide(time: Long) {
@@ -832,8 +831,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             msg.arg1 = if (forceShow) 1 else 0
             msg.obj = reason
 
-            if (!hasMessages(MSG_SHOW, reason)
-                    && isHidden) sendMessage(msg)
+            removeMessages(MSG_HIDE)
+            removeMessages(MSG_SHOW, reason)
+
+            if (isHidden) sendMessage(msg)
         }
     }
 }

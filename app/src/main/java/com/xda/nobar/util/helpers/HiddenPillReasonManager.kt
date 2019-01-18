@@ -1,5 +1,6 @@
 package com.xda.nobar.util.helpers
 
+import java.lang.Exception
 import java.util.*
 
 /**
@@ -17,11 +18,6 @@ class HiddenPillReasonManager : ArrayList<String>() {
             if (getMostRecentReason() == element) false
             else moveToRecent(element)
         } else super.add(element)
-    }
-
-    @Deprecated("Not needed", ReplaceWith("remove(element)"))
-    fun removeAll(element: String): Boolean {
-        return remove(element)
     }
 
     override fun remove(element: String): Boolean {

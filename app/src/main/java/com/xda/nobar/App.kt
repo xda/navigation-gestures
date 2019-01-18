@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.*
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
@@ -33,12 +34,9 @@ import com.xda.nobar.root.RootWrapper
 import com.xda.nobar.services.Actions
 import com.xda.nobar.services.ForegroundService
 import com.xda.nobar.util.*
-import com.xda.nobar.util.helpers.DisabledReasonManager
-import com.xda.nobar.util.helpers.HiddenPillReasonManager
-import com.xda.nobar.util.helpers.PremiumHelper
-import com.xda.nobar.util.helpers.ScreenOffHelper
+import com.xda.nobar.util.helpers.*
 import com.xda.nobar.views.BarView
-import com.xda.nobar.views.ImmersiveHelperView
+import com.xda.nobar.views.ImmersiveHelperViewHorizontal
 import java.util.*
 
 
@@ -72,7 +70,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
     private val premiumInstallListener = PremiumInstallListener()
     private val permissionListener = PermissionReceiver()
 
-    val immersiveHelperView by lazy { ImmersiveHelperView(this) }
+    val immersiveHelperManager by lazy { ImmersiveHelperManager(this) }
     val screenOffHelper by lazy { ScreenOffHelper(this) }
 
     private var isInOtherWindowApp = false
@@ -152,9 +150,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             if (!IntroActivity.needsToRun(this)) {
                 addImmersiveHelper()
                 uiHandler.onGlobalLayout()
-                immersiveHelperView.viewTreeObserver.addOnGlobalLayoutListener(uiHandler)
-                immersiveHelperView.setOnSystemUiVisibilityChangeListener(uiHandler)
-                immersiveHelperView.immersiveListener = uiHandler
+                immersiveHelperManager.addOnGlobalLayoutListener(uiHandler)
+                immersiveHelperManager.immersiveListener = uiHandler
             }
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -267,14 +264,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
     fun addImmersiveHelper() {
         handler.post {
-            if (!helperAdded) addImmersiveHelperInternal()
+            if (!helperAdded) immersiveHelperManager.add()
         }
-    }
-
-    private fun addImmersiveHelperInternal() {
-        try {
-            wm.addView(immersiveHelperView, immersiveHelperView.params)
-        } catch (e: Exception) {}
     }
 
     /**
@@ -308,9 +299,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
     fun removeImmersiveHelper() {
         handler.post {
-            try {
-                wm.removeView(immersiveHelperView)
-            } catch (e: Exception) {}
+            immersiveHelperManager.remove()
         }
     }
 
@@ -398,7 +387,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
     fun showNav(callListeners: Boolean = true, removeImmersive: Boolean = true) {
         if (hasWss) {
             if (removeImmersive && prefManager.useImmersiveWhenNavHidden)
-                immersiveHelperView.exitNavImmersive()
+                immersiveHelperManager.exitNavImmersive()
 
             handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
 
@@ -580,7 +569,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
      * Listens for TouchWiz navbar hiding and coloring and adjusts appropriately
      * //TODO: More work may be needed on immersive detection
      */
-    inner class UIHandler : ContentObserver(logicHandler), View.OnSystemUiVisibilityChangeListener, ViewTreeObserver.OnGlobalLayoutListener, (Boolean) -> Unit {
+    inner class UIHandler : ContentObserver(logicHandler), ViewTreeObserver.OnGlobalLayoutListener, (Boolean) -> Unit {
         private var oldRot = Surface.ROTATION_0
         private var asDidContainApp: Boolean = false
 
@@ -592,7 +581,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_use_theme_default"), true, this)
                 contentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, this)
 
-                bar.immersiveNav = immersiveHelperView.isNavImmersive()
+                bar.immersiveNav = immersiveHelperManager.isNavImmersive()
 
                 asDidContainApp = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
             }
@@ -619,12 +608,12 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 if (pName == "com.android.systemui" && info.className?.contains("TextView") == false) {
                     if (prefManager.shouldUseOverscanMethod
                             && prefManager.useImmersiveWhenNavHidden) {
-                        immersiveHelperView.tempForcePolicyControlForRecents()
+                        immersiveHelperManager.tempForcePolicyControlForRecents()
                     }
                 } else {
                     if (prefManager.shouldUseOverscanMethod
                             && prefManager.useImmersiveWhenNavHidden) {
-                        immersiveHelperView.putBackOldImmersive()
+                        immersiveHelperManager.putBackOldImmersive()
                     }
                 }
                 runNewNodeInfo(pName)
@@ -670,9 +659,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
         }
 
         override fun invoke(isImmersive: Boolean) {
-            logicHandler.post {
-                handleImmersiveChange(isImmersive)
-            }
+            handleImmersiveChange(isImmersive)
         }
 
         @SuppressLint("WrongConstant")
@@ -740,7 +727,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     }
 
                     if (prefManager.origBarInFullscreen) {
-                        if (immersiveHelperView.isFullImmersive()) {
+                        if (immersiveHelperManager.isFullImmersive()) {
                             showNav(false, false)
                         } else {
                             hideNav(false)
@@ -749,9 +736,9 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
                     if (isPillShown()) {
                         try {
-                            if (!prefManager.useImmersiveWhenNavHidden) immersiveHelperView.exitNavImmersive()
+                            if (!prefManager.useImmersiveWhenNavHidden) immersiveHelperManager.exitNavImmersive()
 
-                            bar.immersiveNav = immersiveHelperView.isNavImmersive() && !keyboardShown
+                            bar.immersiveNav = immersiveHelperManager.isNavImmersive() && !keyboardShown
 
                             handler.post {
                                 if (prefManager.hidePillWhenKeyboardShown) {
@@ -762,9 +749,9 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
                             if (disabledImmReasonManager.isEmpty()) {
                                 if (prefManager.shouldUseOverscanMethod
-                                        && prefManager.useImmersiveWhenNavHidden) immersiveHelperView.enterNavImmersive()
+                                        && prefManager.useImmersiveWhenNavHidden) immersiveHelperManager.enterNavImmersive()
                             } else {
-                                immersiveHelperView.exitNavImmersive()
+                                immersiveHelperManager.exitNavImmersive()
                             }
 
                             if (prefManager.shouldUseOverscanMethod) {
@@ -791,18 +778,10 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
             }
         }
 
-        override fun onSystemUiVisibilityChange(visibility: Int) {
-            logicHandler.post {
-                handleImmersiveChange(visibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
-                        || visibility and View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN != 0
-                        || visibility and 7 != 0)
-            }
-        }
-
         override fun onChange(selfChange: Boolean, uri: Uri?) {
             when (uri) {
                 Settings.Global.getUriFor(POLICY_CONTROL) -> {
-                    handleImmersiveChange(immersiveHelperView.isFullImmersive())
+                    handleImmersiveChange(immersiveHelperManager.isFullImmersive())
                 }
 
                 Settings.Global.getUriFor("navigationbar_color"),
@@ -852,7 +831,6 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     try {
                         bar.handleRotationOrAnchorUpdate()
                         bar.updateLargerHitbox()
-                        immersiveHelperView.updateDimensions()
                     } catch (e: NullPointerException) {}
                 }
 

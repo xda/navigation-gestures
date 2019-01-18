@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import androidx.annotation.CallSuper
 import com.xda.nobar.util.actionHolder
 import com.xda.nobar.util.app
+import com.xda.nobar.util.helpers.HiddenPillReasonManager
 import com.xda.nobar.util.prefManager
 import com.xda.nobar.views.BarView
 import java.util.HashMap
@@ -253,7 +254,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
             } else if (bar.isHidden && !bar.isPillHidingOrShowing) {
                 isOverrideTap = false
                 bar.vibrate(context.prefManager.vibrationDuration.toLong())
-                bar.showPill(null, true)
+                bar.showPill(HiddenPillReasonManager.MANUAL, true)
                 true
             } else {
                 isOverrideTap = false
