@@ -541,13 +541,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun toggleScreenOn(): Boolean {
-        val hasScreenOn = params.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON == WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+        val hasScreenOn = params.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON ==
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 
         if (hasScreenOn) params.flags = params.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON.inv()
         else params.flags = params.flags or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 
         return try {
-            context.app.wm.updateViewLayout(this, params)
+            updateLayout()
             !hasScreenOn
         } catch (e: Exception) {
             false
@@ -624,18 +625,22 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun setMoveForKeyboard(move: Boolean) {
-        context.app.handler.post {
-            if (move) {
-                params.flags = params.flags or
-                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-            } else {
-                params.flags = params.flags and
-                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
-            }
+        val wasMoving = params.flags and WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM != 0
 
-            updateLayout()
+        if (move != wasMoving) {
+            context.app.handler.post {
+                if (move) {
+                    params.flags = params.flags or
+                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                    params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                } else {
+                    params.flags = params.flags and
+                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+                    params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+                }
+
+                updateLayout()
+            }
         }
     }
 
@@ -676,33 +681,55 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private fun verticalMode(enabled: Boolean) {
+        var changed = false
+
         if (enabled) {
             val is270 = is270Vertical
 
             currentGestureDetector =
                     if (is270) vertical270GestureMansger else verticalGestureManager
 
-            params.gravity = Gravity.CENTER or
+            val newGrav = Gravity.CENTER or
                     if (is270) Gravity.LEFT else Gravity.RIGHT
 
+            if (params.gravity != newGrav) {
+                params.gravity = newGrav
+
+                changed = true
+            }
+
             if (!context.prefManager.dontMoveForKeyboard) {
-                params.flags = params.flags and
-                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+                if (params.flags and WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM != 0) {
+                    params.flags = params.flags and
+                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+                    params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+
+                    changed = true
+                }
             }
         } else {
             currentGestureDetector = horizontalGestureManager
 
-            params.gravity = Gravity.TOP or Gravity.CENTER
+            val newGrav = Gravity.TOP or Gravity.CENTER
+
+            if (params.gravity != newGrav) {
+                params.gravity = newGrav
+
+                changed = true
+            }
 
             if (!context.prefManager.dontMoveForKeyboard) {
-                params.flags = params.flags or
-                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                if (params.flags and WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM == 0) {
+                    params.flags = params.flags or
+                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                    params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+
+                    changed = true
+                }
             }
         }
 
-        updateLayout()
+        if (changed) updateLayout()
 
         currentGestureDetector.singleton.loadActionMap()
     }
@@ -712,31 +739,62 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         val margins = getPillMargins()
         val m = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
 
+        var changed = false
+
         updatePositionAndDimens()
 
         if (isVertical) {
             if (is270Vertical) {
-                margins.right = m
-                margins.left = 0
+                if (margins.right != m) {
+                    margins.right = m
+                    margins.left = 0
+
+                    changed = true
+                }
             } else {
-                margins.left = m
-                margins.right = 0
+                if (margins.left != m) {
+                    margins.left = m
+                    margins.right = 0
+
+                    changed = true
+                }
             }
-            margins.top = 0
+
+            if (margins.top != 0) {
+                margins.top = 0
+
+                changed = true
+            }
         } else {
-            margins.left = 0
-            margins.top = m
+            if (margins.top != m) {
+                margins.left = 0
+                margins.top = m
+
+                changed = true
+            }
         }
 
-        changePillMargins(margins)
+        if (changed) changePillMargins(margins)
     }
 
     fun updatePositionAndDimens() {
-        params.x = adjustedHomeX
-        params.y = adjustedHomeY
-        params.width = adjustedWidth
-        params.height = adjustedHeight
-        updateLayout()
+        val newX = adjustedHomeX
+        val newY = adjustedHomeY
+        val newW = adjustedWidth
+        val newH = adjustedHeight
+
+        if ((newX != params.x
+                        || newY != params.y
+                        || newW != params.width
+                        || newH != params.height)
+                && !beingTouched
+                && !isCarryingOutTouchAction) {
+            params.x = newX
+            params.y = newY
+            params.width = newW
+            params.height = newH
+            updateLayout()
+        }
     }
 
     inner class HideHandler(looper: Looper) : Handler(looper) {

@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATION")
+@file:Suppress("DEPRECATION", "UNCHECKED_CAST")
 
 package com.xda.nobar.util
 
@@ -99,6 +99,9 @@ val Context.isAccessibilityEnabled: Boolean
 
         return services != null && services.contains(packageName)
     }
+
+val Context.isLandscape: Boolean
+    get() = rotation.run { this == Surface.ROTATION_90 || this == Surface.ROTATION_270 }
 
 /**
  * Check if the device is on the KeyGuard (lockscreen)
@@ -217,6 +220,10 @@ fun Context.dpAsPx(dpVal: Float) =
 
 fun Context.dpAsPx(dpVal: Int) =
         dpAsPx(dpVal.toFloat())
+
+fun <T> Context.getSystemServiceCast(name: String): T? {
+    return getSystemService(name) as T?
+}
 
 @SuppressLint("BatteryLife")
 fun Context.requestBatteryExemption() {

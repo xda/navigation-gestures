@@ -1,11 +1,13 @@
 package com.xda.nobar.util
 
+import android.util.Log
 import android.view.WindowManager
 import android.view.animation.AccelerateInterpolator
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.FloatPropertyCompat
 import androidx.dynamicanimation.animation.SpringAnimation
 import com.xda.nobar.views.BarView
+import java.lang.Exception
 
 class BarAnimator(private val bar: BarView) {
     private var verticalAnimator: SpringAnimation? = null

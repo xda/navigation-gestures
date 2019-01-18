@@ -193,10 +193,9 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
                 && !isActing
                 && distanceY < -yThreshUp
                 && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
-            if (bar.isHidden && !bar.isPillHidingOrShowing && !bar.beingTouched) {
+            if (!bar.isPillHidingOrShowing && !bar.beingTouched) {
                 bar.vibrate(context.prefManager.vibrationDuration.toLong())
-                bar.hiddenPillReasons.remove(HiddenPillReasonManager.MANUAL)
-                bar.showPill(null, true)
+                bar.showPill(HiddenPillReasonManager.MANUAL, true)
             }
             true
         } else false

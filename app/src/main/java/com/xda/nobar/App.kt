@@ -677,105 +677,115 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
 
         @SuppressLint("WrongConstant")
         override fun onGlobalLayout() {
-            keyboardShown = imm.inputMethodWindowVisibleHeight > 0
+            if (!bar.isCarryingOutTouchAction) {
+                keyboardShown = imm.inputMethodWindowVisibleHeight > 0
 
-            if (prefManager.showNavWithKeyboard) {
-                if (keyboardShown) {
-                    showNav(false)
-                    disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYBOARD)
-                } else if (prefManager.shouldUseOverscanMethod) {
-                    disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYBOARD)
-                }
-            }
-
-            if (!prefManager.dontMoveForKeyboard) {
-                if (keyboardShown) {
-                    bar.params.flags = bar.params.flags and
-                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
-                } else {
-                    bar.params.flags = bar.params.flags or
-                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                }
-
-                bar.updateLayout()
-            }
-
-            logicHandler.post {
-                if (isTouchWiz) {
-                    try {
-                        val SemCocktailBarManager = Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
-
-                        val manager = getSystemService("CocktailBarService")
-
-                        val getCocktailBarWindowType = SemCocktailBarManager.getMethod("getCocktailBarWindowType")
-
-                        val edgeType = getCocktailBarWindowType.invoke(manager).toString().toInt()
-
-                        if (edgeType == EDGE_TYPE_ACTIVE) {
-                            disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
-                        } else {
-                            disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                if (prefManager.showNavWithKeyboard) {
+                    if (keyboardShown) {
+                        showNav(false)
+                        disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYBOARD)
+                    } else if (prefManager.shouldUseOverscanMethod) {
+                        disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYBOARD)
                     }
                 }
 
-                bar.updatePositionAndDimens()
+                if (!prefManager.dontMoveForKeyboard) {
+                    var changed = false
 
-                val rot = wm.defaultDisplay.rotation
-                if (oldRot != rot) {
-                    handleRot()
-
-                    oldRot = rot
-                }
-
-                if (prefManager.origBarInFullscreen) {
-                    if (immersiveHelperView.isFullImmersive()) {
-                        showNav(false, false)
+                    if (keyboardShown) {
+                        if (bar.params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN != 0) {
+                            bar.params.flags = bar.params.flags and
+                                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
+                            changed = true
+                        }
                     } else {
-                        hideNav(false)
+                        if (bar.params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN == 0) {
+                            bar.params.flags = bar.params.flags or
+                                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                            changed = true
+                        }
                     }
+
+                    if (changed) bar.updateLayout()
                 }
 
-                if (isPillShown()) {
-                    try {
-                        if (!prefManager.useImmersiveWhenNavHidden) immersiveHelperView.exitNavImmersive()
+                logicHandler.post {
+                    if (isTouchWiz) {
+                        try {
+                            val SemCocktailBarManager = Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
 
-                        bar.immersiveNav = immersiveHelperView.isNavImmersive() && !keyboardShown
+                            val manager = getSystemService("CocktailBarService")
 
-                        handler.post {
-                            if (prefManager.hidePillWhenKeyboardShown) {
-                                if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
-                                else bar.showPill(HiddenPillReasonManager.KEYBOARD)
+                            val getCocktailBarWindowType = SemCocktailBarManager.getMethod("getCocktailBarWindowType")
+
+                            val edgeType = getCocktailBarWindowType.invoke(manager).toString().toInt()
+
+                            if (edgeType == EDGE_TYPE_ACTIVE) {
+                                disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
+                            } else {
+                                disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
                             }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
+                    }
 
-                        if (disabledImmReasonManager.isEmpty()) {
-                            if (prefManager.shouldUseOverscanMethod
-                                    && prefManager.useImmersiveWhenNavHidden) immersiveHelperView.enterNavImmersive()
+                    bar.updatePositionAndDimens()
+
+                    val rot = wm.defaultDisplay.rotation
+                    if (oldRot != rot) {
+                        handleRot()
+
+                        oldRot = rot
+                    }
+
+                    if (prefManager.origBarInFullscreen) {
+                        if (immersiveHelperView.isFullImmersive()) {
+                            showNav(false, false)
                         } else {
-                            immersiveHelperView.exitNavImmersive()
+                            hideNav(false)
                         }
+                    }
 
-                        if (prefManager.shouldUseOverscanMethod) {
-                            if (disabledNavReasonManager.isEmpty()) {
-                                hideNav()
+                    if (isPillShown()) {
+                        try {
+                            if (!prefManager.useImmersiveWhenNavHidden) immersiveHelperView.exitNavImmersive()
+
+                            bar.immersiveNav = immersiveHelperView.isNavImmersive() && !keyboardShown
+
+                            handler.post {
+                                if (prefManager.hidePillWhenKeyboardShown) {
+                                    if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
+                                    else bar.showPill(HiddenPillReasonManager.KEYBOARD)
+                                }
+                            }
+
+                            if (disabledImmReasonManager.isEmpty()) {
+                                if (prefManager.shouldUseOverscanMethod
+                                        && prefManager.useImmersiveWhenNavHidden) immersiveHelperView.enterNavImmersive()
+                            } else {
+                                immersiveHelperView.exitNavImmersive()
+                            }
+
+                            if (prefManager.shouldUseOverscanMethod) {
+                                if (disabledNavReasonManager.isEmpty()) {
+                                    hideNav()
+                                } else {
+                                    showNav()
+                                }
                             } else {
                                 showNav()
                             }
-                        } else {
-                            showNav()
-                        }
 
-                        if (disabledBarReasonManager.isEmpty()) {
-                            if (prefManager.isActive
-                                    && !pillShown) addBar(false)
-                        } else {
-                            removeBar(false)
-                        }
+                            if (disabledBarReasonManager.isEmpty()) {
+                                if (prefManager.isActive
+                                        && !pillShown) addBar(false)
+                            } else {
+                                removeBar(false)
+                            }
 
-                    } catch (e: NullPointerException) {
+                        } catch (e: NullPointerException) {
+                        }
                     }
                 }
             }
@@ -842,6 +852,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                     try {
                         bar.handleRotationOrAnchorUpdate()
                         bar.updateLargerHitbox()
+                        immersiveHelperView.updateDimensions()
                     } catch (e: NullPointerException) {}
                 }
 

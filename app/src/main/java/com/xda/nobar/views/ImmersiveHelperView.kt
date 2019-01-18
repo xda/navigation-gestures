@@ -10,6 +10,7 @@ import android.view.Surface
 import android.view.View
 import android.view.WindowManager
 import com.xda.nobar.util.*
+import java.lang.Exception
 import kotlin.math.absoluteValue
 
 @Suppress("DEPRECATION")
@@ -17,7 +18,6 @@ class ImmersiveHelperView(context: Context) : View(context) {
     val params = WindowManager.LayoutParams().apply {
         type = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_PHONE
         else WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-        width = 1
         flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
         format = PixelFormat.TRANSPARENT
@@ -33,15 +33,34 @@ class ImmersiveHelperView(context: Context) : View(context) {
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        immersiveListener?.invoke(h >= getProperScreenHeightForRotation().absoluteValue)
+        val rot = context.rotation
+
+        immersiveListener?.invoke(
+                if (rot == Surface.ROTATION_270 || rot == Surface.ROTATION_90)
+                    w.absoluteValue >= getProperScreenWidthForRotation().absoluteValue &&
+                            h.absoluteValue >= getProperScreenHeightForRotation().absoluteValue
+                else h.absoluteValue >= getProperScreenHeightForRotation().absoluteValue
+        )
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        immersiveListener?.invoke(bottom.absoluteValue >= getProperScreenHeightForRotation().absoluteValue)
+        val rot = context.rotation
+
+        immersiveListener?.invoke(
+                if (rot == Surface.ROTATION_270 || rot == Surface.ROTATION_90)
+                    left.absoluteValue + right.absoluteValue
+                            >= getProperScreenWidthForRotation().absoluteValue &&
+                            top.absoluteValue + bottom.absoluteValue
+                            >= getProperScreenHeightForRotation().absoluteValue
+                else bottom.absoluteValue + top.absoluteValue
+                        >= getProperScreenHeightForRotation().absoluteValue
+        )
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+
+        updateDimensions()
 
         context.app.helperAdded = true
     }
@@ -50,6 +69,43 @@ class ImmersiveHelperView(context: Context) : View(context) {
         super.onDetachedFromWindow()
 
         context.app.helperAdded = false
+    }
+
+    fun updateDimensions() {
+        val width = 1
+        val height = WindowManager.LayoutParams.MATCH_PARENT
+
+        val landscape = context.isLandscape
+        val tablet = context.prefManager.useTabletMode
+
+        val newW = if (landscape && tablet) height else width
+        val newH = if (landscape && tablet) width else height
+
+        var changed = false
+
+        if (params.width != newW) {
+            params.width = newW
+
+            changed = true
+        }
+
+        if (params.height != newH) {
+            params.height = newH
+
+            changed = true
+        }
+
+        if (changed) updateLayout()
+    }
+
+    fun updateLayout() {
+        context.app.handler.post {
+            try {
+                context.getSystemServiceCast<WindowManager>(Context.WINDOW_SERVICE)
+                        ?.updateViewLayout(this, params)
+            } catch (e: Exception) {
+            }
+        }
     }
 
     fun enterNavImmersive() {
@@ -104,17 +160,36 @@ class ImmersiveHelperView(context: Context) : View(context) {
     }
 
     private fun getProperScreenHeightForRotation(): Int {
-        val rotation = context.app.wm.defaultDisplay.rotation
+        val rotation = context.rotation
         val screenHeight = context.realScreenSize.y
         val navHeight = context.navBarHeight
 
         return when (rotation) {
             Surface.ROTATION_90,
             Surface.ROTATION_270 -> {
-                screenHeight + if (context.app.prefManager.useTabletMode) if (context.app.navHidden) navHeight else 0 else 0
+                screenHeight + if (context.prefManager.useTabletMode
+                        && context.app.navHidden) navHeight else 0
             }
             else -> {
                 screenHeight + if (context.app.navHidden) navHeight else 0
+            }
+        }
+    }
+
+    private fun getProperScreenWidthForRotation(): Int {
+        val rotation = context.rotation
+        val screenWidth = context.realScreenSize.x
+        val navHeight = context.navBarHeight
+
+        return when (rotation) {
+            Surface.ROTATION_90,
+            Surface.ROTATION_270 -> {
+                screenWidth + if (!context.prefManager.useTabletMode
+                        && context.app.navHidden) navHeight else 0
+            }
+
+            else -> {
+                screenWidth
             }
         }
     }
