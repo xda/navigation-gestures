@@ -2,6 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -55,8 +57,8 @@
             app:title_text_size="18sp" />
 
         <com.xda.nobar.views.TextSwitch
-            android:minHeight="48dp"
             android:id="@+id/hide_nav"
+            android:minHeight="48dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -65,6 +67,34 @@
             app:summary_text="@string/hide_nav_summary"
             app:title_text="@string/hide_nav"
             app:title_text_size="18sp" />
+
+        <LinearLayout
+            android:id="@+id/fix_immersive_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/fix_immersive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/fix_immersive"
+                style="@style/Widget.AppCompat.Button"
+                />
+
+            <TextView
+                android:id="@+id/fix_immersive_summary"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/fix_immersive_desc"
+                />
+
+        </LinearLayout>
 
     </LinearLayout>
 

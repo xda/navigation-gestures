@@ -1,12 +1,15 @@
 package com.xda.nobar.activities
 
+import android.animation.LayoutTransition
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -40,6 +43,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
     private val navListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
         app.toggleNavState(!isChecked)
         if (!hasWss) onNavStateChange(!isChecked)
+        if (hasWss) fix_immersive_wrapper.visibility = if (isChecked) View.GONE else View.VISIBLE
     }
 
     private var currentPremReason: String? = null
@@ -55,6 +59,8 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
 
         setContentView(R.layout.activity_main)
         setUpActionBar()
+
+        root.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
         app.addLicenseCheckListener(this)
         app.addGestureActivationListener(this)
@@ -83,6 +89,13 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             AlertDialog.Builder(this)
                     .setMessage(currentPremReason)
                     .show()
+        }
+
+        fix_immersive_wrapper.visibility = if (hasWss && !hide_nav.isChecked) View.VISIBLE else View.GONE
+        fix_immersive.setOnClickListener {
+            runSecureSettingsAction {
+                Settings.Global.putString(contentResolver, POLICY_CONTROL, null)
+            }
         }
 
         refresh()
