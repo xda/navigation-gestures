@@ -580,6 +580,7 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_color"), true, this)
                 contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_current_color"), true, this)
                 contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_use_theme_default"), true, this)
+                contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
                 contentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, this)
 
                 bar.immersiveNav = immersiveHelperManager.isNavImmersive()
@@ -789,6 +790,12 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 Settings.Global.getUriFor("navigationbar_current_color"),
                 Settings.Global.getUriFor("navigationbar_use_theme_default") -> {
                     if (isNavBarHidden() && hasWss) blackNav = true
+                }
+
+                Settings.Global.getUriFor("navigationbar_hide_bar_enabled") -> {
+                    if (prefManager.isActive) {
+                        touchWizNavEnabled = !immersiveHelperManager.isNavImmersive()
+                    }
                 }
 
                 Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) -> {
