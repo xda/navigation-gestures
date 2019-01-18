@@ -7,15 +7,16 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Handler
+import android.util.Log
 
 @TargetApi(Build.VERSION_CODES.M)
 class FlashlightControllerMarshmallow(override val context: Context) : FlashlightControllerBase(context) {
-    override var flashlightEnabled = false
+    override var flashlightEnabled: Boolean
         set(value) {
             try {
                 manager.setTorchMode(cameraId ?: return, value)
             } catch (e: Exception) {}
-            field = value
+            flashlightEnabledInternal = value
         }
         get() = flashlightEnabledInternal
 
@@ -56,12 +57,14 @@ class FlashlightControllerMarshmallow(override val context: Context) : Flashligh
     }
 
     override fun onDestroy(callback: (() -> Unit)?) {
-        try {
-            manager.setTorchMode(cameraId!!, false)
-        } catch (e: Exception) {}
+        if (isCreated) {
+            try {
+                manager.setTorchMode(cameraId!!, false)
+            } catch (e: Exception) {}
 
-        manager.unregisterTorchCallback(this.callback)
-        isCreated = false
-        callback?.invoke()
+            manager.unregisterTorchCallback(this.callback)
+            isCreated = false
+            callback?.invoke()
+        }
     }
 }

@@ -107,7 +107,8 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
         Shell.Config.verboseLogging(BuildConfig.DEBUG)
 
         if (isRightProcess()) {
-            if (prefManager.crashlyticsIdEnabled) Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
+            if (prefManager.crashlyticsIdEnabled)
+                Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
             if (!prefManager.firstRun
                     && Shell.rootAccess()) rootWrapper.onCreate()
 

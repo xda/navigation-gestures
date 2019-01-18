@@ -45,9 +45,10 @@ class BarViewActionHandler(private val bar: BarView) {
     private val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     private val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
-    val flashlightController =
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) FlashlightControllerMarshmallow(context)
-            else FlashlightControllerLollipop(context)
+    val flashlightController by lazy {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) FlashlightControllerMarshmallow(context)
+        else FlashlightControllerLollipop(context)
+    }
 
     private val orientationEventListener by lazy {
         object : OrientationEventListener(context) {
