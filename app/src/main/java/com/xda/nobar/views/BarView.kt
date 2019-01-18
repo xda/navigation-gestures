@@ -240,14 +240,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             currentGestureDetector.singleton.loadActionMap()
         }
 
-        if (key == PrefManager.ANCHOR_PILL) {
-            handleRotationOrAnchorUpdate()
-        }
-
-        if (key != null && key.contains("use_pixels")) {
-            updatePositionAndDimens()
-        }
-
         when (key) {
             PrefManager.CUSTOM_WIDTH,
             PrefManager.CUSTOM_WIDTH_PERCENT,
@@ -256,8 +248,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             PrefManager.CUSTOM_X,
             PrefManager.CUSTOM_X_PERCENT,
             PrefManager.CUSTOM_Y,
-            PrefManager.CUSTOM_Y_PERCENT -> {
+            PrefManager.CUSTOM_Y_PERCENT,
+            PrefManager.USE_PIXELS_WIDTH,
+            PrefManager.USE_PIXELS_HEIGHT,
+            PrefManager.USE_PIXELS_X,
+            PrefManager.USE_PIXELS_Y -> {
                 updatePositionAndDimens()
+            }
+
+            PrefManager.ANCHOR_PILL -> {
+                handleRotationOrAnchorUpdate()
             }
 
             PrefManager.IS_ACTIVE -> {
@@ -267,47 +267,56 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             PrefManager.FLASHLIGHT_COMPAT -> {
                 currentGestureDetector.singleton.refreshFlashlightState()
             }
-        }
 
-        if (key == PrefManager.PILL_BG || key == PrefManager.PILL_FG) {
-            val layers = pill.background as LayerDrawable
-            (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-                setColor(context.prefManager.pillBGColor)
+            PrefManager.PILL_BG,
+            PrefManager.PILL_FG -> {
+                val layers = pill.background as LayerDrawable
+                (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
+                    setColor(context.prefManager.pillBGColor)
+                }
+                (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
+                    setStroke(context.dpAsPx(1), context.prefManager.pillFGColor)
+                }
             }
-            (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-                setStroke(context.dpAsPx(1), context.prefManager.pillFGColor)
+
+            PrefManager.SHOW_SHADOW -> {
+                adjustPillShadow()
             }
-        }
-        if (key == PrefManager.SHOW_SHADOW) {
-            adjustPillShadow()
-        }
-        if (key == PrefManager.STATIC_PILL) {
-            setMoveForKeyboard(!context.prefManager.dontMoveForKeyboard)
-        }
-        if (key == PrefManager.AUDIO_FEEDBACK) {
-            isSoundEffectsEnabled = context.prefManager.feedbackSound
-        }
-        if (key == PrefManager.PILL_CORNER_RADIUS) {
-            val layers = pill.background as LayerDrawable
-            (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-                cornerRadius = context.dpAsPx(context.prefManager.pillCornerRadiusDp).toFloat()
+
+            PrefManager.STATIC_PILL -> {
+                setMoveForKeyboard(!context.prefManager.dontMoveForKeyboard)
+
             }
-            (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-                cornerRadius = context.dpAsPx(context.prefManager.pillCornerRadiusDp).toFloat()
+
+            PrefManager.AUDIO_FEEDBACK -> {
+                isSoundEffectsEnabled = context.prefManager.feedbackSound
+
             }
-            (pill_tap_flash.background as GradientDrawable).apply {
-                cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
+
+            PrefManager.PILL_CORNER_RADIUS -> {
+                val layers = pill.background as LayerDrawable
+                (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
+                    cornerRadius = context.dpAsPx(context.prefManager.pillCornerRadiusDp).toFloat()
+                }
+                (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
+                    cornerRadius = context.dpAsPx(context.prefManager.pillCornerRadiusDp).toFloat()
+                }
+                (pill_tap_flash.background as GradientDrawable).apply {
+                    cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
+                }
             }
-        }
-        if (key == PrefManager.LARGER_HITBOX) {
-            updateLargerHitbox()
-        }
-        if (key == PrefManager.AUTO_HIDE_PILL) {
-            if (context.prefManager.autoHide) {
-                hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
-                if (!isHidden) scheduleHide()
-            } else {
-                if (isHidden) hideHandler.show(HiddenPillReasonManager.AUTO)
+
+            PrefManager.LARGER_HITBOX -> {
+                updateLargerHitbox()
+            }
+
+            PrefManager.AUTO_HIDE_PILL -> {
+                if (context.prefManager.autoHide) {
+                    hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
+                    if (!isHidden) scheduleHide()
+                } else {
+                    if (isHidden) hideHandler.show(HiddenPillReasonManager.AUTO)
+                }
             }
         }
     }
