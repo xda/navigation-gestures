@@ -23,6 +23,7 @@ import com.xda.nobar.util.PrefManager
 import com.xda.nobar.util.actionHolder
 import com.xda.nobar.util.dpAsPx
 import com.xda.nobar.util.minPillHeightPx
+import java.lang.Exception
 import java.util.*
 
 /**
@@ -293,11 +294,15 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
         if (res < 1) return
 
         findPreference<Preference?>(key)?.apply {
-            summary = String.format(
-                    Locale.getDefault(),
-                    resources.getString(R.string.prem_intent),
-                    resources.getString(res)
-            )
+            summary = try {
+                String.format(
+                        Locale.getDefault(),
+                        resources.getString(R.string.prem_intent),
+                        resources.getString(res)
+                )
+            } catch (e: Exception) {
+                resources.getString(R.string.prem_intent_no_format)
+            }
         }
     }
 
