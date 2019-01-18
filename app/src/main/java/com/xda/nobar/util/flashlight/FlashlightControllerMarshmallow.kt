@@ -21,30 +21,33 @@ class FlashlightControllerMarshmallow(override val context: Context) : Flashligh
 
     private var flashlightEnabledInternal = false
 
-    private val manager by lazy { context.getSystemService(Context.CAMERA_SERVICE) as CameraManager }
-    private val callback = object : CameraManager.TorchCallback() {
-        override fun onTorchModeUnavailable(cameraId: String) {}
-
-        override fun onTorchModeChanged(cameraId: String, enabled: Boolean) {
-            flashlightEnabledInternal = enabled
-        }
-    }
-
     private val cameraId: String?
         @Throws(CameraAccessException::class)
         get() {
             for (id in manager.cameraIdList) {
                 try {
                     val c = manager.getCameraCharacteristics(id)
-                    val flashAvailable = c.get(CameraCharacteristics.FLASH_INFO_AVAILABLE)
-                    val lensFacing = c.get(CameraCharacteristics.LENS_FACING)
-                    if (flashAvailable != null && flashAvailable && lensFacing != null && lensFacing == 1) {
+                    val flashAvailable = c.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) ?: return null
+                    val lensFacing = c.get(CameraCharacteristics.LENS_FACING) ?: return null
+
+                    if (flashAvailable && lensFacing == CameraCharacteristics.LENS_FACING_BACK) {
                         return id
                     }
                 } catch (e: Exception) {}
             }
             return null
         }
+
+    private val manager by lazy { context.getSystemService(Context.CAMERA_SERVICE) as CameraManager }
+    private val callback = object : CameraManager.TorchCallback() {
+        override fun onTorchModeUnavailable(cameraId: String) {}
+
+        override fun onTorchModeChanged(cameraId: String, enabled: Boolean) {
+            if (this@FlashlightControllerMarshmallow.cameraId == cameraId) {
+                flashlightEnabledInternal = enabled
+            }
+        }
+    }
 
     override fun onCreate(callback: (() -> Unit)?) {
         manager.registerTorchCallback(this.callback, Handler())
