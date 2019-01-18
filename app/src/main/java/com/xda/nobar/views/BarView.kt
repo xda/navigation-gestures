@@ -261,9 +261,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
 
             PrefManager.IS_ACTIVE -> {
-                if (!context.prefManager.isActive) {
-                    currentGestureDetector.actionHandler.flashlightController.onDestroy()
-                }
+                currentGestureDetector.singleton.refreshFlashlightState()
+            }
+
+            PrefManager.FLASHLIGHT_COMPAT -> {
+                currentGestureDetector.singleton.refreshFlashlightState()
             }
         }
 

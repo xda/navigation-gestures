@@ -57,9 +57,19 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         fun loadActionMap() {
             context.prefManager.getActionsList(actionMap)
 
-            if (actionMap.values.contains(bar.actionHolder.premTypeFlashlight)) {
-                if (!actionHandler.flashlightController.isCreated)
+            refreshFlashlightState()
+        }
+
+        fun refreshFlashlightState() {
+            if (context.prefManager.isActive
+                    && actionMap.values.contains(bar.actionHolder.premTypeFlashlight)) {
+                val flashlightCompat = context.prefManager.flashlightCompat
+
+                if (!actionHandler.flashlightController.isCreated
+                        && !flashlightCompat)
                     actionHandler.flashlightController.onCreate()
+                else if (flashlightCompat)
+                    actionHandler.flashlightController.onDestroy()
             } else {
                 actionHandler.flashlightController.onDestroy()
             }

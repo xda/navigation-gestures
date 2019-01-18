@@ -24,6 +24,12 @@
         android:defaultValue="@bool/tablet_mode_default" />
 
     <SwitchPreference
+        android:title="@string/flashlight_toggle_compat"
+        android:summary="@string/flashlight_toggle_compat_desc"
+        android:key="flashlight_compat"
+        android:defaultValue="@bool/flashlight_compat_default" />
+
+    <SwitchPreference
         android:title="@string/alternate_home"
         android:summary="@string/alternate_home_desc"
         android:key="alternate_home"

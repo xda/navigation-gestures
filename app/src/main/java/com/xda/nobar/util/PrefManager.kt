@@ -51,6 +51,7 @@ class PrefManager private constructor(private val context: Context) {
         const val SHOW_NAV_WITH_KEYBOARD = "keyboard_nav"
         const val CONFIRMED_SKIP_WSS = "has_confirmed_skip_wss"
         const val ANCHOR_PILL = "anchor_pill"
+        const val FLASHLIGHT_COMPAT = "flashlight_compat"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
@@ -196,6 +197,8 @@ class PrefManager private constructor(private val context: Context) {
         set(value) {
             putBoolean(CONFIRMED_SKIP_WSS, value)
         }
+    val flashlightCompat: Boolean
+        get() = getBoolean(FLASHLIGHT_COMPAT, context.resources.getBoolean(R.bool.flashlight_compat_default))
 
     /**
      * Get the user-defined or default pill color

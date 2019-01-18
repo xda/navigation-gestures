@@ -279,7 +279,18 @@ class BarViewActionHandler(private val bar: BarView) {
                         ActionReceiver.toggleNav(context)
                     }
                     bar.actionHolder.premTypeFlashlight -> context.runPremiumAction {
-                        flashlightController.flashlightEnabled = !flashlightController.flashlightEnabled
+                        if (!flashlightController.isCreated) {
+                            flashlightController.onCreate {
+                                flashlightController.toggle()
+                            }
+                        } else {
+                            flashlightController.toggle()
+
+                            if (context.prefManager.flashlightCompat
+                                    && !flashlightController.flashlightEnabled) {
+                                flashlightController.onDestroy()
+                            }
+                        }
                     }
                     bar.actionHolder.premTypeVolumePanel -> context.runPremiumAction {
                         audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)

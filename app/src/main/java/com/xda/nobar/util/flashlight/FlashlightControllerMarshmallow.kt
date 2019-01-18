@@ -12,10 +12,10 @@ import android.os.Handler
 class FlashlightControllerMarshmallow(override val context: Context) : FlashlightControllerBase(context) {
     override var flashlightEnabled = false
         set(value) {
-            field = value
             try {
                 manager.setTorchMode(cameraId ?: return, value)
             } catch (e: Exception) {}
+            field = value
         }
         get() = flashlightEnabledInternal
 
@@ -46,17 +46,19 @@ class FlashlightControllerMarshmallow(override val context: Context) : Flashligh
             return null
         }
 
-    override fun onCreate() {
-        manager.registerTorchCallback(callback, Handler())
+    override fun onCreate(callback: (() -> Unit)?) {
+        manager.registerTorchCallback(this.callback, Handler())
         isCreated = true
+        callback?.invoke()
     }
 
-    override fun onDestroy() {
+    override fun onDestroy(callback: (() -> Unit)?) {
         try {
             manager.setTorchMode(cameraId!!, false)
         } catch (e: Exception) {}
 
-        manager.unregisterTorchCallback(callback)
+        manager.unregisterTorchCallback(this.callback)
         isCreated = false
+        callback?.invoke()
     }
 }

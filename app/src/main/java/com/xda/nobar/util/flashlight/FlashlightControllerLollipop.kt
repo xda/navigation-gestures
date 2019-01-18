@@ -27,11 +27,13 @@ class FlashlightControllerLollipop(override val context: Context) : FlashlightCo
 
     private var camera: Camera? = null
 
-    override fun onCreate() {
+    override fun onCreate(callback: (() -> Unit)?) {
         isCreated = true
+        callback?.invoke()
     }
 
-    override fun onDestroy() {
+    override fun onDestroy(callback: (() -> Unit)?) {
         isCreated = false
+        callback?.invoke()
     }
 }
