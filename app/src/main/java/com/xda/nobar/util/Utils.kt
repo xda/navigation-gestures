@@ -214,11 +214,8 @@ fun Context.allowHiddenMethods() {
  * @param dpVal the chosen DP value
  * @return the DP value in terms of px
  */
-fun Context.dpAsPx(dpVal: Float) =
-        Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal, resources.displayMetrics))
-
-fun Context.dpAsPx(dpVal: Int) =
-        dpAsPx(dpVal.toFloat())
+fun Context.dpAsPx(dpVal: Number) =
+        Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal.toFloat(), resources.displayMetrics))
 
 fun <T> Context.getSystemServiceCast(name: String): T? {
     return getSystemService(name) as T?

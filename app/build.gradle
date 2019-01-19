@@ -80,7 +80,8 @@ dependencies {
     implementation 'com.github.zacharee:colorpicker:4b78682602'
     implementation 'com.github.zacharee:material:a2ab4a2d3c'
     implementation 'com.github.zacharee:CollapsiblePreferenceCategory:79d5b49d67'
-    implementation 'com.github.zacharee:SeekBarPreference:fc6a5a072b'
+//    implementation 'com.github.zacharee:SeekBarPreference:0f87355947'
+    implementation project(':seekbar')
 
     //Other
     implementation 'com.joaomgcd:taskerpluginlibrary:0.1'

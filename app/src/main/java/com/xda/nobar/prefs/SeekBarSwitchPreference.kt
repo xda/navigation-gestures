@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.util.AttributeSet
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.Switch
 import androidx.preference.AndroidResources
@@ -11,6 +12,8 @@ import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreference
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnProgressSetListener
+import com.xda.nobar.util.dpAsPx
+import com.xda.nobar.util.prefManager
 import tk.zwander.seekbarpreference.SeekBarView
 
 /**
@@ -22,7 +25,21 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
         const val KEY_SUFFIX = "_progress"
     }
 
-    private val seekBar = SeekBarView(context, attributeSet)
+    private val seekBar = object : SeekBarView(context, attributeSet) {
+        init {
+            setPaddingRelative(context.dpAsPx(16), 0, context.dpAsPx(16), 0)
+        }
+
+        override fun onAttachedToWindow() {
+            super.onAttachedToWindow()
+
+            layoutParams.apply {
+                height = context.dpAsPx(100)
+
+                layoutParams = this
+            }
+        }
+    }
     private val dialog = Dialog(this, seekBar, this)
 
     init {
@@ -30,7 +47,7 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
     }
 
     override fun onSetInitialValue(defaultValue: Any?) {
-        seekBar.setValue(if (isPersistent) preferenceManager.sharedPreferences.getInt("$key$KEY_SUFFIX",
+        seekBar.setValue(if (isPersistent) context.prefManager.getInt("$key$KEY_SUFFIX",
                 seekBar.getCurrentProgress()).toFloat() else seekBar.getCurrentProgress().toFloat(),
                 true)
         super.onSetInitialValue(defaultValue)
@@ -73,7 +90,7 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
         syncSummary()
     }
 
-    fun getProgress() = preferenceManager.sharedPreferences.getInt("$key$KEY_SUFFIX", seekBar.getCurrentProgress())
+    fun getProgress() = context.prefManager.getInt("$key$KEY_SUFFIX", seekBar.getCurrentProgress())
 
     private fun syncSummary() {
         if (isChecked && summaryOn != null)
