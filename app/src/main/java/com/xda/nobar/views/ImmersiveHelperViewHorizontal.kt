@@ -37,6 +37,8 @@ class ImmersiveHelperViewHorizontal(context: Context, manager: ImmersiveHelperMa
         super.onAttachedToWindow()
 
         manager.horizontalHelperAdded = true
+
+        WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN
     }
 
     override fun onDetachedFromWindow() {
