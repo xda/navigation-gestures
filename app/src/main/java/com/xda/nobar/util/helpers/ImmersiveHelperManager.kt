@@ -6,10 +6,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
-import com.xda.nobar.util.POLICY_CONTROL
-import com.xda.nobar.util.app
-import com.xda.nobar.util.getSystemServiceCast
-import com.xda.nobar.util.hasWss
+import com.xda.nobar.util.*
 import com.xda.nobar.views.ImmersiveHelperViewHorizontal
 import com.xda.nobar.views.ImmersiveHelperViewVertical
 
@@ -18,19 +15,33 @@ class ImmersiveHelperManager(private val context: Context) {
     val vertical = ImmersiveHelperViewVertical(context, this)
 
     var isHorizontalImmersive = false
+        set(value) {
+            if (field != value) {
+                field = value
+
+                updateImmersiveListener()
+            }
+        }
     var isVerticalImmersive = false
+        set(value) {
+            if (field != value) {
+                field = value
+
+                updateImmersiveListener()
+            }
+        }
 
     var horizontalHelperAdded = false
         set(value) {
             field = value
 
-            context.app.helperAdded = horizontalHelperAdded && verticalHelperAdded
+            updateHelperState()
         }
     var verticalHelperAdded = false
         set(value) {
             field = value
 
-            context.app.helperAdded = horizontalHelperAdded && verticalHelperAdded
+            updateHelperState()
         }
 
 
@@ -42,14 +53,22 @@ class ImmersiveHelperManager(private val context: Context) {
     init {
         horizontal.immersiveListener = { imm ->
             isHorizontalImmersive = imm
-
-            immersiveListener?.invoke(isHorizontalImmersive && isVerticalImmersive)
         }
         vertical.immersiveListener = { imm ->
             isVerticalImmersive = imm
+        }
+    }
 
+    private fun updateImmersiveListener() {
+        if (context.isLandscape && !context.prefManager.useTabletMode) {
+            immersiveListener?.invoke(isVerticalImmersive)
+        } else {
             immersiveListener?.invoke(isHorizontalImmersive && isVerticalImmersive)
         }
+    }
+
+    private fun updateHelperState() {
+        context.app.helperAdded = horizontalHelperAdded && verticalHelperAdded
     }
 
     fun add() {
@@ -76,19 +95,9 @@ class ImmersiveHelperManager(private val context: Context) {
         } catch (e: Exception) {}
     }
 
-    fun update() {
-        horizontal.updateDimensions()
-        vertical.updateDimensions()
-    }
-
     fun addOnGlobalLayoutListener(listener: ViewTreeObserver.OnGlobalLayoutListener) {
         horizontal.viewTreeObserver.addOnGlobalLayoutListener(listener)
         vertical.viewTreeObserver.addOnGlobalLayoutListener(listener)
-    }
-
-    fun setOnSystemUiVisibilityChangeListener(listener: View.OnSystemUiVisibilityChangeListener) {
-        horizontal.setOnSystemUiVisibilityChangeListener(listener)
-        vertical.setOnSystemUiVisibilityChangeListener(listener)
     }
 
     fun enterNavImmersive() {
