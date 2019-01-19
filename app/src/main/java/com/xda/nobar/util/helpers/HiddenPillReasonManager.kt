@@ -33,9 +33,9 @@ class HiddenPillReasonManager : ArrayList<String>() {
         }
     }
 
-    fun getMostRecentReason(): String {
-        var ret = ""
-        while (ret.isEmpty()) {
+    fun getMostRecentReason(): String? {
+        var ret: String? = null
+        while (ret.isNullOrEmpty()) {
             val get = try {
                 get(size - 1)
             } catch (e: ArrayIndexOutOfBoundsException) {

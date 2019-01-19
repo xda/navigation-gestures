@@ -223,8 +223,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         show(null)
 
         if (context.prefManager.autoHide) {
-            hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
-            scheduleHide()
+            val reason = HiddenPillReasonManager.AUTO
+            scheduleHide(reason)
         }
 
         handleRotationOrAnchorUpdate()
@@ -312,8 +312,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             PrefManager.AUTO_HIDE_PILL -> {
                 if (context.prefManager.autoHide) {
-                    hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
-                    if (!isHidden) scheduleHide()
+                    if (!isHidden) scheduleHide(HiddenPillReasonManager.AUTO)
                 } else {
                     if (isHidden) hideHandler.show(HiddenPillReasonManager.AUTO)
                 }
@@ -414,7 +413,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     showHiddenToast()
                 }
             } else {
-                scheduleHide()
+                scheduleHide(autoReason ?: return@post)
             }
         }
     }
@@ -436,27 +435,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 .start()
     }
 
-    private fun scheduleHide(time: Long? = parseHideTime()) {
-        if (time != null) {
-            hideHandler.hide(time)
-        }
+    fun scheduleHide(reason: String, time: Long = parseHideTime(reason)) {
+        hideHandler.hide(time, reason)
     }
-
-    fun scheduleHide(reason: String) {
-        hideHandler.hide(reason)
-    }
-
-    private fun parseHideTime(): Long? {
-        val reason = hiddenPillReasons.getMostRecentReason()
-        return parseHideTimeNoThrow(reason)
-    }
-
-    private fun parseHideTimeNoThrow(reason: String) =
-            try {
-                parseHideTime(reason)
-            } catch (e: IllegalArgumentException) {
-                null
-            }
 
     private fun parseHideTime(reason: String) =
             when (reason) {
@@ -491,7 +472,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             .setInterpolator(EXIT_INTERPOLATOR)
                             .setDuration(getAnimationDurationMs())
                             .withEndAction {
-                                animateShow(!reallyForceNotAuto)
+                                animateShow(!reallyForceNotAuto, autoReasonToRemove)
                             }
                             .apply {
                                 if (isVertical) translationX(0f)
@@ -503,12 +484,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    private fun animateShow(rehide: Boolean) {
+    private fun animateShow(rehide: Boolean, reason: String?) {
         animator.show(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
             handler?.postDelayed(Runnable {
-                if (rehide) scheduleHide()
                 isHidden = false
                 isPillHidingOrShowing = false
+
+                if (rehide && reason != null) {
+                    scheduleHide(if (reason == HiddenPillReasonManager.MANUAL)
+                        hiddenPillReasons.getMostRecentReason() ?: return@Runnable else reason)
+                }
             }, (if (getAnimationDurationMs() < 12) 12 else 0))
         })
     }
@@ -810,19 +795,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
 
-        fun hide(reason: String) {
+        fun hide(time: Long, reason: String? = null) {
             val msg = Message.obtain(this)
             msg.what = MSG_HIDE
             msg.obj = reason
 
             removeMessages(MSG_SHOW)
-            removeMessages(MSG_HIDE, reason)
+            removeMessages(MSG_SHOW, reason)
 
-            if (!isHidden) sendMessageAtTime(msg, SystemClock.uptimeMillis() + parseHideTime(reason))
-        }
-
-        fun hide(time: Long) {
-            sendEmptyMessageAtTime(MSG_HIDE, SystemClock.uptimeMillis() + time)
+            if (!isHidden) sendMessageAtTime(msg, SystemClock.uptimeMillis() + time)
         }
 
         fun show(reason: String?, forceShow: Boolean = false) {
