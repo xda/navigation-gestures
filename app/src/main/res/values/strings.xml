@@ -125,6 +125,7 @@
     <string name="anchor_pill">Anchor Pill</string>
     <string name="flashlight_toggle_compat">Flashlight Fix</string>
     <string name="fix_immersive">Fix Auto-Hiding NavBar</string>
+    <string name="nav_hiding">NavBar Hiding</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
