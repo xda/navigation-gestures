@@ -117,9 +117,9 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
 
         return if (context.isLandscape) {
             screenHeight + if (context.prefManager.useTabletMode
-                    && context.app.navHidden) navHeight else 0
+                    && context.app.navHidden) navHeight - if (context.prefManager.useFullOverscan) 0 else 1 else 0
         } else {
-            screenHeight + if (context.app.navHidden) navHeight else 0
+            screenHeight + if (context.app.navHidden) navHeight - if (context.prefManager.useFullOverscan) 0 else 1 else 0
         }
     }
 
@@ -129,7 +129,7 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
 
         return if (context.isLandscape) {
             screenWidth + if (!context.prefManager.useTabletMode
-                    && context.app.navHidden) navHeight else 0
+                    && context.app.navHidden) navHeight - if (context.prefManager.useFullOverscan) 0 else 1 else 0
         } else screenWidth
     }
 }
