@@ -7,18 +7,6 @@
         android:summary="@string/experimental_warning"
         />
 
-    <com.xda.nobar.prefs.SeekBarSwitchPreference
-        android:title="@string/hide_pill_on_keyboard"
-        android:summaryOn="@string/auto_hide_pill_desc_enabled"
-        android:key="hide_pill_on_keyboard"
-        android:icon="@drawable/keyboard_hide"
-        android:defaultValue="@bool/hide_on_keyboard_default"
-        app:view_defaultValue="@integer/default_auto_hide_time"
-        app:minValue="@integer/min_auto_hide_time"
-        app:maxValue="@integer/max_auto_hide_time"
-        app:units="ms"
-        />
-
     <Preference
         android:title="@string/fix_for_other_windows"
         android:summary="@string/fix_for_other_windows_desc"
