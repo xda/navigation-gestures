@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/troubleshooting_graph"
     app:startDestination="@id/troubleshootingFragment">
 
-
     <fragment
         android:id="@+id/troubleshootingFragment"
         android:name="com.xda.nobar.fragments.troubleshooting.TroubleshootingFragment"
@@ -17,6 +16,12 @@
         <action
             android:id="@+id/action_troubleshootingFragment_to_compatibilityFragment"
             app:destination="@id/compatibilityFragment" />
+        <action
+            android:id="@+id/action_troubleshootingFragment_to_experimentalFragment"
+            app:destination="@id/experimentalFragment" />
+        <action
+            android:id="@+id/action_troubleshootingFragment_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
     </fragment>
     <fragment
         android:id="@+id/behaviorFragment"
@@ -30,4 +35,13 @@
         android:id="@+id/compatibilityFragment"
         android:name="com.xda.nobar.fragments.settings.CompatibilityFragment"
         android:label="CompatibilityFragment" />
+    <fragment
+        android:id="@+id/experimentalFragment"
+        android:name="com.xda.nobar.fragments.settings.ExperimentalFragment"
+        android:label="ExperimentalFragment" />
+    <activity
+        android:id="@+id/settingsActivity"
+        android:name="com.xda.nobar.activities.ui.SettingsActivity"
+        android:label="SettingsActivity" />
+
 </navigation>

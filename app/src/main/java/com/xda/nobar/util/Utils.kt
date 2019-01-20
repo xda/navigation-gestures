@@ -401,17 +401,19 @@ val Preference.actualParent: PreferenceGroup?
     }
 
 private fun Preference.recurse(group: PreferenceGroup): PreferenceGroup? {
+    var parent: PreferenceGroup? = null
+
     for (i in 0 until group.preferenceCount) {
         val p = group.getPreference(i)
 
-        if (p == this) return group
+        if (p == this) parent = group
 
         if (p is PreferenceGroup) {
-            return recurse(p)
+            parent = recurse(p)
         }
     }
 
-    return null
+    return parent
 }
 
 /* Other */
