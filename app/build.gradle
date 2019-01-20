@@ -74,6 +74,8 @@ dependencies {
     //Google
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation "android.arch.navigation:navigation-fragment-ktx:1.0.0-alpha09"
+    implementation "android.arch.navigation:navigation-ui-ktx:1.0.0-alpha09"
 
     //Mine-ish
     implementation 'com.github.zacharee:material-intro:7c39514ec5'

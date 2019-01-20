@@ -35,28 +35,33 @@
 
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
-    <SwitchPreference
-        android:title="@string/flashlight_toggle_compat"
-        android:summary="@string/flashlight_toggle_compat_desc"
-        android:key="flashlight_compat"
-        android:defaultValue="@bool/flashlight_compat_default" />
+    <PreferenceCategory
+        android:title="@string/miscellaneous">
 
-    <SwitchPreference
-        android:title="@string/alternate_home"
-        android:summary="@string/alternate_home_desc"
-        android:key="alternate_home"
-        android:defaultValue="@bool/alternate_home_default" />
+        <SwitchPreference
+            android:title="@string/flashlight_toggle_compat"
+            android:summary="@string/flashlight_toggle_compat_desc"
+            android:key="flashlight_compat"
+            android:defaultValue="@bool/flashlight_compat_default" />
 
-    <SwitchPreference
-        android:title="@string/use_immersive_mode_when_nav_hidden"
-        android:summary="@string/use_immersive_mode_when_nav_hidden_desc"
-        android:key="use_immersive_mode_when_nav_hidden"
-        android:defaultValue="@bool/immersive_nav_default" />
+        <SwitchPreference
+            android:title="@string/alternate_home"
+            android:summary="@string/alternate_home_desc"
+            android:key="alternate_home"
+            android:defaultValue="@bool/alternate_home_default" />
 
-    <Preference
-        android:title="@string/imm_blacklist"
-        android:summary="@string/imm_blacklist_desc"
-        android:dependency="use_immersive_mode_when_nav_hidden"
-        android:key="immersive_blacklist" />
+        <SwitchPreference
+            android:title="@string/use_immersive_mode_when_nav_hidden"
+            android:summary="@string/use_immersive_mode_when_nav_hidden_desc"
+            android:key="use_immersive_mode_when_nav_hidden"
+            android:defaultValue="@bool/immersive_nav_default" />
+
+        <Preference
+            android:title="@string/imm_blacklist"
+            android:summary="@string/imm_blacklist_desc"
+            android:dependency="use_immersive_mode_when_nav_hidden"
+            android:key="immersive_blacklist" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>
