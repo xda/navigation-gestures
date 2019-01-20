@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.xda.nobar.util.actualParent
 import com.xda.nobar.util.onClickListener
 import com.xda.nobar.util.prefManager
+import kotlinx.android.synthetic.main.activity_app_launch_select.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
@@ -66,10 +67,12 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
                 val parent = if (pref.parent?.parent is CollapsiblePreferenceCategory) pref.parent?.parent else pref.parent
 
                 if (parent is CollapsiblePreferenceCategory) parent.expanded = true
-                if (pref is CollapsiblePreferenceCategory) pref.expanded = true
 
                 listView.postDelayed({
-                    scrollToPreference(it)
+                    val position = (listView.adapter as PreferenceGroup.PreferencePositionCallback)
+                            .getPreferenceAdapterPosition(it)
+
+                    listView.smoothScrollToPosition(position)
 
                     val view = findPreferenceView(it)
 

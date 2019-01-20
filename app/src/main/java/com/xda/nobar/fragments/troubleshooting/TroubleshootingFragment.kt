@@ -21,71 +21,54 @@ class TroubleshootingFragment : BasePrefFragment() {
 
         findPreference<Preference>("nav_not_hiding")
                 .setOnPreferenceClickListener {
-                    findNavController().navigate(
+                    navigateTo(
                             R.id.action_troubleshootingFragment_to_compatibilityFragment,
-                            Bundle().apply {
-                                putString(BasePrefFragment.PREF_KEY_TO_HIGHLIGHT, "nav_hiding")
-                            },
-                            navOptions
+                            "nav_hiding"
                     )
                     true
                 }
 
         findPreference<Preference>("home_not_working")
                 .setOnPreferenceClickListener {
-                    findNavController().navigate(
+                    navigateTo(
                             R.id.action_troubleshootingFragment_to_compatibilityFragment,
-                            Bundle().apply {
-                                putString(BasePrefFragment.PREF_KEY_TO_HIGHLIGHT, PrefManager.ALTERNATE_HOME)
-                            },
-                            navOptions
+                            PrefManager.ALTERNATE_HOME
                     )
                     true
                 }
 
         findPreference<Preference>("force_touch_not_working")
                 .setOnPreferenceClickListener {
-                    findNavController().navigate(
+                    navigateTo(
                             R.id.action_troubleshootingFragment_to_compatibilityFragment,
-                            Bundle().apply {
-                                putString(BasePrefFragment.PREF_KEY_TO_HIGHLIGHT, PrefManager.USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN)
-                            },
-                            navOptions
-                    )
-                    true
-                }
-
-        findPreference<Preference>("other_overlays")
-                .setOnPreferenceClickListener {
-                    findNavController().navigate(
-                            R.id.action_troubleshootingFragment_to_experimentalFragment,
-                            Bundle().apply {
-                                putString(BasePrefFragment.PREF_KEY_TO_HIGHLIGHT, ExperimentalFragment.WINDOW_FIX)
-                            }
+                            PrefManager.USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN
                     )
                     true
                 }
 
         findPreference<Preference>("hard_to_hit_pill")
                 .setOnPreferenceClickListener {
-                    findNavController().navigate(
+                    navigateTo(
                             R.id.action_troubleshootingFragment_to_behaviorFragment,
-                            Bundle().apply {
-                                putString(BasePrefFragment.PREF_KEY_TO_HIGHLIGHT, PrefManager.LARGER_HITBOX)
-                            },
-                            navOptions
+                            PrefManager.LARGER_HITBOX
+                    )
+                    true
+                }
+
+        findPreference<Preference>("other_overlays")
+                .setOnPreferenceClickListener {
+                    navigateTo(
+                            R.id.action_troubleshootingFragment_to_experimentalFragment,
+                            ExperimentalFragment.WINDOW_FIX
                     )
                     true
                 }
 
         findPreference<Preference>("white_line")
                 .setOnPreferenceClickListener {
-                    findNavController().navigate(
+                    navigateTo(
                             R.id.action_troubleshootingFragment_to_experimentalFragment,
-                            Bundle().apply {
-                                putString(BasePrefFragment.PREF_KEY_TO_HIGHLIGHT, PrefManager.FULL_OVERSCAN)
-                            },
-                            navOptions
+                            PrefManager.FULL_OVERSCAN
                     )
                     true
                 }
@@ -100,11 +83,7 @@ class TroubleshootingFragment : BasePrefFragment() {
 
         findPreference<Preference>("pill_overlaps")
                 .setOnPreferenceClickListener {
-                    AlertDialog.Builder(activity!!)
-                            .setTitle(it.summary)
-                            .setMessage(R.string.pill_overlaps_content_expl)
-                            .setPositiveButton(android.R.string.ok, null)
-                            .show()
+                    showExplanation(it.summary, R.string.pill_overlaps_content_expl)
                     true
                 }
     }
@@ -113,5 +92,23 @@ class TroubleshootingFragment : BasePrefFragment() {
         super.onResume()
 
         activity?.title = resources.getString(R.string.troubleshooting)
+    }
+
+    private fun navigateTo(action: Int, highlightKey: String? = null) {
+        findNavController().navigate(
+                action,
+                Bundle().apply {
+                    putString(BasePrefFragment.PREF_KEY_TO_HIGHLIGHT, highlightKey ?: return@apply)
+                },
+                navOptions
+        )
+    }
+
+    private fun showExplanation(title: CharSequence, message: Int) {
+        AlertDialog.Builder(activity!!)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .show()
     }
 }
