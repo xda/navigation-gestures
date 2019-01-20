@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/troubleshooting_graph"
+    app:startDestination="@id/troubleshootingFragment">
+
+
+    <fragment
+        android:id="@+id/troubleshootingFragment"
+        android:name="com.xda.nobar.fragments.troubleshooting.TroubleshootingFragment"
+        android:label="TroubleshootingFragment" >
+        <action
+            android:id="@+id/action_troubleshootingFragment_to_behaviorFragment"
+            app:destination="@id/behaviorFragment" />
+        <action
+            android:id="@+id/action_troubleshootingFragment_to_appearanceFragment"
+            app:destination="@id/appearanceFragment" />
+        <action
+            android:id="@+id/action_troubleshootingFragment_to_compatibilityFragment"
+            app:destination="@id/compatibilityFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/behaviorFragment"
+        android:name="com.xda.nobar.fragments.settings.BehaviorFragment"
+        android:label="BehaviorFragment" />
+    <fragment
+        android:id="@+id/appearanceFragment"
+        android:name="com.xda.nobar.fragments.settings.AppearanceFragment"
+        android:label="AppearanceFragment" />
+    <fragment
+        android:id="@+id/compatibilityFragment"
+        android:name="com.xda.nobar.fragments.settings.CompatibilityFragment"
+        android:label="CompatibilityFragment" />
+</navigation>

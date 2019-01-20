@@ -19,9 +19,15 @@ import android.provider.Settings
 import android.util.Log
 import android.util.TypedValue
 import android.view.Surface
+import android.view.View
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavOptions
+import androidx.navigation.NavOptionsBuilder
+import androidx.preference.Preference
+import androidx.preference.PreferenceGroup
+import androidx.preference.PreferenceGroupAdapter
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.helpers.DialogActivity
@@ -372,3 +378,51 @@ fun Drawable.toBitmap(): Bitmap? {
         }
     }
 }
+
+/* View */
+
+val View.onClickListener: View.OnClickListener
+    @SuppressLint("PrivateApi")
+    get() {
+        val listenerInfoClass = Class.forName("android.view.View\$ListenerInfo")
+        val getListenerInfo = View::class.java.getDeclaredMethod("getListenerInfo").apply {
+            isAccessible = true
+        }
+
+        val listenerInfo = getListenerInfo.invoke(this)
+        return listenerInfoClass.getField("mOnClickListener").get(listenerInfo) as View.OnClickListener
+    }
+
+/* Preference */
+val Preference.actualParent: PreferenceGroup?
+    get() {
+        return if (isShown) parent
+        else recurse(preferenceManager.preferenceScreen)
+    }
+
+private fun Preference.recurse(group: PreferenceGroup): PreferenceGroup? {
+    for (i in 0 until group.preferenceCount) {
+        val p = group.getPreference(i)
+
+        if (p == this) return group
+
+        if (p is PreferenceGroup) {
+            return recurse(p)
+        }
+    }
+
+    return null
+}
+
+/* Other */
+
+val navOptions: NavOptions
+    get() {
+        val builder = NavOptions.Builder()
+        builder.setEnterAnim(android.R.anim.fade_in)
+        builder.setExitAnim(android.R.anim.fade_out)
+        builder.setPopEnterAnim(android.R.anim.fade_in)
+        builder.setPopExitAnim(android.R.anim.fade_out)
+
+        return builder.build()
+    }

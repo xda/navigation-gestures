@@ -17,6 +17,7 @@ import com.xda.nobar.R
 import com.xda.nobar.activities.ui.HelpAboutActivity
 import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.activities.ui.SettingsActivity
+import com.xda.nobar.activities.ui.TroubleshootingActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
@@ -96,6 +97,10 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             runSecureSettingsAction {
                 Settings.Global.putString(contentResolver, POLICY_CONTROL, null)
             }
+        }
+
+        troubleshoot.setOnClickListener {
+            startActivity(Intent(this, TroubleshootingActivity::class.java))
         }
 
         refresh()

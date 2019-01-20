@@ -41,9 +41,7 @@
     <uses-permission android:name="com.xda.nobar.permission.RECEIVE_BROADCAST" />
     <uses-permission android:name="com.xda.nobar.permission.SEND_BROADCAST" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" />
-
-    <!-- Used for premium backdoor -->
+    <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" /> <!-- Used for premium backdoor -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <application
@@ -58,8 +56,8 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".activities.MainActivity"
-            android:launchMode="singleInstance"
             android:configChanges="orientation|screenLayout|screenSize|keyboard"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -113,7 +111,8 @@
         <activity android:name=".activities.selectors.BlacklistSelectorActivity" />
         <activity android:name=".activities.selectors.ActivityLaunchSelectActivity" />
         <activity android:name=".activities.selectors.IntentSelectorActivity" />
-        <activity android:name=".activities.selectors.ShortcutSelectActivity"
+        <activity
+            android:name=".activities.selectors.ShortcutSelectActivity"
             android:label="@string/prem_launch_shortcut_no_format" />
         <activity
             android:name=".tasker.activities.ToggleGestureActivity"
@@ -142,6 +141,7 @@
                 <action android:name="net.dinglisch.android.tasker.ACTION_EDIT_EVENT" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.ui.TroubleshootingActivity" />
 
         <service
             android:name=".tiles.GestureToggle"

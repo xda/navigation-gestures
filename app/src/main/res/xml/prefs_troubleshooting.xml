@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:summary="@string/nav_not_hiding_desc"
+        android:key="nav_not_hiding"
+        />
+
+    <Preference
+        android:summary="@string/home_action_not_working"
+        android:key="home_not_working"
+        />
+
+    <Preference
+        android:summary="@string/force_touch_not_working"
+        android:key="force_touch_not_working"
+        />
+
+    <Preference
+        android:summary="@string/hard_to_hit_pill"
+        android:key="hard_to_hit_pill"
+        />
+
+</PreferenceScreen>
