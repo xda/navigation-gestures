@@ -125,7 +125,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                 .buttonCtaLabel(R.string.show_me_how)
                 .buttonCtaClickListener {
                     val emuiBatt = Intent(Intent.ACTION_VIEW,
-                            Uri.parse("https://support.doubletwist.com/hc/en-us/articles/360001504071-How-to-turn-off-battery-optimization-on-Huawei-devices"))
+                            Uri.parse("https://dontkillmyapp.com/huawei"))
                     emuiBatt.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(emuiBatt)
                 }
