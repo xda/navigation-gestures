@@ -156,7 +156,20 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                 .description(R.string.battery_optimizations_desc)
                 .buttonCtaLabel(R.string.disable)
                 .buttonCtaClickListener {
-                    requestBatteryExemption()
+                    try {
+                        requestBatteryExemption()
+                    } catch (e: Exception) {
+                        AlertDialog.Builder(this)
+                                .setTitle(R.string.battery_optimizations)
+                                .setMessage(R.string.unable_to_request_battery_exemption)
+                                .setPositiveButton(R.string.show_me_how) { _, _ ->
+                                    startActivity(
+                                            Intent(Intent.ACTION_VIEW, Uri.parse("https://dontkillmyapp.com/general"))
+                                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                                }
+                                .setNegativeButton(R.string.not_now, null)
+                                .show()
+                    }
                 }
                 .build()
     }

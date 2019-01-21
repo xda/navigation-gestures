@@ -86,12 +86,12 @@ class IntroActivity : IntroActivity() {
                 if (checkEMUI())
                     addSlide(slides.emuiSlide)
 
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                    addSlide(slides.qsSlide)
-                }
-
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
                     addSlide(slides.batterySlide)
+                }
+
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                    addSlide(slides.qsSlide)
                 }
 
                 addSlide(slides.warnSlide)

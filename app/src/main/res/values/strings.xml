@@ -131,6 +131,7 @@
     <string name="miscellaneous">Miscellaneous</string>
     <string name="something_else">Something else?</string>
     <string name="common_issues">Common Issues</string>
+    <string name="not_now">Not Now</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -189,6 +190,7 @@
     <string name="something_else_desc">Check out the Settings for all the customization and troubleshooting options.</string>
     <string name="pill_in_other_overlays">The pill isn\'t working in Facebook Chat Heads, Drupe, etc.</string>
     <string name="pill_overlaps_content">The pill overlaps with my screen content.</string>
+    <string name="unable_to_request_battery_exemption">Navigation Gestures was unable to request a battery exemption on your device. We recommend disabling it manually.</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
