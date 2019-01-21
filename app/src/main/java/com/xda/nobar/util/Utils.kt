@@ -5,6 +5,8 @@ package com.xda.nobar.util
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.app.UiModeManager
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -21,6 +23,7 @@ import android.util.TypedValue
 import android.view.Surface
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavOptions
@@ -227,6 +230,20 @@ fun <T> Context.getSystemServiceCast(name: String): T? {
     return getSystemService(name) as T?
 }
 
+fun Context.launchUrl(url: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+    try {
+        startActivity(intent)
+    } catch (e: Exception) {
+        val cbm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        cbm.primaryClip = ClipData.newPlainText(url, url)
+
+        Toast.makeText(this, R.string.url_copied_to_clipboard, Toast.LENGTH_SHORT).show()
+    }
+}
+
 @SuppressLint("BatteryLife")
 fun Context.requestBatteryExemption() {
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -266,10 +283,7 @@ fun Context.runPremiumAction(action: () -> Unit): Boolean {
             title = R.string.premium_required
             message = R.string.premium_required_desc
             yesAction = OnDialogChoiceMadeListener {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                applicationContext.startActivity(intent)
+                launchUrl("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
             }
             start()
         }

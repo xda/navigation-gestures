@@ -232,6 +232,7 @@
     <string name="accessibility_msg">Find \"Accessibility\" and tap it.</string>
     <string name="deactivate_before_uninstall">Make sure \"Hide Navigation Bar\" is off before uninstalling!</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="url_copied_to_clipboard">URL copied to clipboard</string>
     <string name="unable_to_launch">Unable to launch target.</string>
     <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
     <string name="unable_to_execute_action">Unable to execute action.</string>

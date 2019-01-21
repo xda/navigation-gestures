@@ -124,10 +124,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                 .description(R.string.emui_desc)
                 .buttonCtaLabel(R.string.show_me_how)
                 .buttonCtaClickListener {
-                    val emuiBatt = Intent(Intent.ACTION_VIEW,
-                            Uri.parse("https://dontkillmyapp.com/huawei"))
-                    emuiBatt.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(emuiBatt)
+                    launchUrl("https://dontkillmyapp.com/huawei")
                 }
                 .build()
     }
@@ -140,10 +137,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                 .description(R.string.touchwiz_desc)
                 .buttonCtaLabel(R.string.tell_me_how)
                 .buttonCtaClickListener {
-                    val touchwiz = Intent(Intent.ACTION_VIEW,
-                            Uri.parse("https://www.xda-developers.com/?page_id=244047"))
-                    touchwiz.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(touchwiz)
+                    launchUrl("https://www.xda-developers.com/?page_id=244047")
                 }
                 .build()
     }
@@ -163,9 +157,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                                 .setTitle(R.string.battery_optimizations)
                                 .setMessage(R.string.unable_to_request_battery_exemption)
                                 .setPositiveButton(R.string.show_me_how) { _, _ ->
-                                    startActivity(
-                                            Intent(Intent.ACTION_VIEW, Uri.parse("https://dontkillmyapp.com/general"))
-                                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                                    launchUrl("https://dontkillmyapp.com/general")
                                 }
                                 .setNegativeButton(R.string.not_now, null)
                                 .show()
@@ -227,10 +219,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                     .setMessage(R.string.run_command_desc)
                     .setPositiveButton(R.string.got_it, null)
                     .setNegativeButton(R.string.need_help) { _, _ ->
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse("https://youtu.be/Yg44Tu6oxnQ")
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
+                        launchUrl("https://youtu.be/Yg44Tu6oxnQ")
                     }
                     .show()
         } catch (e: Exception) {

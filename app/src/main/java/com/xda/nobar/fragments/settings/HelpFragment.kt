@@ -12,6 +12,7 @@ import com.xda.nobar.BuildConfig
 import com.xda.nobar.R
 import com.xda.nobar.activities.ui.LibraryActivity
 import com.xda.nobar.util.PrefManager
+import com.xda.nobar.util.launchUrl
 import com.xda.nobar.util.prefManager
 
 /**
@@ -68,58 +69,43 @@ class HelpFragment : PreferenceFragmentCompat() {
         val pref = findPreference<Preference>(TUTORIAL_VIDEO)
 
         pref.setOnPreferenceClickListener {
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse("https://youtu.be/H_kT-YoPjAU")
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
+            context?.launchUrl("https://youtu.be/H_kT-YoPjAU")
             true
         }
     }
 
     private fun addFeedbackListener() {
         val pref = findPreference<Preference>(FEEDBACK)
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/zacharee/nobar-issues"))
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
         pref.setOnPreferenceClickListener {
-            startActivity(intent)
+            context?.launchUrl("https://github.com/zacharee/nobar-issues")
             true
         }
     }
 
     private fun addThreadListener() {
         val pref = findPreference<Preference>(XDA_THREAD)
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://forum.xda-developers.com/android/apps-games/official-xda-navigation-gestures-iphone-t3792361"))
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
         pref.setOnPreferenceClickListener {
-            startActivity(intent)
+            context?.launchUrl("https://forum.xda-developers.com/android/apps-games/official-xda-navigation-gestures-iphone-t3792361")
             true
         }
     }
 
     private fun addOtherAppsListener() {
         val pref = findPreference<Preference>(OTHER_APPS)
-        val intent = Intent(Intent.ACTION_VIEW)
 
-        intent.data = Uri.parse("https://play.google.com/store/apps/developer?id=XDA")
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         pref.setOnPreferenceClickListener {
-            startActivity(intent)
+            context?.launchUrl("https://play.google.com/store/apps/developer?id=XDA")
             true
         }
     }
 
     private fun addPremiumListener() {
         val pref = findPreference<Preference>(BUY_PREMIUM)
-        val intent = Intent(Intent.ACTION_VIEW)
 
-        intent.data = Uri.parse("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         pref.setOnPreferenceClickListener {
-            startActivity(intent)
+            context?.launchUrl("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
             true
         }
     }
