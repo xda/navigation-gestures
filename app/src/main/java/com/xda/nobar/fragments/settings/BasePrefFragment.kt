@@ -22,6 +22,14 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
 
     abstract val resId: Int
 
+    internal var isCreated = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        isCreated = true
+    }
+
     @CallSuper
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(resId, rootKey)
@@ -52,31 +60,37 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
 
     private fun highlight() {
         listView?.postDelayed({
-            prefToHighlight?.let {
-                val pref = findPreference<Preference>(it) ?: return@let
+            if (isCreated) {
+                prefToHighlight?.let {
+                    val pref = findPreference<Preference>(it) ?: return@let
 
-                val parent = if (pref.parent?.parent is CollapsiblePreferenceCategory) pref.parent?.parent else pref.parent
+                    val parent = if (pref.parent?.parent is CollapsiblePreferenceCategory) pref.parent?.parent else pref.parent
 
-                if (parent is CollapsiblePreferenceCategory) parent.expanded = true
+                    if (parent is CollapsiblePreferenceCategory) parent.expanded = true
 
-                listView.postDelayed({
-                    val position = (listView.adapter as PreferenceGroup.PreferencePositionCallback)
-                            .getPreferenceAdapterPosition(it)
+                    listView.postDelayed({
+                        if (isCreated) {
+                            val position = (listView.adapter as PreferenceGroup.PreferencePositionCallback)
+                                    .getPreferenceAdapterPosition(it)
 
-                    listView.smoothScrollToPosition(position)
+                            listView.smoothScrollToPosition(position)
 
-                    val view = findPreferenceView(it)
+                            val view = findPreferenceView(it)
 
-                    view?.let { v ->
-                        v.isPressed = true
-                        v.postDelayed({ v.isPressed = false }, 500)
-                    }
-                }, 500)
+                            view?.let { v ->
+                                v.isPressed = true
+                                v.postDelayed({ if (isCreated) v.isPressed = false }, 500)
+                            }
+                        }
+                    }, 500)
+                }
             }
         }, 200)
     }
 
     override fun onDestroy() {
+        isCreated = false
+
         super.onDestroy()
 
         preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
