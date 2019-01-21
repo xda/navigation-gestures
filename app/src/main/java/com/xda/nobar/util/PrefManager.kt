@@ -461,8 +461,8 @@ class PrefManager private constructor(private val context: Context) {
     fun getBoolean(key: String, def: Boolean) = prefs.getBoolean(key, def)
     fun getFloat(key: String, def: Float) = prefs.getFloat(key, def)
     fun getInt(key: String, def: Int) = prefs.getInt(key, def)
-    fun getString(key: String, def: String? = null) = prefs.getString(key, def)
-    fun getStringSet(key: String, def: Set<String>) = prefs.getStringSet(key, def)
+    fun getString(key: String, def: String? = null): String? = prefs.getString(key, def)
+    fun getStringSet(key: String, def: Set<String>): Set<String>? = prefs.getStringSet(key, def)
 
     fun remove(key: String) = prefs.edit().remove(key).apply()
 

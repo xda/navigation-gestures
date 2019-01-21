@@ -11,7 +11,6 @@ import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.tasker.inputs.EventInput
 import com.xda.nobar.tasker.runners.EventRunner
 import com.xda.nobar.util.actionHolder
-import com.xda.nobar.util.app
 
 class EventConfigureActivity : BaseAppSelectActivity<String, AppInfo>(), TaskerPluginConfig<EventInput> {
     override val context by lazy { this }

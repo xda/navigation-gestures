@@ -2,11 +2,8 @@ package com.xda.nobar.fragments.troubleshooting
 
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import androidx.navigation.NavOptions
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import com.xda.nobar.R
 import com.xda.nobar.fragments.settings.BasePrefFragment
 import com.xda.nobar.fragments.settings.ExperimentalFragment

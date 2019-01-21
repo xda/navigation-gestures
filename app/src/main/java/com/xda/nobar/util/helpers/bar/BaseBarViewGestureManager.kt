@@ -12,8 +12,7 @@ import com.xda.nobar.util.app
 import com.xda.nobar.util.helpers.HiddenPillReasonManager
 import com.xda.nobar.util.prefManager
 import com.xda.nobar.views.BarView
-import java.util.HashMap
-import kotlin.reflect.jvm.isAccessible
+import java.util.*
 
 abstract class BaseBarViewGestureManager(internal val bar: BarView) {
     companion object {
@@ -49,7 +48,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         }
 
         val actionMap = HashMap<String, Int>()
-        val context = bar.context
+        val context: Context = bar.context
         val actionHandler by lazy { BarViewActionHandler(bar) }
         val gestureThread = HandlerThread("NoBar-Gesture").apply { start() }
 

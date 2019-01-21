@@ -1,7 +1,9 @@
 package com.xda.nobar.fragments.settings
 
-import android.content.*
-import android.net.Uri
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.preference.Preference

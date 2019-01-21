@@ -13,7 +13,6 @@ import android.net.Uri
 import android.os.*
 import android.preference.PreferenceManager
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
@@ -36,7 +35,6 @@ import com.xda.nobar.services.ForegroundService
 import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.*
 import com.xda.nobar.views.BarView
-import com.xda.nobar.views.ImmersiveHelperViewHorizontal
 import java.util.*
 
 
@@ -701,11 +699,11 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
                 logicHandler.post {
                     if (isTouchWiz) {
                         try {
-                            val SemCocktailBarManager = Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
+                            val semCocktailBarManagerClass = Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
 
                             val manager = getSystemService("CocktailBarService")
 
-                            val getCocktailBarWindowType = SemCocktailBarManager.getMethod("getCocktailBarWindowType")
+                            val getCocktailBarWindowType = semCocktailBarManagerClass.getMethod("getCocktailBarWindowType")
 
                             val edgeType = getCocktailBarWindowType.invoke(manager).toString().toInt()
 

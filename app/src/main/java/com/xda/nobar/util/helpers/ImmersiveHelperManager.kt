@@ -2,8 +2,6 @@ package com.xda.nobar.util.helpers
 
 import android.content.Context
 import android.provider.Settings
-import android.util.Log
-import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
 import com.xda.nobar.util.*

@@ -1,21 +1,14 @@
 package com.xda.nobar.fragments.settings
 
-import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.os.SystemClock
-import android.util.Log
-import android.view.*
+import android.view.View
 import android.view.animation.Animation
 import androidx.annotation.CallSuper
 import androidx.preference.*
 import androidx.recyclerview.widget.RecyclerView
 import com.xda.nobar.util.prefManager
-import kotlinx.android.synthetic.main.activity_app_launch_select.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
 import tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceGroupAdapter
 

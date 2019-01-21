@@ -2,17 +2,8 @@ package com.xda.nobar.views
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.PixelFormat
-import android.os.Build
-import android.provider.Settings
-import android.util.Log
-import android.view.Gravity
-import android.view.Surface
-import android.view.View
 import android.view.WindowManager
-import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.ImmersiveHelperManager
-import java.lang.Exception
 import kotlin.math.absoluteValue
 
 @SuppressLint("ViewConstructor")

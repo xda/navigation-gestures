@@ -8,11 +8,9 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
 import android.view.accessibility.AccessibilityEvent
-import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.xda.nobar.interfaces.ReceiverCallback
 import com.xda.nobar.receivers.ActionReceiver
-import com.xda.nobar.receivers.StartupReceiver
 import com.xda.nobar.util.actionHolder
 import com.xda.nobar.util.runNougatAction
 import com.xda.nobar.util.runPremiumAction

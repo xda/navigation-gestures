@@ -10,9 +10,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.SortedList
 import com.rey.material.widget.CheckedImageView
 import com.xda.nobar.R
-import com.xda.nobar.interfaces.OnIntentSelectedListener
 import com.xda.nobar.adapters.info.IntentInfo
 import com.xda.nobar.adapters.info.IntentInfoSorterCallback
+import com.xda.nobar.interfaces.OnIntentSelectedListener
 
 class IntentSelectorAdapter(private val callback: OnIntentSelectedListener, private val context: Context) : BaseSelectAdapter<IntentInfo>() {
     override val apps = SortedList<IntentInfo>(IntentInfo::class.java, IntentInfoSorterCallback(this, context))
@@ -33,17 +33,17 @@ class IntentSelectorAdapter(private val callback: OnIntentSelectedListener, priv
 
         icon.background = ContextCompat.getDrawable(view.context, R.drawable.blank)
 
-        view.setOnClickListener { _ ->
+        view.setOnClickListener {
             check.isChecked = true
             info.isChecked = check.isChecked
 
             (0 until apps.size())
-                    .map { apps[it] }
-                    .filterNot { it == info }
-                    .filter { it.isChecked }
-                    .forEach {
-                        it.isChecked = false
-                        notifyItemChanged(apps.indexOf(it))
+                    .map { index -> apps[index] }
+                    .filterNot { app -> app == info }
+                    .filter { app -> app.isChecked }
+                    .forEach { app ->
+                        app.isChecked = false
+                        notifyItemChanged(apps.indexOf(app))
                     }
 
             callback.onIntentSelected(info)

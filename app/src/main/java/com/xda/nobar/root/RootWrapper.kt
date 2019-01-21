@@ -1,7 +1,6 @@
 package com.xda.nobar.root
 
 import android.content.Context
-import android.util.Log
 import com.topjohnwu.superuser.Shell
 import com.xda.nobar.RootActions
 import eu.chainfire.librootjava.BuildConfig

@@ -14,9 +14,9 @@ import android.view.Display
  */
 @SuppressLint("PrivateApi")
 object IWindowManager {
-    var NAV_BAR_LEFT = 1 shl 0
-    val NAV_BAR_RIGHT = 1 shl 1
-    val NAV_BAR_BOTTOM = 1 shl 2
+    const val NAV_BAR_LEFT = 1 shl 0
+    const val NAV_BAR_RIGHT = 1 shl 1
+    const val NAV_BAR_BOTTOM = 1 shl 2
 
     private val iWindowManagerClass: Class<*> = Class.forName("android.view.IWindowManager")
     private val iWindowManager: Any = run {

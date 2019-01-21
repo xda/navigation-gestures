@@ -12,7 +12,6 @@ import android.graphics.drawable.LayerDrawable
 import android.os.*
 import android.preference.PreferenceManager
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -22,7 +21,7 @@ import android.widget.Toast
 import androidx.dynamicanimation.animation.DynamicAnimation
 import com.xda.nobar.R
 import com.xda.nobar.util.*
-import com.xda.nobar.util.helpers.*
+import com.xda.nobar.util.helpers.HiddenPillReasonManager
 import com.xda.nobar.util.helpers.bar.BarViewGestureManagerHorizontal
 import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical
 import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical270

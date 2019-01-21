@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.util.AttributeSet
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.Switch
 import androidx.preference.AndroidResources

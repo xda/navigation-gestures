@@ -1,6 +1,5 @@
 package com.xda.nobar.util.helpers
 
-import java.lang.Exception
 import java.util.*
 
 /**

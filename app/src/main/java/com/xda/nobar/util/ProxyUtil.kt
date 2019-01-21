@@ -4,14 +4,11 @@ import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.graphics.Rect
 import android.hardware.input.InputManager
-import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
 import android.view.Display
 import android.view.InputEvent
 import android.view.inputmethod.InputMethodManager
-import com.xda.nobar.BuildConfig
 
 const val POLICY_CONTROL = "policy_control"
 

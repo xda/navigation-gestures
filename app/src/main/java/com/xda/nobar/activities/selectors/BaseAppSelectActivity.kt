@@ -24,6 +24,7 @@ import java.util.*
  * Base activity for all app selection activities
  * Manages the basic logic of each
  */
+@Suppress("DeferredResultUnused")
 abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCompatActivity(), SearchView.OnQueryTextListener {
     internal companion object {
         const val APPINFO = "app_info"
