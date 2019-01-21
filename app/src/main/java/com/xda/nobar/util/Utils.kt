@@ -360,62 +360,6 @@ fun BarView.isAccessibilityAction(action: Int): Boolean {
     ).contains(action)
 }
 
-/* Drawable */
-
-fun Drawable.toBitmap(): Bitmap? {
-    return when (this) {
-        is BitmapDrawable -> bitmap
-        else -> {
-            (if (intrinsicWidth <= 0 || intrinsicHeight <= 0) {
-                Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
-            } else {
-                Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
-            })?.apply {
-                val canvas = Canvas(this)
-                setBounds(0, 0, canvas.width, canvas.height)
-                draw(canvas)
-            }
-        }
-    }
-}
-
-/* View */
-
-val View.onClickListener: View.OnClickListener
-    @SuppressLint("PrivateApi")
-    get() {
-        val listenerInfoClass = Class.forName("android.view.View\$ListenerInfo")
-        val getListenerInfo = View::class.java.getDeclaredMethod("getListenerInfo").apply {
-            isAccessible = true
-        }
-
-        val listenerInfo = getListenerInfo.invoke(this)
-        return listenerInfoClass.getField("mOnClickListener").get(listenerInfo) as View.OnClickListener
-    }
-
-/* Preference */
-val Preference.actualParent: PreferenceGroup?
-    get() {
-        return if (isShown) parent
-        else recurse(preferenceManager.preferenceScreen)
-    }
-
-private fun Preference.recurse(group: PreferenceGroup): PreferenceGroup? {
-    var parent: PreferenceGroup? = null
-
-    for (i in 0 until group.preferenceCount) {
-        val p = group.getPreference(i)
-
-        if (p == this) parent = group
-
-        if (p is PreferenceGroup) {
-            parent = recurse(p)
-        }
-    }
-
-    return parent
-}
-
 /* Other */
 
 val navOptions: NavOptions
