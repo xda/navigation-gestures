@@ -12,8 +12,6 @@ import android.view.animation.Animation
 import androidx.annotation.CallSuper
 import androidx.preference.*
 import androidx.recyclerview.widget.RecyclerView
-import com.xda.nobar.util.actualParent
-import com.xda.nobar.util.onClickListener
 import com.xda.nobar.util.prefManager
 import kotlinx.android.synthetic.main.activity_app_launch_select.*
 import kotlinx.coroutines.GlobalScope
