@@ -462,7 +462,7 @@ class PrefManager private constructor(private val context: Context) {
     fun getFloat(key: String, def: Float) = prefs.getFloat(key, def)
     fun getInt(key: String, def: Int) = prefs.getInt(key, def)
     fun getString(key: String, def: String? = null): String? = prefs.getString(key, def)
-    fun getStringSet(key: String, def: Set<String>): Set<String>? = prefs.getStringSet(key, def)
+    fun getStringSet(key: String, def: Set<String>): Set<String> = prefs.getStringSet(key, def) ?: HashSet()
 
     fun remove(key: String) = prefs.edit().remove(key).apply()
 

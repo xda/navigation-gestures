@@ -15,6 +15,7 @@ import com.xda.nobar.util.PrefManager
 class CompatibilityFragment : BasePrefFragment() {
     companion object {
         const val IMMERSIVE_BLACKLIST = "immersive_blacklist"
+        const val NAV_HIDING = "nav_hiding"
     }
 
     override val resId = R.xml.prefs_compatibility

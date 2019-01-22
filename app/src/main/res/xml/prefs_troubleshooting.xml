@@ -8,47 +8,69 @@
         <Preference
             android:summary="@string/nav_not_hiding_desc"
             android:key="nav_not_hiding"
+            android:icon="@drawable/circle_small"
             />
 
         <Preference
             android:summary="@string/home_action_not_working"
             android:key="home_not_working"
+            android:icon="@drawable/circle_small"
             />
 
         <Preference
             android:summary="@string/force_touch_not_working"
             android:key="force_touch_not_working"
+            android:icon="@drawable/circle_small"
             />
 
         <Preference
             android:summary="@string/pill_in_other_overlays"
             android:key="other_overlays"
+            android:icon="@drawable/circle_small"
             />
 
         <Preference
             android:summary="@string/hard_to_hit_pill"
             android:key="hard_to_hit_pill"
+            android:icon="@drawable/circle_small"
             />
 
         <Preference
             android:summary="@string/white_line"
             android:key="white_line"
+            android:icon="@drawable/circle_small"
             />
 
         <Preference
             android:summary="@string/pill_overlaps_content"
             android:key="pill_overlaps"
+            android:icon="@drawable/circle_small"
+            />
+
+        <Preference
+            android:summary="@string/lockscreen_shortcuts_cut_off"
+            android:key="lockscreen_shortcuts"
+            android:icon="@drawable/circle_small"
             />
 
     </PreferenceCategory>
 
-    <Preference
-        android:title="@string/something_else"
-        android:summary="@string/something_else_desc"
-        android:key="something_else"
-        app:allowDividerAbove="true"
-        app:allowDividerBelow="true"
-        />
+    <PreferenceCategory
+        android:title="@string/something_else">
+
+        <Preference
+            android:summary="@string/something_else_desc"
+            android:key="something_else"
+            android:icon="@drawable/circle_small"
+            />
+
+        <Preference
+            android:summary="@string/report_to_github"
+            android:key="report_to_github"
+            android:icon="@drawable/circle_small"
+            />
+
+    </PreferenceCategory>
 
 
 </PreferenceScreen>
