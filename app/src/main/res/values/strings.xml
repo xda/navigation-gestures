@@ -193,6 +193,7 @@
     <string name="unable_to_request_battery_exemption">Navigation Gestures was unable to request a battery exemption on your device. We recommend disabling it manually.</string>
     <string name="lockscreen_shortcuts_cut_off">My lock screen shortcuts are cut off.</string>
     <string name="report_to_github">If you can\'t find your solution in the Settings, raise an issue on the GitHub project.</string>
+    <string name="pixel_ambient_battery_cut_off">The battery icon on my Pixel\'s Ambient Display is cut off.</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>

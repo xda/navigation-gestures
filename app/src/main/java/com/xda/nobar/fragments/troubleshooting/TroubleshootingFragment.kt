@@ -24,6 +24,7 @@ class TroubleshootingFragment : BasePrefFragment() {
         const val PILL_OVERLAPS = "pill_overlaps"
         const val SOMETHING_ELSE = "something_else"
         const val REPORT_TO_GITHUB = "report_to_github"
+        const val PIXEL_AMBIENT_CUT_OFF = "pixel_ambient_cut_off"
     }
 
     override val resId = R.xml.prefs_troubleshooting
@@ -65,6 +66,13 @@ class TroubleshootingFragment : BasePrefFragment() {
                 true
             }
             LOCKSCREEN_SHORTCUTS -> {
+                navigateTo(
+                        R.id.action_troubleshootingFragment_to_behaviorFragment,
+                        PrefManager.LOCKSCREEN_OVERSCAN
+                )
+                true
+            }
+            PIXEL_AMBIENT_CUT_OFF -> {
                 navigateTo(
                         R.id.action_troubleshootingFragment_to_behaviorFragment,
                         PrefManager.LOCKSCREEN_OVERSCAN

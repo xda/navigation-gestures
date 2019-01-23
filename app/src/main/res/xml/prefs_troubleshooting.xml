@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
         android:title="@string/common_issues">
@@ -50,6 +49,12 @@
         <Preference
             android:summary="@string/lockscreen_shortcuts_cut_off"
             android:key="lockscreen_shortcuts"
+            android:icon="@drawable/circle_small"
+            />
+
+        <Preference
+            android:summary="@string/pixel_ambient_battery_cut_off"
+            android:key="pixel_ambient_cut_off"
             android:icon="@drawable/circle_small"
             />
 
