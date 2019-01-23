@@ -24,8 +24,8 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
 
     internal var isCreated = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         isCreated = true
     }
@@ -89,11 +89,15 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
     }
 
     override fun onDestroy() {
-        isCreated = false
-
         super.onDestroy()
 
         preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onDestroyView() {
+        isCreated = false
+
+        super.onDestroyView()
     }
 
     override fun onCreateAdapter(preferenceScreen: PreferenceScreen): RecyclerView.Adapter<*> {
