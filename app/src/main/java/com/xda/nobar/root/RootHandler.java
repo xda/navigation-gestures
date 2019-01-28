@@ -10,7 +10,6 @@ import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 
-import com.topjohnwu.superuser.Shell;
 import com.xda.nobar.BuildConfig;
 import com.xda.nobar.RootActions;
 import com.xda.nobar.util.ProxyUtilKt;
@@ -30,7 +29,7 @@ public class RootHandler {
         IBinder actions = new RootActionsImpl();
 
         try {
-            new RootIPC(BuildConfig.APPLICATION_ID, actions, 0, 30 * 1000, true);
+            new RootIPC(BuildConfig.APPLICATION_ID, actions, 200, 30 * 1000, true);
         } catch (RootIPC.TimeoutException e) {
             e.printStackTrace();
         }

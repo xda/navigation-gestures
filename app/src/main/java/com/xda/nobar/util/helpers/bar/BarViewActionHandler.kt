@@ -22,7 +22,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.joaomgcd.taskerpluginlibrary.extensions.requestQuery
-import com.topjohnwu.superuser.Shell
 import com.xda.nobar.R
 import com.xda.nobar.activities.helpers.RequestPermissionsActivity
 import com.xda.nobar.activities.helpers.ScreenshotActivity
@@ -35,6 +34,7 @@ import com.xda.nobar.util.*
 import com.xda.nobar.util.flashlight.FlashlightControllerLollipop
 import com.xda.nobar.util.flashlight.FlashlightControllerMarshmallow
 import com.xda.nobar.views.BarView
+import eu.chainfire.libsuperuser.Shell
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -113,7 +113,7 @@ class BarViewActionHandler(private val bar: BarView) {
             }
 
             if (bar.isAccessibilityAction(which)) {
-                if (context.app.prefManager.useRoot && Shell.rootAccess()) {
+                if (context.app.prefManager.useRoot && Shell.SU.available()) {
                     sendRootAction(which, key)
                 } else {
                     if (which == bar.actionHolder.typeHome
@@ -256,7 +256,7 @@ class BarViewActionHandler(private val bar: BarView) {
                     bar.actionHolder.premTypeLockScreen -> context.runPremiumAction {
                         context.runSystemSettingsAction {
                             if (context.app.prefManager.useRoot
-                                    && Shell.rootAccess()) {
+                                    && Shell.SU.available()) {
                                 context.app.rootWrapper.actions?.lockScreen()
                             } else {
                                 ActionReceiver.turnScreenOff(context)

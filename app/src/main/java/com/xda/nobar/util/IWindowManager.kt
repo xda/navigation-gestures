@@ -7,6 +7,9 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.IBinder
 import android.view.Display
+import eu.chainfire.libsuperuser.Shell
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 /**
@@ -41,7 +44,13 @@ object IWindowManager {
                     .invoke(iWindowManager, Display.DEFAULT_DISPLAY, left, top, right, bottom)
             canRunCommands()
         } catch (e: Throwable) {
-            false
+            GlobalScope.launch {
+                try {
+                    Shell.SH.run("wm overscan $left,$top,$right,$bottom")
+                } catch (e: Exception) {}
+            }
+
+            true
         }
     }
 

@@ -11,13 +11,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
-import com.topjohnwu.superuser.Shell
 import com.xda.nobar.R
 import com.xda.nobar.fragments.intro.DynamicForwardFragmentSlide
 import com.xda.nobar.fragments.intro.DynamicForwardSlide
 import com.xda.nobar.fragments.intro.WelcomeFragment
 import com.xda.nobar.fragments.intro.WriteSecureFragment
 import com.xda.nobar.util.*
+import eu.chainfire.libsuperuser.Shell
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @SuppressLint("InlinedApi")
 class IntroSlideHolder(context: Context) : ContextWrapper(context) {
@@ -92,13 +94,15 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                 .fragment(WriteSecureFragment())
                 .buttonCtaLabel(R.string.grant)
                 .buttonCtaClickListener {
-                    if (Shell.rootAccess()) {
+                    if (Shell.SU.available()) {
                         app.rootWrapper.onCreate()
                         AlertDialog.Builder(this)
                                 .setTitle(R.string.root_found)
                                 .setMessage(R.string.root_found_desc)
                                 .setPositiveButton(R.string.use_root) { _, _ ->
-                                    app.rootWrapper.actions?.grantPermission(android.Manifest.permission.WRITE_SECURE_SETTINGS)
+                                    GlobalScope.launch {
+                                        Shell.SU.run("pm grant $packageName ${android.Manifest.permission.WRITE_SECURE_SETTINGS}")
+                                    }
                                 }
                                 .setNegativeButton(R.string.non_root) { _, _ ->
                                     nonRootDialog()

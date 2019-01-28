@@ -13,7 +13,10 @@ import android.net.Uri
 import android.os.*
 import android.preference.PreferenceManager
 import android.provider.Settings
-import android.view.*
+import android.view.Display
+import android.view.Surface
+import android.view.ViewTreeObserver
+import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.NotificationCompat
@@ -21,8 +24,6 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.crashlytics.android.Crashlytics
 import com.github.anrwatchdog.ANRWatchDog
-import com.topjohnwu.superuser.ContainerApp
-import com.topjohnwu.superuser.Shell
 import com.xda.nobar.activities.helpers.RequestPermissionsActivity
 import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
@@ -35,6 +36,7 @@ import com.xda.nobar.services.ForegroundService
 import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.*
 import com.xda.nobar.views.BarView
+import eu.chainfire.libsuperuser.Shell
 import java.util.*
 
 
@@ -42,7 +44,7 @@ import java.util.*
  * Centralize important stuff in the App class, so we can be sure to have an instance of it
  */
 @Suppress("DEPRECATION")
-class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
+class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
     companion object {
         const val EDGE_TYPE_ACTIVE = 2
     }
@@ -101,14 +103,11 @@ class App : ContainerApp(), SharedPreferences.OnSharedPreferenceChangeListener, 
     override fun onCreate() {
         super.onCreate()
 
-        Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR)
-        Shell.Config.verboseLogging(BuildConfig.DEBUG)
-
         if (isRightProcess()) {
             if (prefManager.crashlyticsIdEnabled)
                 Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
             if (!prefManager.firstRun
-                    && Shell.rootAccess()) rootWrapper.onCreate()
+                    && Shell.SU.available()) rootWrapper.onCreate()
 
             val watchDog = ANRWatchDog()
             watchDog.setReportMainThreadOnly()
