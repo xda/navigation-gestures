@@ -579,32 +579,35 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private fun adjustPillShadow() {
-        pill.elevation = context.dpAsPx(if (context.prefManager.shouldShowShadow) 2 else 0).toFloat()
-        (pill.layoutParams as FrameLayout.LayoutParams).apply {
-            val shadow = context.prefManager.shouldShowShadow
+        try {
+            //apparently setElevation() doesn't exist on some devices?
+            pill.elevation = context.dpAsPx(if (context.prefManager.shouldShowShadow) 2 else 0).toFloat()
+            (pill.layoutParams as FrameLayout.LayoutParams).apply {
+                val shadow = context.prefManager.shouldShowShadow
 
-            val r = if (shadow) context.dpAsPx(DEF_MARGIN_RIGHT_DP) else 0
-            val l = if (shadow) context.dpAsPx(DEF_MARGIN_LEFT_DP) else 0
-            val b = if (shadow) context.dpAsPx(DEF_MARGIN_BOTTOM_DP) else 0
+                val r = if (shadow) context.dpAsPx(DEF_MARGIN_RIGHT_DP) else 0
+                val l = if (shadow) context.dpAsPx(DEF_MARGIN_LEFT_DP) else 0
+                val b = if (shadow) context.dpAsPx(DEF_MARGIN_BOTTOM_DP) else 0
 
-            if (isVertical) {
-                topMargin = r
-                bottomMargin = l
-                if (is270Vertical) {
-                    leftMargin = b
-                    rightMargin = 0
+                if (isVertical) {
+                    topMargin = r
+                    bottomMargin = l
+                    if (is270Vertical) {
+                        leftMargin = b
+                        rightMargin = 0
+                    } else {
+                        rightMargin = b
+                        leftMargin = 0
+                    }
                 } else {
-                    rightMargin = b
-                    leftMargin = 0
+                    rightMargin = r
+                    leftMargin = l
+                    bottomMargin = b
                 }
-            } else {
-                rightMargin = r
-                leftMargin = l
-                bottomMargin = b
-            }
 
-            pill.layoutParams = this
-        }
+                pill.layoutParams = this
+            }
+        } catch (e: NoSuchMethodError) {}
     }
 
     fun setMoveForKeyboard(move: Boolean) {
