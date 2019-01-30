@@ -1,6 +1,5 @@
 package com.xda.nobar.root;
 
-import android.Manifest;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -35,14 +34,6 @@ public class RootHandler {
     }
 
     public static class RootActionsImpl extends RootActions.Stub {
-        @Override
-        public boolean grantPermission(String permission) {
-            try {
-                Runtime.getRuntime().exec("pm grant " + BuildConfig.APPLICATION_ID + " " + Manifest.permission.WRITE_SECURE_SETTINGS);
-            } catch (Exception ignored) {}
-            return true;
-        }
-
         @Override
         public void sendKeyEvent(int code) {
             long now = SystemClock.uptimeMillis();
