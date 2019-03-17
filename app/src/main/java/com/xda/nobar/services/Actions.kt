@@ -7,62 +7,36 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.content.ContextCompat
 import android.view.accessibility.AccessibilityEvent
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.xda.nobar.interfaces.ReceiverCallback
 import com.xda.nobar.receivers.ActionReceiver
-import com.xda.nobar.receivers.StartupReceiver
-import com.xda.nobar.util.ActionHolder
-import com.xda.nobar.util.RootActions
-import com.xda.nobar.util.Utils
+import com.xda.nobar.util.actionHolder
+import com.xda.nobar.util.runNougatAction
+import com.xda.nobar.util.runPremiumAction
 
 
-/**
- * Where most of the magic happens
- */
 class Actions : AccessibilityService(), ReceiverCallback {
     companion object {
         const val BASE = "com.xda.nobar.action"
         const val ACTION = "$BASE.ACTION"
-        const val PREMIUM_UPDATE = "$BASE.PREM_UPDATE"
 
         const val EXTRA_ACTION = "action"
         const val EXTRA_GESTURE = "gesture"
-        const val EXTRA_PREM = "premium"
-        const val EXTRA_ALT_HOME = "alt_home"
-        const val EXTRA_PACKAGE = "package_name"
-        const val EXTRA_ACTIVITY = "activity_name"
-        const val EXTRA_INTENT_KEY = "intent_key"
-
-        fun updatePremium(context: Context, premium: Boolean) {
-            val options = Bundle()
-            options.putBoolean(EXTRA_PREM, premium)
-            sendAction(context, PREMIUM_UPDATE, options)
-        }
 
         fun sendAction(context: Context, action: String, options: Bundle) {
             val intent = Intent(action)
             intent.putExtras(options)
-            context.sendBroadcast(intent)
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
         }
     }
 
-    private val receiver by lazy { ActionHandler() }
-    private val rootActions by lazy { RootActions(this) }
+    private val receiver = ActionHandler()
 
     private val handler = Handler()
 
-    private var validPremium = false
-
-    override fun onCreate() {
+    override fun onServiceConnected() {
         receiver.register(this, this)
-
-        val bc = Intent(this, StartupReceiver::class.java)
-        bc.action = StartupReceiver.ACTION_ACTIVATE
-        sendBroadcast(bc)
-
-        val foreground = Intent(this, ForegroundService::class.java)
-        ContextCompat.startForegroundService(this, foreground)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -80,7 +54,6 @@ class Actions : AccessibilityService(), ReceiverCallback {
     override fun onActionReceived(intent: Intent?) {
         when(intent?.action) {
             ACTION -> {
-                val actionHolder = ActionHolder.getInstance(this)
                 when (intent.getIntExtra(EXTRA_ACTION, actionHolder.typeNoAction)) {
                     actionHolder.typeHome -> {
                         performGlobalAction(GLOBAL_ACTION_HOME)
@@ -97,9 +70,6 @@ class Actions : AccessibilityService(), ReceiverCallback {
                     actionHolder.premTypePower -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }
                 }
             }
-            PREMIUM_UPDATE -> {
-                validPremium = intent.getBooleanExtra(EXTRA_PREM, validPremium)
-            }
         }
     }
 
@@ -107,11 +77,7 @@ class Actions : AccessibilityService(), ReceiverCallback {
 
     override fun onDestroy() {
         receiver.destroy(this)
-        rootActions.onDestroy()
     }
-
-    private fun runNougatAction(action: () -> Unit) = Utils.runNougatAction(this, action)
-    private fun runPremiumAction(action: () -> Unit) = Utils.runPremiumAction(this, validPremium, action)
 
     /**
      * Special BroadcastReceiver to handle actions sent to this service by {@link com.xda.nobar.views.BarView}
@@ -124,9 +90,8 @@ class Actions : AccessibilityService(), ReceiverCallback {
 
             val filter = IntentFilter()
             filter.addAction(ACTION)
-            filter.addAction(PREMIUM_UPDATE)
 
-            context.registerReceiver(this, filter, com.xda.nobar.Manifest.permission.SEND_BROADCAST, null)
+            LocalBroadcastManager.getInstance(context).registerReceiver(this, filter)
         }
 
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -134,7 +99,7 @@ class Actions : AccessibilityService(), ReceiverCallback {
         }
 
         fun destroy(context: Context) {
-            context.unregisterReceiver(this)
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(this)
         }
     }
 }

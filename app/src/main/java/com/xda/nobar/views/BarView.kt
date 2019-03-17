@@ -1,51 +1,32 @@
 package com.xda.nobar.views
 
-import android.Manifest
 import android.animation.Animator
 import android.annotation.SuppressLint
-import android.app.ActivityManager
-import android.app.SearchManager
-import android.bluetooth.BluetoothAdapter
-import android.content.*
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
+import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
-import android.media.AudioManager
-import android.net.wifi.WifiManager
 import android.os.*
 import android.preference.PreferenceManager
-import android.provider.MediaStore
-import android.provider.Settings
-import android.speech.RecognizerIntent
-import android.support.animation.DynamicAnimation
-import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
-import com.android.internal.statusbar.IStatusBarService
-import com.joaomgcd.taskerpluginlibrary.extensions.requestQuery
-import com.topjohnwu.superuser.Shell
-import com.xda.nobar.App
+import androidx.dynamicanimation.animation.DynamicAnimation
 import com.xda.nobar.R
-import com.xda.nobar.activities.IntentSelectorActivity
-import com.xda.nobar.activities.RequestPermissionsActivity
-import com.xda.nobar.activities.ScreenshotActivity
-import com.xda.nobar.prefs.PrefManager
-import com.xda.nobar.receivers.ActionReceiver
-import com.xda.nobar.services.Actions
-import com.xda.nobar.tasker.activities.EventConfigureActivity
-import com.xda.nobar.tasker.updates.EventUpdate
 import com.xda.nobar.util.*
+import com.xda.nobar.util.helpers.HiddenPillReasonManager
+import com.xda.nobar.util.helpers.bar.BarViewGestureManagerHorizontal
+import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical
+import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical270
+import com.xda.nobar.util.helpers.bar.BaseBarViewGestureManager
 import kotlinx.android.synthetic.main.pill.view.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.util.*
 import kotlin.math.absoluteValue
 
 /**
@@ -58,57 +39,134 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         const val ALPHA_ACTIVE = 1.0f
         const val ALPHA_GONE = 0.0f
 
-        const val BRIGHTEN_INACTIVE = 0.0f
-        const val BRIGHTEN_ACTIVE = 0.5f
-
         const val SCALE_NORMAL = 1.0f
         const val SCALE_MID = 0.7f
         const val SCALE_SMALL = 0.3f
 
-        const val DEF_MARGIN_LEFT_DP = 2
-        const val DEF_MARGIN_RIGHT_DP = 2
+        const val DEF_MARGIN_LEFT_DP = 4
+        const val DEF_MARGIN_RIGHT_DP = 4
         const val DEF_MARGIN_BOTTOM_DP = 2
 
         val ENTER_INTERPOLATOR = DecelerateInterpolator()
         val EXIT_INTERPOLATOR = AccelerateInterpolator()
 
-        private const val FIRST_SECTION = 0
-        private const val SECOND_SECTION = 1
-        private const val THIRD_SECTION = 2
-
-        private const val MSG_UP_HOLD = 0
-        private const val MSG_LEFT_HOLD = 1
-        private const val MSG_RIGHT_HOLD = 2
-        private const val MSG_DOWN_HOLD = 3
-
         private const val MSG_HIDE = 0
         private const val MSG_SHOW = 1
     }
 
-
-    private val app = context.applicationContext as App
-    private val actionHolder = ActionHolder.getInstance(context)
-    private val audio = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-    private val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    private val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
-    private val flashlightController =
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) FlashlightControllerMarshmallow(context)
-        else FlashlightControllerLollipop(context)
-    private val iStatusBarManager = IStatusBarService.Stub.asInterface(
-            ServiceManager.checkService(Context.STATUS_BAR_SERVICE)
-    )
+    internal val actionHolder = context.actionHolder
 
     var view: View = View.inflate(context, R.layout.pill, this)
-    var lastTouchTime = -1L
     var shouldReAddOnDetach = false
 
-    val params = WindowManager.LayoutParams()
+    val params = WindowManager.LayoutParams().apply {
+        x = adjustedHomeX
+        y = adjustedHomeY
+        width = adjustedWidth
+        height = adjustedHeight
+        gravity = Gravity.CENTER or Gravity.TOP
+        type =
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                else
+                    WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
+        flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+        format = PixelFormat.TRANSLUCENT
+        softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+
+        if (context.prefManager.dontMoveForKeyboard) {
+            flags = flags and
+                    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+            softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+        }
+    }
     val hiddenPillReasons = HiddenPillReasonManager()
-    val gestureDetector = GestureManager()
-    val rootActions = RootActions(context)
+
+    val adjustedHomeY: Int
+        get() = if (isVertical) (if (is270Vertical) 1 else -1) * anchoredHomeX else actualHomeY
+
+    private val actualHomeY: Int
+        get() = context.realScreenSize.y - context.prefManager.homeY - context.prefManager.customHeight
+
+    val zeroY: Int
+        get() = if (isVertical) 0 else context.realScreenSize.y - context.prefManager.customHeight
+
+    val adjustedHomeX: Int
+        get() = if (isVertical) anchoredHomeY else actualHomeX
+
+    private val actualHomeX: Int
+        get() {
+            val diff = try {
+                val screenSize = context.realScreenSize
+                val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
+                (frame.left + frame.right) - screenSize.x
+            } catch (e: Exception) {
+                0
+            }
+
+            return context.prefManager.homeX - if (immersiveNav && !context.prefManager.useTabletMode) (diff / 2f).toInt() else 0
+        }
+
+    private val anchoredHomeX: Int
+        get() {
+            val diff = try {
+                val screenSize = context.realScreenSize
+                val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
+                (frame.top + frame.bottom) - screenSize.y
+            } catch (e: Exception) {
+                0
+            }
+
+            return context.prefManager.homeX - if (immersiveNav && !context.prefManager.useTabletMode) (diff / 2f).toInt() else 0
+        }
+
+    private val anchoredHomeY: Int
+        get() {
+            val diff = try {
+                val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
+
+                val rotation = context.rotation
+
+                if (rotation == Surface.ROTATION_270) {
+                    if (!context.prefManager.useRot270Fix)
+                        frame.left.absoluteValue
+                    else
+                        frame.right - context.realScreenSize.y
+                } else {
+                    frame.right - context.realScreenSize.y
+                }
+
+            } catch (e: Exception) {
+                0
+            }
+
+            return context.prefManager.homeY + diff.absoluteValue
+        }
+
+    val adjustedWidth: Int
+        get() = context.prefManager.run { if (isVertical) customHeight else customWidth }
+
+    val adjustedHeight: Int
+        get() = context.prefManager.run { if (isVertical) customWidth else customHeight }
+
+    val isVertical: Boolean
+        get() = context.prefManager.anchorPill
+                && context.rotation.run { this == Surface.ROTATION_270 || this == Surface.ROTATION_90 }
+
+    val is270Vertical: Boolean
+        get() = isVertical
+                && context.rotation == Surface.ROTATION_270
+
+    private val horizontalGestureManager = BarViewGestureManagerHorizontal(this)
+    private val verticalGestureManager = BarViewGestureManagerVertical(this)
+    private val vertical270GestureMansger = BarViewGestureManagerVertical270(this)
+
+    var currentGestureDetector: BaseBarViewGestureManager = horizontalGestureManager
 
     private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    private val animator = BarAnimator(this)
+    val animator = BarAnimator(this)
 
     private val hideThread = HandlerThread("NoBar-Hide").apply { start() }
     private val hideHandler = HideHandler(hideThread.looper)
@@ -118,34 +176,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var isCarryingOutTouchAction = false
     var isPillHidingOrShowing = false
     var isImmersive = false
-    var immersiveNav: Boolean = false
-
-    private val orientationEventListener by lazy {
-        object : OrientationEventListener(context) {
-            override fun onOrientationChanged(orientation: Int) {
-                currentDegree = orientation
-            }
-        }
-    }
-
-    private var currentDegree = 0
-        set(value) {
-            field = value
-            orientationEventListener.disable()
-            handler.postDelayed({
-                val currentAcc = Settings.System.getInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
-                if (currentAcc == 0) {
-                    val rotation = when (currentDegree) {
-                        in 45..134 -> Surface.ROTATION_270
-                        in 135..224 -> Surface.ROTATION_180
-                        in 225..314 -> Surface.ROTATION_90
-                        else -> Surface.ROTATION_0
-                    }
-
-                    Settings.System.putInt(context.contentResolver, Settings.System.USER_ROTATION, rotation)
-                }
-            }, 20)
-        }
+    var immersiveNav = false
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet?) : super(context, attributeSet)
@@ -155,33 +186,25 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     init {
         alpha = ALPHA_GONE
 
-        gestureDetector.loadActionMap()
+        currentGestureDetector.singleton.loadActionMap()
         PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(this)
-        isSoundEffectsEnabled = app.prefManager.feedbackSound
+        isSoundEffectsEnabled = context.prefManager.feedbackSound
 
         val layers = pill.background as LayerDrawable
         (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-            setColor(app.prefManager.pillBGColor)
-            cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
+            setColor(context.prefManager.pillBGColor)
+            cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
         }
         (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-            setStroke(Utils.dpAsPx(context, 1), app.prefManager.pillFGColor)
-            cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
+            setStroke(context.dpAsPx(1), context.prefManager.pillFGColor)
+            cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
         }
 
         (pill_tap_flash.background as GradientDrawable).apply {
-            cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
+            cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
         }
 
-        pill.elevation = Utils.dpAsPx(context, if (app.prefManager.shouldShowShadow) 2 else 0).toFloat()
-        (pill.layoutParams as FrameLayout.LayoutParams).apply {
-            val shadow = app.prefManager.shouldShowShadow
-            marginEnd = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_RIGHT_DP) else 0
-            marginStart = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_LEFT_DP) else 0
-            bottomMargin = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_BOTTOM_DP) else 0
-
-            pill.layoutParams = this
-        }
+        adjustPillShadow()
     }
 
     /**
@@ -190,129 +213,108 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        if (app.prefManager.largerHitbox) {
-            val margins = getPillMargins()
-            margins.top = resources.getDimensionPixelSize(R.dimen.pill_margin_top_large_hitbox)
-            changePillMargins(margins)
+        if (context.prefManager.largerHitbox) {
+            updateLargerHitbox()
         }
 
-        app.pillShown = true
+        context.app.pillShown = true
 
         show(null)
 
-        if (app.prefManager.autoHide) {
-            hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
-            scheduleHide()
+        if (context.prefManager.autoHide) {
+            val reason = HiddenPillReasonManager.AUTO
+            scheduleHide(reason)
         }
+
+        handleRotationOrAnchorUpdate()
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        return gestureDetector.onTouchEvent(event)
+        return currentGestureDetector.onTouchEvent(event)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (gestureDetector.actionMap.keys.contains(key)) {
-            gestureDetector.loadActionMap()
+        if (currentGestureDetector.actionMap.keys.contains(key)) {
+            currentGestureDetector.singleton.loadActionMap()
         }
 
-        if (key == PrefManager.IS_ACTIVE) {
-            if (!app.prefManager.isActive) {
-                flashlightController.onDestroy()
-            }
-        }
-
-        if (key != null && key.contains("use_pixels")) {
-            params.width = app.prefManager.customWidth
-            params.height = app.prefManager.customHeight
-            params.x = getAdjustedHomeX()
-            params.y = getAdjustedHomeY()
-            updateLayout(params)
-        }
-        if (key == PrefManager.CUSTOM_WIDTH_PERCENT || key == PrefManager.CUSTOM_WIDTH) {
-            params.width = app.prefManager.customWidth
-            params.x = getAdjustedHomeX()
-            updateLayout(params)
-        }
-        if (key == PrefManager.CUSTOM_HEIGHT_PERCENT || key == PrefManager.CUSTOM_HEIGHT) {
-            params.height = app.prefManager.customHeight
-            params.y = getAdjustedHomeY()
-            updateLayout(params)
-        }
-        if (key == PrefManager.CUSTOM_Y_PERCENT || key == PrefManager.CUSTOM_Y) {
-            params.y = getAdjustedHomeY()
-            updateLayout(params)
-        }
-        if (key == PrefManager.CUSTOM_X_PERCENT || key == PrefManager.CUSTOM_X) {
-            params.x = getAdjustedHomeX()
-            updateLayout(params)
-        }
-        if (key == PrefManager.PILL_BG || key == PrefManager.PILL_FG) {
-            val layers = pill.background as LayerDrawable
-            (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-                setColor(app.prefManager.pillBGColor)
-            }
-            (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-                setStroke(Utils.dpAsPx(context, 1), app.prefManager.pillFGColor)
-            }
-        }
-        if (key == PrefManager.SHOW_SHADOW) {
-            val shadow = app.prefManager.shouldShowShadow
-            pill.elevation = Utils.dpAsPx(context, if (shadow) 2 else 0).toFloat()
-
-            (pill.layoutParams as FrameLayout.LayoutParams).apply {
-                marginEnd = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_RIGHT_DP) else 0
-                marginStart = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_LEFT_DP) else 0
-                bottomMargin = if (shadow) Utils.dpAsPx(context, DEF_MARGIN_BOTTOM_DP) else 0
-
-                pill.layoutParams = this
-            }
-        }
-        if (key == PrefManager.STATIC_PILL) {
-            if (app.prefManager.dontMoveForKeyboard) {
-                params.flags = params.flags or
-                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
-                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
-            } else {
-                params.flags = params.flags or
-                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM and
-                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
-                params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+        when (key) {
+            PrefManager.CUSTOM_WIDTH,
+            PrefManager.CUSTOM_WIDTH_PERCENT,
+            PrefManager.CUSTOM_HEIGHT,
+            PrefManager.CUSTOM_HEIGHT_PERCENT,
+            PrefManager.CUSTOM_X,
+            PrefManager.CUSTOM_X_PERCENT,
+            PrefManager.CUSTOM_Y,
+            PrefManager.CUSTOM_Y_PERCENT,
+            PrefManager.USE_PIXELS_WIDTH,
+            PrefManager.USE_PIXELS_HEIGHT,
+            PrefManager.USE_PIXELS_X,
+            PrefManager.USE_PIXELS_Y -> {
+                updatePositionAndDimens()
             }
 
-            updateLayout(params)
-        }
-        if (key == PrefManager.AUDIO_FEEDBACK) {
-            isSoundEffectsEnabled = app.prefManager.feedbackSound
-        }
-        if (key == PrefManager.PILL_CORNER_RADIUS) {
-            val layers = pill.background as LayerDrawable
-            (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-                cornerRadius = Utils.dpAsPx(context, app.prefManager.pillCornerRadiusDp).toFloat()
+            PrefManager.ANCHOR_PILL -> {
+                handleRotationOrAnchorUpdate()
             }
-            (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-                cornerRadius = Utils.dpAsPx(context, app.prefManager.pillCornerRadiusDp).toFloat()
+
+            PrefManager.IS_ACTIVE -> {
+                currentGestureDetector.singleton.refreshFlashlightState()
             }
-            (pill_tap_flash.background as GradientDrawable).apply {
-                cornerRadius = app.prefManager.pillCornerRadiusPx.toFloat()
+
+            PrefManager.FLASHLIGHT_COMPAT -> {
+                currentGestureDetector.singleton.refreshFlashlightState()
             }
-        }
-        if (key == PrefManager.LARGER_HITBOX) {
-            val enabled = app.prefManager.largerHitbox
-            val margins = getPillMargins()
-            params.height = app.prefManager.customHeight
-            params.y = getAdjustedHomeY()
-            margins.top = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
-            updateLayout(params)
-            changePillMargins(margins)
-        }
-        if (key == PrefManager.AUTO_HIDE_PILL) {
-            if (app.prefManager.autoHide) {
-                hiddenPillReasons.add(HiddenPillReasonManager.AUTO)
-                if (!isHidden) scheduleHide()
-            } else {
-                if (isHidden) hideHandler.show(HiddenPillReasonManager.AUTO)
+
+            PrefManager.PILL_BG,
+            PrefManager.PILL_FG -> {
+                val layers = pill.background as LayerDrawable
+                (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
+                    setColor(context.prefManager.pillBGColor)
+                }
+                (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
+                    setStroke(context.dpAsPx(1), context.prefManager.pillFGColor)
+                }
+            }
+
+            PrefManager.SHOW_SHADOW -> {
+                adjustPillShadow()
+            }
+
+            PrefManager.STATIC_PILL -> {
+                setMoveForKeyboard(!context.prefManager.dontMoveForKeyboard)
+
+            }
+
+            PrefManager.AUDIO_FEEDBACK -> {
+                isSoundEffectsEnabled = context.prefManager.feedbackSound
+
+            }
+
+            PrefManager.PILL_CORNER_RADIUS -> {
+                val layers = pill.background as LayerDrawable
+                (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
+                    cornerRadius = context.dpAsPx(context.prefManager.pillCornerRadiusDp).toFloat()
+                }
+                (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
+                    cornerRadius = context.dpAsPx(context.prefManager.pillCornerRadiusDp).toFloat()
+                }
+                (pill_tap_flash.background as GradientDrawable).apply {
+                    cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
+                }
+            }
+
+            PrefManager.LARGER_HITBOX -> {
+                updateLargerHitbox()
+            }
+
+            PrefManager.AUTO_HIDE_PILL -> {
+                if (context.prefManager.autoHide) {
+                    if (!isHidden) scheduleHide(HiddenPillReasonManager.AUTO)
+                } else {
+                    if (isHidden) hideHandler.show(HiddenPillReasonManager.AUTO)
+                }
             }
         }
     }
@@ -324,7 +326,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         super.onDetachedFromWindow()
 
         if (shouldReAddOnDetach) {
-            app.addBarInternal(false)
+            context.app.addBarInternal(false)
             shouldReAddOnDetach = false
         } else {
             PreferenceManager.getDefaultSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(this)
@@ -393,14 +395,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Hide" the pill by moving it partially offscreen
      */
     fun hidePill(auto: Boolean, autoReason: String?, overrideBeingTouched: Boolean = false) {
-        handler?.post {
+        context.app.handler.post {
             if (auto && autoReason == null) throw IllegalArgumentException("autoReason must not be null when auto is true")
             if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
 
             if (!auto) hiddenPillReasons.add(HiddenPillReasonManager.MANUAL)
 
             if ((!beingTouched && !isCarryingOutTouchAction) || overrideBeingTouched) {
-                if (app.isPillShown()) {
+                if (context.app.isPillShown()) {
                     isPillHidingOrShowing = true
 
                     animator.hide(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
@@ -410,54 +412,37 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     showHiddenToast()
                 }
             } else {
-                scheduleHide()
+                scheduleHide(autoReason ?: return@post)
             }
         }
     }
 
     private fun animateHide() {
         pill.animate()
-                .translationY(pill.height.toFloat() / 2f)
                 .alpha(ALPHA_HIDDEN)
                 .setInterpolator(ENTER_INTERPOLATOR)
                 .setDuration(getAnimationDurationMs())
                 .withEndAction {
-                    pill.translationY = pill.height.toFloat() / 2f
-
                     isHidden = true
 
                     isPillHidingOrShowing = false
                 }
+                .apply {
+                    if (isVertical) translationX((if (is270Vertical) -1 else 1) * pill.width.toFloat() / 2f)
+                    else translationY(pill.height.toFloat() / 2f)
+                }
                 .start()
     }
 
-    private fun scheduleHide(time: Long? = parseHideTime()) {
-        if (time != null) {
-            hideHandler.hide(time)
-        }
+    fun scheduleHide(reason: String, time: Long = parseHideTime(reason)) {
+        hideHandler.hide(time, reason)
     }
-
-    fun scheduleHide(reason: String) {
-        hideHandler.hide(reason)
-    }
-
-    private fun parseHideTime(): Long? {
-        val reason = hiddenPillReasons.getMostRecentReason()
-        return parseHideTimeNoThrow(reason)
-    }
-
-    private fun parseHideTimeNoThrow(reason: String) =
-            try {
-                parseHideTime(reason)
-            } catch (e: IllegalArgumentException) {
-                null
-            }
 
     private fun parseHideTime(reason: String) =
             when (reason) {
-                HiddenPillReasonManager.AUTO -> app.prefManager.autoHideTime.toLong()
-                HiddenPillReasonManager.FULLSCREEN -> app.prefManager.hideInFullscreenTime.toLong()
-                HiddenPillReasonManager.KEYBOARD -> app.prefManager.hideOnKeyboardTime.toLong()
+                HiddenPillReasonManager.AUTO -> context.prefManager.autoHideTime.toLong()
+                HiddenPillReasonManager.FULLSCREEN -> context.prefManager.hideInFullscreenTime.toLong()
+                HiddenPillReasonManager.KEYBOARD -> context.prefManager.hideOnKeyboardTime.toLong()
                 else -> throw IllegalArgumentException("$reason is not a valid hide reason")
             }
 
@@ -469,41 +454,45 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Show" the pill by moving it back to its normal position
      */
     private fun showPillInternal(autoReasonToRemove: String?, forceShow: Boolean = false) {
-        if (isHidden) {
-            handler?.post {
-                if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
-                if (app.isPillShown()) {
-                    isPillHidingOrShowing = true
-                    val reallyForceNotAuto = hiddenPillReasons.isEmpty()
+        context.app.handler.post {
+            if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
 
-                    if (reallyForceNotAuto) {
-                        hideHandler.removeMessages(MSG_HIDE)
-                    }
+            if (context.app.isPillShown()) {
+                isPillHidingOrShowing = true
+                val reallyForceNotAuto = hiddenPillReasons.isEmpty()
 
-                    if (reallyForceNotAuto || forceShow) {
-                        pill.animate()
-                                .translationY(0f)
-                                .alpha(ALPHA_ACTIVE)
-                                .setInterpolator(EXIT_INTERPOLATOR)
-                                .setDuration(getAnimationDurationMs())
-                                .withEndAction {
-                                    pill.translationY = 0f
-
-                                    animateShow(!reallyForceNotAuto)
-                                }
-                                .start()
-                    } else isPillHidingOrShowing = false
+                if (reallyForceNotAuto) {
+                    hideHandler.removeMessages(MSG_HIDE)
                 }
+
+                if (reallyForceNotAuto || forceShow) {
+                    pill.animate()
+                            .alpha(ALPHA_ACTIVE)
+                            .setInterpolator(EXIT_INTERPOLATOR)
+                            .setDuration(getAnimationDurationMs())
+                            .withEndAction {
+                                animateShow(!reallyForceNotAuto, autoReasonToRemove)
+                            }
+                            .apply {
+                                if (isVertical) translationX(0f)
+                                else translationY(0f)
+                            }
+                            .start()
+                } else isPillHidingOrShowing = false
             }
         }
     }
 
-    private fun animateShow(rehide: Boolean) {
+    private fun animateShow(rehide: Boolean, reason: String?) {
         animator.show(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
             handler?.postDelayed(Runnable {
-                if (rehide) scheduleHide()
                 isHidden = false
                 isPillHidingOrShowing = false
+
+                if (rehide && reason != null) {
+                    scheduleHide(if (reason == HiddenPillReasonManager.MANUAL)
+                        hiddenPillReasons.getMostRecentReason() ?: return@Runnable else reason)
+                }
             }, (if (getAnimationDurationMs() < 12) 12 else 0))
         })
     }
@@ -513,8 +502,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             (pill.layoutParams as FrameLayout.LayoutParams).apply {
                 bottomMargin = margins.bottom
                 topMargin = margins.top
-                marginStart = margins.left
-                marginEnd = margins.right
+                leftMargin = margins.left
+                rightMargin = margins.right
 
                 pill.layoutParams = pill.layoutParams
             }
@@ -527,41 +516,22 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         (pill.layoutParams as FrameLayout.LayoutParams).apply {
             rect.bottom = bottomMargin
             rect.top = topMargin
-            rect.left = marginStart
-            rect.right = marginEnd
+            rect.left = leftMargin
+            rect.right = rightMargin
         }
 
         return rect
     }
 
-    fun getAdjustedHomeY(): Int {
-        return Utils.getRealScreenSize(context).y - app.prefManager.homeY - app.prefManager.customHeight
-    }
-
-    fun getZeroY(): Int {
-        return Utils.getRealScreenSize(context).y - app.prefManager.customHeight
-    }
-
-    fun getAdjustedHomeX(): Int {
-        val diff = try {
-            val screenSize = Utils.getRealScreenSize(context)
-            val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
-            (frame.left + frame.right) - screenSize.x
-        } catch (e: Exception) {
-            0
-        }
-
-        return app.prefManager.homeX - if (immersiveNav && !app.prefManager.useTabletMode) (diff / 2f).toInt() else 0
-    }
-
     fun toggleScreenOn(): Boolean {
-        val hasScreenOn = params.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON == WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+        val hasScreenOn = params.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON ==
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 
         if (hasScreenOn) params.flags = params.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON.inv()
         else params.flags = params.flags or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 
         return try {
-            app.wm.updateViewLayout(this, params)
+            updateLayout()
             !hasScreenOn
         } catch (e: Exception) {
             false
@@ -572,34 +542,19 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * Show a toast when the pill is hidden. Only shows once.
      */
     private fun showHiddenToast() {
-        if (app.prefManager.showHiddenToast) {
+        if (context.prefManager.showHiddenToast) {
             Toast.makeText(context, resources.getString(R.string.pill_hidden), Toast.LENGTH_LONG).show()
-            app.prefManager.showHiddenToast = false
+            context.prefManager.showHiddenToast = false
         }
     }
-    
+
     fun updateLayout(params: WindowManager.LayoutParams = this.params) {
         handler?.post {
             try {
                 wm.updateViewLayout(this, params)
-            } catch (e: Exception) {}
+            } catch (e: Exception) {
+            }
         }
-    }
-
-    /**
-     * Get the user-defined or default time the user must hold a swipe to perform the swipe and hold action
-     * @return the time, in ms
-     */
-    private fun getHoldTime(): Int {
-        return app.prefManager.holdTime
-    }
-
-    /**
-     * Get the user-defined or default duration of the feedback vibration
-     * @return the duration, in ms
-     */
-    private fun getVibrationDuration(): Int {
-        return app.prefManager.vibrationDuration
     }
 
     /**
@@ -607,7 +562,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @return the duration, in ms
      */
     fun getAnimationDurationMs(): Long {
-        return app.prefManager.animationDurationMs.toLong()
+        return context.prefManager.animationDurationMs.toLong()
     }
 
     /**
@@ -615,11 +570,63 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     private fun animateActiveLayer(alpha: Float) {
         pill_tap_flash.apply {
-            val alphaRatio = Color.alpha(app.prefManager.pillBGColor).toFloat() / 255f
+            val alphaRatio = Color.alpha(context.prefManager.pillBGColor).toFloat() / 255f
             animate()
                     .setDuration(getAnimationDurationMs())
                     .alpha(alpha * alphaRatio)
                     .start()
+        }
+    }
+
+    private fun adjustPillShadow() {
+        try {
+            //apparently setElevation() doesn't exist on some devices?
+            pill.elevation = context.dpAsPx(if (context.prefManager.shouldShowShadow) 2 else 0).toFloat()
+            (pill.layoutParams as FrameLayout.LayoutParams).apply {
+                val shadow = context.prefManager.shouldShowShadow
+
+                val r = if (shadow) context.dpAsPx(DEF_MARGIN_RIGHT_DP) else 0
+                val l = if (shadow) context.dpAsPx(DEF_MARGIN_LEFT_DP) else 0
+                val b = if (shadow) context.dpAsPx(DEF_MARGIN_BOTTOM_DP) else 0
+
+                if (isVertical) {
+                    topMargin = r
+                    bottomMargin = l
+                    if (is270Vertical) {
+                        leftMargin = b
+                        rightMargin = 0
+                    } else {
+                        rightMargin = b
+                        leftMargin = 0
+                    }
+                } else {
+                    rightMargin = r
+                    leftMargin = l
+                    bottomMargin = b
+                }
+
+                pill.layoutParams = this
+            }
+        } catch (e: NoSuchMethodError) {}
+    }
+
+    fun setMoveForKeyboard(move: Boolean) {
+        val wasMoving = params.flags and WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM != 0
+
+        if (move != wasMoving) {
+            context.app.handler.post {
+                if (move) {
+                    params.flags = params.flags or
+                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                    params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                } else {
+                    params.flags = params.flags and
+                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+                    params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+                }
+
+                updateLayout()
+            }
         }
     }
 
@@ -630,7 +637,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     fun vibrate(duration: Long) {
         handler?.post {
             if (isSoundEffectsEnabled) {
-                playSoundEffect(SoundEffectConstants.CLICK)
+                try {
+                    playSoundEffect(SoundEffectConstants.CLICK)
+                } catch (e: Exception) {
+                }
             }
         }
 
@@ -645,685 +655,131 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    /**
-     * Manage all the gestures on the pill
-     */
-    inner class GestureManager {
-        val actionMap = HashMap<String, Int>()
+    fun handleRotationOrAnchorUpdate() {
+        handler?.postDelayed({
+            verticalMode(isVertical)
 
-        private var isSwipeUp = false
-        private var isSwipeLeft = false
-        private var isSwipeRight = false
-        private var isSwipeDown = false
-        private var isOverrideTap = false
-        private var wasHidden = false
+            updatePositionAndDimens()
 
-        var isActing = false
+            adjustPillShadow()
+            updateLargerHitbox()
+        }, 200)
+    }
 
-        private var isRunningLongUp = false
-        private var isRunningLongLeft = false
-        private var isRunningLongRight = false
-        private var isRunningLongDown = false
+    private fun verticalMode(enabled: Boolean) {
+        var changed = false
 
-        private var sentLongUp = false
-        private var sentLongLeft = false
-        private var sentLongRight = false
-        private var sentLongDown = false
+        if (enabled) {
+            val is270 = is270Vertical
 
-        private var oldEvent: MotionEvent? = null
-        private var oldY = 0F
-        private var oldX = 0F
+            currentGestureDetector =
+                    if (is270) vertical270GestureMansger else verticalGestureManager
 
-        private var origX = 0F
-        private var origY = 0F
+            val newGrav = Gravity.CENTER or
+                    if (is270) Gravity.LEFT else Gravity.RIGHT
 
-        private var origAdjX = 0F
-        private var origAdjY = 0F
+            if (params.gravity != newGrav) {
+                params.gravity = newGrav
 
-        private val manager = GestureDetector(context, Detector())
-
-        private val gestureThread = HandlerThread("NoBar-Gesture").apply { start() }
-        private val gestureHandler = GestureHandler(gestureThread.looper)
-
-        fun onTouchEvent(ev: MotionEvent?): Boolean {
-            return handleTouchEvent(ev) || manager.onTouchEvent(ev)
-        }
-
-        private fun handleTouchEvent(ev: MotionEvent?): Boolean {
-            var ultimateReturn = false
-
-            when (ev?.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    lastTouchTime = System.currentTimeMillis()
-                    wasHidden = isHidden
-                    oldY = ev.rawY
-                    oldX = ev.rawX
-                    origX = ev.rawX
-                    origY = ev.rawY
-                    origAdjX = ev.x
-                    origAdjY = ev.y
-                    beingTouched = true
-                    isCarryingOutTouchAction = true
-                }
-
-                MotionEvent.ACTION_UP -> {
-                    beingTouched = false
-                    lastTouchTime = -1L
-
-                    if (wasHidden) {
-                        isSwipeUp = false
-                    }
-
-                    gestureHandler.removeMessages(MSG_UP_HOLD)
-                    gestureHandler.removeMessages(MSG_LEFT_HOLD)
-                    gestureHandler.removeMessages(MSG_RIGHT_HOLD)
-                    gestureHandler.removeMessages(MSG_DOWN_HOLD)
-
-                    if (isSwipeUp && !isRunningLongUp) {
-                        sendAction(actionHolder.actionUp)
-                    }
-
-                    if (isSwipeLeft && !isRunningLongLeft) {
-                        sendAction(actionHolder.actionLeft)
-                    }
-
-                    if (isSwipeRight && !isRunningLongRight) {
-                        sendAction(actionHolder.actionRight)
-                    }
-
-                    if (isSwipeDown && !isRunningLongDown) {
-                        sendAction(actionHolder.actionDown)
-                    }
-
-                    if (pill.translationX != 0f) {
-                        pill.animate()
-                                .translationX(0f)
-                                .setDuration(getAnimationDurationMs())
-                                .withEndAction {
-                                    if (params.x == getAdjustedHomeX()) {
-                                        isActing = false
-                                        isSwipeLeft = false
-                                        isSwipeRight = false
-                                    }
-                                }
-                                .start()
-                    }
-
-                    if (pill.translationY != 0f && !isHidden && !isPillHidingOrShowing) {
-                        pill.animate()
-                                .translationY(0f)
-                                .setDuration(getAnimationDurationMs())
-                                .withEndAction {
-                                    if (params.y == getAdjustedHomeY()) {
-                                        isActing = false
-                                        isCarryingOutTouchAction = false
-                                    }
-                                }
-                                .start()
-                    }
-
-                    when {
-                        params.y != getAdjustedHomeY() && !isHidden && !isPillHidingOrShowing -> {
-                            animator.homeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
-                                isActing = false
-                                isCarryingOutTouchAction = false
-                            })
-                        }
-                        params.x < getAdjustedHomeX() || params.x > getAdjustedHomeX() -> {
-                            animator.homeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
-                                isActing = false
-                                isCarryingOutTouchAction = false
-                            })
-                        }
-                        else -> {
-                            isActing = false
-                            isCarryingOutTouchAction = false
-                        }
-                    }
-
-                    isRunningLongRight = false
-                    isRunningLongLeft = false
-                    isRunningLongUp = false
-                    isRunningLongDown = false
-
-                    sentLongRight = false
-                    sentLongLeft = false
-                    sentLongUp = false
-                    sentLongDown = false
-
-                    isSwipeUp = false
-                    isSwipeLeft = false
-                    isSwipeRight = false
-                    isSwipeDown = false
-
-                    wasHidden = isHidden
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    ultimateReturn = handlePotentialSwipe(ev)
-
-                    if (isSwipeUp && !isSwipeLeft && !isSwipeRight && !isSwipeDown) {
-                        if (!isActing) isActing = true
-
-                        val velocity = (oldY - ev.rawY)
-                        oldY = ev.rawY
-
-                        if (params.y > Utils.getRealScreenSize(context).y
-                                - Utils.getRealScreenSize(context).y / 6 - app.prefManager.homeY
-                                && getAnimationDurationMs() > 0) {
-                            params.y -= (velocity / 2).toInt()
-                            updateLayout(params)
-                        }
-
-                        if (!sentLongUp) {
-                            sentLongUp = true
-                            gestureHandler.sendEmptyMessageAtTime(MSG_UP_HOLD,
-                                    SystemClock.uptimeMillis() + getHoldTime().toLong())
-                        }
-                    }
-
-                    if (isSwipeDown && !isSwipeLeft && !isSwipeRight && !isSwipeUp) {
-                        if (!isActing) isActing = true
-
-                        val velocity = (oldY - ev.rawY)
-                        oldY = ev.rawY
-
-                        if (getAnimationDurationMs() > 0) {
-                            params.y -= (velocity / 2).toInt()
-                            updateLayout(params)
-                        }
-
-                        if (!sentLongDown) {
-                            sentLongDown = true
-                            gestureHandler.sendEmptyMessageAtTime(MSG_DOWN_HOLD,
-                                    SystemClock.uptimeMillis() + getHoldTime().toLong())
-                        }
-                    }
-
-                    if ((isSwipeLeft || isSwipeRight) && !isSwipeUp && !isSwipeDown) {
-                        if (!isActing) isActing = true
-
-                        val velocity = ev.rawX - oldX
-                        oldX = ev.rawX
-
-                        val halfScreen = Utils.getRealScreenSize(context).x / 2f
-                        val leftParam = params.x - app.prefManager.customWidth.toFloat() / 2f
-                        val rightParam = params.x + app.prefManager.customWidth.toFloat() / 2f
-
-                        if (getAnimationDurationMs() > 0) {
-                            when {
-                                leftParam <= -halfScreen && !isSwipeRight -> {
-                                    pill.translationX += velocity
-                                }
-                                rightParam >= halfScreen && !isSwipeLeft -> pill.translationX += velocity
-                                else -> {
-                                    params.x = params.x + (velocity / 2).toInt()
-                                    updateLayout(params)
-                                }
-                            }
-                        }
-
-                        if (isSwipeLeft && !sentLongLeft) {
-                            sentLongLeft = true
-                            gestureHandler.sendEmptyMessageAtTime(MSG_LEFT_HOLD,
-                                    SystemClock.uptimeMillis() + getHoldTime().toLong())
-                        }
-
-                        if (isSwipeRight && !sentLongRight) {
-                            sentLongRight = true
-                            gestureHandler.sendEmptyMessageAtTime(MSG_RIGHT_HOLD,
-                                    SystemClock.uptimeMillis() + getHoldTime().toLong())
-                        }
-                    }
-                }
+                changed = true
             }
 
-            oldEvent = MotionEvent.obtain(ev)
+            if (!context.prefManager.dontMoveForKeyboard) {
+                if (params.flags and WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM != 0) {
+                    params.flags = params.flags and
+                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+                    params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
 
-            return ultimateReturn
-        }
-
-        private fun handlePotentialSwipe(motionEvent: MotionEvent?): Boolean {
-            if (motionEvent == null) return false
-
-            val distanceX = motionEvent.rawX - origX
-            val distanceY = motionEvent.rawY - origY
-            val xThresh = app.prefManager.xThresholdPx
-            val yThresh = app.prefManager.yThresholdPx
-
-            return if (!isHidden && !isActing) {
-                when {
-                    distanceX < -xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //left swipe
-                        isSwipeLeft = true
-                        true
-                    }
-                    distanceX > xThresh && distanceY.absoluteValue <= distanceX.absoluteValue -> { //right swipe
-                        isSwipeRight = true
-                        true
-                    }
-                    distanceY > yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe and down hold-swipe
-                        isSwipeDown = true
-                        true
-                    }
-                    distanceY < -yThresh && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
-                        isSwipeUp = true
-                        true
-                    }
-                    else -> false
+                    changed = true
                 }
-            } else if (isHidden
-                    && !isActing
-                    && distanceY < -yThresh
-                    && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
-                if (isHidden && !isPillHidingOrShowing && !beingTouched) {
-                    vibrate(getVibrationDuration().toLong())
-                    hiddenPillReasons.remove(HiddenPillReasonManager.MANUAL)
-                    hideHandler.show(null, true)
-                }
-                true
-            } else false
-        }
+            }
+        } else {
+            currentGestureDetector = horizontalGestureManager
 
-        private fun getSectionedUpHoldAction(x: Float): Int? {
-            return if (!app.prefManager.sectionedPill) actionMap[actionHolder.actionUpHold]
-            else when (getSection(x)) {
-                FIRST_SECTION -> actionMap[actionHolder.actionUpHoldLeft]
-                SECOND_SECTION -> actionMap[actionHolder.actionUpHoldCenter]
-                else -> actionMap[actionHolder.actionUpHoldRight]
+            val newGrav = Gravity.TOP or Gravity.CENTER
+
+            if (params.gravity != newGrav) {
+                params.gravity = newGrav
+
+                changed = true
+            }
+
+            if (!context.prefManager.dontMoveForKeyboard) {
+                if (params.flags and WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM == 0) {
+                    params.flags = params.flags or
+                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                    params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+
+                    changed = true
+                }
             }
         }
 
-        private fun String.isEligible() = arrayListOf(
-                actionHolder.actionUp,
-                actionHolder.actionUpHold
-        ).contains(this) && app.prefManager.sectionedPill
+        if (changed) updateLayout()
 
-        private fun getSection(x: Float): Int {
-            val third = app.prefManager.customWidth / 3f
+        currentGestureDetector.singleton.loadActionMap()
+    }
 
-            return when {
-                x < third -> FIRST_SECTION
-                x <= (2f * third) -> SECOND_SECTION
-                else -> THIRD_SECTION
-            }
-        }
+    fun updateLargerHitbox() {
+        val enabled = context.prefManager.largerHitbox
+        val margins = getPillMargins()
+        val m = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
 
-        private fun sendAction(action: String) {
-            if (action.isEligible()) {
-                when(getSection(origAdjX)) {
-                    FIRST_SECTION -> sendActionInternal("${action}_left")
-                    SECOND_SECTION -> sendActionInternal("${action}_center")
-                    THIRD_SECTION -> sendActionInternal("${action}_right")
+        var changed = false
+
+        updatePositionAndDimens()
+
+        if (isVertical) {
+            if (is270Vertical) {
+                if (margins.right != m) {
+                    margins.right = m
+                    margins.left = 0
+
+                    changed = true
                 }
             } else {
-                sendActionInternal(action)
+                if (margins.left != m) {
+                    margins.left = m
+                    margins.right = 0
+
+                    changed = true
+                }
+            }
+
+            if (margins.top != 0) {
+                margins.top = 0
+
+                changed = true
+            }
+        } else {
+            if (margins.top != m) {
+                margins.left = 0
+                margins.top = m
+
+                changed = true
             }
         }
 
-        /**
-         * Parse the action index and broadcast to {@link com.xda.nobar.services.Actions}
-         * @param key one of ActionHolder's variables
-         */
-        private fun sendActionInternal(key: String) {
-            handler?.post {
-                val which = actionMap[key] ?: return@post
+        if (changed) changePillMargins(margins)
+    }
 
-                if (which == actionHolder.typeNoAction) return@post
+    fun updatePositionAndDimens() {
+        val newX = adjustedHomeX
+        val newY = adjustedHomeY
+        val newW = adjustedWidth
+        val newH = adjustedHeight
 
-                if (isHidden || isPillHidingOrShowing) return@post
-
-                vibrate(getVibrationDuration().toLong())
-
-                if (key == actionHolder.actionDouble) handler?.postDelayed({ vibrate(getVibrationDuration().toLong()) }, getVibrationDuration().toLong())
-
-                if (which == actionHolder.typeHide) {
-                    hidePill(false, null, true)
-                    return@post
-                }
-
-                when (key) {
-                    actionHolder.actionDouble -> animator.jiggleDoubleTap()
-                    actionHolder.actionHold -> animator.jiggleHold()
-                    actionHolder.actionTap -> animator.jiggleTap()
-                    actionHolder.actionUpHold -> animator.jiggleHoldUp()
-                    actionHolder.actionLeftHold -> animator.jiggleLeftHold()
-                    actionHolder.actionRightHold -> animator.jiggleRightHold()
-                    actionHolder.actionDownHold -> animator.jiggleDownHold()
-                }
-
-                if (key == actionHolder.actionUp || key == actionHolder.actionLeft || key == actionHolder.actionRight) {
-                    animate(null, ALPHA_ACTIVE)
-                }
-
-                if (Utils.isAccessibilityAction(context, which)) {
-                    if (app.prefManager.useRoot && Shell.rootAccess()) {
-                        when (which) {
-                            actionHolder.typeHome -> rootActions.home()
-                            actionHolder.typeRecents -> rootActions.recents()
-                            actionHolder.typeBack -> rootActions.back()
-                            actionHolder.typeSwitch -> rootActions.switch()
-                            actionHolder.typeSplit -> rootActions.split()
-                            actionHolder.premTypePower -> Utils.runPremiumAction(context, App.isValidPremium) { rootActions.power() }
-                        }
-                    } else {
-                        if (which == actionHolder.typeHome
-                                && app.prefManager.useAlternateHome) {
-                            handleAction(which, key)
-                        } else {
-                            val options = Bundle()
-                            options.putInt(Actions.EXTRA_ACTION, which)
-                            options.putString(Actions.EXTRA_GESTURE, key)
-
-                            Actions.sendAction(context, Actions.ACTION, options)
-                        }
-                    }
-                } else {
-                    handleAction(which, key)
-                }
-            }
-        }
-
-        fun handleAction(which: Int, key: String) {
-            GlobalScope.launch {
-                when (which) {
-                    actionHolder.typeAssist -> {
-                        val assist = Intent(RecognizerIntent.ACTION_WEB_SEARCH)
-                        assist.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-
-                        try {
-                            context.startActivity(assist)
-                        } catch (e: Exception) {
-                            assist.action = RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE
-
-                            try {
-                                context.startActivity(assist)
-                            } catch (e: Exception) {
-                                assist.action = Intent.ACTION_VOICE_ASSIST
-
-                                try {
-                                    context.startActivity(assist)
-                                } catch (e: Exception) {
-                                    assist.action = Intent.ACTION_VOICE_COMMAND
-
-                                    try {
-                                        context.startActivity(assist)
-                                    } catch (e: Exception) {
-                                        assist.action = Intent.ACTION_ASSIST
-
-                                        try {
-                                            context.startActivity(assist)
-                                        } catch (e: Exception) {
-                                            val searchMan = context.getSystemService(Context.SEARCH_SERVICE) as SearchManager
-
-                                            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-                                                try {
-                                                    searchMan.launchAssist(null)
-                                                } catch (e: Exception) {
-
-                                                    searchMan.launchLegacyAssist(null, UserHandle.USER_CURRENT, null)
-                                                }
-                                            } else {
-                                                val launchAssistAction = searchMan::class.java
-                                                        .getMethod("launchAssistAction", Int::class.java, String::class.java, Int::class.java)
-                                                launchAssistAction.invoke(searchMan, 1, null, UserHandle.USER_CURRENT)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    actionHolder.typeOhm -> {
-                        val ohm = Intent("com.xda.onehandedmode.intent.action.TOGGLE_OHM")
-                        ohm.setClassName("com.xda.onehandedmode", "com.xda.onehandedmode.receivers.OHMReceiver")
-                        context.sendBroadcast(ohm)
-                    }
-                    actionHolder.typeHome -> {
-                        val homeIntent = Intent(Intent.ACTION_MAIN)
-                        homeIntent.addCategory(Intent.CATEGORY_HOME)
-                        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        context.startActivity(homeIntent)
-                    }
-                    actionHolder.premTypePlayPause -> runPremiumAction {
-                        audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
-                        audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))
-                    }
-                    actionHolder.premTypePrev -> runPremiumAction {
-                        audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-                        audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-                    }
-                    actionHolder.premTypeNext -> runPremiumAction {
-                        audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_NEXT))
-                        audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
-                    }
-                    actionHolder.premTypeSwitchIme -> runPremiumAction {
-                        imm.showInputMethodPicker()
-                    }
-                    actionHolder.premTypeLaunchApp -> runPremiumAction {
-                        val launchPackage = app.prefManager.getPackage(key)
-
-                        if (launchPackage != null) {
-                            val launch = Intent(Intent.ACTION_MAIN)
-                            launch.addCategory(Intent.CATEGORY_LAUNCHER)
-                            launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            launch.`package` = launchPackage.split("/")[0]
-                            launch.component = ComponentName(launch.`package`, launchPackage.split("/")[1])
-
-                            try {
-                                context.startActivity(launch)
-                            } catch (e: Exception) {}
-                        }
-                    }
-                    actionHolder.premTypeLaunchActivity -> runPremiumAction {
-                        val activity = app.prefManager.getActivity(key)
-
-                        val p = activity.split("/")[0]
-                        val c = activity.split("/")[1]
-
-                        val launch = Intent()
-                        launch.component = ComponentName(p, c)
-                        launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-                        try {
-                            context.startActivity(launch)
-                        } catch (e: Exception) {}
-                    }
-                    actionHolder.premTypeLockScreen -> runPremiumAction {
-                        runSystemSettingsAction {
-                            if (app.prefManager.useRoot && Shell.rootAccess()) {
-                                rootActions.lock()
-                            } else {
-                                ActionReceiver.turnScreenOff(context)
-                            }
-                        }
-                    }
-                    actionHolder.premTypeScreenshot -> runPremiumAction {
-                        val screenshot = Intent(context, ScreenshotActivity::class.java)
-                        screenshot.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        context.startActivity(screenshot)
-                    }
-                    actionHolder.premTypeRot -> runPremiumAction {
-                        runSystemSettingsAction {
-                            orientationEventListener.enable()
-                        }
-                    }
-                    actionHolder.premTypeTaskerEvent -> runPremiumAction {
-                        EventConfigureActivity::class.java.requestQuery(context, EventUpdate(key))
-                    }
-                    actionHolder.typeToggleNav -> {
-                        ActionReceiver.toggleNav(context)
-                    }
-                    actionHolder.premTypeFlashlight -> runPremiumAction {
-                        flashlightController.flashlightEnabled = !flashlightController.flashlightEnabled
-                    }
-                    actionHolder.premTypeVolumePanel -> runPremiumAction {
-                        audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
-                    }
-                    actionHolder.premTypeBluetooth -> runPremiumAction {
-                        val adapter = BluetoothAdapter.getDefaultAdapter()
-                        if (adapter.isEnabled) adapter.disable() else adapter.enable()
-                    }
-                    actionHolder.premTypeWiFi -> runPremiumAction {
-                        wifiManager.isWifiEnabled = !wifiManager.isWifiEnabled
-                    }
-                    actionHolder.premTypeIntent -> runPremiumAction {
-                        val broadcast = IntentSelectorActivity.INTENTS[app.prefManager.getIntentKey(key)]
-                        val type = broadcast?.which
-
-                        try {
-                            when (type) {
-                                IntentSelectorActivity.ACTIVITY -> {
-                                    broadcast.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    context.startActivity(broadcast)
-                                }
-                                IntentSelectorActivity.SERVICE -> ContextCompat.startForegroundService(context, broadcast)
-                                IntentSelectorActivity.BROADCAST -> context.sendBroadcast(broadcast)
-                            }
-                        } catch (e: SecurityException) {
-                            when (broadcast?.action) {
-                                MediaStore.ACTION_VIDEO_CAPTURE,
-                                MediaStore.ACTION_IMAGE_CAPTURE -> {
-                                    RequestPermissionsActivity.createAndStart(context,
-                                            arrayOf(Manifest.permission.CAMERA),
-                                            ComponentName(context, BarView::class.java),
-                                            Bundle().apply {
-                                                putInt(Actions.EXTRA_ACTION, which)
-                                                putString(Actions.EXTRA_GESTURE, key)
-                                            }
-                                    )
-                                }
-                            }
-                        } catch (e: ActivityNotFoundException) {
-                            Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    actionHolder.premTypeBatterySaver -> {
-                        runPremiumAction {
-                            val current = Settings.Global.getInt(context.contentResolver, Settings.Global.LOW_POWER_MODE, 0)
-                            Settings.Global.putInt(context.contentResolver, Settings.Global.LOW_POWER_MODE, if (current == 0) 1 else 0)
-                        }
-                    }
-                    actionHolder.premTypeScreenTimeout -> {
-                        runPremiumAction { ActionReceiver.toggleScreenOn(context) }
-                    }
-                    actionHolder.premTypeNotif -> runPremiumAction {
-                        iStatusBarManager.expandNotificationsPanel()
-                    }
-                    actionHolder.premTypeQs -> runPremiumAction {
-                        iStatusBarManager.expandSettingsPanel(null)
-                    }
-                    actionHolder.premTypeVibe -> {
-                        //TODO: Implement
-                    }
-                    actionHolder.premTypeSilent -> {
-                        //TODO: Implement
-                    }
-                    actionHolder.premTypeMute -> {
-                        //TODO: Implement
-                    }
-                }
-            }
-        }
-
-        private fun runNougatAction(action: () -> Unit) = Utils.runNougatAction(context, action)
-        private fun runPremiumAction(action: () -> Unit) = Utils.runPremiumAction(context, App.isValidPremium, action)
-        private fun runSystemSettingsAction(action: () -> Unit) = Utils.runSystemSettingsAction(context, action)
-
-        /**
-         * Load the user's custom gesture/action pairings; default values if a pairing doesn't exist
-         */
-        fun loadActionMap() {
-            app.prefManager.getActionsList(actionMap)
-
-            if (actionMap.values.contains(actionHolder.premTypeFlashlight)) {
-                if (!flashlightController.isCreated) flashlightController.onCreate()
-            } else {
-                flashlightController.onDestroy()
-            }
-        }
-
-        @SuppressLint("HandlerLeak")
-        private inner class GestureHandler(looper: Looper) : Handler(looper) {
-            override fun handleMessage(msg: Message?) {
-                when (msg?.what) {
-                    MSG_UP_HOLD -> {
-                        if (getSectionedUpHoldAction(origAdjX) != actionHolder.typeNoAction) {
-                            isRunningLongUp = true
-                            sendAction(actionHolder.actionUpHold)
-                        }
-                    }
-
-                    MSG_LEFT_HOLD -> {
-                        if (actionMap[actionHolder.actionLeftHold] != actionHolder.typeNoAction) {
-                            isRunningLongLeft = true
-                            sendAction(actionHolder.actionLeftHold)
-                        }
-                    }
-
-                    MSG_RIGHT_HOLD -> {
-                        if (actionMap[actionHolder.actionRightHold] != actionHolder.typeNoAction) {
-                            isRunningLongRight = true
-                            sendAction(actionHolder.actionRightHold)
-                        }
-                    }
-
-                    MSG_DOWN_HOLD -> {
-                        if (actionMap[actionHolder.actionDownHold] != actionHolder.typeNoAction) {
-                            isRunningLongDown = true
-                            sendAction(actionHolder.actionDownHold)
-                        }
-                    }
-                }
-            }
-        }
-
-        inner class Detector : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapUp(ev: MotionEvent): Boolean {
-                return if (actionMap[actionHolder.actionDouble] == actionHolder.typeNoAction && !isActing && !wasHidden) {
-                    isOverrideTap = true
-                    sendAction(actionHolder.actionTap)
-                    isActing = false
-                    true
-                } else false
-            }
-
-            override fun onLongPress(ev: MotionEvent) {
-                val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-                val isPinned = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 && am.lockTaskModeState != ActivityManager.LOCK_TASK_MODE_NONE
-
-                if (!isHidden && !isActing) {
-                    if (isPinned) {
-                       if (app.prefManager.shouldUseOverscanMethod) app.showNav()
-                    } else {
-                        isActing = true
-                        sendAction(actionHolder.actionHold)
-                    }
-                }
-            }
-
-            override fun onDoubleTap(ev: MotionEvent): Boolean {
-                return if (!isHidden &&!isActing) {
-                    isActing = true
-                    sendAction(actionHolder.actionDouble)
-                    true
-                } else false
-            }
-
-            override fun onSingleTapConfirmed(ev: MotionEvent): Boolean {
-                return if (!isOverrideTap && !isHidden) {
-                    isActing = false
-
-                    sendAction(actionHolder.actionTap)
-                    true
-                } else if (isHidden && !isPillHidingOrShowing) {
-                    isOverrideTap = false
-                    vibrate(getVibrationDuration().toLong())
-                    hideHandler.show(null, true)
-                    true
-                } else {
-                    isOverrideTap = false
-                    false
-                }
-            }
+        if ((newX != params.x
+                        || newY != params.y
+                        || newW != params.width
+                        || newH != params.height)
+                && !beingTouched
+                && !isCarryingOutTouchAction) {
+            params.x = newX
+            params.y = newY
+            params.width = newW
+            params.height = newH
+            updateLayout()
         }
     }
 
@@ -1341,19 +797,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
 
-        fun hide(reason: String) {
-            val alreadyContains = hiddenPillReasons.contains(reason)
-            hiddenPillReasons.add(reason)
+        fun hide(time: Long, reason: String? = null) {
             val msg = Message.obtain(this)
             msg.what = MSG_HIDE
             msg.obj = reason
-            if (!hasMessages(MSG_HIDE, reason)
-                    && !isHidden
-                    && !alreadyContains) sendMessageAtTime(msg, SystemClock.uptimeMillis() + parseHideTime(reason))
-        }
 
-        fun hide(time: Long) {
-            sendEmptyMessageAtTime(MSG_HIDE, SystemClock.uptimeMillis() + time)
+            removeMessages(MSG_SHOW)
+            removeMessages(MSG_SHOW, reason)
+
+            if (!isHidden) sendMessageAtTime(msg, SystemClock.uptimeMillis() + time)
         }
 
         fun show(reason: String?, forceShow: Boolean = false) {
@@ -1362,8 +814,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             msg.arg1 = if (forceShow) 1 else 0
             msg.obj = reason
 
-            if (!hasMessages(MSG_SHOW, reason)
-                    && isHidden) sendMessage(msg)
+            removeMessages(MSG_HIDE)
+            removeMessages(MSG_SHOW, reason)
+
+            if (isHidden) sendMessage(msg)
         }
     }
 }

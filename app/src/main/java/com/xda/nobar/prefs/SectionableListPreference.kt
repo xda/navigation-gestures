@@ -2,12 +2,10 @@ package com.xda.nobar.prefs
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Typeface
-import android.preference.DialogPreference
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -15,11 +13,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import com.xda.nobar.App
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
+import androidx.preference.Preference
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnItemChosenListener
-import com.xda.nobar.util.ActionHolder
-import com.xda.nobar.util.Utils
+import com.xda.nobar.util.dpAsPx
+import com.xda.nobar.util.helpers.bar.ActionHolder
 import com.xda.nobar.views.ItemView
 
 /**
@@ -36,12 +36,11 @@ import com.xda.nobar.views.ItemView
  *     - section_data_values
  *         - Similar to above, just with the values/keys of each item
  */
-class SectionableListPreference(context: Context, attributeSet: AttributeSet) : DialogPreference(context, attributeSet), OnItemChosenListener {
+class SectionableListPreference(context: Context, attributeSet: AttributeSet) : Preference(context, attributeSet), OnItemChosenListener {
     var defaultValue: String? = null
 
-    val app = context.applicationContext as App
-
     private val sections = ArrayList<Section>()
+    private var dialog: AlertDialog? = null
 
     private var tempValue: String? = null
 
@@ -163,8 +162,8 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         return def
     }
 
-    override fun onSetInitialValue(restorePersistedValue: Boolean, defaultValue: Any?) {
-        saveValue(if (restorePersistedValue) getPersistedString(defaultValue.toString()) else defaultValue.toString())
+    override fun onSetInitialValue(defaultValue: Any?) {
+        saveValue(if (isPersistent) getPersistedString(defaultValue.toString()) else defaultValue.toString())
     }
 
     override fun onItemChosen(value: String?) {
@@ -173,20 +172,34 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         saveValue(tempValue)
     }
 
-    override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
-        builder.setPositiveButton(android.R.string.ok) { _, _ ->
-            callChangeListener(getPersistedString(tempValue))
-        }
+    override fun onClick() {
+        val builder = AlertDialog.Builder(context)
+        onPrepareDialogBuilder(builder)
+
+        dialog = builder.show()
     }
 
-    override fun onCreateDialogView(): View {
+    private fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
+        var whichButton = DialogInterface.BUTTON_NEGATIVE
+
+        builder.setTitle(R.string.actions)
+        builder.setPositiveButton(android.R.string.ok) { _, _ ->
+            whichButton = DialogInterface.BUTTON_POSITIVE
+            tempValue = getPersistedString(tempValue)
+        }
+
+        builder.setView(onCreateDialogView())
+        builder.setOnDismissListener { onDialogClosed(whichButton == DialogInterface.BUTTON_POSITIVE) }
+    }
+
+    private fun onCreateDialogView(): View {
         val topContainer = LinearLayout(context)
         topContainer.orientation = LinearLayout.VERTICAL
-        topContainer.setPaddingRelative(0, Utils.dpAsPx(context, 8), 0, 0)
+        topContainer.setPaddingRelative(0, context.dpAsPx(8), 0, 0)
 
         val topView = View(context)
         val bottomView = View(context)
-        val viewParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpAsPx(context, 1f))
+        val viewParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, context.dpAsPx(1))
         topView.layoutParams = viewParams
         bottomView.layoutParams = viewParams
 
@@ -218,7 +231,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         return topContainer
     }
 
-    override fun onDialogClosed(positiveResult: Boolean) {
+    private fun onDialogClosed(positiveResult: Boolean) {
         if (positiveResult) saveValue(tempValue)
     }
 
@@ -240,11 +253,11 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
 
             gravity = Gravity.CENTER_VERTICAL
 
-            height = Utils.dpAsPx(context, 48)
+            height = context.dpAsPx(48)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
 
             setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
-            setPaddingRelative(Utils.dpAsPx(context, 16), 0, 0, 0)
+            setPaddingRelative(context.dpAsPx(16), 0, 0, 0)
         }
     }
 
@@ -256,7 +269,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
             orientation = LinearLayout.VERTICAL
         }
 
-        fun setup(listener: OnItemChosenListener, sections: ArrayList<Section>, scrollView: ScrollView) {
+        fun setup(listener: OnItemChosenListener, sections: ArrayList<SectionableListPreference.Section>, scrollView: ScrollView) {
             sections.forEach {
                 val sectionView = SectionTitleView(context)
                 sectionView.name = it.title

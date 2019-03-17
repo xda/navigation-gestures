@@ -1,6 +1,6 @@
 package com.xda.nobar.interfaces;
 
-import com.xda.nobar.util.AppInfo;
+import com.xda.nobar.adapters.info.AppInfo;
 
 /**
  * For use in any BaseAppSelectActivity

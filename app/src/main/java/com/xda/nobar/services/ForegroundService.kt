@@ -8,8 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.support.v4.app.NotificationCompat
-import com.xda.nobar.App
+import androidx.core.app.NotificationCompat
 import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
 
@@ -17,16 +16,12 @@ import com.xda.nobar.activities.MainActivity
  * Used to prevent the device from killing NoBar
  */
 class ForegroundService : Service() {
-    private val app by lazy { application as App }
-
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
 
     override fun onCreate() {
         super.onCreate()
-        if (app.prefManager.useRoot) app.bar.rootActions.onCreate()
-
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
@@ -46,9 +41,5 @@ class ForegroundService : Service() {
         startForeground(10, builder.build())
 
         return START_STICKY
-    }
-
-    override fun onDestroy() {
-        app.bar.rootActions.onDestroy()
     }
 }

@@ -1,22 +1,26 @@
 package com.xda.nobar.activities
 
+import android.animation.LayoutTransition
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.CompoundButton
-import com.xda.nobar.App
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.xda.nobar.R
+import com.xda.nobar.activities.ui.HelpAboutActivity
+import com.xda.nobar.activities.ui.IntroActivity
+import com.xda.nobar.activities.ui.SettingsActivity
+import com.xda.nobar.activities.ui.TroubleshootingActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
-import com.xda.nobar.prefs.PrefManager
-import com.xda.nobar.util.Utils
+import com.xda.nobar.util.*
 import com.xda.nobar.views.BarView
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -36,12 +40,10 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         }
     }
 
-    private val app by lazy { application as App }
-    private val prefManager by lazy { PrefManager.getInstance(this) }
-
     private val navListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
         app.toggleNavState(!isChecked)
-        if (!IntroActivity.hasWss(this)) onNavStateChange(!isChecked)
+        if (!hasWss) onNavStateChange(!isChecked)
+        if (hasWss) fix_immersive_wrapper.visibility = if (isChecked) View.GONE else View.VISIBLE
     }
 
     private var currentPremReason: String? = null
@@ -53,13 +55,12 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             IntroActivity.start(this)
         }
 
-        if (!Utils.canRunHiddenCommands(this)) {
-            finish()
-            return
-        }
+        allowHiddenMethods()
 
         setContentView(R.layout.activity_main)
         setUpActionBar()
+
+        root.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
         app.addLicenseCheckListener(this)
         app.addGestureActivationListener(this)
@@ -68,7 +69,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         activate.isChecked = prefManager.isActive
         activate.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { button, isChecked ->
             if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this))
-                    && Utils.isAccessibilityEnabled(this)) {
+                    && isAccessibilityEnabled) {
                 if (isChecked) app.addBar() else app.removeBar()
                 app.setGestureState(isChecked)
             } else {
@@ -88,6 +89,17 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             AlertDialog.Builder(this)
                     .setMessage(currentPremReason)
                     .show()
+        }
+
+        fix_immersive_wrapper.visibility = if (hasWss && !hide_nav.isChecked) View.VISIBLE else View.GONE
+        fix_immersive.setOnClickListener {
+            runSecureSettingsAction {
+                Settings.Global.putString(contentResolver, POLICY_CONTROL, null)
+            }
+        }
+
+        troubleshoot.setOnClickListener {
+            startActivity(Intent(this, TroubleshootingActivity::class.java))
         }
 
         refresh()

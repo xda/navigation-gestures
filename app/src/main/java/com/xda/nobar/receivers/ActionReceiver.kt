@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.accessibility.AccessibilityEvent
-import com.xda.nobar.App
+import com.xda.nobar.util.app
 
 class ActionReceiver : BroadcastReceiver() {
     companion object {
@@ -46,13 +46,11 @@ class ActionReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        val app = context.applicationContext as App
-
         when (intent.action) {
-            ACTION_TOGGLE_SCREEN_ON -> app.toggleScreenOn()
-            ACTION_SCREEN_OFF -> app.screenOffHelper.create()
-            ACTION_TOGGLE_NAV -> app.toggleNavState()
-            ACTION_HANDLE_EVENT -> app.uiHandler.setNodeInfoAndUpdate(intent.getParcelableExtra(EXTRA_EVENT))
+            ACTION_TOGGLE_SCREEN_ON -> context.app.toggleScreenOn()
+            ACTION_SCREEN_OFF -> context.app.screenOffHelper.create()
+            ACTION_TOGGLE_NAV -> context.app.toggleNavState()
+            ACTION_HANDLE_EVENT -> context.app.uiHandler.setNodeInfoAndUpdate(intent.getParcelableExtra(EXTRA_EVENT))
         }
     }
 }

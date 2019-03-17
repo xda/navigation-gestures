@@ -36,12 +36,12 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="com.xda.nobar.permission.RECEIVE_BROADCAST" />
     <uses-permission android:name="com.xda.nobar.permission.SEND_BROADCAST" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" />
-
-    <!-- Used for premium backdoor -->
+    <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" /> <!-- Used for premium backdoor -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <application
@@ -56,6 +56,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".activities.MainActivity"
+            android:configChanges="orientation|screenLayout|screenSize|keyboard"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoBar">
             <intent-filter>
@@ -73,19 +74,19 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".activities.ui.SettingsActivity"
             android:configChanges="screenSize|orientation|screenLayout" />
-        <activity android:name=".activities.HelpAboutActivity" />
+        <activity android:name=".activities.ui.HelpAboutActivity" />
         <activity
-            android:name=".activities.IntroActivity"
+            android:name=".activities.ui.IntroActivity"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Intro" />
         <activity
-            android:name=".activities.DialogActivity"
+            android:name=".activities.helpers.DialogActivity"
             android:multiprocess="true"
             android:theme="@style/AppTheme.Null" />
-        <activity android:name=".activities.LibraryActivity" />
-        <activity android:name=".activities.AppLaunchSelectActivity" />
+        <activity android:name=".activities.ui.LibraryActivity" />
+        <activity android:name=".activities.selectors.AppLaunchSelectActivity" />
         <activity
             android:name=".activities.ToggleNavActivity"
             android:exported="true"
@@ -98,22 +99,25 @@
             android:theme="@style/AppTheme.Null" />
         <activity android:name=".activities.TaskerConfig" />
         <activity
-            android:name=".activities.ScreenshotActivity"
+            android:name=".activities.helpers.ScreenshotActivity"
             android:configChanges="screenSize|orientation|layoutDirection|screenLayout"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Null" />
         <activity
-            android:name=".activities.RequestPermissionsActivity"
+            android:name=".activities.helpers.RequestPermissionsActivity"
             android:excludeFromRecents="true"
             android:theme="@style/AppTheme.Null" />
-        <activity android:name=".activities.BlacklistSelectorActivity" />
-        <activity android:name=".activities.ActivityLaunchSelectActivity" />
-        <activity android:name=".activities.IntentSelectorActivity" />
+        <activity android:name=".activities.selectors.BlacklistSelectorActivity" />
+        <activity android:name=".activities.selectors.ActivityLaunchSelectActivity" />
+        <activity android:name=".activities.selectors.IntentSelectorActivity" />
+        <activity
+            android:name=".activities.selectors.ShortcutSelectActivity"
+            android:label="@string/prem_launch_shortcut_no_format" />
         <activity
             android:name=".tasker.activities.ToggleGestureActivity"
             android:exported="true"
-            android:icon="@drawable/ic_gesture_black_24dp"
+            android:icon="@drawable/gesture"
             android:label="@string/toggle_gestures_prem">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
@@ -122,7 +126,7 @@
         <activity
             android:name=".tasker.activities.ToggleNavActivity"
             android:exported="true"
-            android:icon="@drawable/ic_border_bottom_black_24dp"
+            android:icon="@drawable/border_bottom"
             android:label="@string/toggle_nav_prem">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
@@ -131,16 +135,17 @@
         <activity
             android:name=".tasker.activities.EventConfigureActivity"
             android:exported="true"
-            android:icon="@drawable/ic_gesture_black_24dp"
+            android:icon="@drawable/gesture"
             android:label="@string/prem_tasker_event">
             <intent-filter>
                 <action android:name="net.dinglisch.android.tasker.ACTION_EDIT_EVENT" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.ui.TroubleshootingActivity" />
 
         <service
             android:name=".tiles.GestureToggle"
-            android:icon="@drawable/ic_gesture_black_24dp"
+            android:icon="@drawable/gesture"
             android:label="@string/gestures_off"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
@@ -149,7 +154,7 @@
         </service>
         <service
             android:name=".tiles.NavBarToggle"
-            android:icon="@drawable/ic_border_bottom_black_24dp"
+            android:icon="@drawable/border_bottom"
             android:label="@string/nav_shown"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
@@ -245,7 +250,7 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_border_bottom_black_24dp" />
+            android:resource="@drawable/border_bottom" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />

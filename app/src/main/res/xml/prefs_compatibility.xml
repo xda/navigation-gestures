@@ -5,56 +5,63 @@
         android:title="@string/warning"
         android:summary="@string/compatibility_warning" />
 
-    <!--<SwitchPreference-->
-        <!--android:title="@string/use_root"-->
-        <!--android:key="use_root"-->
-        <!--android:defaultValue="false" />-->
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:title="@string/nav_hiding"
+        android:key="nav_hiding">
 
-    <SwitchPreference
-        android:title="@string/hide_navbar_in_landscape"
-        android:summary="@string/hide_navbar_in_landscape_desc"
-        android:key="rot270_fix"
-        android:defaultValue="@bool/rot_fix_default" />
+        <SwitchPreference
+            android:title="@string/hide_navbar_in_landscape"
+            android:summary="@string/hide_navbar_in_landscape_desc"
+            android:key="rot270_fix"
+            android:defaultValue="@bool/rot_fix_default" />
 
-    <SwitchPreference
-        android:title="@string/hide_navbar_in_upside_down"
-        android:summary="@string/hide_navbar_in_upside_down_desc"
-        android:key="rot180_fix"
-        android:defaultValue="@bool/rot_fix_default" />
+        <SwitchPreference
+            android:title="@string/hide_navbar_in_upside_down"
+            android:summary="@string/hide_navbar_in_upside_down_desc"
+            android:key="rot180_fix"
+            android:defaultValue="@bool/rot_fix_default" />
 
-    <SwitchPreference
-        android:title="@string/tablet_mode"
-        android:summary="@string/tablet_mode_desc"
-        android:key="tablet_mode"
-        android:defaultValue="@bool/tablet_mode_default" />
+        <SwitchPreference
+            android:title="@string/tablet_mode"
+            android:summary="@string/tablet_mode_desc"
+            android:key="tablet_mode"
+            android:defaultValue="@bool/tablet_mode_default" />
 
-    <SwitchPreference
-        android:title="@string/alternate_home"
-        android:summary="@string/alternate_home_desc"
-        android:key="alternate_home"
-        android:defaultValue="@bool/alternate_home_default" />
+        <SwitchPreference
+            android:title="@string/orig_nav_in_immersive"
+            android:summary="@string/orig_nav_in_immersive_desc"
+            android:key="orig_nav_in_immersive"
+            android:defaultValue="@bool/orig_nav_in_immersive_default" />
 
-    <SwitchPreference
-        android:title="@string/orig_nav_in_immersive"
-        android:summary="@string/orig_nav_in_immersive_desc"
-        android:key="orig_nav_in_immersive"
-        android:defaultValue="@bool/orig_nav_in_immersive_default" />
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
-    <SwitchPreference
-        android:title="@string/use_immersive_mode_when_nav_hidden"
-        android:summary="@string/use_immersive_mode_when_nav_hidden_desc"
-        android:key="use_immersive_mode_when_nav_hidden"
-        android:defaultValue="@bool/immersive_nav_default" />
+    <PreferenceCategory
+        android:title="@string/miscellaneous">
 
-    <Preference
-        android:title="@string/imm_blacklist"
-        android:summary="@string/imm_blacklist_desc"
-        android:dependency="use_immersive_mode_when_nav_hidden"
-        android:key="immersive_blacklist" />
+        <SwitchPreference
+            android:title="@string/flashlight_toggle_compat"
+            android:summary="@string/flashlight_toggle_compat_desc"
+            android:key="flashlight_compat"
+            android:defaultValue="@bool/flashlight_compat_default" />
 
-    <!--<SwitchPreference-->
-        <!--android:title="@string/use_root"-->
-        <!--android:summary="@string/use_root_desc"-->
-        <!--android:key="use_root" />-->
+        <SwitchPreference
+            android:title="@string/alternate_home"
+            android:summary="@string/alternate_home_desc"
+            android:key="alternate_home"
+            android:defaultValue="@bool/alternate_home_default" />
+
+        <SwitchPreference
+            android:title="@string/use_immersive_mode_when_nav_hidden"
+            android:summary="@string/use_immersive_mode_when_nav_hidden_desc"
+            android:key="use_immersive_mode_when_nav_hidden"
+            android:defaultValue="@bool/immersive_nav_default" />
+
+        <Preference
+            android:title="@string/imm_blacklist"
+            android:summary="@string/imm_blacklist_desc"
+            android:dependency="use_immersive_mode_when_nav_hidden"
+            android:key="immersive_blacklist" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

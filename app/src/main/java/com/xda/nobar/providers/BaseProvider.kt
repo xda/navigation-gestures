@@ -2,7 +2,6 @@
 
 package com.xda.nobar.providers
 
-import android.annotation.LayoutRes
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -10,12 +9,14 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.widget.RemoteViews
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager
-import com.xda.nobar.App
 import com.xda.nobar.R
-import com.xda.nobar.activities.SettingsActivity
+import com.xda.nobar.activities.ui.SettingsActivity
+import com.xda.nobar.util.app
+import com.xda.nobar.util.prefManager
 import dalvik.system.DexFile
 import java.io.IOException
 
@@ -64,19 +65,18 @@ abstract class BaseProvider: AppWidgetProvider() {
         when (intent.action) {
             ACTION_PERFORM_TOGGLE -> {
                 if (intent.hasExtra(EXTRA_WHICH)) {
-                    val app = context.applicationContext as App
                     val which = intent.getIntExtra(EXTRA_WHICH, -1)
                     when (which) {
                         GEST -> {
-                            app.toggleGestureBar()
+                            context.app.toggleGestureBar()
                             sendUpdate(context)
                         }
                         NAV -> {
-                            app.toggleNavState()
+                            context.app.toggleNavState()
                             sendUpdate(context)
                         }
                         IMM -> {
-                            app.toggleImmersiveWhenNavHidden()
+                            context.app.toggleImmersiveWhenNavHidden()
                             sendUpdate(context)
                         }
                     }
@@ -108,19 +108,18 @@ abstract class BaseProvider: AppWidgetProvider() {
         } else {
             extras = intent.extras
             if (extras != null && extras.containsKey("cocktailIds")) {
-                val cocktailIds = extras.getIntArray("cocktailIds")
+                val cocktailIds = extras.getIntArray("cocktailIds") ?: return
                 onUpdate(context, SlookCocktailManager.getInstance(context), cocktailIds)
             }
         }
     }
 
     internal fun handleUpdate(context: Context, @LayoutRes layout: Int): RemoteViews {
-        val app = context.applicationContext as App
         val views = RemoteViews(context.packageName, layout)
 
-        val gestures = app.prefManager.isActive
-        val hideNav = app.prefManager.navHidden
-        val useImm = app.prefManager.useImmersiveWhenNavHidden
+        val gestures = context.app.prefManager.isActive
+        val hideNav = context.app.prefManager.shouldUseOverscanMethod
+        val useImm = context.app.prefManager.useImmersiveWhenNavHidden
 
         views.setTextViewText(R.id.gesture_status, context.resources.getText(
                 if (gestures) R.string.gestures_on else R.string.gestures_off))
@@ -161,5 +160,5 @@ abstract class BaseProvider: AppWidgetProvider() {
 
     internal open fun onVisibilityChanged(context: Context, cocktailId: Int, visibility: Int) {}
 
-    internal open fun onUpdate(context: Context, manager: SlookCocktailManager, ids: IntArray) {}
+    internal open fun onUpdate(context: Context, manager: SlookCocktailManager, ids: IntArray?) {}
 }

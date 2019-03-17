@@ -2,19 +2,19 @@ package com.xda.nobar.adapters
 
 import android.content.pm.PackageManager
 import android.content.res.Resources
-import android.support.v4.content.ContextCompat
-import android.support.v7.util.SortedList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.SortedList
 import com.rey.material.widget.CheckedImageView
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnAppSelectedListener
-import com.xda.nobar.util.AppInfo
-import com.xda.nobar.util.AppInfoSorterCallback
-import com.xda.nobar.util.Utils
+import com.xda.nobar.adapters.info.AppInfo
+import com.xda.nobar.adapters.info.AppInfoSorterCallback
+import com.xda.nobar.util.toBitmapDrawable
 
 /**
  * For use by BaseAppSelectActivity
@@ -55,7 +55,7 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
             view.context.resources
         }
         icon.background = try {
-            Utils.getBitmapDrawable(remoteResources.getDrawable(app.icon), holder.view.context.resources)
+            remoteResources.getDrawable(app.icon).toBitmapDrawable(view.context.resources)
                     ?: view.context.resources.getDrawable(R.drawable.blank)
         } catch (e: Resources.NotFoundException) {
             ContextCompat.getDrawable(view.context, R.drawable.blank)

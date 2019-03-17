@@ -29,7 +29,7 @@
                 android:layout_height="80dp"
                 android:background="@drawable/circle"
                 android:padding="8dp"
-                android:src="@drawable/ic_gesture_black_24dp"
+                android:src="@drawable/gesture"
                 android:tint="@color/color_disabled" />
 
             <TextView
@@ -60,7 +60,7 @@
                 android:layout_height="80dp"
                 android:background="@drawable/circle"
                 android:padding="8dp"
-                android:src="@drawable/ic_border_bottom_black_24dp"
+                android:src="@drawable/border_bottom"
                 android:tint="@color/color_disabled" />
 
             <TextView
@@ -91,7 +91,7 @@
                 android:layout_height="80dp"
                 android:background="@drawable/circle"
                 android:padding="8dp"
-                android:src="@drawable/ic_fullscreen_black_24dp"
+                android:src="@drawable/fullscreen"
                 android:tint="@color/color_disabled" />
 
             <TextView
@@ -115,7 +115,7 @@
             android:layout_marginBottom="16dp"
             android:background="@drawable/circle"
             android:padding="12dp"
-            android:src="@drawable/ic_settings_black_24dp" />
+            android:src="@drawable/settings" />
 
     </LinearLayout>
 

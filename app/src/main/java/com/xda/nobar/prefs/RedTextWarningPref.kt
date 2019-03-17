@@ -2,10 +2,10 @@ package com.xda.nobar.prefs
 
 import android.content.Context
 import android.graphics.Color
-import android.preference.Preference
 import android.util.AttributeSet
-import android.view.View
 import android.widget.TextView
+import androidx.preference.Preference
+import androidx.preference.PreferenceViewHolder
 
 /**
  * Simple preference that sets both the title and summary text color to red
@@ -22,11 +22,11 @@ class RedTextWarningPref : Preference {
         isEnabled = false
     }
 
-    override fun onBindView(view: View) {
-        super.onBindView(view)
+    override fun onBindViewHolder(holder: PreferenceViewHolder) {
+        super.onBindViewHolder(holder)
 
-        val titleView = view.findViewById<TextView>(com.android.internal.R.id.title)
-        val summaryView = view.findViewById<TextView>(com.android.internal.R.id.summary)
+        val titleView = holder.itemView.findViewById<TextView>(context.resources.getIdentifier("title", "id", "android"))
+        val summaryView = holder.itemView.findViewById<TextView>(context.resources.getIdentifier("summary", "id", "android"))
 
         titleView.setTextColor(Color.RED)
         summaryView.setTextColor(Color.RED)
