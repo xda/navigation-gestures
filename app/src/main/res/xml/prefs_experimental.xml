@@ -20,12 +20,12 @@
         android:key="full_overscan"
         />
 
-    <!--<SwitchPreference-->
-        <!--android:title="@string/anchor_pill"-->
-        <!--android:summary="@string/anchor_pill_desc"-->
-        <!--android:key="anchor_pill"-->
-        <!--android:defaultValue="@bool/anchor_pill_default"-->
-        <!--/>-->
+    <SwitchPreference
+        android:title="@string/anchor_pill"
+        android:summary="@string/anchor_pill_desc"
+        android:key="anchor_pill"
+        android:defaultValue="@bool/anchor_pill_default"
+        />
 
     <!--<SwitchPreference-->
         <!--android:defaultValue="false"-->
