@@ -125,24 +125,25 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private val anchoredHomeY: Int
         get() {
             val diff = try {
-                val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
+                if (context.prefManager.run { shouldUseOverscanMethod || useTabletMode }) {
+                    val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
 
-                val rotation = context.rotation
+                    val rotation = context.rotation
 
-                if (rotation == Surface.ROTATION_270) {
-                    if (!context.prefManager.useRot270Fix)
-                        frame.left.absoluteValue
-                    else
+                    if (rotation == Surface.ROTATION_270) {
+                        if (!context.prefManager.useRot270Fix)
+                            frame.left.absoluteValue
+                        else
+                            frame.right - context.realScreenSize.y
+                    } else {
                         frame.right - context.realScreenSize.y
-                } else {
-                    frame.right - context.realScreenSize.y
-                }
-
+                    }
+                } else 0
             } catch (e: Exception) {
                 0
             }
 
-            return context.prefManager.homeY + diff.absoluteValue
+            return (context.prefManager.homeY + diff.absoluteValue)
         }
 
     val adjustedWidth: Int
