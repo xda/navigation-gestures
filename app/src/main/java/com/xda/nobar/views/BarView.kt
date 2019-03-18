@@ -657,14 +657,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun handleRotationOrAnchorUpdate() {
-        handler?.postDelayed({
+        handler?.post {
             verticalMode(isVertical)
 
             updatePositionAndDimens()
 
             adjustPillShadow()
             updateLargerHitbox()
-        }, 200)
+        }
     }
 
     private fun verticalMode(enabled: Boolean) {
