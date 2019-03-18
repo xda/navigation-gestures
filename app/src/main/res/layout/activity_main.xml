@@ -27,23 +27,22 @@
         android:textColor="#d50000"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/prem_wrapper"
+        android:id="@+id/disable_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.13" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintVertical_bias="0.13"
+        />
 
     <LinearLayout
         android:id="@+id/switch_wrapper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/troubleshooting_wrapper"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/disable_hint">
 
         <com.xda.nobar.views.TextSwitch
             android:minHeight="48dp"
@@ -54,25 +53,26 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             app:title_text="@string/activated"
-            app:title_text_size="18sp" />
+            app:title_text_size="18sp"
+            />
 
         <com.xda.nobar.views.TextSwitch
             android:id="@+id/hide_nav"
             android:minHeight="48dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             app:summary_text="@string/hide_nav_summary"
             app:title_text="@string/hide_nav"
-            app:title_text_size="18sp" />
+            app:title_text_size="18sp"
+            />
 
         <LinearLayout
             android:id="@+id/fix_immersive_wrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="8dp"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:visibility="gone"
@@ -89,8 +89,9 @@
 
             <TextView
                 android:id="@+id/fix_immersive_summary"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:textAlignment="center"
                 android:text="@string/fix_immersive_desc"
                 />
 
@@ -129,7 +130,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/switch_wrapper"
+        app:layout_constraintTop_toBottomOf="@id/troubleshooting_wrapper"
         app:layout_constraintVertical_bias="0.83">
 
         <LinearLayout
@@ -145,7 +146,8 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?android:selectableItemBackground"
-                android:padding="4dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
