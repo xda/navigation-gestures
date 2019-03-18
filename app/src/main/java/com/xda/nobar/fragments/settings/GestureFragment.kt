@@ -40,9 +40,9 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
     private val listPrefs = ArrayList<SectionableListPreference>()
     private val actionHolder by lazy { activity!!.actionHolder }
 
-    private val sectionedCategory by lazy { findPreference<PreferenceCategory>(SECTION_GESTURES) }
-    private val swipeUp by lazy { findPreference<Preference>(actionHolder.actionUp) }
-    private val swipeUpHold by lazy { findPreference<Preference>(actionHolder.actionUpHold) }
+    private val sectionedCategory by lazy { findPreference<PreferenceCategory>(SECTION_GESTURES)!! }
+    private val swipeUp by lazy { findPreference<Preference>(actionHolder.actionUp)!! }
+    private val swipeUpHold by lazy { findPreference<Preference>(actionHolder.actionUpHold)!! }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -58,7 +58,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
 
         activity?.title = resources.getText(R.string.gestures)
 
-        val sectionedPill = findPreference<SwitchPreference>(PrefManager.SECTIONED_PILL)
+        val sectionedPill = findPreference<SwitchPreference>(PrefManager.SECTIONED_PILL)!!
 
         sectionedCategory.isVisible = sectionedPill.isChecked
         swipeUp.isVisible = !sectionedPill.isChecked

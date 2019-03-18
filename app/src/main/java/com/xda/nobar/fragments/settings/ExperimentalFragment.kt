@@ -24,7 +24,7 @@ class ExperimentalFragment : BasePrefFragment() {
     }
 
     private fun setListeners() {
-        val winFix = findPreference<Preference>(WINDOW_FIX)
+        val winFix = findPreference<Preference>(WINDOW_FIX)!!
         winFix.setOnPreferenceClickListener {
             val blIntent = Intent(activity, BlacklistSelectorActivity::class.java)
             blIntent.putExtra(BlacklistSelectorActivity.EXTRA_WHICH, BlacklistSelectorActivity.FOR_WIN)

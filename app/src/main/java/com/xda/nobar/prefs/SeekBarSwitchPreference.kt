@@ -55,7 +55,7 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
 
-        val switch = holder.itemView.findViewById<Switch>(AndroidResources.ANDROID_R_SWITCH_WIDGET)
+        val switch = holder.itemView.findViewById<Switch>(android.R.id.switch_widget)
 
         switch.apply {
             setOnClickListener {  }
