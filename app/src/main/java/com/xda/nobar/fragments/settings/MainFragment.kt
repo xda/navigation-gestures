@@ -16,6 +16,7 @@ class MainFragment : PreferenceFragmentCompat() {
         const val BEHAVIOR = "behavior"
         const val COMPATIBILITY = "compatibility"
         const val EXPERIMENTAL = "experimental"
+        const val BACKUP_RESTORE = "backup_and_restore"
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -26,33 +27,27 @@ class MainFragment : PreferenceFragmentCompat() {
         super.onResume()
 
         activity?.title = resources.getText(R.string.settings)
-
-        setListeners()
     }
 
-    private fun setListeners() {
-        val listener = Preference.OnPreferenceClickListener {
-            val whichFrag = when (it.key) {
-                GESTURES -> GestureFragment()
-                APPEARANCE -> AppearanceFragment()
-                BEHAVIOR -> BehaviorFragment()
-                COMPATIBILITY -> CompatibilityFragment()
-                EXPERIMENTAL -> ExperimentalFragment()
-                else -> null
-            }
-
-            if (whichFrag != null) fragmentManager
-                    ?.beginAnimatedTransaction()
-                    ?.replace(R.id.content, whichFrag, it.key)
-                    ?.addToBackStack(it.key)
-                    ?.commit()
-            true
+    override fun onPreferenceTreeClick(preference: Preference?): Boolean {
+        val (frag, ret) = when (preference?.key) {
+            GESTURES -> GestureFragment() to true
+            APPEARANCE -> AppearanceFragment() to true
+            BEHAVIOR -> BehaviorFragment() to true
+            COMPATIBILITY -> CompatibilityFragment() to true
+            EXPERIMENTAL -> ExperimentalFragment() to true
+            BACKUP_RESTORE -> BackupRestoreFragment() to true
+            else -> null to super.onPreferenceTreeClick(preference)
         }
 
-        findPreference<Preference>(GESTURES)?.onPreferenceClickListener = listener
-        findPreference<Preference>(APPEARANCE)?.onPreferenceClickListener = listener
-        findPreference<Preference>(BEHAVIOR)?.onPreferenceClickListener = listener
-        findPreference<Preference>(COMPATIBILITY)?.onPreferenceClickListener = listener
-        findPreference<Preference>(EXPERIMENTAL)?.onPreferenceClickListener = listener
+        if (frag != null) {
+            fragmentManager
+                    ?.beginAnimatedTransaction()
+                    ?.replace(R.id.content, frag, preference?.key)
+                    ?.addToBackStack(preference?.key)
+                    ?.commit()
+        }
+
+        return ret
     }
 }

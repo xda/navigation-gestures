@@ -5,29 +5,40 @@
         android:title="@string/gestures"
         android:summary="@string/gestures_desc"
         android:icon="@drawable/gesture"
-        android:key="gestures" />
+        android:key="gestures"
+        />
 
     <Preference
         android:title="@string/appearance"
         android:summary="@string/appearance_desc"
         android:icon="@drawable/color_lens"
-        android:key="appearance" />
+        android:key="appearance"
+        />
 
     <Preference
         android:title="@string/behavior"
         android:summary="@string/behavior_desc"
         android:icon="@drawable/animation"
-        android:key="behavior" />
+        android:key="behavior"
+        />
 
     <Preference
         android:title="@string/compatibility"
         android:summary="@string/compatibility_pref_desc"
         android:icon="@drawable/warning"
-        android:key="compatibility" />
+        android:key="compatibility"
+        />
 
     <Preference
         android:title="@string/experimental_prefs"
         android:icon="@drawable/test_tube"
-        android:key="experimental" />
+        android:key="experimental"
+        />
+
+    <Preference
+        android:title="@string/backup_and_restore"
+        android:icon="@drawable/storage"
+        android:key="backup_and_restore"
+        />
 
 </PreferenceScreen>

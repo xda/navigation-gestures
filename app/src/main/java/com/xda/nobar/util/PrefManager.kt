@@ -2,6 +2,7 @@ package com.xda.nobar.util
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -17,7 +18,7 @@ import java.util.*
 import kotlin.collections.HashSet
 import kotlin.collections.set
 
-class PrefManager private constructor(private val context: Context) {
+class PrefManager private constructor(context: Context) : ContextWrapper(context) {
     companion object {
         /* Booleans */
         const val IS_ACTIVE = "is_active"
@@ -103,12 +104,12 @@ class PrefManager private constructor(private val context: Context) {
         }
     }
 
-    private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+    private val prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
     val crashlyticsIdEnabled: Boolean
         get() = prefs.getBoolean(ENABLE_CRASHLYTICS_ID, false)
     val useAlternateHome: Boolean
-        get() = getBoolean(ALTERNATE_HOME, context.resources.getBoolean(R.bool.alternate_home_default))
+        get() = getBoolean(ALTERNATE_HOME, resources.getBoolean(R.bool.alternate_home_default))
     val shouldntKeepOverscanOnLock: Boolean
         get() = getBoolean(LOCKSCREEN_OVERSCAN, false)
     val useFullOverscan: Boolean
@@ -119,23 +120,23 @@ class PrefManager private constructor(private val context: Context) {
             putBoolean(HIDE_NAV, value)
         }
     val shouldShowShadow: Boolean
-        get() = getBoolean(SHOW_SHADOW, context.resources.getBoolean(R.bool.show_shadow_default))
+        get() = getBoolean(SHOW_SHADOW, resources.getBoolean(R.bool.show_shadow_default))
     val dontMoveForKeyboard: Boolean
-        get() = getBoolean(STATIC_PILL, context.resources.getBoolean(R.bool.static_pill_default))
+        get() = getBoolean(STATIC_PILL, resources.getBoolean(R.bool.static_pill_default))
     val useRot270Fix: Boolean
-        get() = getBoolean(ROT270_FIX, context.resources.getBoolean(R.bool.rot_fix_default))
+        get() = getBoolean(ROT270_FIX, resources.getBoolean(R.bool.rot_fix_default))
                 && Build.VERSION.SDK_INT < Build.VERSION_CODES.P
     val useRot180Fix: Boolean
-        get() = getBoolean(ROT180_FIX, context.resources.getBoolean(R.bool.rot_fix_default))
+        get() = getBoolean(ROT180_FIX, resources.getBoolean(R.bool.rot_fix_default))
                 && Build.VERSION.SDK_INT < Build.VERSION_CODES.P
     var useTabletMode: Boolean
-        get() = getBoolean(TABLET_MODE, context.resources.getBoolean(R.bool.tablet_mode_default))
+        get() = getBoolean(TABLET_MODE, resources.getBoolean(R.bool.tablet_mode_default))
                 && Build.VERSION.SDK_INT < Build.VERSION_CODES.P
         set(value) {
             putBoolean(TABLET_MODE, value)
         }
     val feedbackSound: Boolean
-        get() = getBoolean(AUDIO_FEEDBACK, context.resources.getBoolean(R.bool.feedback_sound_default))
+        get() = getBoolean(AUDIO_FEEDBACK, resources.getBoolean(R.bool.feedback_sound_default))
     var firstRun: Boolean
         get() = getBoolean(FIRST_RUN, true)
         set(value) {
@@ -144,34 +145,37 @@ class PrefManager private constructor(private val context: Context) {
     val useRoot: Boolean
         get() = getBoolean(USE_ROOT, false) && false //TODO: implement at some point
     val hideInFullscreen: Boolean
-        get() = getBoolean(HIDE_IN_FULLSCREEN, context.resources.getBoolean(R.bool.hide_in_fullscreen_default))
+        get() = getBoolean(HIDE_IN_FULLSCREEN, resources.getBoolean(R.bool.hide_in_fullscreen_default))
     val largerHitbox: Boolean
-        get() = getBoolean(LARGER_HITBOX, context.resources.getBoolean(R.bool.large_hitbox_default))
+        get() = getBoolean(LARGER_HITBOX, resources.getBoolean(R.bool.large_hitbox_default))
     val origBarInFullscreen: Boolean
-        get() = getBoolean(ORIG_NAV_IN_IMMERSIVE, context.resources.getBoolean(R.bool.orig_nav_in_immersive_default))
+        get() = getBoolean(ORIG_NAV_IN_IMMERSIVE, resources.getBoolean(R.bool.orig_nav_in_immersive_default))
     val enableInCarMode: Boolean
-        get() = getBoolean(ENABLE_IN_CAR_MODE, context.resources.getBoolean(R.bool.car_mode_default))
+        get() = getBoolean(ENABLE_IN_CAR_MODE, resources.getBoolean(R.bool.car_mode_default))
     val usePixelsW: Boolean
-        get() = getBoolean(USE_PIXELS_WIDTH, context.resources.getBoolean(R.bool.use_pixels_width_default))
+        get() = getBoolean(USE_PIXELS_WIDTH, resources.getBoolean(R.bool.use_pixels_width_default))
     val usePixelsH: Boolean
-        get() = getBoolean(USE_PIXELS_HEIGHT, context.resources.getBoolean(R.bool.use_pixels_height_default))
+        get() = getBoolean(USE_PIXELS_HEIGHT, resources.getBoolean(R.bool.use_pixels_height_default))
     val usePixelsX: Boolean
-        get() = getBoolean(USE_PIXELS_X, context.resources.getBoolean(R.bool.use_pixels_x_default))
+        get() = getBoolean(USE_PIXELS_X, resources.getBoolean(R.bool.use_pixels_x_default))
     val usePixelsY: Boolean
-        get() = getBoolean(USE_PIXELS_Y, context.resources.getBoolean(R.bool.use_pixels_y_default))
-    val sectionedPill: Boolean
-        get() = getBoolean(SECTIONED_PILL, context.resources.getBoolean(R.bool.sectioned_pill_default))
+        get() = getBoolean(USE_PIXELS_Y, resources.getBoolean(R.bool.use_pixels_y_default))
+    var sectionedPill: Boolean
+        get() = getBoolean(SECTIONED_PILL, resources.getBoolean(R.bool.sectioned_pill_default))
+        set(value) {
+            putBoolean(SECTIONED_PILL, value)
+        }
     val hidePillWhenKeyboardShown: Boolean
-        get() = getBoolean(HIDE_PILL_ON_KEYBOARD, context.resources.getBoolean(R.bool.hide_on_keyboard_default))
+        get() = getBoolean(HIDE_PILL_ON_KEYBOARD, resources.getBoolean(R.bool.hide_on_keyboard_default))
     val anchorPill: Boolean
-        get() = getBoolean(ANCHOR_PILL, context.resources.getBoolean(R.bool.anchor_pill_default))
+        get() = getBoolean(ANCHOR_PILL, resources.getBoolean(R.bool.anchor_pill_default))
     var useImmersiveWhenNavHidden: Boolean
-        get() = getBoolean(USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN, context.resources.getBoolean(R.bool.immersive_nav_default))
+        get() = getBoolean(USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN, resources.getBoolean(R.bool.immersive_nav_default))
         set(value) {
             putBoolean(USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN, value)
         }
     val autoHide: Boolean
-        get() = getBoolean(AUTO_HIDE_PILL, context.resources.getBoolean(R.bool.auto_hide_default))
+        get() = getBoolean(AUTO_HIDE_PILL, resources.getBoolean(R.bool.auto_hide_default))
     var validPrem: Boolean
         get() = getBoolean(VALID_PREM, false)
         set(value) {
@@ -198,44 +202,44 @@ class PrefManager private constructor(private val context: Context) {
             putBoolean(CONFIRMED_SKIP_WSS, value)
         }
     val flashlightCompat: Boolean
-        get() = getBoolean(FLASHLIGHT_COMPAT, context.resources.getBoolean(R.bool.flashlight_compat_default))
+        get() = getBoolean(FLASHLIGHT_COMPAT, resources.getBoolean(R.bool.flashlight_compat_default))
 
     /**
      * Get the user-defined or default pill color
      * @return the color, as a ColorInt
      */
     val pillBGColor: Int
-        get() = getInt(PILL_BG, context.defaultPillBGColor)
+        get() = getInt(PILL_BG, defaultPillBGColor)
     /**
      * Get the user-defined or default pill border color
      * @return the color, as a ColorInt
      */
     val pillFGColor: Int
-        get() = getInt(PILL_FG, context.defaultPillFGColor)
+        get() = getInt(PILL_FG, defaultPillFGColor)
     val pillCornerRadiusDp: Int
-        get() = getInt(PILL_CORNER_RADIUS, context.resources.getInteger(R.integer.default_corner_radius_dp))
+        get() = getInt(PILL_CORNER_RADIUS, resources.getInteger(R.integer.default_corner_radius_dp))
     val pillCornerRadiusPx: Int
-        get() = context.dpAsPx(pillCornerRadiusDp)
+        get() = dpAsPx(pillCornerRadiusDp)
     val animationDurationMs: Int
-        get() = getInt(ANIM_DURATION, context.resources.getInteger(R.integer.default_anim_duration))
+        get() = getInt(ANIM_DURATION, resources.getInteger(R.integer.default_anim_duration))
     val xThresholdDp: Int
-        get() = getInt(X_THRESHOLD, context.resources.getInteger(R.integer.default_x_threshold_dp))
+        get() = getInt(X_THRESHOLD, resources.getInteger(R.integer.default_x_threshold_dp))
     val yThresholdUpDp: Int
-        get() = getInt(Y_THRESHOLD, context.resources.getInteger(R.integer.default_y_threshold_dp))
+        get() = getInt(Y_THRESHOLD, resources.getInteger(R.integer.default_y_threshold_dp))
     val yThresholdDownDp: Int
-        get() = getInt(Y_THRESHOLD_DOWN, context.resources.getInteger(R.integer.default_y_threshold_dp))
+        get() = getInt(Y_THRESHOLD_DOWN, resources.getInteger(R.integer.default_y_threshold_dp))
     val xThresholdPx: Int
-        get() = context.dpAsPx(xThresholdDp)
+        get() = dpAsPx(xThresholdDp)
     val yThresholdUpPx: Int
-        get() = context.dpAsPx(yThresholdUpDp)
+        get() = dpAsPx(yThresholdUpDp)
     val yThresholdDownPx: Int
-        get() = context.dpAsPx(yThresholdDownDp)
+        get() = dpAsPx(yThresholdDownDp)
     val autoHideTime: Int
-        get() = getInt(AUTO_HIDE_PILL_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
+        get() = getInt(AUTO_HIDE_PILL_PROGRESS, resources.getInteger(R.integer.default_auto_hide_time))
     val hideInFullscreenTime: Int
-        get() = getInt(HIDE_IN_FULLSCREEN_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
+        get() = getInt(HIDE_IN_FULLSCREEN_PROGRESS, resources.getInteger(R.integer.default_auto_hide_time))
     val hideOnKeyboardTime: Int
-        get() = getInt(HIDE_PILL_ON_KEYBOARD_PROGRESS, context.resources.getInteger(R.integer.default_auto_hide_time))
+        get() = getInt(HIDE_PILL_ON_KEYBOARD_PROGRESS, resources.getInteger(R.integer.default_auto_hide_time))
     val homeY: Int
         get() {
             val percent = (homeYPercent / 100f)
@@ -243,14 +247,14 @@ class PrefManager private constructor(private val context: Context) {
             return if (usePixelsY)
                 getInt(CUSTOM_Y, defaultY)
             else
-                (percent * context.realScreenSize.y).toInt()
+                (percent * realScreenSize.y).toInt()
         }
     val homeYPercent: Float
         get() = getInt(CUSTOM_Y_PERCENT, defaultYPercentUnscaled) * 0.05f
     val homeX: Int
         get() {
             val percent = (homeXPercent / 100f)
-            val screenWidthHalf = context.realScreenSize.x / 2f - customWidth / 2f
+            val screenWidthHalf = realScreenSize.x / 2f - customWidth / 2f
 
             return if (usePixelsX)
                 getInt(CUSTOM_X, 0)
@@ -258,23 +262,23 @@ class PrefManager private constructor(private val context: Context) {
                 (percent * screenWidthHalf).toInt()
         }
     val homeXPercent: Float
-        get() = getInt(CUSTOM_X_PERCENT, context.resources.getInteger(R.integer.default_pill_x_pos_percent)) / 10f
+        get() = getInt(CUSTOM_X_PERCENT, resources.getInteger(R.integer.default_pill_x_pos_percent)) / 10f
     val customWidth: Int
         get() {
             val percent = (customWidthPercent / 100f)
-            val screenWidth = context.realScreenSize.x
+            val screenWidth = realScreenSize.x
 
             return if (usePixelsW)
-                getInt(CUSTOM_WIDTH, context.resources.getDimensionPixelSize(R.dimen.pill_width_default))
+                getInt(CUSTOM_WIDTH, resources.getDimensionPixelSize(R.dimen.pill_width_default))
             else
                 (percent * screenWidth).toInt()
         }
     val customWidthPercent: Float
-        get() = getInt(CUSTOM_WIDTH_PERCENT, context.resources.getInteger(R.integer.default_pill_width_percent)) / 10f
+        get() = getInt(CUSTOM_WIDTH_PERCENT, resources.getInteger(R.integer.default_pill_width_percent)) / 10f
     val customHeight: Int
         get() {
             var defHeight = customHeightWithoutHitbox
-            if (largerHitbox) defHeight += context.resources.getDimensionPixelSize(R.dimen.pill_large_hitbox_height_increase)
+            if (largerHitbox) defHeight += resources.getDimensionPixelSize(R.dimen.pill_large_hitbox_height_increase)
 
             return defHeight
         }
@@ -283,20 +287,20 @@ class PrefManager private constructor(private val context: Context) {
             val percent = (customHeightPercent / 100f)
 
             return if (usePixelsH)
-                getInt(CUSTOM_HEIGHT, context.resources.getDimensionPixelSize(R.dimen.pill_height_default))
+                getInt(CUSTOM_HEIGHT, resources.getDimensionPixelSize(R.dimen.pill_height_default))
             else
-                (percent * context.realScreenSize.y).toInt()
+                (percent * realScreenSize.y).toInt()
         }
     val customHeightPercent: Float
-        get() = getInt(CUSTOM_HEIGHT_PERCENT, context.resources.getInteger(R.integer.default_pill_height_percent)) / 10f
+        get() = getInt(CUSTOM_HEIGHT_PERCENT, resources.getInteger(R.integer.default_pill_height_percent)) / 10f
     val defaultYPercentUnscaled: Int
-        get() = ((context.navBarHeight / 2f - customHeight / 2f) / context.realScreenSize.y * 2000f).toInt()
+        get() = ((navBarHeight / 2f - customHeight / 2f) / realScreenSize.y * 2000f).toInt()
     val defaultY: Int
-        get() = ((context.navBarHeight / 2f - customHeight / 2f)).toInt()
+        get() = ((navBarHeight / 2f - customHeight / 2f)).toInt()
     val holdTime: Int
-        get() = getInt(HOLD_TIME, context.resources.getInteger(R.integer.default_hold_time))
+        get() = getInt(HOLD_TIME, resources.getInteger(R.integer.default_hold_time))
     val vibrationDuration: Int
-        get() = getInt(VIBRATION_DURATION, context.resources.getInteger(R.integer.default_vibe_time))
+        get() = getInt(VIBRATION_DURATION, resources.getInteger(R.integer.default_vibe_time))
 
     val crashlyticsId: String?
         get() {
@@ -327,6 +331,9 @@ class PrefManager private constructor(private val context: Context) {
             if (value == null) remove(NAVIGATIONBAR_USE_THEME_DEFAULT)
             else putString(NAVIGATIONBAR_USE_THEME_DEFAULT, value)
         }
+
+    val all: Map<String, *>
+        get() = prefs.all
 
     fun getIntentKey(baseKey: String?) = getInt(baseKey + SUFFIX_INTENT, 0)
     fun saveIntentKey(baseKey: String?, res: Int) = putInt(baseKey + SUFFIX_INTENT, res)
@@ -373,7 +380,7 @@ class PrefManager private constructor(private val context: Context) {
      */
     fun getActionsList(map: HashMap<String, Int>) {
         try {
-            val actionHolder = context.actionHolder
+            val actionHolder = actionHolder
 
             val left = getString(actionHolder.actionLeft, actionHolder.typeBack.toString())!!.toInt()
             val right = getString(actionHolder.actionRight, actionHolder.typeRecents.toString())!!.toInt()
@@ -463,6 +470,9 @@ class PrefManager private constructor(private val context: Context) {
     fun getInt(key: String, def: Int) = prefs.getInt(key, def)
     fun getString(key: String, def: String? = null): String? = prefs.getString(key, def)
     fun getStringSet(key: String, def: Set<String>): Set<String> = prefs.getStringSet(key, def) ?: HashSet()
+    fun get(key: String): Any? {
+        return prefs.all[key]
+    }
 
     fun remove(key: String) = prefs.edit().remove(key).apply()
 
@@ -471,4 +481,18 @@ class PrefManager private constructor(private val context: Context) {
     fun putInt(key: String, value: Int) = prefs.edit().putInt(key, value).apply()
     fun putString(key: String, value: String?) = prefs.edit().putString(key, value).apply()
     fun putStringSet(key: String, set: Set<String>) = prefs.edit().putStringSet(key, set).apply()
+    fun put(key: String, value: Any?) {
+        if (value == null) {
+            remove(key)
+            return
+        }
+
+        when (value) {
+            is Boolean -> putBoolean(key, value)
+            is Float -> putFloat(key, value)
+            is Int -> putInt(key, value)
+            is String -> putString(key, value)
+            is Set<*> -> putStringSet(key, value as Set<String>)
+        }
+    }
 }

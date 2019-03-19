@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/gestures">
+
+        <Preference
+            android:title="@string/back_up_gestures"
+            android:summary="@string/back_up_gestures_desc"
+            android:icon="@drawable/backup"
+            android:key="back_up_gestures"
+            />
+
+        <Preference
+            android:title="@string/restore_gestures"
+            android:summary="@string/restore_gestures_desc"
+            android:icon="@drawable/restore"
+            android:key="restore_gestures"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/appearance">
+
+        <Preference
+            android:title="@string/back_up_appearance"
+            android:icon="@drawable/backup"
+            android:key="back_up_appearance"
+            />
+
+        <Preference
+            android:title="@string/restore_appearance"
+            android:icon="@drawable/restore"
+            android:key="restore_appearance"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/behavior">
+
+        <Preference
+            android:title="@string/back_up_behavior"
+            android:icon="@drawable/backup"
+            android:key="back_up_behavior"
+            />
+
+        <Preference
+            android:title="@string/restore_behavior"
+            android:icon="@drawable/restore"
+            android:key="restore_behavior"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/all_settings">
+
+        <Preference
+            android:title="@string/back_up_omni"
+            android:icon="@drawable/backup"
+            android:key="back_up_omni"
+            />
+
+        <Preference
+            android:title="@string/restore_omni"
+            android:icon="@drawable/restore"
+            android:key="restore_omni"
+            />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

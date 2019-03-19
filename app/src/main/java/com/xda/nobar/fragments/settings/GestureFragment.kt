@@ -23,7 +23,6 @@ import com.xda.nobar.util.PrefManager
 import com.xda.nobar.util.actionHolder
 import com.xda.nobar.util.dpAsPx
 import com.xda.nobar.util.minPillHeightPx
-import java.lang.Exception
 import java.util.*
 
 /**
@@ -43,6 +42,37 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
     private val sectionedCategory by lazy { findPreference<PreferenceCategory>(SECTION_GESTURES)!! }
     private val swipeUp by lazy { findPreference<Preference>(actionHolder.actionUp)!! }
     private val swipeUpHold by lazy { findPreference<Preference>(actionHolder.actionUpHold)!! }
+    private val sectionedPill by lazy { findPreference<SwitchPreference>(PrefManager.SECTIONED_PILL)!! }
+
+    private val sectionedPillListener = Preference.OnPreferenceChangeListener { _, newValue ->
+        val new = newValue.toString().toBoolean()
+
+        updateSplitPill(new)
+
+        if (new) {
+            refreshListPrefs()
+
+            updateSummaries()
+
+            AlertDialog.Builder(activity)
+                    .setTitle(R.string.use_recommended_settings)
+                    .setView(R.layout.use_recommended_settings_dialog_message_view)
+                    .setPositiveButton(android.R.string.yes) { _, _ -> setSectionedSettings() }
+                    .setNegativeButton(R.string.no, null)
+                    .show()
+        } else {
+            AlertDialog.Builder(activity)
+                    .setTitle(R.string.back_to_default)
+                    .setMessage(R.string.back_to_default_desc)
+                    .setPositiveButton(android.R.string.yes) { _, _ -> resetSectionedSettings() }
+                    .setNegativeButton(R.string.no, null)
+                    .show()
+
+            refreshListPrefs()
+        }
+
+        true
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -58,7 +88,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
 
         activity?.title = resources.getText(R.string.gestures)
 
-        val sectionedPill = findPreference<SwitchPreference>(PrefManager.SECTIONED_PILL)!!
+        sectionedPill.onPreferenceChangeListener = sectionedPillListener
 
         sectionedCategory.isVisible = sectionedPill.isChecked
         swipeUp.isVisible = !sectionedPill.isChecked
@@ -73,36 +103,6 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
         prefManager.getActionsList(map)
 
         if (map.keys.contains(key)) updateSummaries()
-
-        if (key == PrefManager.SECTIONED_PILL) {
-            val new = sharedPreferences.getBoolean(key, false).toString().toBoolean()
-
-            sectionedCategory.isVisible = new
-            swipeUp.isVisible = !new
-            swipeUpHold.isVisible = !new
-
-            if (new) {
-                refreshListPrefs()
-
-                updateSummaries()
-
-                AlertDialog.Builder(activity)
-                        .setTitle(R.string.use_recommended_settings)
-                        .setView(R.layout.use_recommended_settings_dialog_message_view)
-                        .setPositiveButton(android.R.string.yes) { _, _ -> setSectionedSettings() }
-                        .setNegativeButton(R.string.no, null)
-                        .show()
-            } else {
-                AlertDialog.Builder(activity)
-                        .setTitle(R.string.back_to_default)
-                        .setMessage(R.string.back_to_default_desc)
-                        .setPositiveButton(android.R.string.yes) { _, _ -> resetSectionedSettings() }
-                        .setNegativeButton(R.string.no, null)
-                        .show()
-
-                refreshListPrefs()
-            }
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -381,5 +381,11 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
         }
 
         return ret
+    }
+
+    private fun updateSplitPill(enabled: Boolean) {
+        sectionedCategory.isVisible = enabled
+        swipeUp.isVisible = !enabled
+        swipeUpHold.isVisible = !enabled
     }
 }
