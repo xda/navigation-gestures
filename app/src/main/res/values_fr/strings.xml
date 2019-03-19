@@ -133,6 +133,18 @@
     <string name="something_else">Something else?</string>
     <string name="common_issues">Common Issues</string>
     <string name="not_now">Not Now</string>
+    <string name="back_up_gestures">Back Up Gestures</string>
+    <string name="restore_gestures">Restore Gestures</string>
+    <string name="backup_and_restore">Backup &amp; Restore</string>
+    <string name="saved">Saved</string>
+    <string name="restored">Restored</string>
+    <string name="back_up_appearance">Back Up Appearance</string>
+    <string name="restore_appearance">Restore Appearance</string>
+    <string name="back_up_behavior">Back Up Behavior</string>
+    <string name="restore_behavior">Restore Behavior</string>
+    <string name="back_up_omni">Back Up All Settings</string>
+    <string name="restore_omni">Restore All Settings</string>
+    <string name="all_settings">All Settings</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personnaliser les actions de geste</string>
     <string name="appearance_desc">Personnaliser l’apparence de la pilule de navigation</string>
@@ -194,6 +206,8 @@
     <string name="lockscreen_shortcuts_cut_off">My lock screen shortcuts are cut off.</string>
     <string name="report_to_github">If you can\'t find your solution in the Settings, raise an issue on the GitHub project.</string>
     <string name="pixel_ambient_battery_cut_off">The battery icon on my Pixel\'s Ambient Display is cut off.</string>
+    <string name="back_up_gestures_desc">Back up your current gesture settings to a file.</string>
+    <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Cette appli offre de somptueux gestes de navigation pour n\'importe quel appareil Android. Le mieux, elle n\'a pas besoin de root ! Avant de pouvoir utiliser les gestes, quelques paramétrages sont nécessaires.</string>
     <string name="draw_over_apps_desc">Afin d\'afficher la pilule de Navigation Gestures, vous devrez accorder la permission \"Superposer aux autres applis\". Appuyez sur le bouton ci-dessous pour le faire. Si vous avez installé depuis le Play Store, cette permission est déjà accordée.</string>
@@ -268,9 +282,6 @@
     <!--Split Pill Recommendations-->
     <string name="rec_set_transparent">\u2022 La pilule devient complètement transparente</string>
     <string name="rec_set_y">\u2022 La pilule se déplace tout en bas de l\'écran</string>
-    <string name="rec_swipe_left_right">\u2022 Balayez vers le haut depuis la gauche/droite pour faire un retour</string>
-    <string name="rec_swipe_middle">\u2022 Balayez vers le haut depuis le milieu pour revenir à l\'écran d\'accueil</string>
-    <string name="rec_swipe_hold_middle">\u2022 Balayez vers le haut depuis le milieu et maintenez l\'appui pour le multi-tâches</string>
     <!--Premium-->
     <string name="prem_stat">Status Premium :</string>
     <string name="checking">En cours de vérification…</string>
