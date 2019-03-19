@@ -133,6 +133,18 @@
     <string name="something_else">Something else?</string>
     <string name="common_issues">Common Issues</string>
     <string name="not_now">Not Now</string>
+    <string name="back_up_gestures">Back Up Gestures</string>
+    <string name="restore_gestures">Restore Gestures</string>
+    <string name="backup_and_restore">Backup &amp; Restore</string>
+    <string name="saved">Saved</string>
+    <string name="restored">Restored</string>
+    <string name="back_up_appearance">Back Up Appearance</string>
+    <string name="restore_appearance">Restore Appearance</string>
+    <string name="back_up_behavior">Back Up Behavior</string>
+    <string name="restore_behavior">Restore Behavior</string>
+    <string name="back_up_omni">Back Up All Settings</string>
+    <string name="restore_omni">Restore All Settings</string>
+    <string name="all_settings">All Settings</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizza gesture</string>
     <string name="appearance_desc">Personalizza l\'aspetto della pillola</string>
@@ -194,6 +206,8 @@
     <string name="lockscreen_shortcuts_cut_off">My lock screen shortcuts are cut off.</string>
     <string name="report_to_github">If you can\'t find your solution in the Settings, raise an issue on the GitHub project.</string>
     <string name="pixel_ambient_battery_cut_off">The battery icon on my Pixel\'s Ambient Display is cut off.</string>
+    <string name="back_up_gestures_desc">Back up your current gesture settings to a file.</string>
+    <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Quest\'applicazione rende disponibili I gesti di navigazione per tutti i dispositivi Android. E non è tutto, non richiede il Root! Prima che tu possa usare i gesti, ci sono alcune cose da impostare per farla funzionare.</string>
     <string name="draw_over_apps_desc">Per rendere visibile della barra, avrai bisogno di consentire il permesso per essere mostrata sopra altre applicazioni. Tocca il pulsante sotto per farlo. Se l\'hai installata dal Play Store, questo permesso sarà già stato concesso.</string>
@@ -268,9 +282,6 @@
     <!--Split Pill Recommendations-->
     <string name="rec_set_transparent">\u2022 La pillola diventa completamente trasparente</string>
     <string name="rec_set_y">\u2022 La pillola si muove in fondo allo schermo</string>
-    <string name="rec_swipe_left_right">\u2022 Scorri in su da sinistra/destra per tornare indietro</string>
-    <string name="rec_swipe_middle">\u2022 Scorri in su dal centro per tornare alla home</string>
-    <string name="rec_swipe_hold_middle">\u2022 Scorri in Alto dal Centro e Mantieni per il multitasking</string>
     <!--Premium-->
     <string name="prem_stat">Stato Premium:</string>
     <string name="checking">Controllo…</string>
