@@ -135,6 +135,18 @@ or
     <string name="something_else">Something else?</string>
     <string name="common_issues">Common Issues</string>
     <string name="not_now">Not Now</string>
+    <string name="back_up_gestures">Back Up Gestures</string>
+    <string name="restore_gestures">Restore Gestures</string>
+    <string name="backup_and_restore">Backup &amp; Restore</string>
+    <string name="saved">Saved</string>
+    <string name="restored">Restored</string>
+    <string name="back_up_appearance">Back Up Appearance</string>
+    <string name="restore_appearance">Restore Appearance</string>
+    <string name="back_up_behavior">Back Up Behavior</string>
+    <string name="restore_behavior">Restore Behavior</string>
+    <string name="back_up_omni">Back Up All Settings</string>
+    <string name="restore_omni">Restore All Settings</string>
+    <string name="all_settings">All Settings</string>
     <!--Descriptions-->
     <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
     <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
@@ -197,6 +209,8 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="lockscreen_shortcuts_cut_off">My lock screen shortcuts are cut off.</string>
     <string name="report_to_github">If you can\'t find your solution in the Settings, raise an issue on the GitHub project.</string>
     <string name="pixel_ambient_battery_cut_off">The battery icon on my Pixel\'s Ambient Display is cut off.</string>
+    <string name="back_up_gestures_desc">Back up your current gesture settings to a file.</string>
+    <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Ứng dụng mang đến cử chỉ điều hướng tuyệt vời đến bất kì thiết bị Android. Tốt hơn cả, nó không cần có root! Trước khi bạn có thể sử dụng cử chỉ, có vài thứ cần làm để thiết lập ứng dụng.</string>
     <string name="draw_over_apps_desc">Để Navigation Gesture có thể hiểu thị lên viên điều hướng, bạn phải cho phép vẽ đè lên các ứng dụng khác. Ấn nút bên dưới để thực hiện điều này. Nếu ứng dụng được tải từ Play Store, quyền này sẽ được cho cấp sẵn.</string>
@@ -271,9 +285,6 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <!--Split Pill Recommendations-->
     <string name="rec_set_transparent">Viên điều hướng trong suốt hoàn toàn</string>
     <string name="rec_set_y">Viên điều hướng hạ xuống viền dưới màn hình</string>
-    <string name="rec_swipe_left_right">Vuốt lên ở bên trái/phải để quay lại</string>
-    <string name="rec_swipe_middle">Vuốt lên ở giữa để về trang chính</string>
-    <string name="rec_swipe_hold_middle">Vuốt lên ở giữa và giữ để chạy đa nhiệm</string>
     <!--Premium-->
     <string name="prem_stat">Trạng thái cao cấp:</string>
     <string name="checking">Đang kiểm tra…</string>
