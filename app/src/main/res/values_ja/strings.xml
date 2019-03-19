@@ -133,6 +133,18 @@
     <string name="something_else">Something else?</string>
     <string name="common_issues">Common Issues</string>
     <string name="not_now">Not Now</string>
+    <string name="back_up_gestures">Back Up Gestures</string>
+    <string name="restore_gestures">Restore Gestures</string>
+    <string name="backup_and_restore">Backup &amp; Restore</string>
+    <string name="saved">Saved</string>
+    <string name="restored">Restored</string>
+    <string name="back_up_appearance">Back Up Appearance</string>
+    <string name="restore_appearance">Restore Appearance</string>
+    <string name="back_up_behavior">Back Up Behavior</string>
+    <string name="restore_behavior">Restore Behavior</string>
+    <string name="back_up_omni">Back Up All Settings</string>
+    <string name="restore_omni">Restore All Settings</string>
+    <string name="all_settings">All Settings</string>
     <!--Descriptions-->
     <string name="gestures_desc">ジェスチャーアクションのカスタマイズ</string>
     <string name="appearance_desc">ピルの外観をカスタマイズする</string>
@@ -194,6 +206,8 @@
     <string name="lockscreen_shortcuts_cut_off">My lock screen shortcuts are cut off.</string>
     <string name="report_to_github">If you can\'t find your solution in the Settings, raise an issue on the GitHub project.</string>
     <string name="pixel_ambient_battery_cut_off">The battery icon on my Pixel\'s Ambient Display is cut off.</string>
+    <string name="back_up_gestures_desc">Back up your current gesture settings to a file.</string>
+    <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
     <!--Paragraphs-->
     <string name="app_purpose">このアプリでどのデバイスでも非ルートでナビゲーションジェスチャーを使えるようになります! 利用する前にいくつか設定が必要です。</string>
     <string name="draw_over_apps_desc">ピルを表示させるために\”他のアプリの上に重ねて表示\”を有効にしないといけません。下のボタンをタップして有効にしてください。Playストアからインストールした場合には既に有効になっています。</string>
@@ -269,9 +283,6 @@
     <!--Split Pill Recommendations-->
     <string name="rec_set_transparent">\u2022 ピルが完全に透明になります</string>
     <string name="rec_set_y">\u2022 ピルが画面下部に動きます</string>
-    <string name="rec_swipe_left_right">\u2022 左/右から上にスワイプして戻る</string>
-    <string name="rec_swipe_middle">\u2022 下から上にスワイプしてホームへ</string>
-    <string name="rec_swipe_hold_middle">\u2022 マルチタスクのために下から上にスワイプしてホールド</string>
     <!--Premium-->
     <string name="prem_stat">プレミアムステータス:</string>
     <string name="checking">チェックしています...</string>
