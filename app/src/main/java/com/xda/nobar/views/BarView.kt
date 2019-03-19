@@ -648,11 +648,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (duration > 0) {
             val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-                vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
-            } else {
-                vibrator.vibrate(duration)
-            }
+            try {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
+                } else {
+                    vibrator.vibrate(duration)
+                }
+            } catch (e: NullPointerException) {}
         }
     }
 
