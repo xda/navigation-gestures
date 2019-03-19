@@ -133,6 +133,18 @@
     <string name="something_else">Something else?</string>
     <string name="common_issues">Common Issues</string>
     <string name="not_now">Not Now</string>
+    <string name="back_up_gestures">Back Up Gestures</string>
+    <string name="restore_gestures">Restore Gestures</string>
+    <string name="backup_and_restore">Backup &amp; Restore</string>
+    <string name="saved">Saved</string>
+    <string name="restored">Restored</string>
+    <string name="back_up_appearance">Back Up Appearance</string>
+    <string name="restore_appearance">Restore Appearance</string>
+    <string name="back_up_behavior">Back Up Behavior</string>
+    <string name="restore_behavior">Restore Behavior</string>
+    <string name="back_up_omni">Back Up All Settings</string>
+    <string name="restore_omni">Restore All Settings</string>
+    <string name="all_settings">All Settings</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizar acciones de gestos</string>
     <string name="appearance_desc">Personalizar el aspecto de la barra de gestos</string>
@@ -194,6 +206,8 @@
     <string name="lockscreen_shortcuts_cut_off">My lock screen shortcuts are cut off.</string>
     <string name="report_to_github">If you can\'t find your solution in the Settings, raise an issue on the GitHub project.</string>
     <string name="pixel_ambient_battery_cut_off">The battery icon on my Pixel\'s Ambient Display is cut off.</string>
+    <string name="back_up_gestures_desc">Back up your current gesture settings to a file.</string>
+    <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Esta aplicación proporciona increíbles gestos de navegación para cualquier dispositivo Android. ¡Lo mejor de todo es que no necesita root! Antes de utilizar los gestos, hay algunas cosas que tenemos que hacer para configurar la aplicación.</string>
     <string name="draw_over_apps_desc">Para que Navigation Gestures muestre la barra, tendrás que otorgar el permiso para que pueda dibujarse sobre otras aplicaciones. Pulsa el botón de abajo para hacerlo. Si lo instalaste desde Play Store, ya se habrá otorgado este permiso.</string>
@@ -268,9 +282,6 @@
     <!--Split Pill Recommendations-->
     <string name="rec_set_transparent">\u2022 La barra de gestos se vuelve completamente transparente</string>
     <string name="rec_set_y">\u2022 La barra de gestos se mueve hacia la parte inferior de la pantalla</string>
-    <string name="rec_swipe_left_right">\u2022 Deslizar hacia arriba desde la izquierda/derecha para ir atrás</string>
-    <string name="rec_swipe_middle">\u2022 Deslizar hacia arriba desde el medio para inicio</string>
-    <string name="rec_swipe_hold_middle">\u2022 Deslizar hacia arriba desde el medio y mantener para multitarea</string>
     <!--Premium-->
     <string name="prem_stat">Estado Premium:</string>
     <string name="checking">Comprobando…</string>
