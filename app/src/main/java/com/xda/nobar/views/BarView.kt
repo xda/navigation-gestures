@@ -81,7 +81,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
         }
     }
-    val hiddenPillReasons = HiddenPillReasonManager()
+    private val hiddenPillReasons = HiddenPillReasonManager()
 
     val adjustedHomeY: Int
         get() = if (isVertical) (if (is270Vertical) 1 else -1) * anchoredHomeX else actualHomeY
