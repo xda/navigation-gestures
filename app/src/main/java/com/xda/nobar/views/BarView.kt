@@ -56,7 +56,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     internal val actionHolder = context.actionHolder
 
-    var view: View = View.inflate(context, R.layout.pill, this)
     var shouldReAddOnDetach = false
 
     val params = WindowManager.LayoutParams().apply {
@@ -186,6 +185,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     init {
         alpha = ALPHA_GONE
+        View.inflate(context, R.layout.pill, this)
 
         currentGestureDetector.singleton.loadActionMap()
         PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(this)
@@ -640,8 +640,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if (isSoundEffectsEnabled) {
                 try {
                     playSoundEffect(SoundEffectConstants.CLICK)
-                } catch (e: Exception) {
-                }
+                } catch (e: Exception) {}
             }
         }
 
