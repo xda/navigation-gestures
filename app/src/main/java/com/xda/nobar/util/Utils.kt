@@ -38,35 +38,16 @@ import com.xda.nobar.views.BarView
 val Context.actionHolder: ActionHolder
     get() = ActionHolder.getInstance(applicationContext)
 
+val Context.adjustedNavBarHeight
+    get() = navBarHeight - if (prefManager.useFullOverscan) 0 else 1
+
 val Context.app: App
     get() = applicationContext as App
 
 var Context.blackNav: Boolean
-    get() = throw IllegalAccessException("This field has no read value")
+    get() = !prefManager.useFullOverscan
     set(value) {
-        if (!IntroActivity.needsToRun(this)
-                && hasWss
-                && prefManager.shouldUseOverscanMethod
-                && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            if (value) {
-                val color = Color.BLACK
-                val nColor = Settings.Global.getString(contentResolver, PrefManager.NAVIGATIONBAR_COLOR)
-                val nCurrentColor = Settings.Global.getString(contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR)
-                val nUTD = Settings.Global.getString(contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT)
-
-                if (nColor != color.toString()) prefManager.navigationBarColor = nColor
-                if (nCurrentColor != color.toString()) prefManager.navigationBarCurrentColor = nCurrentColor
-                if (nUTD != "0") prefManager.navigationBarUseThemeDefault = nUTD
-
-                Settings.Global.putInt(contentResolver, PrefManager.NAVIGATIONBAR_COLOR, color)
-                Settings.Global.putInt(contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR, color)
-                Settings.Global.putInt(contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT, 0)
-            } else {
-                Settings.Global.putString(contentResolver, PrefManager.NAVIGATIONBAR_COLOR, prefManager.navigationBarColor)
-                Settings.Global.putString(contentResolver, PrefManager.NAVIGATIONBAR_CURRENT_COLOR, prefManager.navigationBarCurrentColor)
-                Settings.Global.putString(contentResolver, PrefManager.NAVIGATIONBAR_USE_THEME_DEFAULT, prefManager.navigationBarUseThemeDefault)
-            }
-        }
+        app.blackout.apply { if (value) add() else remove() }
     }
 
 val Context.defaultPillBGColor: Int
