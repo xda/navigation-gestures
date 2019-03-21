@@ -20,4 +20,5 @@
     <bool name="alternate_home_default">false</bool>
     <bool name="anchor_pill_default">false</bool>
     <bool name="flashlight_compat_default">false</bool>
+    <bool name="custom_vibration_strength_default">false</bool>
 </resources>

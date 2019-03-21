@@ -17,6 +17,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
+import android.os.Vibrator
 import android.provider.Settings
 import android.util.TypedValue
 import android.view.Surface
@@ -188,6 +189,9 @@ var Context.touchWizNavEnabled: Boolean
         if (hasWss)
             Settings.Global.putString(contentResolver, "navigationbar_hide_bar_enabled", if (value) "0" else null)
     }
+
+val Context.vibrator: Vibrator
+    get() = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
 fun Context.allowHiddenMethods() {
     if (hasWss) Settings.Global.putInt(contentResolver, "hidden_api_policy_p_apps", 1)

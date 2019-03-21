@@ -12,6 +12,7 @@ import android.graphics.drawable.LayerDrawable
 import android.os.*
 import android.preference.PreferenceManager
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -645,11 +646,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         if (duration > 0) {
-            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            val vibrator = context.vibrator
 
             try {
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
+                    vibrator.vibrate(VibrationEffect.createOneShot(duration, context.prefManager.vibrationStrength.apply { Log.e("NoBar", toString()) }))
                 } else {
                     vibrator.vibrate(duration)
                 }

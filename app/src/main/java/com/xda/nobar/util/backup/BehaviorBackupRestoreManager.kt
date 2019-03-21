@@ -32,6 +32,8 @@ class BehaviorBackupRestoreManager(context: Context) : BaseBackupRestoreManager(
         data[PrefManager.X_THRESHOLD] = prefManager.get(PrefManager.X_THRESHOLD)
         data[PrefManager.Y_THRESHOLD] = prefManager.get(PrefManager.Y_THRESHOLD)
         data[PrefManager.Y_THRESHOLD_DOWN] = prefManager.get(PrefManager.Y_THRESHOLD_DOWN)
+        data[PrefManager.CUSTOM_VIBRATION_STRENGTH] = prefManager.get(PrefManager.CUSTOM_VIBRATION_STRENGTH)
+        data[PrefManager.VIBRATION_STRENGTH] = prefManager.get(PrefManager.VIBRATION_STRENGTH)
 
         serialize(dest, data)
     }

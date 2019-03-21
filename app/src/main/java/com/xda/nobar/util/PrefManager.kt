@@ -1,11 +1,13 @@
 package com.xda.nobar.util
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.VibrationEffect
 import android.preference.PreferenceManager
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -52,6 +54,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val CONFIRMED_SKIP_WSS = "has_confirmed_skip_wss"
         const val ANCHOR_PILL = "anchor_pill"
         const val FLASHLIGHT_COMPAT = "flashlight_compat"
+        const val CUSTOM_VIBRATION_STRENGTH = "custom_vibration_strength"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
@@ -74,6 +77,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val AUTO_HIDE_PILL_PROGRESS = "auto_hide_pill_progress"
         const val HIDE_IN_FULLSCREEN_PROGRESS = "hide_in_fullscreen_progress"
         const val HIDE_PILL_ON_KEYBOARD_PROGRESS = "hide_pill_on_keyboard_progress"
+        const val VIBRATION_STRENGTH = "vibration_strength"
 
         /* Strings */
         const val CRASHLYTICS_ID = "crashlytics_id"
@@ -199,6 +203,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         }
     val flashlightCompat: Boolean
         get() = getBoolean(FLASHLIGHT_COMPAT, resources.getBoolean(R.bool.flashlight_compat_default))
+    val customVibrationStrength: Boolean
+        get() = getBoolean(CUSTOM_VIBRATION_STRENGTH, resources.getBoolean(R.bool.custom_vibration_strength_default))
 
     /**
      * Get the user-defined or default pill color
@@ -297,6 +303,11 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getInt(HOLD_TIME, resources.getInteger(R.integer.default_hold_time))
     val vibrationDuration: Int
         get() = getInt(VIBRATION_DURATION, resources.getInteger(R.integer.default_vibe_time))
+    val vibrationStrength: Int
+        @TargetApi(Build.VERSION_CODES.O)
+        get() =
+                if (customVibrationStrength) getInt(VIBRATION_STRENGTH, resources.getInteger(R.integer.default_vibe_strength))
+                else VibrationEffect.DEFAULT_AMPLITUDE
 
     val crashlyticsId: String?
         get() {

@@ -28,6 +28,23 @@
             android:defaultValue="@bool/static_pill_default"
             />
 
+        <SwitchPreference
+            android:title="@string/custom_vibration_strength"
+            android:summary="@string/custom_vibration_strength_desc"
+            android:key="custom_vibration_strength"
+            android:defaultValue="@bool/custom_vibration_strength_default"
+            app:isPreferenceVisible="false"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            android:title="@string/vibration_strength"
+            android:key="vibration_strength"
+            android:defaultValue="@integer/default_vibe_strength"
+            app:minValue="@integer/min_vibe_strength"
+            app:maxValue="@integer/max_vibe_strength"
+            app:isPreferenceVisible="false"
+            />
+
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
