@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.preference.PreferenceManager
@@ -68,9 +67,6 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val PILL_CORNER_RADIUS = "pill_corner_radius"
         const val HOLD_TIME = "hold_time"
         const val VIBRATION_DURATION = "vibration_duration"
-        const val NAVIGATIONBAR_COLOR = "navigationbar_color"
-        const val NAVIGATIONBAR_CURRENT_COLOR = "navigationbar_current_color"
-        const val NAVIGATIONBAR_USE_THEME_DEFAULT = "navigationbar_use_theme_default"
         const val ANIM_DURATION = "anim_duration"
         const val X_THRESHOLD = "x_threshold"
         const val Y_THRESHOLD = "y_threshold"
@@ -312,24 +308,6 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
                 putString(CRASHLYTICS_ID, new)
                 new
             }
-        }
-    var navigationBarColor: String?
-        get() = getString(NAVIGATIONBAR_COLOR, Color.BLACK.toString())
-        set(value) {
-            if (value == null) remove(NAVIGATIONBAR_COLOR)
-            else putString(NAVIGATIONBAR_COLOR, value)
-        }
-    var navigationBarCurrentColor: String?
-        get() = getString(NAVIGATIONBAR_CURRENT_COLOR, Color.BLACK.toString())
-        set(value) {
-            if (value == null) remove(NAVIGATIONBAR_CURRENT_COLOR)
-            else putString(NAVIGATIONBAR_CURRENT_COLOR, value)
-        }
-    var navigationBarUseThemeDefault: String?
-        get() = getString(NAVIGATIONBAR_USE_THEME_DEFAULT, Color.BLACK.toString())
-        set(value) {
-            if (value == null) remove(NAVIGATIONBAR_USE_THEME_DEFAULT)
-            else putString(NAVIGATIONBAR_USE_THEME_DEFAULT, value)
         }
 
     val all: Map<String, *>
