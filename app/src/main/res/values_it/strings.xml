@@ -145,6 +145,8 @@
     <string name="back_up_omni">Back Up All Settings</string>
     <string name="restore_omni">Restore All Settings</string>
     <string name="all_settings">All Settings</string>
+    <string name="custom_vibration_strength">Custom Vibration Strength</string>
+    <string name="vibration_strength">Vibration Strength</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizza gesture</string>
     <string name="appearance_desc">Personalizza l\'aspetto della pillola</string>
@@ -208,6 +210,7 @@
     <string name="pixel_ambient_battery_cut_off">The battery icon on my Pixel\'s Ambient Display is cut off.</string>
     <string name="back_up_gestures_desc">Back up your current gesture settings to a file.</string>
     <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
+    <string name="custom_vibration_strength_desc">Choose a custom vibration strength.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Quest\'applicazione rende disponibili I gesti di navigazione per tutti i dispositivi Android. E non è tutto, non richiede il Root! Prima che tu possa usare i gesti, ci sono alcune cose da impostare per farla funzionare.</string>
     <string name="draw_over_apps_desc">Per rendere visibile della barra, avrai bisogno di consentire il permesso per essere mostrata sopra altre applicazioni. Tocca il pulsante sotto per farlo. Se l\'hai installata dal Play Store, questo permesso sarà già stato concesso.</string>
