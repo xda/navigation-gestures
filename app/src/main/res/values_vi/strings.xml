@@ -147,6 +147,8 @@ or
     <string name="back_up_omni">Back Up All Settings</string>
     <string name="restore_omni">Restore All Settings</string>
     <string name="all_settings">All Settings</string>
+    <string name="custom_vibration_strength">Custom Vibration Strength</string>
+    <string name="vibration_strength">Vibration Strength</string>
     <!--Descriptions-->
     <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
     <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
@@ -211,6 +213,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="pixel_ambient_battery_cut_off">The battery icon on my Pixel\'s Ambient Display is cut off.</string>
     <string name="back_up_gestures_desc">Back up your current gesture settings to a file.</string>
     <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
+    <string name="custom_vibration_strength_desc">Choose a custom vibration strength.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Ứng dụng mang đến cử chỉ điều hướng tuyệt vời đến bất kì thiết bị Android. Tốt hơn cả, nó không cần có root! Trước khi bạn có thể sử dụng cử chỉ, có vài thứ cần làm để thiết lập ứng dụng.</string>
     <string name="draw_over_apps_desc">Để Navigation Gesture có thể hiểu thị lên viên điều hướng, bạn phải cho phép vẽ đè lên các ứng dụng khác. Ấn nút bên dưới để thực hiện điều này. Nếu ứng dụng được tải từ Play Store, quyền này sẽ được cho cấp sẵn.</string>
