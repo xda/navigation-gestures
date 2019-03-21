@@ -650,7 +650,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             try {
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(duration, context.prefManager.vibrationStrength.apply { Log.e("NoBar", toString()) }))
+                    vibrator.vibrate(VibrationEffect.createOneShot(duration, context.prefManager.vibrationStrength))
                 } else {
                     vibrator.vibrate(duration)
                 }
