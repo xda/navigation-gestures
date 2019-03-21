@@ -12,7 +12,6 @@ import android.graphics.drawable.LayerDrawable
 import android.os.*
 import android.preference.PreferenceManager
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
