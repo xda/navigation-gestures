@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.accessibility.AccessibilityEvent
 import com.xda.nobar.util.app
+import com.xda.nobar.util.mainHandler
 
 class ActionReceiver : BroadcastReceiver() {
     companion object {
@@ -35,13 +36,15 @@ class ActionReceiver : BroadcastReceiver() {
         }
 
         private fun sendIntent(context: Context, action: String, extras: Bundle? = null) {
-            val intent = Intent(context, ActionReceiver::class.java)
-            intent.action = action
-            if (extras != null) intent.putExtras(extras)
+            mainHandler.postAtFrontOfQueue {
+                val intent = Intent(context, ActionReceiver::class.java)
+                intent.action = action
+                if (extras != null) intent.putExtras(extras)
 
-            try {
-                context.sendBroadcast(intent)
-            } catch (e: Exception) {}
+                try {
+                    context.sendBroadcast(intent)
+                } catch (e: Exception) {}
+            }
         }
     }
 

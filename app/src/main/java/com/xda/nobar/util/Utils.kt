@@ -17,6 +17,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.os.Vibrator
 import android.provider.Settings
 import android.util.TypedValue
@@ -35,6 +37,8 @@ import com.xda.nobar.util.helpers.bar.ActionHolder
 import com.xda.nobar.views.BarView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+
+val mainHandler = Handler(Looper.getMainLooper())
 
 /* Context */
 
