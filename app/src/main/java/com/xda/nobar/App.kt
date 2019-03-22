@@ -105,69 +105,57 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     override fun onCreate() {
         super.onCreate()
 
-        if (isRightProcess()) {
-            if (prefManager.crashlyticsIdEnabled)
-                Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
-            if (!prefManager.firstRun
-                    && Shell.SU.available()) rootWrapper.onCreate()
+        if (prefManager.crashlyticsIdEnabled)
+            Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
+        if (!prefManager.firstRun
+                && Shell.SU.available()) rootWrapper.onCreate()
 
-            val watchDog = ANRWatchDog()
-            watchDog.setReportMainThreadOnly()
-            watchDog.start()
-            watchDog.setANRListener {
-                Crashlytics.logException(it)
-            }
-
-            allowHiddenMethods()
-
-            if (IntroActivity.needsToRun(this)) {
-                IntroActivity.start(this)
-            }
-
-            stateHandler.register()
-            uiHandler.register()
-            carModeHandler.register()
-            premiumInstallListener.register()
-            permissionListener.register()
-
-            isValidPremium = prefManager.validPrem
-
-            PreferenceManager.getDefaultSharedPreferences(this)
-                    .registerOnSharedPreferenceChangeListener(this)
-
-            refreshPremium()
-
-            if (prefManager.isActive
-                    && !IntroActivity.needsToRun(this)) {
-                addBar()
-            }
-
-            if (prefManager.useRot270Fix
-                    || prefManager.useRot180Fix
-                    || prefManager.useTabletMode
-                    || Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) uiHandler.handleRot()
-
-            if (!IntroActivity.needsToRun(this)) {
-                addImmersiveHelper()
-                uiHandler.onGlobalLayout()
-                immersiveHelperManager.addOnGlobalLayoutListener(uiHandler)
-                immersiveHelperManager.immersiveListener = uiHandler
-            }
-
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-                appOps.startWatchingMode(AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW, packageName, this)
-            }
+        val watchDog = ANRWatchDog()
+        watchDog.setReportMainThreadOnly()
+        watchDog.start()
+        watchDog.setANRListener {
+            Crashlytics.logException(it)
         }
-    }
 
-    private fun isRightProcess(): Boolean {
-        var procName = ""
-        val pid = Process.myPid()
-        val am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        allowHiddenMethods()
 
-        am.runningAppProcesses.filter { it.pid == pid }.forEach { procName = it.processName }
+        if (IntroActivity.needsToRun(this)) {
+            IntroActivity.start(this)
+        }
 
-        return !procName.contains("action")
+        stateHandler.register()
+        uiHandler.register()
+        carModeHandler.register()
+        premiumInstallListener.register()
+        permissionListener.register()
+
+        isValidPremium = prefManager.validPrem
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this)
+
+        refreshPremium()
+
+        if (prefManager.isActive
+                && !IntroActivity.needsToRun(this)) {
+            addBar()
+        }
+
+        if (prefManager.useRot270Fix
+                || prefManager.useRot180Fix
+                || prefManager.useTabletMode
+                || Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) uiHandler.handleRot()
+
+        if (!IntroActivity.needsToRun(this)) {
+            addImmersiveHelper()
+            uiHandler.onGlobalLayout()
+            immersiveHelperManager.addOnGlobalLayoutListener(uiHandler)
+            immersiveHelperManager.immersiveListener = uiHandler
+        }
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            appOps.startWatchingMode(AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW, packageName, this)
+        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
