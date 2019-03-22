@@ -33,6 +33,8 @@ import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.interfaces.OnDialogChoiceMadeListener
 import com.xda.nobar.util.helpers.bar.ActionHolder
 import com.xda.nobar.views.BarView
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /* Context */
 
@@ -87,6 +89,23 @@ val Context.isAccessibilityEnabled: Boolean
 
 val Context.isLandscape: Boolean
     get() = rotation.run { this == Surface.ROTATION_90 || this == Surface.ROTATION_270 }
+
+/**
+ * Check if the navbar is currently hidden
+ * @return true if hidden
+ */
+val Context.isNavBarHidden: Boolean
+    get() {
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            val overscan = Rect(0, 0, 0, 0)
+
+            (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(overscan)
+
+            overscan.bottom < 0 || overscan.top < 0 || overscan.left < 0 || overscan.right < 0
+        } else {
+            prefManager.shouldUseOverscanMethod
+        }
+    }
 
 /**
  * Check if the device is on the KeyGuard (lockscreen)
@@ -195,6 +214,12 @@ val Context.vibrator: Vibrator
 
 fun Context.allowHiddenMethods() {
     if (hasWss) Settings.Global.putInt(contentResolver, "hidden_api_policy_p_apps", 1)
+}
+
+fun Context.checkNavHiddenAsync(listener: (Boolean) -> Unit) {
+    GlobalScope.launch {
+        listener.invoke(isNavBarHidden)
+    }
 }
 
 /**

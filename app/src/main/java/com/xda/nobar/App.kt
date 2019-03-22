@@ -8,7 +8,6 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.ContentObserver
-import android.graphics.Rect
 import android.net.Uri
 import android.os.*
 import android.preference.PreferenceManager
@@ -332,22 +331,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     fun isPillShown() = prefManager.isActive && pillShown
-
-    /**
-     * Check if the navbar is currently hidden
-     * @return true if hidden
-     */
-    fun isNavBarHidden(): Boolean {
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            val overscan = Rect(0, 0, 0, 0)
-
-            (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(overscan)
-
-            overscan.bottom < 0 || overscan.top < 0 || overscan.left < 0 || overscan.right < 0
-        } else {
-            prefManager.shouldUseOverscanMethod
-        }
-    }
 
     /**
      * Hide the navbar

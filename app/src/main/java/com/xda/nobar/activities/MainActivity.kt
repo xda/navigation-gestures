@@ -78,8 +78,8 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             }
         }
 
-        hide_nav.isChecked = prefManager.shouldUseOverscanMethod
         hide_nav.onCheckedChangeListener = navListener
+        checkNavHiddenAsync { hide_nav.isChecked = it }
 
         refresh_prem.setOnClickListener {
             refresh()
