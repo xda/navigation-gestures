@@ -222,7 +222,11 @@ fun Context.allowHiddenMethods() {
 
 fun Context.checkNavHiddenAsync(listener: (Boolean) -> Unit) {
     GlobalScope.launch {
-        listener.invoke(isNavBarHidden)
+        val hidden = isNavBarHidden
+
+        mainHandler.postAtFrontOfQueue {
+            listener.invoke(hidden)
+        }
     }
 }
 
