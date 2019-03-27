@@ -8,8 +8,6 @@ import android.os.Build
 import android.os.IBinder
 import android.view.Display
 import eu.chainfire.libsuperuser.Shell
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 /**
@@ -20,6 +18,11 @@ object IWindowManager {
     const val NAV_BAR_LEFT = 1 shl 0
     const val NAV_BAR_RIGHT = 1 shl 1
     const val NAV_BAR_BOTTOM = 1 shl 2
+
+    var leftOverscan = 0
+    var topOverscan = 0
+    var rightOverscan = 0
+    var bottomOverscan = 0
 
     private val iWindowManagerClass: Class<*> = Class.forName("android.view.IWindowManager")
     private val iWindowManager: Any = run {
@@ -38,19 +41,30 @@ object IWindowManager {
      * @param bottom overscan bottom
      */
     fun setOverscan(left: Int, top: Int, right: Int, bottom: Int): Boolean {
-        return try {
-            iWindowManagerClass
-                    .getMethod("setOverscan", Int::class.java, Int::class.java, Int::class.java, Int::class.java, Int::class.java)
-                    .invoke(iWindowManager, Display.DEFAULT_DISPLAY, left, top, right, bottom)
-            canRunCommands()
-        } catch (e: Throwable) {
-            GlobalScope.launch {
+        return if (leftOverscan != left
+                || topOverscan != top
+                || rightOverscan != right
+                || bottomOverscan != bottom) {
+            leftOverscan = left
+            topOverscan = top
+            rightOverscan = right
+            bottomOverscan = bottom
+
+            try {
+                iWindowManagerClass
+                        .getMethod("setOverscan", Int::class.java, Int::class.java, Int::class.java, Int::class.java, Int::class.java)
+                        .invoke(iWindowManager, Display.DEFAULT_DISPLAY, left, top, right, bottom)
+                canRunCommands()
+            } catch (e: Throwable) {
                 try {
                     Shell.SH.run("wm overscan $left,$top,$right,$bottom")
-                } catch (e: Exception) {}
+                    true
+                } catch (e: Exception) {
+                    false
+                }
             }
-
-            true
+        } else {
+            false
         }
     }
 

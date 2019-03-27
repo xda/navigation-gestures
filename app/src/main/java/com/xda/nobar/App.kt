@@ -330,27 +330,29 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     && hasWss) {
                 addImmersiveHelper()
 
+                val overscan = -adjustedNavBarHeight
+
                 if (!prefManager.useRot270Fix
                         && !prefManager.useTabletMode
                         && !prefManager.useRot180Fix
                         && Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
-                    IWindowManager.setOverscan(0, 0, 0, -adjustedNavBarHeight)
+                    IWindowManager.setOverscan(0, 0, 0, overscan)
                 else {
                     uiHandler.handleRot()
                 }
 
-                blackNav = !prefManager.useFullOverscan
+                val fullOverscan = prefManager.useFullOverscan
+                if (fullOverscan == blackNav) blackNav = !fullOverscan
 
                 if (isTouchWiz && !prefManager.useImmersiveWhenNavHidden) {
                     touchWizNavEnabled = true
                 }
 
-                handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(true) } }
                 navHidden = true
-
-                ContextCompat.startForegroundService(this, Intent(this, ForegroundService::class.java))
             }
         }
+
+        handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(true) } }
     }
 
     /**
@@ -431,8 +433,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     private fun addBarInternalUnconditionally() {
         try {
             wm.addView(bar, bar.params)
-        } catch (e: Exception) {
-        }
+        } catch (e: Exception) {}
     }
 
     /**

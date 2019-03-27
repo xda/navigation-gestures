@@ -3,7 +3,6 @@ package com.xda.nobar.util.helpers
 import android.content.Context
 import android.provider.Settings
 import android.view.ViewTreeObserver
-import android.view.WindowManager
 import com.xda.nobar.util.*
 import com.xda.nobar.views.ImmersiveHelperViewHorizontal
 import com.xda.nobar.views.ImmersiveHelperViewVertical
@@ -70,26 +69,26 @@ class ImmersiveHelperManager(private val context: Context) {
     }
 
     fun add() {
-        val wm = context.getSystemServiceCast<WindowManager>(Context.WINDOW_SERVICE)
+        val wm = context.app.wm
 
         try {
-            wm?.addView(horizontal, horizontal.params)
+            wm.addView(horizontal, horizontal.params)
         } catch (e: Exception) {}
 
         try {
-            wm?.addView(vertical, vertical.params)
+            wm.addView(vertical, vertical.params)
         } catch (e: Exception) {}
     }
 
     fun remove() {
-        val wm = context.getSystemServiceCast<WindowManager>(Context.WINDOW_SERVICE)
+        val wm = context.app.wm
 
         try {
-            wm?.removeView(horizontal)
+            wm.removeView(horizontal)
         } catch (e: Exception) {}
 
         try {
-            wm?.removeView(vertical)
+            wm.removeView(vertical)
         } catch (e: Exception) {}
     }
 

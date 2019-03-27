@@ -165,7 +165,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     var currentGestureDetector: BaseBarViewGestureManager = horizontalGestureManager
 
-    private val wm: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    private val wm: WindowManager = context.app.wm
     val animator = BarAnimator(this)
 
     private val hideThread = HandlerThread("NoBar-Hide").apply { start() }
