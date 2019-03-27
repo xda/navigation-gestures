@@ -144,7 +144,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         if (prefManager.useRot270Fix
                 || prefManager.useRot180Fix
                 || prefManager.useTabletMode
-                || Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) uiHandler.handleRot()
+                || Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+            uiHandler.handleRot(true)
 
         if (!IntroActivity.needsToRun(this)) {
             addImmersiveHelper()
@@ -167,13 +168,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 navbarListeners.forEach { it.onNavStateChange(prefManager.shouldUseOverscanMethod) }
             }
             PrefManager.ROT270_FIX -> {
-                if (prefManager.useRot270Fix) uiHandler.handleRot()
+                if (prefManager.useRot270Fix) uiHandler.handleRot(true)
             }
             PrefManager.ROT180_FIX -> {
-                if (prefManager.useRot180Fix) uiHandler.handleRot()
+                if (prefManager.useRot180Fix) uiHandler.handleRot(true)
             }
             PrefManager.TABLET_MODE -> {
-                if (prefManager.useTabletMode) uiHandler.handleRot()
+                if (prefManager.useTabletMode) uiHandler.handleRot(true)
             }
             PrefManager.ENABLE_IN_CAR_MODE -> {
                 val enabled = prefManager.enableInCarMode
@@ -338,7 +339,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         && Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
                     IWindowManager.setOverscan(0, 0, 0, overscan)
                 else {
-                    uiHandler.handleRot()
+                    uiHandler.handleRot(true)
                 }
 
                 val fullOverscan = prefManager.useFullOverscan
@@ -788,10 +789,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
-        fun handleRot() {
+        fun handleRot(overrideChange: Boolean = false) {
             val rot = wm.defaultDisplay.rotation
 
-            if (oldRot != rot) {
+            if (oldRot != rot || overrideChange) {
                 logicHandler.post {
                     if (pillShown) {
                         bar.handleRotationOrAnchorUpdate()
