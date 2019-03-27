@@ -1,11 +1,14 @@
 package com.xda.nobar.util.helpers.bar
 
 import android.annotation.SuppressLint
-import android.os.*
+import android.os.Looper
 import android.view.MotionEvent
 import androidx.dynamicanimation.animation.DynamicAnimation
-import com.xda.nobar.util.*
+import com.xda.nobar.util.actionHolder
+import com.xda.nobar.util.app
 import com.xda.nobar.util.helpers.HiddenPillReasonManager
+import com.xda.nobar.util.prefManager
+import com.xda.nobar.util.realScreenSize
 import com.xda.nobar.views.BarView
 import kotlinx.android.synthetic.main.pill.view.*
 import kotlin.math.absoluteValue
@@ -33,31 +36,17 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
 
                 parseSwipe()
 
-                if (bar.pill.translationY != 0f) {
-                    bar.pill.animate()
-                            .translationY(0f)
-                            .setDuration(bar.getAnimationDurationMs())
-                            .withEndAction {
-                                if (bar.params.y == bar.adjustedHomeY) {
-                                    isActing = false
-                                    isSwipeUp = false
-                                    isSwipeDown = false
-                                }
-                            }
-                            .start()
-                }
+                bar.animatePillToHome {
+                    if (bar.params.y == bar.adjustedHomeY) {
+                        isActing = false
+                        isSwipeUp = false
+                        isSwipeDown = false
+                    }
 
-                if (bar.pill.translationX != 0f && !bar.isHidden && !bar.isPillHidingOrShowing) {
-                    bar.pill.animate()
-                            .translationX(0f)
-                            .setDuration(bar.getAnimationDurationMs())
-                            .withEndAction {
-                                if (bar.params.x == bar.adjustedHomeX) {
-                                    isActing = false
-                                    bar.isCarryingOutTouchAction = false
-                                }
-                            }
-                            .start()
+                    if (bar.params.x == bar.adjustedHomeX) {
+                        isActing = false
+                        bar.isCarryingOutTouchAction = false
+                    }
                 }
 
                 when {
@@ -84,68 +73,70 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
             MotionEvent.ACTION_MOVE -> {
                 ultimateReturn = handlePotentialSwipe(ev)
 
-                if (isSwipeLeft && !isSwipeUp && !isSwipeRight && !isSwipeDown) {
-                    if (!isActing) isActing = true
+                when {
+                    isSwipeLeft -> {
+                        if (!isActing) isActing = true
 
-                    val velocity = (oldX - ev.rawX)
-                    oldX = ev.rawX
+                        val velocity = (oldX - ev.rawX)
+                        oldX = ev.rawX
 
-                    val screenWidth = context.realScreenSize.x
+                        val screenWidth = context.realScreenSize.y
 
-                    if (bar.params.x < screenWidth / 6 + bar.adjustedHomeX
-                            && bar.getAnimationDurationMs() > 0) {
-                        bar.params.x += (velocity / 2).toInt()
-                        bar.updateLayout()
+                        if (bar.params.x < screenWidth / 6 + bar.adjustedHomeX
+                                && bar.getAnimationDurationMs() > 0) {
+                            bar.params.x += (velocity / 2).toInt()
+                            bar.updateLayout()
+                        }
+
+                        gestureHandler.queueLeftHold()
                     }
 
-                    gestureHandler.queueLeftHold()
-                }
+                    isSwipeRight -> {
+                        if (!isActing) isActing = true
 
-                if (isSwipeRight && !isSwipeLeft && !isSwipeDown && !isSwipeUp) {
-                    if (!isActing) isActing = true
+                        val velocity = (oldX - ev.rawX)
+                        oldX = ev.rawX
 
-                    val velocity = (oldX - ev.rawX)
-                    oldX = ev.rawX
+                        if (bar.getAnimationDurationMs() > 0) {
+                            bar.params.x += (velocity / 2).toInt()
+                            bar.updateLayout()
+                        }
 
-                    if (bar.getAnimationDurationMs() > 0) {
-                        bar.params.x += (velocity / 2).toInt()
-                        bar.updateLayout()
+                        gestureHandler.queueRightHold()
                     }
 
-                    gestureHandler.queueRightHold()
-                }
+                    isSwipeUp || isSwipeDown -> {
+                        if (!isActing) isActing = true
 
-                if ((isSwipeUp || isSwipeDown) && !isSwipeLeft && !isSwipeRight) {
-                    if (!isActing) isActing = true
+                        val velocity = ev.rawY - oldY
+                        oldY = ev.rawY
 
-                    val velocity = ev.rawY - oldY
-                    oldY = ev.rawY
+                        val halfScreen = context.realScreenSize.y / 2f
+                        val bottomParam = bar.params.y - context.app.prefManager.customWidth.toFloat() / 2f
+                        val topParam = bar.params.y + context.app.prefManager.customWidth.toFloat() / 2f
 
-                    val halfScreen = context.realScreenSize.y / 2f
-                    val bottomParam = bar.params.y - context.app.prefManager.customWidth.toFloat() / 2f
-                    val topParam = bar.params.y + context.app.prefManager.customWidth.toFloat() / 2f
-
-                    if (bar.getAnimationDurationMs() > 0) {
-                        when {
-                            bottomParam <= -halfScreen && !isSwipeUp -> {
-                                bar.pill.translationY += velocity
-                            }
-                            topParam >= halfScreen && !isSwipeDown -> {
-                                bar.pill.translationY += velocity
-                            }
-                            else -> {
-                                bar.params.y = bar.params.y + (velocity / 2).toInt()
-                                bar.updateLayout()
+                        if (bar.getAnimationDurationMs() > 0) {
+                            when {
+                                bottomParam <= -halfScreen && !isSwipeUp -> {
+                                    bar.pill.translationY += velocity
+                                }
+                                topParam >= halfScreen && !isSwipeDown -> {
+                                    bar.pill.translationY += velocity
+                                }
+                                else -> {
+                                    bar.params.y = bar.params.y + (velocity / 2).toInt()
+                                    bar.updateLayout()
+                                }
                             }
                         }
-                    }
 
-                    if (isSwipeDown) {
-                        gestureHandler.queueDownHold()
-                    }
+                        if (isSwipeDown) {
+                            gestureHandler.queueDownHold()
+                        }
 
-                    if (isSwipeUp) {
-                        gestureHandler.queueUpHold()
+                        if (isSwipeUp) {
+                            gestureHandler.queueUpHold()
+                        }
                     }
                 }
             }

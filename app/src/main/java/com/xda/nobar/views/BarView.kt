@@ -498,6 +498,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         })
     }
 
+    fun animatePillToHome(completionListener: () -> Unit) {
+        pill.animate()
+                .translationY(0f)
+                .translationX(0f)
+                .setDuration(getAnimationDurationMs())
+                .withEndAction(completionListener)
+    }
+
     fun changePillMargins(margins: Rect) {
         handler?.post {
             (pill.layoutParams as FrameLayout.LayoutParams).apply {
