@@ -608,7 +608,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                 pill.layoutParams = this
             }
-        } catch (e: NoSuchMethodError) {}
+        } catch (e: NoSuchMethodError) {
+        }
     }
 
     fun setMoveForKeyboard(move: Boolean) {
@@ -640,7 +641,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if (isSoundEffectsEnabled) {
                 try {
                     playSoundEffect(SoundEffectConstants.CLICK)
-                } catch (e: Exception) {}
+                } catch (e: Exception) {
+                }
             }
         }
 
@@ -653,7 +655,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 } else {
                     vibrator.vibrate(duration)
                 }
-            } catch (e: NullPointerException) {}
+            } catch (e: NullPointerException) {
+            }
         }
     }
 

@@ -366,7 +366,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
 
             IWindowManager.setOverscan(0, 0, 0, 0)
-            blackNav = false
+
+            if (blackNav) blackNav = false
 
             if (isTouchWiz) {
                 touchWizNavEnabled = false
@@ -687,12 +688,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                     bar.updatePositionAndDimens()
 
-                    val rot = wm.defaultDisplay.rotation
-                    if (oldRot != rot) {
-                        handleRot()
-
-                        oldRot = rot
-                    }
+                    handleRot()
 
                     if (prefManager.origBarInFullscreen) {
                         if (immersiveHelperManager.isFullImmersive()) {
@@ -739,8 +735,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                 removeBar(false)
                             }
 
-                        } catch (e: NullPointerException) {
-                        }
+                        } catch (e: NullPointerException) {}
                     }
                 }
             }
@@ -794,22 +789,25 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         fun handleRot() {
-            logicHandler.post {
-                if (pillShown) {
-                    try {
+            val rot = wm.defaultDisplay.rotation
+
+            if (oldRot != rot) {
+                logicHandler.post {
+                    if (pillShown) {
                         bar.handleRotationOrAnchorUpdate()
-                        bar.updateLargerHitbox()
-                    } catch (e: NullPointerException) {}
+                    }
+
+                    if (prefManager.shouldUseOverscanMethod) {
+                        if (prefManager.useRot270Fix) handle270()
+                        if (prefManager.useRot180Fix) handle180()
+                        if (prefManager.useTabletMode) handleTablet()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) handlePie()
+
+                        if (blackNav) blackout.add()
+                    }
                 }
 
-                if (prefManager.shouldUseOverscanMethod) {
-                    if (prefManager.useRot270Fix) handle270()
-                    if (prefManager.useRot180Fix) handle180()
-                    if (prefManager.useTabletMode) handleTablet()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) handlePie()
-
-                    if (blackNav) blackout.add()
-                }
+                oldRot = rot
             }
         }
 
