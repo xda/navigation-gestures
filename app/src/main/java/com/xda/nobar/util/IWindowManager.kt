@@ -8,6 +8,8 @@ import android.os.Build
 import android.os.IBinder
 import android.view.Display
 import eu.chainfire.libsuperuser.Shell
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 /**
@@ -31,6 +33,16 @@ object IWindowManager {
 
         val binder = serviceManagerClass.getMethod("checkService", String::class.java).invoke(null, Context.WINDOW_SERVICE)
         stubClass.getMethod("asInterface", IBinder::class.java).invoke(null, binder)
+    }
+
+    fun setOverscanAsync(left: Int, top: Int, right: Int, bottom: Int, listener: ((Boolean) -> Unit)? = null) {
+        GlobalScope.launch {
+            val ret = setOverscan(left, top, right, bottom)
+
+            mainHandler.post {
+                listener?.invoke(ret)
+            }
+        }
     }
 
     /**

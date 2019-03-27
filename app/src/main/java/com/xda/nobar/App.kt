@@ -337,7 +337,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         && !prefManager.useTabletMode
                         && !prefManager.useRot180Fix
                         && Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
-                    IWindowManager.setOverscan(0, 0, 0, overscan)
+                    IWindowManager.setOverscanAsync(0, 0, 0, overscan)
                 else {
                     uiHandler.handleRot(true)
                 }
@@ -366,7 +366,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
 
-            IWindowManager.setOverscan(0, 0, 0, 0)
+            IWindowManager.setOverscanAsync(0, 0, 0, 0)
 
             if (blackNav) blackNav = false
 
@@ -814,9 +814,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         private fun handle270() {
             if (wm.defaultDisplay.rotation == Surface.ROTATION_270) {
-                IWindowManager.setOverscan(0, -adjustedNavBarHeight, 0, 0)
+                IWindowManager.setOverscanAsync(0, -adjustedNavBarHeight, 0, 0)
             } else {
-                IWindowManager.setOverscan(0, 0, 0, -adjustedNavBarHeight)
+                IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
             }
         }
 
@@ -828,19 +828,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (prefManager.shouldUseOverscanMethod) {
                 when (wm.defaultDisplay.rotation) {
                     Surface.ROTATION_0 -> {
-                        IWindowManager.setOverscan(0, 0, 0, -adjustedNavBarHeight)
+                        IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
                     }
 
                     Surface.ROTATION_90 -> {
-                        IWindowManager.setOverscan(-adjustedNavBarHeight, 0, 0, 0)
+                        IWindowManager.setOverscanAsync(-adjustedNavBarHeight, 0, 0, 0)
                     }
 
                     Surface.ROTATION_180 -> {
-                        IWindowManager.setOverscan(0, -adjustedNavBarHeight, 0, 0)
+                        IWindowManager.setOverscanAsync(0, -adjustedNavBarHeight, 0, 0)
                     }
 
                     Surface.ROTATION_270 -> {
-                        IWindowManager.setOverscan(0, 0, -adjustedNavBarHeight, 0)
+                        IWindowManager.setOverscanAsync(0, 0, -adjustedNavBarHeight, 0)
                     }
                 }
             }
@@ -855,19 +855,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     IWindowManager.NAV_BAR_LEFT -> {
                         when (rotation) {
                             Surface.ROTATION_0 -> {
-                                IWindowManager.setOverscan(-adjustedNavBarHeight, 0, 0, 0)
+                                IWindowManager.setOverscanAsync(-adjustedNavBarHeight, 0, 0, 0)
                             }
 
                             Surface.ROTATION_90 -> {
-                                IWindowManager.setOverscan(0, -adjustedNavBarHeight, 0, 0)
+                                IWindowManager.setOverscanAsync(0, -adjustedNavBarHeight, 0, 0)
                             }
 
                             Surface.ROTATION_180 -> {
-                                IWindowManager.setOverscan(0, 0, -adjustedNavBarHeight, 0)
+                                IWindowManager.setOverscanAsync(0, 0, -adjustedNavBarHeight, 0)
                             }
 
                             Surface.ROTATION_270 -> {
-                                IWindowManager.setOverscan(0, 0, 0, -adjustedNavBarHeight)
+                                IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
                             }
                         }
                     }
@@ -875,19 +875,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     IWindowManager.NAV_BAR_RIGHT -> {
                         when (rotation) {
                             Surface.ROTATION_0 -> {
-                                IWindowManager.setOverscan(0, 0, -adjustedNavBarHeight, 0)
+                                IWindowManager.setOverscanAsync(0, 0, -adjustedNavBarHeight, 0)
                             }
 
                             Surface.ROTATION_90 -> {
-                                IWindowManager.setOverscan(0, 0, 0, -adjustedNavBarHeight)
+                                IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
                             }
 
                             Surface.ROTATION_180 -> {
-                                IWindowManager.setOverscan(-adjustedNavBarHeight, 0, 0, 0)
+                                IWindowManager.setOverscanAsync(-adjustedNavBarHeight, 0, 0, 0)
                             }
 
                             Surface.ROTATION_270 -> {
-                                IWindowManager.setOverscan(0, -adjustedNavBarHeight, 0, 0)
+                                IWindowManager.setOverscanAsync(0, -adjustedNavBarHeight, 0, 0)
                             }
                         }
                     }
@@ -895,19 +895,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     IWindowManager.NAV_BAR_BOTTOM -> {
                         when (rotation) {
                             Surface.ROTATION_0 -> {
-                                IWindowManager.setOverscan(0, 0, 0, -adjustedNavBarHeight)
+                                IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
                             }
 
                             Surface.ROTATION_90 -> {
-                                IWindowManager.setOverscan(-adjustedNavBarHeight, 0, 0, 0)
+                                IWindowManager.setOverscanAsync(-adjustedNavBarHeight, 0, 0, 0)
                             }
 
                             Surface.ROTATION_180 -> {
-                                IWindowManager.setOverscan(0, -adjustedNavBarHeight, 0, 0)
+                                IWindowManager.setOverscanAsync(0, -adjustedNavBarHeight, 0, 0)
                             }
 
                             Surface.ROTATION_270 -> {
-                                IWindowManager.setOverscan(0, 0, -adjustedNavBarHeight, 0)
+                                IWindowManager.setOverscanAsync(0, 0, -adjustedNavBarHeight, 0)
                             }
                         }
                     }
