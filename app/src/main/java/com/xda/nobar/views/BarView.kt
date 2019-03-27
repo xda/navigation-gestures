@@ -19,6 +19,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.dynamicanimation.animation.DynamicAnimation
+import androidx.dynamicanimation.animation.SpringAnimation
 import com.xda.nobar.R
 import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.HiddenPillReasonManager
@@ -498,12 +499,19 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         })
     }
 
-    fun animatePillToHome(completionListener: () -> Unit) {
-        pill.animate()
-                .translationY(0f)
-                .translationX(0f)
-                .setDuration(getAnimationDurationMs())
-                .withEndAction(completionListener)
+    fun animatePillToHome(xCompletionListener: () -> Unit, yCompletionListener: () -> Unit) {
+        val xAnim = SpringAnimation(pill, SpringAnimation.X, 0f)
+        xAnim.addEndListener { _, _, _, _ ->
+            xCompletionListener.invoke()
+        }
+
+        val yAnim = SpringAnimation(pill, SpringAnimation.Y, 0f)
+        yAnim.addEndListener { _, _, _, _ ->
+            yCompletionListener.invoke()
+        }
+
+        xAnim.start()
+        yAnim.start()
     }
 
     fun changePillMargins(margins: Rect) {

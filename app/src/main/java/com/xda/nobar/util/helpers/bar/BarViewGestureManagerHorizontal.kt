@@ -36,18 +36,21 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
 
                 parseSwipe()
 
-                bar.animatePillToHome {
-                    if (bar.params.x == bar.adjustedHomeX) {
-                        isActing = false
-                        isSwipeLeft = false
-                        isSwipeRight = false
-                    }
-
-                    if (bar.params.y == bar.adjustedHomeY) {
-                        isActing = false
-                        bar.isCarryingOutTouchAction = false
-                    }
-                }
+                bar.animatePillToHome(
+                        {
+                            if (bar.params.x == bar.adjustedHomeX) {
+                                isActing = false
+                                isSwipeLeft = false
+                                isSwipeRight = false
+                            }
+                        },
+                        {
+                            if (bar.params.y == bar.adjustedHomeY) {
+                                isActing = false
+                                bar.isCarryingOutTouchAction = false
+                            }
+                        }
+                )
 
                 when {
                     bar.params.y != bar.adjustedHomeY && !bar.isHidden && !bar.isPillHidingOrShowing -> {
