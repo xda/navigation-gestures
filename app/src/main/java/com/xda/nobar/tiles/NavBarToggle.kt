@@ -25,7 +25,7 @@ class NavBarToggle : TileService(), OnNavBarHideStateChangeListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        app.removeNavbarHideListener(this)
+        app.removeNavBarHideListener(this)
     }
 
     override fun onClick() {

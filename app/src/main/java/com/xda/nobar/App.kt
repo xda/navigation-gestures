@@ -231,7 +231,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     fun addNavBarHideListener(listener: OnNavBarHideStateChangeListener) = navbarListeners.add(listener)
 
-    fun removeNavbarHideListener(listener: OnNavBarHideStateChangeListener) = navbarListeners.remove(listener)
+    fun removeNavBarHideListener(listener: OnNavBarHideStateChangeListener) = navbarListeners.remove(listener)
 
     fun addLicenseCheckListener(listener: OnLicenseCheckResultListener) = licenseCheckListeners.add(listener)
 

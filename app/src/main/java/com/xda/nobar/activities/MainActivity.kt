@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
 
         app.removeLicenseCheckListener(this)
         app.removeGestureActivationListener(this)
-        app.removeNavbarHideListener(this)
+        app.removeNavBarHideListener(this)
 
         try {
             app.removeGestureActivationListener(this)
