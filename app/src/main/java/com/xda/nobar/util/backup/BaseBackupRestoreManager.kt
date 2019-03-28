@@ -30,7 +30,6 @@ abstract class BaseBackupRestoreManager(context: Context) : ContextWrapper(conte
         get() = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             type = "nobar/${this@BaseBackupRestoreManager.type}"
 
-            Log.e("NoBar", type)
             addCategory(Intent.CATEGORY_OPENABLE)
         }
 

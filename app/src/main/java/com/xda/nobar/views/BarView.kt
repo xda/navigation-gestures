@@ -15,7 +15,6 @@ import android.util.AttributeSet
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.dynamicanimation.animation.DynamicAnimation
@@ -62,6 +61,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     val params = WindowManager.LayoutParams().apply {
         x = adjustedHomeX
         y = adjustedHomeY
+
         width = adjustedWidth
         height = adjustedHeight
         gravity = Gravity.CENTER or Gravity.TOP
@@ -367,7 +367,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param alpha desired alpha level (0-1)
      */
     fun animate(listener: Animator.AnimatorListener?, alpha: Float) {
-        handler?.post {
+        mainHandler.post {
             animate().alpha(alpha).setDuration(getAnimationDurationMs())
                     .setListener(object : Animator.AnimatorListener {
                         override fun onAnimationCancel(animation: Animator?) {
@@ -397,7 +397,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Hide" the pill by moving it partially offscreen
      */
     fun hidePill(auto: Boolean, autoReason: String?, overrideBeingTouched: Boolean = false) {
-        context.app.handler.post {
+        mainHandler.post {
             if (auto && autoReason == null) throw IllegalArgumentException("autoReason must not be null when auto is true")
             if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
 
@@ -456,7 +456,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Show" the pill by moving it back to its normal position
      */
     private fun showPillInternal(autoReasonToRemove: String?, forceShow: Boolean = false) {
-        context.app.handler.post {
+        mainHandler.post {
             if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
 
             if (context.app.isPillShown()) {
@@ -487,7 +487,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private fun animateShow(rehide: Boolean, reason: String?) {
         animator.show(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
-            handler?.postDelayed(Runnable {
+            mainHandler.postDelayed(Runnable {
                 isHidden = false
                 isPillHidingOrShowing = false
 
@@ -500,12 +500,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun animatePillToHome(xCompletionListener: () -> Unit, yCompletionListener: () -> Unit) {
-        val xAnim = SpringAnimation(pill, SpringAnimation.X, 0f)
+        val xAnim = SpringAnimation(pill, SpringAnimation.TRANSLATION_X, 0f)
         xAnim.addEndListener { _, _, _, _ ->
             xCompletionListener.invoke()
         }
 
-        val yAnim = SpringAnimation(pill, SpringAnimation.Y, 0f)
+        val yAnim = SpringAnimation(pill, SpringAnimation.TRANSLATION_Y, 0f)
         yAnim.addEndListener { _, _, _, _ ->
             yCompletionListener.invoke()
         }
@@ -515,22 +515,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun changePillMargins(margins: Rect) {
-        handler?.post {
-            (pill.layoutParams as FrameLayout.LayoutParams).apply {
-                bottomMargin = margins.bottom
-                topMargin = margins.top
-                leftMargin = margins.left
-                rightMargin = margins.right
+        (pill.layoutParams as LinearLayout.LayoutParams).apply {
+            bottomMargin = margins.bottom
+            topMargin = margins.top
+            leftMargin = margins.left
+            rightMargin = margins.right
 
-                pill.layoutParams = pill.layoutParams
-            }
+            pill.layoutParams = pill.layoutParams
         }
     }
 
     fun getPillMargins(): Rect {
         val rect = Rect()
 
-        (pill.layoutParams as FrameLayout.LayoutParams).apply {
+        (pill.layoutParams as LinearLayout.LayoutParams).apply {
             rect.bottom = bottomMargin
             rect.top = topMargin
             rect.left = leftMargin
@@ -566,11 +564,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun updateLayout(params: WindowManager.LayoutParams = this.params) {
-        handler?.post {
+        mainHandler.post {
             try {
                 wm.updateViewLayout(this, params)
-            } catch (e: Exception) {
-            }
+            } catch (e: Exception) {}
         }
     }
 
@@ -599,7 +596,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         try {
             //apparently setElevation() doesn't exist on some devices?
             pill.elevation = context.dpAsPx(if (context.prefManager.shouldShowShadow) 2 else 0).toFloat()
-            (pill.layoutParams as FrameLayout.LayoutParams).apply {
+            (pill.layoutParams as LinearLayout.LayoutParams).apply {
                 val shadow = context.prefManager.shouldShowShadow
 
                 val r = if (shadow) context.dpAsPx(DEF_MARGIN_RIGHT_DP) else 0
@@ -624,15 +621,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                 pill.layoutParams = this
             }
-        } catch (e: NoSuchMethodError) {
-        }
+        } catch (e: NoSuchMethodError) {}
     }
 
     fun setMoveForKeyboard(move: Boolean) {
         val wasMoving = params.flags and WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM != 0
 
         if (move != wasMoving) {
-            context.app.handler.post {
+            mainHandler.post {
                 if (move) {
                     params.flags = params.flags or
                             WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
@@ -653,12 +649,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param duration the desired duration
      */
     fun vibrate(duration: Long) {
-        handler?.post {
+        mainHandler.post {
             if (isSoundEffectsEnabled) {
                 try {
                     playSoundEffect(SoundEffectConstants.CLICK)
-                } catch (e: Exception) {
-                }
+                } catch (e: Exception) {}
             }
         }
 
@@ -671,16 +666,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 } else {
                     vibrator.vibrate(duration)
                 }
-            } catch (e: NullPointerException) {
-            }
+            } catch (e: NullPointerException) {}
         }
     }
 
     fun handleRotationOrAnchorUpdate() {
-        handler?.post {
+        mainHandler.postAtFrontOfQueue {
             verticalMode(isVertical)
-
-            updatePositionAndDimens()
 
             adjustPillShadow()
             updateLargerHitbox()
@@ -748,8 +740,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         var changed = false
 
-        updatePositionAndDimens()
-
         if (isVertical) {
             if (is270Vertical) {
                 if (margins.right != m) {
@@ -782,6 +772,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         if (changed) changePillMargins(margins)
+
+        updatePositionAndDimens()
     }
 
     fun updatePositionAndDimens() {

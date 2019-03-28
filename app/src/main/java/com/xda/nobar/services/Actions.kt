@@ -6,12 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.os.Handler
 import android.view.accessibility.AccessibilityEvent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.xda.nobar.interfaces.ReceiverCallback
 import com.xda.nobar.receivers.ActionReceiver
 import com.xda.nobar.util.actionHolder
+import com.xda.nobar.util.mainHandler
 import com.xda.nobar.util.runNougatAction
 import com.xda.nobar.util.runPremiumAction
 
@@ -32,8 +32,6 @@ class Actions : AccessibilityService(), ReceiverCallback {
     }
 
     private val receiver = ActionHandler()
-
-    private val handler = Handler()
 
     override fun onServiceConnected() {
         receiver.register(this, this)
@@ -64,7 +62,7 @@ class Actions : AccessibilityService(), ReceiverCallback {
                     actionHolder.typeBack -> performGlobalAction(GLOBAL_ACTION_BACK)
                     actionHolder.typeSwitch -> runNougatAction {
                         performGlobalAction(GLOBAL_ACTION_RECENTS)
-                        handler.postDelayed({ performGlobalAction(GLOBAL_ACTION_RECENTS) }, 100)
+                        mainHandler.postDelayed({ performGlobalAction(GLOBAL_ACTION_RECENTS) }, 100)
                     }
                     actionHolder.typeSplit -> runNougatAction { performGlobalAction(GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN) }
                     actionHolder.premTypePower -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }

@@ -62,7 +62,7 @@ class BarViewActionHandler(private val bar: BarView) {
         set(value) {
             field = value
             orientationEventListener.disable()
-            bar.handler?.postDelayed({
+            mainHandler.postDelayed({
                 val currentAcc = Settings.System.getInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
                 if (currentAcc == 0) {
                     val rotation = when (currentDegree) {
@@ -78,7 +78,7 @@ class BarViewActionHandler(private val bar: BarView) {
         }
 
     fun sendActionInternal(key: String, map: Map<String, Int>) {
-        bar.handler?.post {
+        mainHandler.post {
             val which = map[key] ?: return@post
 
             if (which == bar.actionHolder.typeNoAction) return@post
@@ -88,7 +88,7 @@ class BarViewActionHandler(private val bar: BarView) {
             bar.vibrate(context.prefManager.vibrationDuration.toLong())
 
             if (key == bar.actionHolder.actionDouble)
-                bar.handler?.postDelayed({ bar.vibrate(context.prefManager.vibrationDuration.toLong()) },
+                mainHandler.postDelayed({ bar.vibrate(context.prefManager.vibrationDuration.toLong()) },
                         context.prefManager.vibrationDuration.toLong())
 
             if (which == bar.actionHolder.typeHide) {
@@ -331,7 +331,7 @@ class BarViewActionHandler(private val bar: BarView) {
                                 }
                             }
                         } catch (e: ActivityNotFoundException) {
-                            context.app.handler.post {
+                            mainHandler.post {
                                 Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
                             }
                         }

@@ -65,7 +65,7 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
     }
 
     fun updateLayout() {
-        context.app.handler.post {
+        mainHandler.post {
             try {
                 context.getSystemServiceCast<WindowManager>(Context.WINDOW_SERVICE)
                         ?.updateViewLayout(this, params)
@@ -75,7 +75,7 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
     }
 
     fun enterNavImmersive() {
-        context.app.handler.post {
+        mainHandler.post {
             systemUiVisibility = systemUiVisibility or
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -85,7 +85,7 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
     }
 
     fun exitNavImmersive() {
-        context.app.handler.post {
+        mainHandler.post {
             systemUiVisibility = systemUiVisibility and
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv() and
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()

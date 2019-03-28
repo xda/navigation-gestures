@@ -18,7 +18,10 @@ import android.media.ImageReader
 import android.media.MediaScannerConnection
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Environment
+import android.os.HandlerThread
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import android.view.animation.AccelerateInterpolator
@@ -26,6 +29,7 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.xda.nobar.util.mainHandler
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -59,7 +63,6 @@ class ScreenshotActivity : AppCompatActivity() {
             return field
         }
     private val mainDisplay by lazy { windowManager.defaultDisplay }
-    private val handler by lazy { Handler(handlerThread.looper) }
 
     private val width: Int
         get() = metrics.widthPixels
@@ -91,13 +94,13 @@ class ScreenshotActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        imageReader.setOnImageAvailableListener(ImageAvailableListener(), handler)
+        imageReader.setOnImageAvailableListener(ImageAvailableListener(), mainHandler)
 
         if (requestCode == REQ && data != null) {
             projection = projectionManager.getMediaProjection(resultCode, data)
 
             createVirtualDisplay()
-            projection.registerCallback(MediaProjectionStopCallback(), handler)
+            projection.registerCallback(MediaProjectionStopCallback(), mainHandler)
         } else {
             finish()
         }
@@ -117,7 +120,7 @@ class ScreenshotActivity : AppCompatActivity() {
     }
 
     private fun stop() {
-        handler.post {
+        mainHandler.post {
             projection.stop()
         }
 
@@ -131,7 +134,7 @@ class ScreenshotActivity : AppCompatActivity() {
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
                 imageReader.surface,
                 null,
-                handler)
+                mainHandler)
     }
 
     @Suppress("DEPRECATION")
@@ -256,7 +259,7 @@ class ScreenshotActivity : AppCompatActivity() {
 
     private inner class MediaProjectionStopCallback : MediaProjection.Callback() {
         override fun onStop() {
-            handler.post {
+            mainHandler.post {
                 virtualDisplay.release()
                 imageReader.setOnImageAvailableListener(null, null)
                 projection.unregisterCallback(this)

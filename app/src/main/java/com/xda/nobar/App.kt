@@ -9,7 +9,10 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.ContentObserver
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.Process
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.view.Display
@@ -87,8 +90,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
     private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()
     private val licenseCheckListeners = ArrayList<OnLicenseCheckResultListener>()
-
-    val handler = Handler(Looper.getMainLooper())
 
     val logicThread = HandlerThread("NoBar-Logic").apply { start() }
 
@@ -243,7 +244,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      */
     fun addBar(callListeners: Boolean = true) {
         if (disabledBarReasonManager.isEmpty()) {
-            handler.post {
+            mainHandler.post {
                 if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, true) }
 
                 addBarInternal()
@@ -252,7 +253,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     fun addImmersiveHelper() {
-        handler.post {
+        mainHandler.post {
             if (!helperAdded) immersiveHelperManager.add()
         }
     }
@@ -261,7 +262,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      * Remove the pill from the screen
      */
     fun removeBar(callListeners: Boolean = true) {
-        handler.post {
+        mainHandler.post {
             if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, false) }
 
             bar.hide(object : Animator.AnimatorListener {
@@ -287,7 +288,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     fun removeImmersiveHelper() {
-        handler.post {
+        mainHandler.post {
             immersiveHelperManager.remove()
         }
     }
@@ -353,7 +354,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
-        handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(true) } }
+        mainHandler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(true) } }
     }
 
     /**
@@ -364,7 +365,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (removeImmersive && prefManager.useImmersiveWhenNavHidden)
                 immersiveHelperManager.exitNavImmersive()
 
-            handler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
+            mainHandler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
 
             IWindowManager.setOverscanAsync(0, 0, 0, 0)
 
@@ -393,7 +394,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     fun addBarInternal(isRefresh: Boolean = true) {
-        handler.post {
+        mainHandler.post {
             try {
                 bar.shouldReAddOnDetach = isRefresh
                 if (isRefresh) wm.removeView(bar)
@@ -417,7 +418,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     fun toggleScreenOn() {
-        bar.handler?.post {
+        mainHandler.post {
             val hasScreenOn = bar.toggleScreenOn()
 
             if (hasScreenOn) {
@@ -459,7 +460,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         override fun onReceive(context: Context?, intent: Intent?) {
             if (!IntroActivity.needsToRun(this@App)) {
-                handler.postDelayed({
+                mainHandler.postDelayed({
                     val action = intent?.action
                     when (action) {
                         Intent.ACTION_REBOOT,
@@ -705,7 +706,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                             bar.immersiveNav = immersiveHelperManager.isNavImmersive() && !keyboardShown
 
-                            handler.post {
+                            mainHandler.post {
                                 if (prefManager.hidePillWhenKeyboardShown) {
                                     if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
                                     else bar.showPill(HiddenPillReasonManager.KEYBOARD)
@@ -777,7 +778,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         private fun handleImmersiveChange(isImmersive: Boolean) {
             if (!IntroActivity.needsToRun(this@App)) {
-                handler.post {
+                mainHandler.post {
                     bar.isImmersive = isImmersive
                     val hideInFullScreen = prefManager.hideInFullscreen
                     if (isImmersive) {

@@ -114,7 +114,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                         val velocity = ev.rawY - oldY
                         oldY = ev.rawY
 
-                        val halfScreen = context.realScreenSize.y / 2f
+                        val halfScreen = context.realScreenSize.x / 2f
                         val bottomParam = bar.params.y - context.app.prefManager.customWidth.toFloat() / 2f
                         val topParam = bar.params.y + context.app.prefManager.customWidth.toFloat() / 2f
 
