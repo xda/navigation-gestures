@@ -11,12 +11,6 @@ import com.xda.nobar.util.beginAnimatedTransaction
  * The configuration activity
  */
 class SettingsActivity : AppCompatActivity() {
-    companion object {
-        const val REQ_APP = 10
-        const val REQ_INTENT = 11
-        const val REQ_SHORTCUT = 12
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)

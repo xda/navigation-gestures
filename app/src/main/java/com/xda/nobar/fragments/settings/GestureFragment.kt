@@ -16,7 +16,6 @@ import com.xda.nobar.activities.selectors.AppLaunchSelectActivity
 import com.xda.nobar.activities.selectors.BaseAppSelectActivity
 import com.xda.nobar.activities.selectors.IntentSelectorActivity
 import com.xda.nobar.activities.selectors.ShortcutSelectActivity
-import com.xda.nobar.activities.ui.SettingsActivity
 import com.xda.nobar.adapters.info.ShortcutInfo
 import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.util.PrefManager
@@ -32,6 +31,10 @@ import java.util.*
 class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
     companion object {
         const val SECTION_GESTURES = "section_gestures"
+
+        const val REQ_APP = 10
+        const val REQ_INTENT = 11
+        const val REQ_SHORTCUT = 12
     }
 
     override val resId = R.xml.prefs_gestures
@@ -107,7 +110,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            SettingsActivity.REQ_APP -> {
+            REQ_APP -> {
                 val key = data?.getStringExtra(BaseAppSelectActivity.EXTRA_KEY) ?: return
                 val appName = data.getStringExtra(AppLaunchSelectActivity.EXTRA_RESULT_DISPLAY_NAME)
                 val forActivity = data.getBooleanExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, false)
@@ -127,7 +130,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
                     }
                 }
             }
-            SettingsActivity.REQ_INTENT -> {
+            REQ_INTENT -> {
                 val key = data?.getStringExtra(BaseAppSelectActivity.EXTRA_KEY) ?: return
 
                 (findPreference<SectionableListPreference?>(key))?.apply {
@@ -141,7 +144,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
                     }
                 }
             }
-            SettingsActivity.REQ_SHORTCUT -> {
+            REQ_SHORTCUT -> {
                 val key = data?.getStringExtra(BaseAppSelectActivity.EXTRA_KEY) ?: return
 
                 (findPreference<SectionableListPreference?>(key))?.apply {
@@ -180,19 +183,19 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
                     intent.putExtra(AppLaunchSelectActivity.CHECKED_ACTIVITY, activity)
                     intent.putExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, forActivity)
 
-                    startActivityForResult(intent, SettingsActivity.REQ_APP)
+                    startActivityForResult(intent, REQ_APP)
                 } else if (newValue == actionHolder.premTypeIntent.toString()) {
                     val intent = Intent(activity, IntentSelectorActivity::class.java)
 
                     intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
 
-                    startActivityForResult(intent, SettingsActivity.REQ_INTENT)
+                    startActivityForResult(intent, REQ_INTENT)
                 } else if (newValue == actionHolder.premTypeLaunchShortcut.toString()) {
                     val intent = Intent(activity, ShortcutSelectActivity::class.java)
 
                     intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
 
-                    startActivityForResult(intent, SettingsActivity.REQ_SHORTCUT)
+                    startActivityForResult(intent, REQ_SHORTCUT)
                 }
 
                 true

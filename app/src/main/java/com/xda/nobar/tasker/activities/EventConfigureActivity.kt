@@ -18,7 +18,7 @@ class EventConfigureActivity : BaseAppSelectActivity<String, AppInfo>(), TaskerP
         get() = TaskerInput(EventInput(gesture))
     override val adapter = AppSelectAdapter(true, false, OnAppSelectedListener {
         gesture = it.packageName
-    }, false, false)
+    }, false, isRemote = false)
 
     private var gesture: String? = null
 
