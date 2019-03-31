@@ -5,4 +5,5 @@
     android:updatePeriodMillis="86400000"
     android:initialLayout="@layout/widget_layout_horiz"
     android:resizeMode="horizontal|vertical"
-    android:widgetCategory="home_screen" />
+    android:widgetCategory="home_screen"
+    />

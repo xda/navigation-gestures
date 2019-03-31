@@ -7,4 +7,5 @@
     android:accessibilityFlags="flagDefault"
     android:description="@string/accessibility_screen_text"
     android:settingsActivity="com.xda.nobar.activities.MainActivity"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    />

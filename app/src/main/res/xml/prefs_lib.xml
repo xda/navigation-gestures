@@ -3,72 +3,102 @@
 
     <Preference
         android:title="@string/anr_watchdog">
+
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://github.com/SalomonBrys/ANR-WatchDog" />
+            android:data="https://github.com/SalomonBrys/ANR-WatchDog"
+            />
+
     </Preference>
 
     <Preference
         android:title="@string/color_picker">
+
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://github.com/zacharee/colorpicker" />
+            android:data="https://github.com/zacharee/colorpicker"
+            />
+
     </Preference>
 
     <Preference
         android:title="@string/edge_sdk">
+
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://developer.samsung.com/galaxy/edge" />
+            android:data="https://developer.samsung.com/galaxy/edge"
+            />
+
     </Preference>
 
     <Preference
         android:title="@string/gson">
+
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://github.com/google/gson" />
+            android:data="https://github.com/google/gson"
+            />
+
     </Preference>
 
     <Preference
         android:title="@string/librootjava">
+
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://github.com/Chainfire/librootjava" />
+            android:data="https://github.com/Chainfire/librootjava"
+            />
+
     </Preference>
 
     <Preference
         android:title="@string/libsu">
+
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://github.com/topjohnwu/libsu" />
+            android:data="https://github.com/topjohnwu/libsu"
+            />
+
     </Preference>
 
     <Preference
         android:title="@string/material">
+
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://github.com/zacharee/material" />
+            android:data="https://github.com/zacharee/material"
+            />
+
     </Preference>
 
     <Preference
         android:title="@string/material_intro">
+
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://github.com/zacharee/material-intro" />
+            android:data="https://github.com/zacharee/material-intro"
+            />
+
     </Preference>
 
     <Preference
         android:title="@string/slider_pref">
+
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://github.com/zacharee/SeekBarPreference" />
+            android:data="https://github.com/zacharee/SeekBarPreference"
+            />
+
     </Preference>
 
     <Preference
         android:title="@string/tasker_plugin">
+
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://tasker.joaoapps.com/pluginslibrary.html" />
+            android:data="https://tasker.joaoapps.com/pluginslibrary.html"
+            />
+
     </Preference>
 
 </PreferenceScreen>

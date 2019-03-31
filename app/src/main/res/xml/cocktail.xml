@@ -5,4 +5,5 @@
     updatePeriodMills="4800000"
     cocktailWidth="550"
     configure="com.xda.nobar.activities.MainActivity"
-    permitVisibilityChanged="true" />
+    permitVisibilityChanged="true"
+    />

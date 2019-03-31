@@ -5,4 +5,5 @@
     android:updatePeriodMillis="86400000"
     android:initialLayout="@layout/widget_layout_signboard"
     android:resizeMode="horizontal|vertical"
-    android:widgetCategory="0x9000" />
+    android:widgetCategory="0x9000"
+    />

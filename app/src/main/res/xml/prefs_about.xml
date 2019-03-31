@@ -3,36 +3,43 @@
 
     <Preference
         android:title="@string/version"
-        android:key="version" />
+        android:key="version"
+        />
 
     <Preference
         android:title="@string/tutorial_video"
         android:summary="@string/tutorial_video_desc"
-        android:key="tutorial_video" />
+        android:key="tutorial_video"
+        />
 
     <Preference
         android:title="@string/feedback"
         android:summary="@string/feedback_desc"
-        android:key="feedback" />
+        android:key="feedback"
+        />
 
     <Preference
         android:title="@string/xda_thread"
         android:summary="@string/xda_thread_desc"
-        android:key="xda_thread" />
+        android:key="xda_thread"
+        />
 
     <Preference
         android:title="@string/other_apps"
         android:summary="@string/other_apps_desc"
-        android:key="other_apps" />
+        android:key="other_apps"
+        />
 
     <Preference
         android:title="@string/buy_premium"
         android:summary="@string/buy_premium_desc"
-        android:key="buy_premium" />
+        android:key="buy_premium"
+        />
 
     <Preference
         android:title="@string/libraries"
-        android:key="libraries" />
+        android:key="libraries"
+        />
 
     <!--<Preference-->
         <!--android:title="@string/current_overscan"-->
@@ -41,11 +48,13 @@
     <SwitchPreference
         android:title="@string/crashlytics_id_switch"
         android:summary="@string/crashlytics_id_switch_desc"
-        android:key="enable_crashlytics_id" />
+        android:key="enable_crashlytics_id"
+        />
 
     <Preference
         android:title="@string/crashlytics_id_field"
         android:key="crashlytics_id"
-        android:dependency="enable_crashlytics_id" />
+        android:dependency="enable_crashlytics_id"
+        />
 
 </PreferenceScreen>
