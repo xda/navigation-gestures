@@ -23,3 +23,5 @@
 -keep class com.google.android.gms.measurement.AppMeasurement { *; }
 -keep class com.google.android.gms.measurement.AppMeasurement$OnEventListener { *; }
 -dontwarn com.google.android.gms.measurement.**
+
+-dontobfuscate
