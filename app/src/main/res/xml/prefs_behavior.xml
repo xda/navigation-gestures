@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:key="behavior_general"
         android:title="@string/general">
 
         <SwitchPreference
@@ -48,6 +49,7 @@
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:key="behavior_hiding"
         android:title="@string/pill_hiding">
 
         <com.xda.nobar.prefs.SeekBarSwitchPreference
@@ -101,6 +103,7 @@
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:key="behavior_blacklisting"
         android:title="@string/blacklisting">
 
         <SwitchPreference
@@ -127,6 +130,7 @@
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:key="behavior_durations"
         android:title="@string/durations">
 
         <tk.zwander.seekbarpreference.SeekBarPreference
@@ -161,6 +165,7 @@
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:key="behavior_sensitivity"
         android:title="@string/sensitivity">
 
         <SwitchPreference

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:key="appearance_colors"
         android:title="@string/color_prefs">
 
         <SwitchPreference
