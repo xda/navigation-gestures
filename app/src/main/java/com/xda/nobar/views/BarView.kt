@@ -162,7 +162,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private val horizontalGestureManager = BarViewGestureManagerHorizontal(this)
     private val verticalGestureManager = BarViewGestureManagerVertical(this)
-    private val vertical270GestureMansger = BarViewGestureManagerVertical270(this)
+    private val vertical270GestureManager = BarViewGestureManagerVertical270(this)
 
     var currentGestureDetector: BaseBarViewGestureManager = horizontalGestureManager
 
@@ -686,7 +686,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             val is270 = is270Vertical
 
             currentGestureDetector =
-                    if (is270) vertical270GestureMansger else verticalGestureManager
+                    if (is270) vertical270GestureManager else verticalGestureManager
 
             val newGrav = Gravity.CENTER or
                     if (is270) Gravity.LEFT else Gravity.RIGHT
