@@ -147,6 +147,7 @@
     <string name="all_settings">All Settings</string>
     <string name="custom_vibration_strength">Custom Vibration Strength</string>
     <string name="vibration_strength">Vibration Strength</string>
+    <string name="section_divider_color">Section Divider Color</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizar acciones de gestos</string>
     <string name="appearance_desc">Personalizar el aspecto de la barra de gestos</string>
@@ -211,6 +212,7 @@
     <string name="back_up_gestures_desc">Back up your current gesture settings to a file.</string>
     <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
     <string name="custom_vibration_strength_desc">Choose a custom vibration strength.</string>
+    <string name="section_divider_color_desc">Set the color of dividers to appear between the sections of the split pill.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Esta aplicación proporciona increíbles gestos de navegación para cualquier dispositivo Android. ¡Lo mejor de todo es que no necesita root! Antes de utilizar los gestos, hay algunas cosas que tenemos que hacer para configurar la aplicación.</string>
     <string name="draw_over_apps_desc">Para que Navigation Gestures muestre la barra, tendrás que otorgar el permiso para que pueda dibujarse sobre otras aplicaciones. Pulsa el botón de abajo para hacerlo. Si lo instalaste desde Play Store, ya se habrá otorgado este permiso.</string>
