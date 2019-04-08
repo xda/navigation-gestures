@@ -6,6 +6,7 @@
 
     <color name="pill_color">#cccccc</color>
     <color name="pill_border_color">#222222</color>
+    <color name="pill_divider_color">#00000000</color>
     <color name="color_disabled">#aaa</color>
     <color name="icon_color">#ffffff</color>
 

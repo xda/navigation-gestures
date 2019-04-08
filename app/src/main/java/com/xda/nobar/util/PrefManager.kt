@@ -66,6 +66,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val CUSTOM_Y_PERCENT = "custom_y_percent"
         const val CUSTOM_Y = "custom_y"
         const val PILL_BG = "pill_bg"
+        const val PILL_DIVIDER_COLOR = "section_divider_color"
         const val PILL_FG = "pill_fg"
         const val PILL_CORNER_RADIUS = "pill_corner_radius"
         const val HOLD_TIME = "hold_time"
@@ -222,6 +223,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getInt(PILL_CORNER_RADIUS, resources.getInteger(R.integer.default_corner_radius_dp))
     val pillCornerRadiusPx: Int
         get() = dpAsPx(pillCornerRadiusDp)
+    val pillDividerColor: Int
+        get() = getInt(PILL_DIVIDER_COLOR, defaultPillDividerColor)
     val animationDurationMs: Int
         get() = getInt(ANIM_DURATION, resources.getInteger(R.integer.default_anim_duration))
     val xThresholdDp: Int

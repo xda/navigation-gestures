@@ -15,6 +15,7 @@ import android.util.AttributeSet
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.dynamicanimation.animation.DynamicAnimation
@@ -192,21 +193,72 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(this)
         isSoundEffectsEnabled = context.prefManager.feedbackSound
 
+        updatePillColorsAndRadii()
+        updateDividers()
+
+        adjustPillShadow()
+    }
+
+    private fun updatePillColorsAndRadii() {
         val layers = pill.background as LayerDrawable
+        val fgColor = context.prefManager.pillFGColor
+
+        val dp = context.dpAsPx(1)
+
         (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
             setColor(context.prefManager.pillBGColor)
             cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
         }
         (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-            setStroke(context.dpAsPx(1), context.prefManager.pillFGColor)
+            setStroke(dp, fgColor)
             cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
         }
 
         (pill_tap_flash.background as GradientDrawable).apply {
             cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
         }
+    }
 
-        adjustPillShadow()
+    private fun updateDividers() {
+        val dividerColor = context.prefManager.pillDividerColor
+
+        val dp = context.dpAsPx(1)
+        val pillWidth = context.prefManager.customWidth
+        val splitPill = context.prefManager.sectionedPill
+
+        divider_1.setBackgroundColor(if (splitPill) dividerColor else Color.TRANSPARENT)
+        divider_2.setBackgroundColor(if (splitPill) dividerColor else Color.TRANSPARENT)
+
+        val pos1 = pillWidth / 3f - dp / 2f
+        val pos2 = pillWidth * 2f/3f - dp /2f
+
+        val params = FrameLayout.LayoutParams(
+                if (isVertical) FrameLayout.LayoutParams.MATCH_PARENT else dp,
+                if (isVertical) dp else FrameLayout.LayoutParams.MATCH_PARENT
+        )
+
+        divider_1.apply {
+            layoutParams = params
+
+            if (isVertical) {
+                y = pos1
+                x = 0f
+            } else {
+                x = pos1
+                y = 0f
+            }
+        }
+        divider_2.apply {
+            layoutParams = params
+
+            if (isVertical) {
+                y = pos2
+                x = 0f
+            } else {
+                x = pos2
+                y = 0f
+            }
+        }
     }
 
     /**
@@ -255,10 +307,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             PrefManager.USE_PIXELS_X,
             PrefManager.USE_PIXELS_Y -> {
                 updatePositionAndDimens()
+                updateDividers()
             }
 
             PrefManager.ANCHOR_PILL -> {
                 handleRotationOrAnchorUpdate()
+                updateDividers()
             }
 
             PrefManager.IS_ACTIVE -> {
@@ -270,14 +324,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
 
             PrefManager.PILL_BG,
-            PrefManager.PILL_FG -> {
-                val layers = pill.background as LayerDrawable
-                (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-                    setColor(context.prefManager.pillBGColor)
-                }
-                (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-                    setStroke(context.dpAsPx(1), context.prefManager.pillFGColor)
-                }
+            PrefManager.PILL_FG,
+            PrefManager.PILL_DIVIDER_COLOR,
+            PrefManager.PILL_CORNER_RADIUS,
+            PrefManager.SECTIONED_PILL -> {
+                updatePillColorsAndRadii()
+                updateDividers()
             }
 
             PrefManager.SHOW_SHADOW -> {
@@ -286,25 +338,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             PrefManager.STATIC_PILL -> {
                 setMoveForKeyboard(!context.prefManager.dontMoveForKeyboard)
-
             }
 
             PrefManager.AUDIO_FEEDBACK -> {
                 isSoundEffectsEnabled = context.prefManager.feedbackSound
 
-            }
-
-            PrefManager.PILL_CORNER_RADIUS -> {
-                val layers = pill.background as LayerDrawable
-                (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-                    cornerRadius = context.dpAsPx(context.prefManager.pillCornerRadiusDp).toFloat()
-                }
-                (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
-                    cornerRadius = context.dpAsPx(context.prefManager.pillCornerRadiusDp).toFloat()
-                }
-                (pill_tap_flash.background as GradientDrawable).apply {
-                    cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
-                }
             }
 
             PrefManager.LARGER_HITBOX -> {
@@ -676,6 +714,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             adjustPillShadow()
             updateLargerHitbox()
+            updateDividers()
         }
     }
 

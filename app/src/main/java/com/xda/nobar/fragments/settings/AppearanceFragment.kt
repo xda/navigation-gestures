@@ -115,5 +115,8 @@ class AppearanceFragment : BasePrefFragment() {
         pixelsH.onPreferenceChangeListener = listener
         pixelsX.onPreferenceChangeListener = listener
         pixelsY.onPreferenceChangeListener = listener
+
+        val dividerColor = findPreference<ColorPreferenceCompat>(PrefManager.PILL_DIVIDER_COLOR)!!
+        dividerColor.isVisible = prefManager.sectionedPill
     }
 }

@@ -29,6 +29,17 @@
             app:cpv_allowCustom="true"
             />
 
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
+            android:title="@string/section_divider_color"
+            android:summary="@string/section_divider_color_desc"
+            android:key="section_divider_color"
+            android:icon="@drawable/color_lens"
+            android:defaultValue="@color/pill_divider_color"
+            app:isPreferenceVisible="false"
+            app:cpv_showAlphaSlider="true"
+            app:cpv_allowCustom="true"
+            />
+
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory

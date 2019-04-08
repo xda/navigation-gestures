@@ -63,6 +63,9 @@ val Context.defaultPillBGColor: Int
 val Context.defaultPillFGColor: Int
     get() = ContextCompat.getColor(this, R.color.pill_border_color)
 
+val Context.defaultPillDividerColor: Int
+    get() = ContextCompat.getColor(this, R.color.pill_divider_color)
+
 val Context.defPillHeightDp: Int
     get() = resources.getInteger(R.integer.default_pill_height_dp)
 
