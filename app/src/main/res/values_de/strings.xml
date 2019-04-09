@@ -111,7 +111,7 @@
     <string name="current_overscan">Aktueller Overscan</string>
     <string name="screen_timeout">Screen Timeout</string>
     <string name="alternate_home">Alternate Home Action</string>
-    <string name="crashlytics_id_switch">Enable Crashlytics ID</string>
+    <string name="enable_crashlytics_id">Enable Crashlytics ID</string>
     <string name="crashlytics_id_field">Crashlytics ID</string>
     <string name="emui">EMUI</string>
     <string name="show_me_how">Show me how</string>
@@ -147,6 +147,9 @@
     <string name="all_settings">All Settings</string>
     <string name="custom_vibration_strength">Custom Vibration Strength</string>
     <string name="vibration_strength">Vibration Strength</string>
+    <string name="section_divider_color">Section Divider Color</string>
+    <string name="crash">Crash?!</string>
+    <string name="restart_app">Restart</string>
     <!--Descriptions-->
     <string name="gestures_desc">Gestenaktionen anpassen</string>
     <string name="appearance_desc">Aussehen der Navigation-Pille anpassen</string>
@@ -211,6 +214,7 @@
     <string name="back_up_gestures_desc">Back up your current gesture settings to a file.</string>
     <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
     <string name="custom_vibration_strength_desc">Choose a custom vibration strength.</string>
+    <string name="section_divider_color_desc">Set the color of dividers to appear between the sections of the split pill.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Diese App bringt großartige Gestennavigation auf jedes Android Gerät. Und das Beste ist, man benötigt hierfür keinen Root-Zugriff. Bevor du die Gestennavigation nutzen kann gibt es ein paar Sachen, die noch eingestellt werden müssen.</string>
     <string name="draw_over_apps_desc">Damit Navigation Gestures den Pill-Nav anzeigen kann, musst du der App Berechtigung geben, damit es über anderen Apps angezeigt werden kann. Tippe den unteren Knopf um dies zu tun. Wenn du die App über den Play Store installiert hat, wurde die berechtigung schon gewährt.</string>
@@ -231,6 +235,7 @@
     <string name="skip_wss_message">Du kannst jederzeit zu diesem Schritt zurückkommen indem du den \"Navigationsleiste ausblenden\"-Schalter im Hauptmenü dieser App aktivierst.</string>
     <string name="feature_not_avail">Dieses Feature kann nicht verwendet werden während Navigation Gestures die Navigationsleiste versteckt.</string>
     <string name="pill_overlaps_content_expl">Unfortunately, there\'s no way to fix this. We can\'t make a dedicated navigation space for the pill. Try lowering the pill height or turning off Larger Hitbox in Behavior.</string>
+    <string name="crash_message">Navigation Gestures has crashed! Don\'t worry, we\'ve already got the information. If this happens often, consider enabling your Crashlytics ID and sending it to us. You can turn it on from the \"i\" button on the main screen of the app.</string>
     <!--Gestures-->
     <string name="tap">Tippen</string>
     <string name="left">Nach links streichen</string>
