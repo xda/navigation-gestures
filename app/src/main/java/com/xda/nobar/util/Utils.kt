@@ -185,8 +185,8 @@ val Context.navBarHeight: Int
 val Context.prefManager: PrefManager
     get() = PrefManager.getInstance(applicationContext)
 
-private var cachedSize: Point? = null
-private var latestUpdate: Long = 0
+private var cachedScreenSize: Point? = null
+private var latestScreenSizeUpdate: Long = 0
 
 /**
  * Get the device's screen size
@@ -197,19 +197,19 @@ val Context.realScreenSize: Point
         val display = app.wm.defaultDisplay
         val time = System.currentTimeMillis()
 
-        if (cachedSize == null
-                || TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.MILLISECONDS.toMinutes(latestUpdate) >= 1) {
+        if (cachedScreenSize == null
+                || TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.MILLISECONDS.toMinutes(latestScreenSizeUpdate) >= 1) {
             val temp = Point().apply { display.getRealSize(this) }
 
-            latestUpdate = time
-            cachedSize = rotation.run {
+            latestScreenSizeUpdate = time
+            cachedScreenSize = rotation.run {
                 if (prefManager.anchorPill
                         && (this == Surface.ROTATION_90 || this == Surface.ROTATION_270))
                     Point(temp.y, temp.x) else temp
             }
         }
 
-        return cachedSize!!
+        return cachedScreenSize!!
     }
 
 val Context.rotation: Int
