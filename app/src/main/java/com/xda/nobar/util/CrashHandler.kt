@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Process
-import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.activities.ui.CrashActivity
@@ -29,13 +28,13 @@ class CrashHandler(private val prevHandler: Thread.UncaughtExceptionHandler, pri
             val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 100, crashIntent)
 
-            Process.killProcess(Process.myPid())
-
             if (needsToLog) {
                 prevHandler.uncaughtException(t, e)
             } else {
                 Crashlytics.logException(e)
             }
+
+            Process.killProcess(Process.myPid())
         }
     }
 
@@ -44,12 +43,11 @@ class CrashHandler(private val prevHandler: Thread.UncaughtExceptionHandler, pri
 
         val cause = parent.cause
 
-        if (cause != null) needsLog(cause)
+        if (cause != null) needsLog = needsLog(cause)
         else {
             val trace = parent.stackTrace
 
             trace.forEach {
-                Log.e("NoBar", "ClassName: ${it.className}")
                 if (it.className.contains(BuildConfig.APPLICATION_ID)) {
                     needsLog = true
                     return@forEach

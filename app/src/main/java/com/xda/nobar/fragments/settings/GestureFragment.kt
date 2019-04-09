@@ -99,8 +99,6 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
 
         refreshListPrefs()
         updateSummaries()
-
-        throw Exception("test")
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
