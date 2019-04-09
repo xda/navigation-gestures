@@ -111,7 +111,7 @@
     <string name="current_overscan">現在のオーバースキャン</string>
     <string name="screen_timeout">Screen Timeout</string>
     <string name="alternate_home">Alternate Home Action</string>
-    <string name="crashlytics_id_switch">Enable Crashlytics ID</string>
+    <string name="enable_crashlytics_id">Enable Crashlytics ID</string>
     <string name="crashlytics_id_field">Crashlytics ID</string>
     <string name="emui">EMUI</string>
     <string name="show_me_how">Show me how</string>
@@ -148,6 +148,8 @@
     <string name="custom_vibration_strength">Custom Vibration Strength</string>
     <string name="vibration_strength">Vibration Strength</string>
     <string name="section_divider_color">Section Divider Color</string>
+    <string name="crash">Crash?!</string>
+    <string name="restart_app">Restart</string>
     <!--Descriptions-->
     <string name="gestures_desc">ジェスチャーアクションのカスタマイズ</string>
     <string name="appearance_desc">ピルの外観をカスタマイズする</string>
@@ -234,6 +236,7 @@
     <string name="skip_wss_message">いつでもナビゲーションバーの表示を切り替えることができます。</string>
     <string name="feature_not_avail">この機能は、ナビゲーションバーを非表示中には使用できません。</string>
     <string name="pill_overlaps_content_expl">Unfortunately, there\'s no way to fix this. We can\'t make a dedicated navigation space for the pill. Try lowering the pill height or turning off Larger Hitbox in Behavior.</string>
+    <string name="crash_message">Navigation Gestures has crashed! Don\'t worry, we\'ve already got the information. If this happens often, consider enabling your Crashlytics ID and sending it to us. You can turn it on from the \"i\" button on the main screen of the app.</string>
     <!--Gestures-->
     <string name="tap">タップ</string>
     <string name="left">左にスワイプ</string>
