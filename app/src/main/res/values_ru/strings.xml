@@ -111,7 +111,7 @@
     <string name="current_overscan">Использовать полное перекрытие</string>
     <string name="screen_timeout">Screen Timeout</string>
     <string name="alternate_home">Alternate Home Action</string>
-    <string name="crashlytics_id_switch">Enable Crashlytics ID</string>
+    <string name="enable_crashlytics_id">Enable Crashlytics ID</string>
     <string name="crashlytics_id_field">Crashlytics ID</string>
     <string name="emui">EMUI</string>
     <string name="show_me_how">Show me how</string>
@@ -148,6 +148,8 @@
     <string name="custom_vibration_strength">Custom Vibration Strength</string>
     <string name="vibration_strength">Vibration Strength</string>
     <string name="section_divider_color">Section Divider Color</string>
+    <string name="crash">Crash?!</string>
+    <string name="restart_app">Restart</string>
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
     <string name="appearance_desc">Customize appearance of the navigation pill</string>
@@ -233,6 +235,7 @@
     <string name="skip_wss_message">You can always come back to this step by toggling the Hide Navigation Bar switch on in the main screen of this app.</string>
     <string name="feature_not_avail">This feature cannot be used while Navigation Gestures is hiding the navigation bar.</string>
     <string name="pill_overlaps_content_expl">Unfortunately, there\'s no way to fix this. We can\'t make a dedicated navigation space for the pill. Try lowering the pill height or turning off Larger Hitbox in Behavior.</string>
+    <string name="crash_message">Navigation Gestures has crashed! Don\'t worry, we\'ve already got the information. If this happens often, consider enabling your Crashlytics ID and sending it to us. You can turn it on from the \"i\" button on the main screen of the app.</string>
     <!--Gestures-->
     <string name="tap">Касание</string>
     <string name="left">Свайп влево</string>
