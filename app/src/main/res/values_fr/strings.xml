@@ -111,7 +111,7 @@
     <string name="current_overscan">Current Overscan</string>
     <string name="screen_timeout">Screen Timeout</string>
     <string name="alternate_home">Alternate Home Action</string>
-    <string name="crashlytics_id_switch">Enable Crashlytics ID</string>
+    <string name="enable_crashlytics_id">Enable Crashlytics ID</string>
     <string name="crashlytics_id_field">Crashlytics ID</string>
     <string name="emui">EMUI</string>
     <string name="show_me_how">Show me how</string>
@@ -147,6 +147,9 @@
     <string name="all_settings">All Settings</string>
     <string name="custom_vibration_strength">Custom Vibration Strength</string>
     <string name="vibration_strength">Vibration Strength</string>
+    <string name="section_divider_color">Section Divider Color</string>
+    <string name="crash">Crash?!</string>
+    <string name="restart_app">Restart</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personnaliser les actions de geste</string>
     <string name="appearance_desc">Personnaliser l’apparence de la pilule de navigation</string>
@@ -211,6 +214,7 @@
     <string name="back_up_gestures_desc">Back up your current gesture settings to a file.</string>
     <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
     <string name="custom_vibration_strength_desc">Choose a custom vibration strength.</string>
+    <string name="section_divider_color_desc">Set the color of dividers to appear between the sections of the split pill.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Cette appli offre de somptueux gestes de navigation pour n\'importe quel appareil Android. Le mieux, elle n\'a pas besoin de root ! Avant de pouvoir utiliser les gestes, quelques paramétrages sont nécessaires.</string>
     <string name="draw_over_apps_desc">Afin d\'afficher la pilule de Navigation Gestures, vous devrez accorder la permission \"Superposer aux autres applis\". Appuyez sur le bouton ci-dessous pour le faire. Si vous avez installé depuis le Play Store, cette permission est déjà accordée.</string>
@@ -231,6 +235,7 @@
     <string name="skip_wss_message">You can always come back to this step by toggling the Hide Navigation Bar switch on in the main screen of this app.</string>
     <string name="feature_not_avail">Cette fonctionnalité ne peut pas être utilisée quand Navigation Gestures cache la barre de navigation.</string>
     <string name="pill_overlaps_content_expl">Unfortunately, there\'s no way to fix this. We can\'t make a dedicated navigation space for the pill. Try lowering the pill height or turning off Larger Hitbox in Behavior.</string>
+    <string name="crash_message">Navigation Gestures has crashed! Don\'t worry, we\'ve already got the information. If this happens often, consider enabling your Crashlytics ID and sending it to us. You can turn it on from the \"i\" button on the main screen of the app.</string>
     <!--Gestures-->
     <string name="tap">Appui</string>
     <string name="left">Balayage à gauche</string>
