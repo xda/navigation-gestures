@@ -25,6 +25,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.core.CrashlyticsCore
 import com.github.anrwatchdog.ANRWatchDog
 import com.xda.nobar.activities.helpers.RequestPermissionsActivity
 import com.xda.nobar.activities.ui.IntroActivity
@@ -40,6 +41,8 @@ import com.xda.nobar.util.helpers.*
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.NavBlackout
 import eu.chainfire.libsuperuser.Shell
+import io.fabric.sdk.android.Fabric
+import io.fabric.sdk.android.InitializationCallback
 import java.util.*
 
 
@@ -105,6 +108,27 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     override fun onCreate() {
         super.onCreate()
+
+        val core = CrashlyticsCore.Builder()
+                .disabled(BuildConfig.DEBUG)
+                .build()
+
+        Fabric.with(
+                Fabric.Builder(this).kits(
+                        Crashlytics.Builder()
+                                .core(core)
+                                .build()
+                ).initializationCallback(object : InitializationCallback<Fabric> {
+                    override fun success(p0: Fabric?) {
+                        val crashHandler = CrashHandler(Thread.getDefaultUncaughtExceptionHandler(), this@App)
+                        Thread.setDefaultUncaughtExceptionHandler(crashHandler)
+                    }
+
+                    override fun failure(p0: java.lang.Exception?) {
+
+                    }
+                }).build()
+        )
 
         if (prefManager.crashlyticsIdEnabled)
             Crashlytics.setUserIdentifier(prefManager.crashlyticsId)

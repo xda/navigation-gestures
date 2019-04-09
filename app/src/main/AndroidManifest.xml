@@ -142,6 +142,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.ui.TroubleshootingActivity" />
+        <activity android:name=".activities.ui.CrashActivity"
+            android:theme="@style/AppTheme"
+            android:excludeFromRecents="true"
+            />
 
         <service
             android:name=".tiles.GestureToggle"
@@ -262,7 +266,7 @@
             android:value="2.5" />
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
-            android:value="true" />
+            android:value="false" />
     </application>
 
 </manifest>

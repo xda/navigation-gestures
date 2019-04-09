@@ -46,7 +46,7 @@
         <!--android:key="current_overscan" />-->
 
     <SwitchPreference
-        android:title="@string/crashlytics_id_switch"
+        android:title="@string/enable_crashlytics_id"
         android:summary="@string/crashlytics_id_switch_desc"
         android:key="enable_crashlytics_id"
         />
