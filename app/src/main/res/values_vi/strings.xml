@@ -113,7 +113,7 @@ or
     <string name="current_overscan">Độ che phủ hiện tại</string>
     <string name="screen_timeout">Screen Timeout</string>
     <string name="alternate_home">Alternate Home Action</string>
-    <string name="crashlytics_id_switch">Enable Crashlytics ID</string>
+    <string name="enable_crashlytics_id">Enable Crashlytics ID</string>
     <string name="crashlytics_id_field">Crashlytics ID</string>
     <string name="emui">EMUI</string>
     <string name="show_me_how">Show me how</string>
@@ -149,6 +149,9 @@ or
     <string name="all_settings">All Settings</string>
     <string name="custom_vibration_strength">Custom Vibration Strength</string>
     <string name="vibration_strength">Vibration Strength</string>
+    <string name="section_divider_color">Section Divider Color</string>
+    <string name="crash">Crash?!</string>
+    <string name="restart_app">Restart</string>
     <!--Descriptions-->
     <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
     <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
@@ -214,6 +217,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="back_up_gestures_desc">Back up your current gesture settings to a file.</string>
     <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
     <string name="custom_vibration_strength_desc">Choose a custom vibration strength.</string>
+    <string name="section_divider_color_desc">Set the color of dividers to appear between the sections of the split pill.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Ứng dụng mang đến cử chỉ điều hướng tuyệt vời đến bất kì thiết bị Android. Tốt hơn cả, nó không cần có root! Trước khi bạn có thể sử dụng cử chỉ, có vài thứ cần làm để thiết lập ứng dụng.</string>
     <string name="draw_over_apps_desc">Để Navigation Gesture có thể hiểu thị lên viên điều hướng, bạn phải cho phép vẽ đè lên các ứng dụng khác. Ấn nút bên dưới để thực hiện điều này. Nếu ứng dụng được tải từ Play Store, quyền này sẽ được cho cấp sẵn.</string>
@@ -234,6 +238,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="skip_wss_message">You can always come back to this step by toggling the Hide Navigation Bar switch on in the main screen of this app.</string>
     <string name="feature_not_avail">This feature cannot be used while Navigation Gestures is hiding the navigation bar.</string>
     <string name="pill_overlaps_content_expl">Unfortunately, there\'s no way to fix this. We can\'t make a dedicated navigation space for the pill. Try lowering the pill height or turning off Larger Hitbox in Behavior.</string>
+    <string name="crash_message">Navigation Gestures has crashed! Don\'t worry, we\'ve already got the information. If this happens often, consider enabling your Crashlytics ID and sending it to us. You can turn it on from the \"i\" button on the main screen of the app.</string>
     <!--Gestures-->
     <string name="tap">Chạm</string>
     <string name="left">Vuốt trái</string>
