@@ -25,17 +25,23 @@ class CrashActivity : AppCompatActivity() {
         }
 
         relaunch.setOnClickListener {
-            val startup = PendingIntent.getBroadcast(
-                    this,
-                    10,
-                    Intent(this, StartupReceiver::class.java).apply { action = StartupReceiver.ACTION_RELAUNCH },
-                    PendingIntent.FLAG_ONE_SHOT
-            )
-
-            val am = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 100, startup)
-
-            Process.killProcess(Process.myPid())
+            finish()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        val startup = PendingIntent.getBroadcast(
+                this,
+                10,
+                Intent(this, StartupReceiver::class.java).apply { action = StartupReceiver.ACTION_RELAUNCH },
+                PendingIntent.FLAG_ONE_SHOT
+        )
+
+        val am = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 100, startup)
+
+        Process.killProcess(Process.myPid())
     }
 }
