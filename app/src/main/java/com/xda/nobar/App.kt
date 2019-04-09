@@ -818,11 +818,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             val rot = wm.defaultDisplay.rotation
 
             if (oldRot != rot || overrideChange) {
-                logicHandler.post {
-                    if (pillShown) {
-                        bar.handleRotationOrAnchorUpdate()
-                    }
+                if (pillShown) {
+                    bar.handleRotationOrAnchorUpdate()
+                }
 
+                logicHandler.post {
                     if (prefManager.shouldUseOverscanMethod) {
                         if (prefManager.useRot270Fix) handle270()
                         if (prefManager.useRot180Fix) handle180()
