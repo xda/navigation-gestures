@@ -267,10 +267,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        if (context.prefManager.largerHitbox) {
-            updateLargerHitbox()
-        }
-
         context.app.pillShown = true
 
         show(null)

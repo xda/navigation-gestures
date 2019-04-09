@@ -37,6 +37,7 @@ import com.xda.nobar.util.helpers.bar.ActionHolder
 import com.xda.nobar.views.BarView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 val mainHandler = Handler(Looper.getMainLooper())
 
@@ -184,29 +185,36 @@ val Context.navBarHeight: Int
 val Context.prefManager: PrefManager
     get() = PrefManager.getInstance(applicationContext)
 
+private var cachedSize: Point? = null
+private var latestUpdate: Long = 0
+
 /**
  * Get the device's screen size
  * @return device's resolution (in px) as a Point
  */
 val Context.realScreenSize: Point
     get() {
-        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val display = windowManager.defaultDisplay
+        val display = app.wm.defaultDisplay
+        val time = System.currentTimeMillis()
 
-        val temp = Point().apply { display.getRealSize(this) }
+        if (cachedSize == null
+                || TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.MILLISECONDS.toMinutes(latestUpdate) >= 1) {
+            val temp = Point().apply { display.getRealSize(this) }
 
-        return rotation.run {
-            if (prefManager.anchorPill
-                    && (this == Surface.ROTATION_90 || this == Surface.ROTATION_270))
-                Point(temp.y, temp.x) else temp
+            latestUpdate = time
+            cachedSize = rotation.run {
+                if (prefManager.anchorPill
+                        && (this == Surface.ROTATION_90 || this == Surface.ROTATION_270))
+                    Point(temp.y, temp.x) else temp
+            }
         }
+
+        return cachedSize!!
     }
 
 val Context.rotation: Int
     get() {
-        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
-        return windowManager.defaultDisplay.rotation
+        return app.wm.defaultDisplay.rotation
     }
 
 var Context.touchWizNavEnabled: Boolean

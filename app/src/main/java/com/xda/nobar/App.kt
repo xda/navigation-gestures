@@ -193,13 +193,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 navbarListeners.forEach { it.onNavStateChange(prefManager.shouldUseOverscanMethod) }
             }
             PrefManager.ROT270_FIX -> {
-                if (prefManager.useRot270Fix) uiHandler.handleRot(true)
+                uiHandler.handleRot(true)
             }
             PrefManager.ROT180_FIX -> {
-                if (prefManager.useRot180Fix) uiHandler.handleRot(true)
+                uiHandler.handleRot(true)
             }
             PrefManager.TABLET_MODE -> {
-                if (prefManager.useTabletMode) uiHandler.handleRot(true)
+                uiHandler.handleRot(true)
             }
             PrefManager.ENABLE_IN_CAR_MODE -> {
                 val enabled = prefManager.enableInCarMode
