@@ -150,6 +150,10 @@
     <string name="section_divider_color">Section Divider Color</string>
     <string name="crash">Crash?!</string>
     <string name="restart_app">Restart</string>
+    <string name="fade_after_specified_delay">Fade Pill After Specified Delay</string>
+    <string name="fade_in_fullscreen_apps">Fade in Fullscreen Apps</string>
+    <string name="fade_opacity">Fade Opacity</string>
+    <string name="pill_fading">Pill Fading</string>
     <!--Descriptions-->
     <string name="gestures_desc">ジェスチャーアクションのカスタマイズ</string>
     <string name="appearance_desc">ピルの外観をカスタマイズする</string>
@@ -166,7 +170,7 @@
     <string name="hide_navbar_in_upside_down_desc">一部のデバイスは上下逆さまの状態で画面回転をすることがあり、この挙動によって元のナビバーが表示されることがあります。これを有効にしてそれを防ぎます。</string>
     <string name="compatibility_pref_desc">互換性オプション</string>
     <string name="tablet_mode_desc">多くのタブレットは常にナビバーを下に表示させようとします。これを有効にしてそれを防ぎます。</string>
-    <string name="hide_in_fullscreen_desc">これを有効にするとフルスクリーン時にピルを非表示にします。(例:ゲーム、動画など)</string>
+    <string name="hide_in_fullscreen_desc">When enabled, the pill will automatically hide in fullscreen apps (e.g. videos or games).</string>
     <string name="compatibility_warning">必要でない限りこの設定を変えないでください! これらの設定は問題を引き起こすかもしれません!</string>
     <string name="larger_hitbox_desc">これを有効にしてピルをスワイプしやすくする</string>
     <string name="hide_nav_summary">デバイスがソフトウェアのナビバーを持っている場合のみこれを有効にしてください</string>
@@ -215,6 +219,8 @@
     <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
     <string name="custom_vibration_strength_desc">Choose a custom vibration strength.</string>
     <string name="section_divider_color_desc">Set the color of dividers to appear between the sections of the split pill.</string>
+    <string name="fade_after_specified_delay_desc">When enabled, the pill will automatically fade to the specified opacity after the specified delay.</string>
+    <string name="fade_in_fullscreen_apps_desc">When enabled, the pill will automatically fade in fullscreen apps to the specified opacity after the specified delay.</string>
     <!--Paragraphs-->
     <string name="app_purpose">このアプリでどのデバイスでも非ルートでナビゲーションジェスチャーを使えるようになります! 利用する前にいくつか設定が必要です。</string>
     <string name="draw_over_apps_desc">ピルを表示させるために\”他のアプリの上に重ねて表示\”を有効にしないといけません。下のボタンをタップして有効にしてください。Playストアからインストールした場合には既に有効になっています。</string>
