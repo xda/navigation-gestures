@@ -6,6 +6,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class IntentInfo(
         val id: Int,
+        val res: Int,
         var isChecked: Boolean
 ) : Parcelable {
     override fun describeContents(): Int {

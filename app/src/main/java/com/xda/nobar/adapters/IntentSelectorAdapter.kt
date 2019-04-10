@@ -28,7 +28,7 @@ class IntentSelectorAdapter(private val callback: OnIntentSelectedListener, priv
         val icon = view.findViewById<ImageView>(R.id.icon)
         val check = view.findViewById<CheckedImageView>(R.id.checkmark)
 
-        title.text = context.resources.getString(info.id)
+        title.text = context.resources.getString(info.res)
         summary.visibility = View.GONE
 
         icon.background = ContextCompat.getDrawable(view.context, R.drawable.blank)

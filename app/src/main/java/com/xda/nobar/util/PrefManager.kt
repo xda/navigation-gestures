@@ -345,7 +345,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
     val all: Map<String, *>
         get() = prefs.all
 
-    fun getIntentKey(baseKey: String?) = getInt(baseKey + SUFFIX_INTENT, 0)
+    fun getIntentKey(baseKey: String?) = getInt(baseKey + SUFFIX_INTENT, -1)
     fun saveIntentKey(baseKey: String?, res: Int) = putInt(baseKey + SUFFIX_INTENT, res)
     fun getPackage(baseKey: String?): String? = getString("$baseKey$SUFFIX_PACKAGE")
     fun getActivity(baseKey: String?): String? = getString("$baseKey$SUFFIX_ACTIVITY")

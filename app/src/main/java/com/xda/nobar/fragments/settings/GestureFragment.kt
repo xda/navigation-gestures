@@ -136,11 +136,11 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
                 (findPreference<SectionableListPreference?>(key))?.apply {
                     val res = prefManager.getIntentKey(key)
 
-                    if (res < 1) {
+                    if (res < 0) {
                         saveValue(actionHolder.typeNoAction.toString())
                     } else {
                         saveValueWithoutListener(actionHolder.premTypeIntent.toString())
-                        updateIntentSummary(key, res)
+                        updateIntentSummary(key, IntentSelectorActivity.INTENTS[res]!!.res)
                     }
                 }
             }
@@ -313,7 +313,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
                 }
             } else if (it.getSavedValue() == actionHolder.premTypeIntent.toString()) {
                 val res = prefManager.getIntentKey(it.key)
-                updateIntentSummary(it.key, res)
+                updateIntentSummary(it.key, IntentSelectorActivity.INTENTS[res]!!.res)
             } else if (it.getSavedValue() == actionHolder.premTypeLaunchShortcut.toString()) {
                 val shortcut = prefManager.getShortcut(it.key) ?: return
                 updateShortcutSummary(it.key, shortcut)

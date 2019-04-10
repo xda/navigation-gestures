@@ -16,5 +16,5 @@ class IntentInfoSorterCallback(private val adapter: RecyclerView.Adapter<out Rec
     override fun onMoved(fromPosition: Int, toPosition: Int) = adapter.notifyItemMoved(fromPosition, toPosition)
     override fun onRemoved(position: Int, count: Int) = adapter.notifyItemRangeRemoved(position, count)
     override fun onChanged(position: Int, count: Int) = adapter.notifyItemRangeChanged(position, count)
-    override fun compare(o1: IntentInfo, o2: IntentInfo) = context.resources.getString(o1.id).compareTo(context.resources.getString(o2.id))
+    override fun compare(o1: IntentInfo, o2: IntentInfo) = context.resources.getString(o1.res).compareTo(context.resources.getString(o2.res))
 }
