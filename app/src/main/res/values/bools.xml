@@ -21,4 +21,6 @@
     <bool name="anchor_pill_default">false</bool>
     <bool name="flashlight_compat_default">false</bool>
     <bool name="custom_vibration_strength_default">false</bool>
+    <bool name="fade_after_delay_default">false</bool>
+    <bool name="fade_in_fullscreen_default">false</bool>
 </resources>

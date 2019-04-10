@@ -70,7 +70,6 @@
             android:dependency="auto_hide_pill"
             android:title="@string/hide_in_fullscreen"
             android:summaryOff="@string/hide_in_fullscreen_desc"
-            android:summaryOn="@string/auto_hide_pill_desc_enabled"
             android:key="hide_in_fullscreen"
             android:icon="@drawable/visibility_off"
             android:defaultValue="@bool/hide_in_fullscreen_default"
@@ -82,7 +81,6 @@
 
         <com.xda.nobar.prefs.SeekBarSwitchPreference
             android:title="@string/hide_pill_on_keyboard"
-            android:summaryOn="@string/auto_hide_pill_desc_enabled"
             android:key="hide_pill_on_keyboard"
             android:icon="@drawable/keyboard_hide"
             android:defaultValue="@bool/hide_on_keyboard_default"
@@ -98,6 +96,46 @@
             android:summary="@string/enable_in_car_mode_desc"
             android:key="enable_in_car_mode"
             android:defaultValue="@bool/car_mode_default"
+            />
+
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
+
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:title="@string/pill_fading"
+        android:key="behavior_fading">
+
+        <com.xda.nobar.prefs.SeekBarSwitchPreference
+            android:title="@string/fade_after_specified_delay"
+            android:summaryOff="@string/fade_after_specified_delay_desc"
+            android:key="fade_after_specified_delay"
+            android:icon="@drawable/ic_opacity"
+            android:defaultValue="@bool/fade_after_delay_default"
+            app:view_defaultValue="@integer/default_fade_time"
+            app:minValue="@integer/min_fade_time"
+            app:maxValue="@integer/max_fade_time"
+            app:units="ms"
+            />
+
+        <com.xda.nobar.prefs.SeekBarSwitchPreference
+            android:title="@string/fade_in_fullscreen_apps"
+            android:summaryOff="@string/fade_in_fullscreen_apps_desc"
+            android:key="fade_in_fullscreen_apps"
+            android:icon="@drawable/ic_opacity"
+            android:defaultValue="@bool/fade_in_fullscreen_default"
+            app:view_defaultValue="@integer/default_fade_time"
+            app:minValue="@integer/min_fade_time"
+            app:maxValue="@integer/max_fade_time"
+            app:units="ms"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            android:title="@string/fade_opacity"
+            android:key="fade_opacity"
+            android:defaultValue="@integer/default_fade_opacity_percent"
+            app:minValue="@integer/min_fade_opacity_percent"
+            app:maxValue="@integer/max_fade_opacity_percent"
+            app:scale="0.1"
+            app:units="%"
             />
 
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>

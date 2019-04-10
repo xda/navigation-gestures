@@ -55,6 +55,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val ANCHOR_PILL = "anchor_pill"
         const val FLASHLIGHT_COMPAT = "flashlight_compat"
         const val CUSTOM_VIBRATION_STRENGTH = "custom_vibration_strength"
+        const val FADE_AFTER_SPECIFIED_DELAY = "fade_after_specified_delay"
+        const val FADE_IN_FULLSCREEN_APPS = "fade_in_fullscreen_apps"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
@@ -79,6 +81,9 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val HIDE_IN_FULLSCREEN_PROGRESS = "hide_in_fullscreen_progress"
         const val HIDE_PILL_ON_KEYBOARD_PROGRESS = "hide_pill_on_keyboard_progress"
         const val VIBRATION_STRENGTH = "vibration_strength"
+        const val FADE_AFTER_SPECIFIED_DELAY_PROGRESS = "fade_after_specified_delay_progress"
+        const val FADE_IN_FULSCREEN_APPS_PROGRESS = "fade_in_fullscreen_apps_progress"
+        const val FADE_OPACITY = "fade_opacity"
 
         /* Strings */
         const val CRASHLYTICS_ID = "crashlytics_id"
@@ -147,6 +152,10 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getBoolean(USE_ROOT, false) && false //TODO: implement at some point
     val hideInFullscreen: Boolean
         get() = getBoolean(HIDE_IN_FULLSCREEN, resources.getBoolean(R.bool.hide_in_fullscreen_default))
+    val autoFade: Boolean
+        get() = getBoolean(FADE_AFTER_SPECIFIED_DELAY, resources.getBoolean(R.bool.fade_after_delay_default))
+    val fullscreenFade: Boolean
+        get() = getBoolean(FADE_IN_FULLSCREEN_APPS, resources.getBoolean(R.bool.fade_in_fullscreen_default))
     val largerHitbox: Boolean
         get() = getBoolean(LARGER_HITBOX, resources.getBoolean(R.bool.large_hitbox_default))
     val origBarInFullscreen: Boolean
@@ -243,6 +252,12 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getInt(AUTO_HIDE_PILL_PROGRESS, resources.getInteger(R.integer.default_auto_hide_time))
     val hideInFullscreenTime: Int
         get() = getInt(HIDE_IN_FULLSCREEN_PROGRESS, resources.getInteger(R.integer.default_auto_hide_time))
+    val autoFadeTime: Long
+        get() = getInt(FADE_AFTER_SPECIFIED_DELAY_PROGRESS, resources.getInteger(R.integer.default_fade_time)).toLong()
+    val fullscreenFadeTime: Long
+        get() = getInt(FADE_IN_FULSCREEN_APPS_PROGRESS, resources.getInteger(R.integer.default_fade_time)).toLong()
+    val fadeOpacity: Float
+        get() = getInt(FADE_OPACITY, resources.getInteger(R.integer.default_fade_opacity_percent)) / 10f
     val hideOnKeyboardTime: Int
         get() = getInt(HIDE_PILL_ON_KEYBOARD_PROGRESS, resources.getInteger(R.integer.default_auto_hide_time))
     val homeY: Int

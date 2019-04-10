@@ -804,11 +804,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (!IntroActivity.needsToRun(this@App)) {
                 mainHandler.post {
                     bar.isImmersive = isImmersive
+
                     val hideInFullScreen = prefManager.hideInFullscreen
+                    val fadeInFullScreen = prefManager.fullscreenFade
+
                     if (isImmersive) {
-                        if (hideInFullScreen) bar.scheduleHide(HiddenPillReasonManager.FULLSCREEN)
+                        if (hideInFullScreen && !fadeInFullScreen) bar.scheduleHide(HiddenPillReasonManager.FULLSCREEN)
+                        if (fadeInFullScreen && !hideInFullScreen) bar.scheduleFade(prefManager.fullscreenFadeTime)
                     } else {
                         bar.showPill(HiddenPillReasonManager.FULLSCREEN)
+                        bar.scheduleUnfade()
                     }
                 }
             }

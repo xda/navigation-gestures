@@ -139,6 +139,8 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
                 origAdjY = ev.y
                 bar.beingTouched = true
                 bar.isCarryingOutTouchAction = true
+
+                bar.scheduleUnfade()
             }
 
             MotionEvent.ACTION_UP -> {

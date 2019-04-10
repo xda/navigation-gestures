@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.Switch
-import androidx.preference.AndroidResources
 import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreference
 import com.xda.nobar.R
@@ -92,8 +91,7 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
     fun getProgress() = context.prefManager.getInt("$key$KEY_SUFFIX", seekBar.getCurrentProgress())
 
     private fun syncSummary() {
-        if (isChecked && summaryOn != null)
-            summaryOn = context.resources.getString(R.string.auto_hide_pill_desc_enabled, getProgress().toString())
+        summaryOn = context.resources.getString(R.string.auto_hide_pill_desc_enabled, getProgress().toString())
     }
 
     class Dialog(private val preference: SeekBarSwitchPreference,

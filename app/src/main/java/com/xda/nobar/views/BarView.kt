@@ -53,6 +53,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         private const val MSG_HIDE = 0
         private const val MSG_SHOW = 1
+        private const val MSG_FADE = 2
+        private const val MSG_UNFADE = 3
     }
 
     internal val actionHolder = context.actionHolder
@@ -271,9 +273,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         show(null)
 
-        if (context.prefManager.autoHide) {
+        if (context.prefManager.autoHide && !context.prefManager.autoFade) {
             val reason = HiddenPillReasonManager.AUTO
             scheduleHide(reason)
+        }
+
+        if (context.prefManager.autoFade && !context.prefManager.autoHide) {
+            scheduleFade(context.prefManager.autoFadeTime)
         }
 
         handleRotationOrAnchorUpdate()
@@ -350,6 +356,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     if (!isHidden) scheduleHide(HiddenPillReasonManager.AUTO)
                 } else {
                     if (isHidden) hideHandler.show(HiddenPillReasonManager.AUTO)
+                }
+            }
+
+            PrefManager.FADE_AFTER_SPECIFIED_DELAY -> {
+                if (context.prefManager.autoFade) {
+                    scheduleFade(context.prefManager.autoFadeTime)
+                } else {
+                    scheduleUnfade()
                 }
             }
         }
@@ -472,6 +486,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     fun scheduleHide(reason: String, time: Long = parseHideTime(reason)) {
         hideHandler.hide(time, reason)
+    }
+
+    fun scheduleFade(time: Long) {
+        hideHandler.fade(time)
+    }
+
+    fun scheduleUnfade() {
+        hideHandler.unfade()
     }
 
     private fun parseHideTime(reason: String) =
@@ -842,6 +864,30 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     val reason = msg.obj?.toString()
                     showPillInternal(reason, msg.arg1 == 1)
                 }
+
+                MSG_FADE -> {
+                    if (!isHidden) {
+                        animate()
+                                .alpha(context.prefManager.fadeOpacity / 100f)
+                                .duration = getAnimationDurationMs()
+                    }
+                }
+
+                MSG_UNFADE -> {
+                    val fadeDelay =
+                            if (isImmersive && context.prefManager.fullscreenFade) context.prefManager.fullscreenFadeTime
+                            else if (context.prefManager.autoFade) context.prefManager.autoFadeTime
+                            else -1
+
+                    if (!isHidden) {
+                        animate()
+                                .alpha(ALPHA_ACTIVE)
+                                .setDuration(getAnimationDurationMs())
+                                .withEndAction {
+                                    if (fadeDelay != -1L) scheduleFade(fadeDelay)
+                                }
+                    }
+                }
             }
         }
 
@@ -866,6 +912,24 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             removeMessages(MSG_SHOW, reason)
 
             if (isHidden) sendMessage(msg)
+        }
+
+        fun fade(time: Long) {
+            val msg = Message.obtain(this)
+            msg.what = MSG_FADE
+
+            removeMessages(MSG_UNFADE)
+
+            sendMessageAtTime(msg, SystemClock.uptimeMillis() + time)
+        }
+
+        fun unfade() {
+            val msg = Message.obtain(this)
+            msg.what = MSG_UNFADE
+
+            removeMessages(MSG_FADE)
+
+            sendMessage(msg)
         }
     }
 }
