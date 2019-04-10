@@ -175,7 +175,7 @@
         <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/vibration_duration"
             android:key="vibration_duration"
-            android:icon="@drawable/timer"
+            android:icon="@drawable/ic_vibration"
             app:minValue="@integer/min_vibe_time"
             app:maxValue="@integer/max_vibe_tme"
             app:units="ms"
@@ -185,7 +185,7 @@
         <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/anim_duration"
             android:key="anim_duration"
-            android:icon="@drawable/timer"
+            android:icon="@drawable/ic_transition"
             app:minValue="@integer/min_anim_duration"
             app:maxValue="@integer/max_anim_duration"
             android:defaultValue="@integer/default_anim_duration"
@@ -194,7 +194,7 @@
         <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/hold_time"
             android:key="hold_time"
-            android:icon="@drawable/timer"
+            android:icon="@drawable/tap_hold"
             app:minValue="@integer/min_hold_time"
             app:maxValue="@integer/max_hold_time"
             app:units="ms"
@@ -205,7 +205,7 @@
             android:title="@string/pill_fade_duration"
             android:key="fade_duration"
             android:defaultValue="@integer/default_fade_duration"
-            android:icon="@drawable/timer"
+            android:icon="@drawable/ic_gradient"
             app:minValue="@integer/min_fade_duration"
             app:maxValue="@integer/max_fade_duration"
             app:units="ms"
