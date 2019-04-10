@@ -150,6 +150,10 @@
     <string name="section_divider_color">Section Divider Color</string>
     <string name="crash">Crash?!</string>
     <string name="restart_app">Restart</string>
+    <string name="fade_after_specified_delay">Fade Pill After Specified Delay</string>
+    <string name="fade_in_fullscreen_apps">Fade in Fullscreen Apps</string>
+    <string name="fade_opacity">Fade Opacity</string>
+    <string name="pill_fading">Pill Fading</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizar acciones de gestos</string>
     <string name="appearance_desc">Personalizar el aspecto de la barra de gestos</string>
@@ -166,7 +170,7 @@
     <string name="hide_navbar_in_upside_down_desc">Algunos dispositivos pueden rotar la pantalla cuando el dispositivo está boca abajo, lo que puede hacer que se muestre la barra de navegación original. Habilita esta opción para asegurarte de que permanezca oculta.</string>
     <string name="compatibility_pref_desc">Opciones de compatibilidad</string>
     <string name="tablet_mode_desc">Muchas tabletas obligan a la barra de navegación a estar siempre en la parte inferior de la pantalla. Activa esto para tener en cuenta ese comportamiento.</string>
-    <string name="hide_in_fullscreen_desc">Cuando se activa, la barra de gestos se oculta automáticamente en las aplicaciones de pantalla completa (por ejemplo, videos o juegos).</string>
+    <string name="hide_in_fullscreen_desc">When enabled, the pill will automatically hide in fullscreen apps (e.g. videos or games).</string>
     <string name="compatibility_warning">¡NO CAMBIES ESTAS OPCIONES A MENOS QUE LAS NECESITES! ¡PUEDEN CAUSAR PROBLEMAS EN LUGAR DE ARREGLARLOS!</string>
     <string name="larger_hitbox_desc">Habilita esto para hacer que la barra de gestos sea más fácil de deslizar.</string>
     <string name="hide_nav_summary">Solo utiliza esto si tu dispositivo tiene una barra de navegación de software.</string>
@@ -215,6 +219,8 @@
     <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
     <string name="custom_vibration_strength_desc">Choose a custom vibration strength.</string>
     <string name="section_divider_color_desc">Set the color of dividers to appear between the sections of the split pill.</string>
+    <string name="fade_after_specified_delay_desc">When enabled, the pill will automatically fade to the specified opacity after the specified delay.</string>
+    <string name="fade_in_fullscreen_apps_desc">When enabled, the pill will automatically fade in fullscreen apps to the specified opacity after the specified delay.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Esta aplicación proporciona increíbles gestos de navegación para cualquier dispositivo Android. ¡Lo mejor de todo es que no necesita root! Antes de utilizar los gestos, hay algunas cosas que tenemos que hacer para configurar la aplicación.</string>
     <string name="draw_over_apps_desc">Para que Navigation Gestures muestre la barra, tendrás que otorgar el permiso para que pueda dibujarse sobre otras aplicaciones. Pulsa el botón de abajo para hacerlo. Si lo instalaste desde Play Store, ya se habrá otorgado este permiso.</string>
