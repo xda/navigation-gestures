@@ -108,7 +108,7 @@
             android:title="@string/fade_after_specified_delay"
             android:summaryOff="@string/fade_after_specified_delay_desc"
             android:key="fade_after_specified_delay"
-            android:icon="@drawable/ic_opacity"
+            android:icon="@drawable/ic_gradient"
             android:defaultValue="@bool/fade_after_delay_default"
             app:view_defaultValue="@integer/default_fade_time"
             app:minValue="@integer/min_fade_time"
@@ -120,7 +120,7 @@
             android:title="@string/fade_in_fullscreen_apps"
             android:summaryOff="@string/fade_in_fullscreen_apps_desc"
             android:key="fade_in_fullscreen_apps"
-            android:icon="@drawable/ic_opacity"
+            android:icon="@drawable/ic_gradient"
             android:defaultValue="@bool/fade_in_fullscreen_default"
             app:view_defaultValue="@integer/default_fade_time"
             app:minValue="@integer/min_fade_time"
@@ -132,6 +132,7 @@
             android:title="@string/fade_opacity"
             android:key="fade_opacity"
             android:defaultValue="@integer/default_fade_opacity_percent"
+            android:icon="@drawable/ic_opacity"
             app:minValue="@integer/min_fade_opacity_percent"
             app:maxValue="@integer/max_fade_opacity_percent"
             app:scale="0.1"
@@ -198,6 +199,16 @@
             app:maxValue="@integer/max_hold_time"
             app:units="ms"
             android:defaultValue="@integer/default_hold_time"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            android:title="@string/pill_fade_duration"
+            android:key="fade_duration"
+            android:defaultValue="@integer/default_fade_duration"
+            android:icon="@drawable/timer"
+            app:minValue="@integer/min_fade_duration"
+            app:maxValue="@integer/max_fade_duration"
+            app:units="ms"
             />
 
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>

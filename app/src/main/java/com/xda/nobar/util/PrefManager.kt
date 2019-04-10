@@ -84,6 +84,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val FADE_AFTER_SPECIFIED_DELAY_PROGRESS = "fade_after_specified_delay_progress"
         const val FADE_IN_FULSCREEN_APPS_PROGRESS = "fade_in_fullscreen_apps_progress"
         const val FADE_OPACITY = "fade_opacity"
+        const val FADE_DURATION = "fade_duration"
 
         /* Strings */
         const val CRASHLYTICS_ID = "crashlytics_id"
@@ -326,6 +327,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() =
                 if (customVibrationStrength) getInt(VIBRATION_STRENGTH, resources.getInteger(R.integer.default_vibe_strength))
                 else VibrationEffect.DEFAULT_AMPLITUDE
+    val fadeDuration: Long
+        get() = getInt(FADE_DURATION, resources.getInteger(R.integer.default_fade_duration)).toLong()
 
     val crashlyticsId: String?
         get() {
