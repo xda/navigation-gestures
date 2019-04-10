@@ -15,6 +15,7 @@ import android.os.HandlerThread
 import android.os.Process
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.util.Log
 import android.view.Display
 import android.view.Surface
 import android.view.ViewTreeObserver

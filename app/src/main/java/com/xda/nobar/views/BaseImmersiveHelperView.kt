@@ -108,7 +108,7 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
     }
 
     fun getProperScreenHeightForRotation(): Int {
-        val screenHeight = context.realScreenSize.y
+        val screenHeight = if (context.isLandscape) context.realScreenSize.x else context.realScreenSize.y
         val navHeight = context.navBarHeight
 
         return if (context.isLandscape) {
@@ -120,7 +120,7 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
     }
 
     fun getProperScreenWidthForRotation(): Int {
-        val screenWidth = context.realScreenSize.x
+        val screenWidth = if (context.isLandscape) context.realScreenSize.y else context.realScreenSize.x
         val navHeight = context.navBarHeight
 
         return if (context.isLandscape) {

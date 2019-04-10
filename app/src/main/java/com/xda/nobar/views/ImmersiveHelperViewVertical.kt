@@ -2,6 +2,7 @@ package com.xda.nobar.views
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.WindowManager
 import com.xda.nobar.util.helpers.ImmersiveHelperManager
 import kotlin.math.absoluteValue
