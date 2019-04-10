@@ -154,6 +154,7 @@
     <string name="fade_in_fullscreen_apps">Fade in Fullscreen Apps</string>
     <string name="fade_opacity">Fade Opacity</string>
     <string name="pill_fading">Pill Fading</string>
+    <string name="pill_fade_duration">Pill Fade Duration</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizza gesture</string>
     <string name="appearance_desc">Personalizza l\'aspetto della pillola</string>
