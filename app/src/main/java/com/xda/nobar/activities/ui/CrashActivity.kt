@@ -12,15 +12,14 @@ import com.xda.nobar.receivers.StartupReceiver
 import kotlinx.android.synthetic.main.activity_crash.*
 
 class CrashActivity : AppCompatActivity() {
+    private var isForCrashlytics = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crash)
 
         enable_c_id.setOnClickListener {
-            val help = Intent(this, HelpAboutActivity::class.java)
-            help.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-            startActivity(help)
+            isForCrashlytics = true
             finish()
         }
 
@@ -32,7 +31,15 @@ class CrashActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        val startup = PendingIntent.getBroadcast(
+        val startup = if (isForCrashlytics)
+            PendingIntent.getActivity(
+                    this,
+                    11,
+                    Intent(this, HelpAboutActivity::class.java),
+                    PendingIntent.FLAG_ONE_SHOT
+            )
+        else
+            PendingIntent.getBroadcast(
                 this,
                 10,
                 Intent(this, StartupReceiver::class.java).apply { action = StartupReceiver.ACTION_RELAUNCH },
