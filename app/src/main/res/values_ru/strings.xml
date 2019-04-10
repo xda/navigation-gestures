@@ -150,6 +150,10 @@
     <string name="section_divider_color">Section Divider Color</string>
     <string name="crash">Crash?!</string>
     <string name="restart_app">Restart</string>
+    <string name="fade_after_specified_delay">Fade Pill After Specified Delay</string>
+    <string name="fade_in_fullscreen_apps">Fade in Fullscreen Apps</string>
+    <string name="fade_opacity">Fade Opacity</string>
+    <string name="pill_fading">Pill Fading</string>
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
     <string name="appearance_desc">Customize appearance of the navigation pill</string>
@@ -166,7 +170,7 @@
     <string name="hide_navbar_in_upside_down_desc">Some devices are able to rotate the screen when the device is upside down, which can cause the original navigation bar to show. Enable this option to make sure it stays hidden.</string>
     <string name="compatibility_pref_desc">Настройки совместимости</string>
     <string name="tablet_mode_desc">Many tablets force the navigation bar to always be on the bottom of the screen. Turn this on to account for that behavior.</string>
-    <string name="hide_in_fullscreen_desc">When activated, the pill will automatically hide in fullscreen apps (e.g. videos or games).</string>
+    <string name="hide_in_fullscreen_desc">When enabled, the pill will automatically hide in fullscreen apps (e.g. videos or games).</string>
     <string name="compatibility_warning">НЕ ИЗМЕНЯЙТЕ НАСТРОЙКИ ЕСЛИ В ЭТОМ НЕТ НЕОБХОДИМОСТИ! ЭТО МОЖЕТ ВЫЗВАТЬ ДОПОЛНИТЕЛЬНЫЕ ПРОБЛЕМЫ!</string>
     <string name="larger_hitbox_desc">Включите, чтобы легче свайпать таблетку.</string>
     <string name="hide_nav_summary">Используйте настройку, чтобы скрыть системную панель навигации.</string>
@@ -215,6 +219,8 @@
     <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
     <string name="custom_vibration_strength_desc">Choose a custom vibration strength.</string>
     <string name="section_divider_color_desc">Set the color of dividers to appear between the sections of the split pill.</string>
+    <string name="fade_after_specified_delay_desc">When enabled, the pill will automatically fade to the specified opacity after the specified delay.</string>
+    <string name="fade_in_fullscreen_apps_desc">When enabled, the pill will automatically fade in fullscreen apps to the specified opacity after the specified delay.</string>
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
     <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
