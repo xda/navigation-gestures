@@ -34,6 +34,12 @@ class BehaviorBackupRestoreManager(context: Context) : BaseBackupRestoreManager(
         data[PrefManager.Y_THRESHOLD_DOWN] = prefManager.get(PrefManager.Y_THRESHOLD_DOWN)
         data[PrefManager.CUSTOM_VIBRATION_STRENGTH] = prefManager.get(PrefManager.CUSTOM_VIBRATION_STRENGTH)
         data[PrefManager.VIBRATION_STRENGTH] = prefManager.get(PrefManager.VIBRATION_STRENGTH)
+        data[PrefManager.FADE_AFTER_SPECIFIED_DELAY] = prefManager.get(PrefManager.FADE_AFTER_SPECIFIED_DELAY)
+        data[PrefManager.FADE_AFTER_SPECIFIED_DELAY_PROGRESS] = prefManager.get(PrefManager.FADE_AFTER_SPECIFIED_DELAY_PROGRESS)
+        data[PrefManager.FADE_IN_FULLSCREEN_APPS] = prefManager.get(PrefManager.FADE_IN_FULLSCREEN_APPS)
+        data[PrefManager.FADE_IN_FULSCREEN_APPS_PROGRESS] = prefManager.get(PrefManager.FADE_IN_FULSCREEN_APPS_PROGRESS)
+        data[PrefManager.FADE_OPACITY] = prefManager.get(PrefManager.FADE_OPACITY)
+        data[PrefManager.FADE_DURATION] = prefManager.get(PrefManager.FADE_DURATION)
 
         serialize(dest, data)
     }

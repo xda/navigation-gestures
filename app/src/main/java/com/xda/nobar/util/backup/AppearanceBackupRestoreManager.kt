@@ -28,6 +28,7 @@ class AppearanceBackupRestoreManager(context: Context) : BaseBackupRestoreManage
         data[PrefManager.USE_PIXELS_Y] = prefManager.get(PrefManager.USE_PIXELS_Y)
         data[PrefManager.CUSTOM_Y_PERCENT] = prefManager.get(PrefManager.CUSTOM_Y_PERCENT)
         data[PrefManager.CUSTOM_Y] = prefManager.get(PrefManager.CUSTOM_Y)
+        data[PrefManager.PILL_DIVIDER_COLOR] = prefManager.get(PrefManager.PILL_DIVIDER_COLOR)
 
         serialize(dest, data)
     }
