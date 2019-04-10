@@ -152,6 +152,11 @@ or
     <string name="section_divider_color">Section Divider Color</string>
     <string name="crash">Crash?!</string>
     <string name="restart_app">Restart</string>
+    <string name="fade_after_specified_delay">Fade Pill After Specified Delay</string>
+    <string name="fade_in_fullscreen_apps">Fade in Fullscreen Apps</string>
+    <string name="fade_opacity">Fade Opacity</string>
+    <string name="pill_fading">Pill Fading</string>
+    <string name="pill_fade_duration">Pill Fade Duration</string>
     <!--Descriptions-->
     <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
     <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
@@ -168,7 +173,7 @@ or
     <string name="hide_navbar_in_upside_down_desc">Một số thiết bị có thể xoay màn hình khi xoay ngược, điều này có thể khiến thanh điều hướng hiển thị. Kích hoạt để đảm bảo thanh điều hướng vẫn ẩn.</string>
     <string name="compatibility_pref_desc">Tùy chọn khả năng tương thích</string>
     <string name="tablet_mode_desc">Một vài máy tính bản bắt buộc thanh điều hướng luôn ở dưới màn hình. Bật để áp dụng cho trường hợp này.</string>
-    <string name="hide_in_fullscreen_desc">Khi được kích hoạt, viên điều hướng sẽ tự động ẩn trong các ứng dụng toàn màn hình (như videos hoặc games).</string>
+    <string name="hide_in_fullscreen_desc">When enabled, the pill will automatically hide in fullscreen apps (e.g. videos or games).</string>
     <string name="compatibility_warning">ĐỪNG THAY ĐỔI CÁC TÙY CHỌN NÀY TRỪ KHI CẦN THIẾT! CHÚNG CÓ THỂ GÂY RA LỖI THAY VÌ ĐƯỢC KHẮC PHỤC!</string>
     <string name="larger_hitbox_desc">Kích hoạt để thao tác dễ hơn.</string>
     <string name="hide_nav_summary">Chỉ dùng nếu thiết bị có phím điều hướng ảo.</string>
@@ -218,6 +223,8 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
     <string name="custom_vibration_strength_desc">Choose a custom vibration strength.</string>
     <string name="section_divider_color_desc">Set the color of dividers to appear between the sections of the split pill.</string>
+    <string name="fade_after_specified_delay_desc">When enabled, the pill will automatically fade to the specified opacity after the specified delay.</string>
+    <string name="fade_in_fullscreen_apps_desc">When enabled, the pill will automatically fade in fullscreen apps to the specified opacity after the specified delay.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Ứng dụng mang đến cử chỉ điều hướng tuyệt vời đến bất kì thiết bị Android. Tốt hơn cả, nó không cần có root! Trước khi bạn có thể sử dụng cử chỉ, có vài thứ cần làm để thiết lập ứng dụng.</string>
     <string name="draw_over_apps_desc">Để Navigation Gesture có thể hiểu thị lên viên điều hướng, bạn phải cho phép vẽ đè lên các ứng dụng khác. Ấn nút bên dưới để thực hiện điều này. Nếu ứng dụng được tải từ Play Store, quyền này sẽ được cho cấp sẵn.</string>
