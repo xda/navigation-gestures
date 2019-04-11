@@ -4,11 +4,13 @@ import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.RippleDrawable
 import android.os.*
 import android.preference.PreferenceManager
 import android.util.AttributeSet
@@ -18,6 +20,7 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.graphics.ColorUtils
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import com.xda.nobar.R
@@ -289,10 +292,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             visibility = if (splitPill) View.VISIBLE else View.GONE
 
             if (isVertical) {
-                y = pos1Left
+                y = pos1Left + dp
                 x = dp.toFloat()
             } else {
-                x = pos1Left
+                x = pos1Left + dp
                 y = dp.toFloat()
             }
         }
@@ -302,13 +305,27 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             visibility = if (splitPill) View.VISIBLE else View.GONE
 
             if (isVertical) {
-                y = pos2Left
+                y = pos2Left + dp
                 x = dp.toFloat()
             } else {
-                x = pos2Left
+                x = pos2Left + dp
                 y = dp.toFloat()
             }
         }
+    }
+
+    private fun updateFlashColor() {
+        val bgColor = context.prefManager.pillBGColor
+        val hsl = FloatArray(3)
+
+        ColorUtils.colorToHSL(bgColor, hsl)
+
+        val newColor = ColorStateList.valueOf(resources.getColor(if (hsl[2] < 0.5) android.R.color.white else android.R.color.black))
+
+        (pill_tap_flash.background as RippleDrawable).setColor(newColor)
+        (section_1_flash.background as RippleDrawable).setColor(newColor)
+        (section_2_flash.background as RippleDrawable).setColor(newColor)
+        (section_3_flash.background as RippleDrawable).setColor(newColor)
     }
 
     /**
@@ -331,6 +348,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         handleRotationOrAnchorUpdate()
+        updateFlashColor()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -385,6 +403,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             PrefManager.SECTIONED_PILL -> {
                 updatePillColorsAndRadii()
                 updateDividers()
+                updateFlashColor()
             }
 
             PrefManager.SHOW_SHADOW -> {
