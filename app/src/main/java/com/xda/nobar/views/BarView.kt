@@ -282,44 +282,44 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
 
-        section_1_flash.apply {
-            layoutParams = flashParams
-            visibility = if (splitPill) View.VISIBLE else View.GONE
-
-            if (isVertical) {
-                y = 0f
-                x = dp.toFloat()
-            } else {
-                x = 0f
-                y = dp.toFloat()
-            }
-        }
-
-        section_2_flash.apply {
-            layoutParams = flashParams
-            visibility = if (splitPill) View.VISIBLE else View.GONE
-
-            if (isVertical) {
-                y = pos1Left + dp
-                x = dp.toFloat()
-            } else {
-                x = pos1Left + dp
-                y = dp.toFloat()
-            }
-        }
-
-        section_3_flash.apply {
-            layoutParams = flashParams
-            visibility = if (splitPill) View.VISIBLE else View.GONE
-
-            if (isVertical) {
-                y = pos2Left + dp
-                x = dp.toFloat()
-            } else {
-                x = pos2Left + dp
-                y = dp.toFloat()
-            }
-        }
+//        section_1_flash.apply {
+//            layoutParams = flashParams
+//            visibility = if (splitPill) View.VISIBLE else View.GONE
+//
+//            if (isVertical) {
+//                y = 0f
+//                x = dp.toFloat()
+//            } else {
+//                x = 0f
+//                y = dp.toFloat()
+//            }
+//        }
+//
+//        section_2_flash.apply {
+//            layoutParams = flashParams
+//            visibility = if (splitPill) View.VISIBLE else View.GONE
+//
+//            if (isVertical) {
+//                y = pos1Left + dp
+//                x = dp.toFloat()
+//            } else {
+//                x = pos1Left + dp
+//                y = dp.toFloat()
+//            }
+//        }
+//
+//        section_3_flash.apply {
+//            layoutParams = flashParams
+//            visibility = if (splitPill) View.VISIBLE else View.GONE
+//
+//            if (isVertical) {
+//                y = pos2Left + dp
+//                x = dp.toFloat()
+//            } else {
+//                x = pos2Left + dp
+//                y = dp.toFloat()
+//            }
+//        }
     }
 
     private fun updateFlashColor() {
