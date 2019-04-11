@@ -16,20 +16,26 @@
     android:padding="@dimen/pill_border_stroke_width"
     style="@style/AppTheme">
 
-    <LinearLayout
+    <View
         android:id="@+id/pill_tap_flash"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/pill_tap_flash"
-        android:alpha="0"
+        android:background="@drawable/pill_tap_ripple"
+        android:clickable="true"
+        android:focusable="true"
         android:elevation="2dp"
         android:orientation="horizontal"
         />
 
     <View
         android:id="@+id/section_1_flash"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/pill_tap_ripple"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="2dp"
+        android:orientation="horizontal"
         />
 
     <View
@@ -40,9 +46,31 @@
         />
 
     <View
+        android:id="@+id/section_2_flash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/pill_tap_ripple"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="2dp"
+        android:orientation="horizontal"
+        />
+
+    <View
         android:id="@+id/divider_2"
         android:layout_width="1dp"
         android:layout_height="match_parent"
+        />
+
+    <View
+        android:id="@+id/section_3_flash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/pill_tap_ripple"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="2dp"
+        android:orientation="horizontal"
         />
 
 </FrameLayout>

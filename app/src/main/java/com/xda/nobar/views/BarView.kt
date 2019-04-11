@@ -205,18 +205,26 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         val layers = pill.background as LayerDrawable
         val fgColor = context.prefManager.pillFGColor
 
-        val dp = context.dpAsPx(1)
+        val dp = context.resources.getDimensionPixelSize(R.dimen.pill_border_stroke_width)
+        val radius = context.prefManager.pillCornerRadiusPx.toFloat()
 
         (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
             setColor(context.prefManager.pillBGColor)
             setStroke(dp, fgColor)
-            cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
+            cornerRadius = radius
         }
 
-
-        (pill_tap_flash.background as GradientDrawable).apply {
-            cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
-        }
+//        (pill_tap_flash.background as GradientDrawable).apply {
+//            cornerRadius = radius
+//        }
+//
+//        (section_1_flash.background as GradientDrawable).apply {
+//            cornerRadii = floatArrayOf(radius, radius, 0f, 0f, 0f, 0f, radius, radius)
+//        }
+//
+//        (section_3_flash.background as GradientDrawable).apply {
+//            cornerRadii = floatArrayOf(0f, 0f, radius, radius, radius, radius, 0f, 0f)
+//        }
     }
 
     private fun updateDividers() {
@@ -228,6 +236,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         val color = if (splitPill) dividerColor else Color.TRANSPARENT
 
+        pill_tap_flash.visibility = if (splitPill) View.GONE else View.VISIBLE
+
         divider_1.setBackgroundColor(color)
         divider_2.setBackgroundColor(color)
 
@@ -237,6 +247,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         val params = FrameLayout.LayoutParams(
                 if (isVertical) FrameLayout.LayoutParams.MATCH_PARENT else dp,
                 if (isVertical) dp else FrameLayout.LayoutParams.MATCH_PARENT
+        )
+
+        val flashWidth = (pillWidth / 3f).toInt()
+
+        val flashParams = FrameLayout.LayoutParams(
+                if (isVertical) FrameLayout.LayoutParams.MATCH_PARENT else flashWidth,
+                if (isVertical) flashWidth else FrameLayout.LayoutParams.MATCH_PARENT
         )
 
         divider_1.apply {
@@ -252,6 +269,37 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
         divider_2.apply {
             layoutParams = params
+
+            if (isVertical) {
+                y = pos2Left
+                x = dp.toFloat()
+            } else {
+                x = pos2Left
+                y = dp.toFloat()
+            }
+        }
+
+        section_1_flash.apply {
+            layoutParams = flashParams
+            visibility = if (splitPill) View.VISIBLE else View.GONE
+        }
+
+        section_2_flash.apply {
+            layoutParams = flashParams
+            visibility = if (splitPill) View.VISIBLE else View.GONE
+
+            if (isVertical) {
+                y = pos1Left
+                x = dp.toFloat()
+            } else {
+                x = pos1Left
+                y = dp.toFloat()
+            }
+        }
+
+        section_3_flash.apply {
+            layoutParams = flashParams
+            visibility = if (splitPill) View.VISIBLE else View.GONE
 
             if (isVertical) {
                 y = pos2Left
@@ -640,18 +688,18 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         return context.prefManager.animationDurationMs.toLong()
     }
 
-    /**
-     * This is called twice to "flash" the pill when an action is performed
-     */
-    private fun animateActiveLayer(alpha: Float) {
-        pill_tap_flash.apply {
-            val alphaRatio = Color.alpha(context.prefManager.pillBGColor).toFloat() / 255f
-            animate()
-                    .setDuration(getAnimationDurationMs())
-                    .alpha(alpha * alphaRatio)
-                    .start()
-        }
-    }
+//    /**
+//     * This is called twice to "flash" the pill when an action is performed
+//     */
+//    private fun animateActiveLayer(alpha: Float) {
+//        pill_tap_flash.apply {
+//            val alphaRatio = Color.alpha(context.prefManager.pillBGColor).toFloat() / 255f
+//            animate()
+//                    .setDuration(getAnimationDurationMs())
+//                    .alpha(alpha * alphaRatio)
+//                    .start()
+//        }
+//    }
 
     private fun adjustPillShadow() {
         try {
