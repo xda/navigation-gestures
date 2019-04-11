@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.DeadObjectException
 import android.os.Process
 import com.crashlytics.android.Crashlytics
 import com.xda.nobar.BuildConfig
@@ -31,7 +32,9 @@ class CrashHandler(private val prevHandler: Thread.UncaughtExceptionHandler, pri
             if (needsToLog) {
                 prevHandler.uncaughtException(t, e)
             } else {
-                Crashlytics.logException(e)
+                if (e !is DeadObjectException) {
+                    Crashlytics.logException(e)
+                }
             }
 
             Process.killProcess(Process.myPid())
