@@ -662,6 +662,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         @SuppressLint("WrongConstant")
         override fun onGlobalLayout() {
+            bar.updatePositionAndDimens()
+
+            handleRot()
+
             logicHandler.post {
                 if (!bar.isCarryingOutTouchAction) {
                     keyboardShown = imm.inputMethodWindowVisibleHeight > 0
@@ -714,10 +718,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             e.printStackTrace()
                         }
                     }
-
-                    bar.updatePositionAndDimens()
-
-                    handleRot()
 
                     if (prefManager.origBarInFullscreen) {
                         if (immersiveHelperManager.isFullImmersive()) {
