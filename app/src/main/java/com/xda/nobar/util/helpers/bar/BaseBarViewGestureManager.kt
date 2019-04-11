@@ -12,6 +12,7 @@ import com.xda.nobar.util.app
 import com.xda.nobar.util.helpers.HiddenPillReasonManager
 import com.xda.nobar.util.prefManager
 import com.xda.nobar.views.BarView
+import kotlinx.android.synthetic.main.pill.view.*
 import java.util.*
 
 abstract class BaseBarViewGestureManager(internal val bar: BarView) {
@@ -141,15 +142,40 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
                 bar.isCarryingOutTouchAction = true
 
                 bar.scheduleUnfade()
+
+                displayProperFlash(true)
             }
 
             MotionEvent.ACTION_UP -> {
                 bar.beingTouched = false
                 lastTouchTime = -1L
+
+                displayProperFlash(false)
             }
         }
 
         return false
+    }
+
+    private fun displayProperFlash(pressed: Boolean) {
+        val is90Vertical = bar.isVertical && !bar.is270Vertical
+
+        if (pressed) {
+            if (context.prefManager.sectionedPill) {
+                when (getSection(adjCoord)) {
+                    FIRST_SECTION -> if (is90Vertical) bar.section_3_flash.isPressed = pressed else bar.section_1_flash.isPressed = pressed
+                    SECOND_SECTION -> bar.section_2_flash.isPressed = pressed
+                    THIRD_SECTION -> if (is90Vertical) bar.section_1_flash.isPressed = pressed else bar.section_3_flash.isPressed = pressed
+                }
+            } else {
+                bar.pill_tap_flash.isPressed = pressed
+            }
+        } else {
+            bar.section_1_flash.isPressed = pressed
+            bar.section_2_flash.isPressed = pressed
+            bar.section_3_flash.isPressed = pressed
+            bar.pill_tap_flash.isPressed = pressed
+        }
     }
 
     internal fun finishUp() {
