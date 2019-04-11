@@ -88,30 +88,34 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
 
     //Write Secure Settings slide: prompt the user to grant this permission; used for hiding the navbar and some other stuff
     val wssSlide by lazy {
-        DynamicForwardFragmentSlide(FragmentSlide.Builder()
-                .background(R.color.slide_4)
-                .backgroundDark(R.color.slide_4_dark)
-                .fragment(WriteSecureFragment())
-                .buttonCtaLabel(R.string.grant)
-                .buttonCtaClickListener {
-                    if (Shell.SU.available()) {
-                        app.rootWrapper.onCreate()
-                        AlertDialog.Builder(this)
-                                .setTitle(R.string.root_found)
-                                .setMessage(R.string.root_found_desc)
-                                .setPositiveButton(R.string.use_root) { _, _ ->
-                                    GlobalScope.launch {
-                                        Shell.SU.run("pm grant $packageName ${android.Manifest.permission.WRITE_SECURE_SETTINGS}")
-                                    }
-                                }
-                                .setNegativeButton(R.string.non_root) { _, _ ->
+        DynamicForwardFragmentSlide(
+                FragmentSlide.Builder()
+                        .background(R.color.slide_4)
+                        .backgroundDark(R.color.slide_4_dark)
+                        .fragment(WriteSecureFragment())
+                        .buttonCtaLabel(R.string.grant)
+                        .buttonCtaClickListener {
+                            isSuAsync {
+                                if (it) {
+                                    app.rootWrapper.onCreate()
+                                    AlertDialog.Builder(this)
+                                            .setTitle(R.string.root_found)
+                                            .setMessage(R.string.root_found_desc)
+                                            .setPositiveButton(R.string.use_root) { _, _ ->
+                                                GlobalScope.launch {
+                                                    Shell.SU.run("pm grant $packageName ${android.Manifest.permission.WRITE_SECURE_SETTINGS}")
+                                                }
+                                            }
+                                            .setNegativeButton(R.string.non_root) { _, _ ->
+                                                nonRootDialog()
+                                            }
+                                            .show()
+                                } else {
                                     nonRootDialog()
                                 }
-                                .show()
-                    } else {
-                        nonRootDialog()
-                    }
-                }) {
+                            }
+                        }
+        ) {
             prefManager.confirmedSkipWss || (if (hasWss) {
                 allowHiddenMethods()
                 true

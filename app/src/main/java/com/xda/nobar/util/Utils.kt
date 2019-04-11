@@ -16,10 +16,7 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.os.Vibrator
+import android.os.*
 import android.provider.Settings
 import android.util.TypedValue
 import android.view.Surface
@@ -35,9 +32,13 @@ import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.interfaces.OnDialogChoiceMadeListener
 import com.xda.nobar.util.helpers.bar.ActionHolder
 import com.xda.nobar.views.BarView
+import eu.chainfire.libsuperuser.Shell
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
+
+val logicThread = HandlerThread("NoBar-Logic").apply { start() }
+
+val logicHandler = Handler(logicThread.looper)
 
 val mainHandler = Handler(Looper.getMainLooper())
 
@@ -186,31 +187,30 @@ val Context.prefManager: PrefManager
     get() = PrefManager.getInstance(applicationContext)
 
 private var cachedScreenSize: Point? = null
-private var latestScreenSizeUpdate: Long = 0
+
+/**
+ * Try not to call this from the main Thread
+ */
+fun Context.refreshScreenSize(): Point {
+    val display = app.wm.defaultDisplay
+
+    val temp = Point().apply { display.getRealSize(this) }
+
+    cachedScreenSize = rotation.run {
+        if (prefManager.anchorPill
+                && (this == Surface.ROTATION_90 || this == Surface.ROTATION_270))
+            Point(temp.y, temp.x) else temp
+    }
+
+    return cachedScreenSize!!
+}
 
 /**
  * Get the device's screen size
  * @return device's resolution (in px) as a Point
  */
 val Context.realScreenSize: Point
-    get() {
-        val display = app.wm.defaultDisplay
-        val time = System.currentTimeMillis()
-
-        if (cachedScreenSize == null
-                || TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.MILLISECONDS.toMinutes(latestScreenSizeUpdate) >= 1) {
-            val temp = Point().apply { display.getRealSize(this) }
-
-            latestScreenSizeUpdate = time
-            cachedScreenSize = rotation.run {
-                if (prefManager.anchorPill
-                        && (this == Surface.ROTATION_90 || this == Surface.ROTATION_270))
-                    Point(temp.y, temp.x) else temp
-            }
-        }
-
-        return cachedScreenSize!!
-    }
+    get() = Point(cachedScreenSize ?: refreshScreenSize())
 
 val Context.rotation: Int
     get() {
@@ -409,3 +409,31 @@ val navOptions: NavOptions
 
         return builder.build()
     }
+
+private var cachedSu = false
+
+/**
+ * Check if root is available
+ *
+ * This checks a cached value, set by isSuAsync(), so it may not be up-to-date
+ */
+val isSu: Boolean
+    get() = cachedSu
+
+/**
+ * Check for root access asynchronously
+ *
+ * By default, the result will be posted on the main Thread.
+ * This can also be used to refresh the cached value.
+ */
+fun isSuAsync(resultHandler: Handler = mainHandler, listener: ((Boolean) -> Unit)? = null) {
+    logicHandler.post {
+        cachedSu = Shell.SU.available()
+
+        listener?.let {
+            resultHandler.post {
+                it.invoke(cachedSu)
+            }
+        }
+    }
+}

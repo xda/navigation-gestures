@@ -8,14 +8,12 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.ContentObserver
+import android.hardware.display.DisplayManager
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
-import android.os.HandlerThread
 import android.os.Process
 import android.preference.PreferenceManager
 import android.provider.Settings
-import android.util.Log
 import android.view.Display
 import android.view.Surface
 import android.view.ViewTreeObserver
@@ -41,7 +39,6 @@ import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.*
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.NavBlackout
-import eu.chainfire.libsuperuser.Shell
 import io.fabric.sdk.android.Fabric
 import io.fabric.sdk.android.InitializationCallback
 import java.util.*
@@ -61,6 +58,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val appOps by lazy { getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager }
     val nm by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
     val imm by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
+    val dm  by lazy { getSystemService(Context.DISPLAY_SERVICE) as DisplayManager }
 
     val rootWrapper by lazy { RootWrapper(this) }
     val blackout by lazy { NavBlackout(this) }
@@ -78,6 +76,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     private val premiumInstallListener = PremiumInstallListener()
     private val permissionListener = PermissionReceiver()
+    private val displayChangeListener = DisplayChangeListener()
 
     val immersiveHelperManager by lazy { ImmersiveHelperManager(this) }
     val screenOffHelper by lazy { ScreenOffHelper(this) }
@@ -94,10 +93,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
     private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()
     private val licenseCheckListeners = ArrayList<OnLicenseCheckResultListener>()
-
-    val logicThread = HandlerThread("NoBar-Logic").apply { start() }
-
-    val logicHandler = Handler(logicThread.looper)
 
     val uiHandler = UIHandler()
 
@@ -133,8 +128,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         if (prefManager.crashlyticsIdEnabled)
             Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
-        if (!prefManager.firstRun
-                && Shell.SU.available()) rootWrapper.onCreate()
+
+        if (!prefManager.firstRun) {
+            isSuAsync {
+                if (it) rootWrapper.onCreate()
+            }
+        }
 
         val watchDog = ANRWatchDog()
         watchDog.setReportMainThreadOnly()
@@ -154,6 +153,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         carModeHandler.register()
         premiumInstallListener.register()
         permissionListener.register()
+
+        dm.registerDisplayListener(displayChangeListener, logicHandler)
 
         isValidPremium = prefManager.validPrem
 
@@ -461,7 +462,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     private fun addBarInternalUnconditionally() {
         try {
             wm.addView(bar, bar.params)
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     /**
@@ -660,39 +662,39 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         @SuppressLint("WrongConstant")
         override fun onGlobalLayout() {
-            if (!bar.isCarryingOutTouchAction) {
-                keyboardShown = imm.inputMethodWindowVisibleHeight > 0
+            logicHandler.post {
+                if (!bar.isCarryingOutTouchAction) {
+                    keyboardShown = imm.inputMethodWindowVisibleHeight > 0
 
-                if (prefManager.showNavWithKeyboard) {
-                    if (keyboardShown) {
-                        showNav(false)
-                        disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYBOARD)
-                    } else if (prefManager.shouldUseOverscanMethod) {
-                        disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYBOARD)
-                    }
-                }
-
-                if (!prefManager.dontMoveForKeyboard) {
-                    var changed = false
-
-                    if (keyboardShown) {
-                        if (bar.params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN != 0) {
-                            bar.params.flags = bar.params.flags and
-                                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
-                            changed = true
-                        }
-                    } else {
-                        if (bar.params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN == 0) {
-                            bar.params.flags = bar.params.flags or
-                                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                            changed = true
+                    if (prefManager.showNavWithKeyboard) {
+                        if (keyboardShown) {
+                            showNav(false)
+                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYBOARD)
+                        } else if (prefManager.shouldUseOverscanMethod) {
+                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYBOARD)
                         }
                     }
 
-                    if (changed) bar.updateLayout()
-                }
+                    if (!prefManager.dontMoveForKeyboard) {
+                        var changed = false
 
-                logicHandler.post {
+                        if (keyboardShown) {
+                            if (bar.params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN != 0) {
+                                bar.params.flags = bar.params.flags and
+                                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
+                                changed = true
+                            }
+                        } else {
+                            if (bar.params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN == 0) {
+                                bar.params.flags = bar.params.flags or
+                                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                                changed = true
+                            }
+                        }
+
+                        if (changed) bar.updateLayout()
+                    }
+
                     if (isTouchWiz) {
                         try {
                             val semCocktailBarManagerClass = Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
@@ -998,5 +1000,22 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
             }
         }
+    }
+
+    inner class DisplayChangeListener : DisplayManager.DisplayListener {
+        override fun onDisplayChanged(displayId: Int) {
+            if (displayId == wm.defaultDisplay.displayId) {
+                val oldSize = realScreenSize
+                val newSize = refreshScreenSize()
+
+                if (oldSize != newSize) {
+                    bar.updatePositionAndDimens()
+                }
+            }
+        }
+
+        override fun onDisplayAdded(displayId: Int) {}
+
+        override fun onDisplayRemoved(displayId: Int) {}
     }
 }

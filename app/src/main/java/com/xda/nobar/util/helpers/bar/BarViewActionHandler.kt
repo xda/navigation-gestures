@@ -34,7 +34,6 @@ import com.xda.nobar.util.*
 import com.xda.nobar.util.flashlight.FlashlightControllerLollipop
 import com.xda.nobar.util.flashlight.FlashlightControllerMarshmallow
 import com.xda.nobar.views.BarView
-import eu.chainfire.libsuperuser.Shell
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -113,7 +112,7 @@ class BarViewActionHandler(private val bar: BarView) {
             }
 
             if (bar.isAccessibilityAction(which)) {
-                if (context.app.prefManager.useRoot && Shell.SU.available()) {
+                if (context.app.prefManager.useRoot && isSu) {
                     sendRootAction(which, key)
                 } else {
                     if (which == bar.actionHolder.typeHome
@@ -256,7 +255,7 @@ class BarViewActionHandler(private val bar: BarView) {
                     bar.actionHolder.premTypeLockScreen -> context.runPremiumAction {
                         context.runSystemSettingsAction {
                             if (context.app.prefManager.useRoot
-                                    && Shell.SU.available()) {
+                                    && isSu) {
                                 context.app.rootWrapper.actions?.lockScreen()
                             } else {
                                 ActionReceiver.turnScreenOff(context)
