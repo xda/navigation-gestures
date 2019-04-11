@@ -252,7 +252,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 if (isVertical) dp else FrameLayout.LayoutParams.MATCH_PARENT
         )
 
-        val flashWidth = (pillWidth / 3f).toInt()
+        val flashWidth = (pillWidth / 3f - dp / 2f).toInt()
 
         val flashParams = FrameLayout.LayoutParams(
                 if (isVertical) FrameLayout.LayoutParams.MATCH_PARENT else flashWidth,
@@ -285,6 +285,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         section_1_flash.apply {
             layoutParams = flashParams
             visibility = if (splitPill) View.VISIBLE else View.GONE
+
+            if (isVertical) {
+                y = 0f
+                x = dp.toFloat()
+            } else {
+                x = 0f
+                y = dp.toFloat()
+            }
         }
 
         section_2_flash.apply {
