@@ -9,8 +9,12 @@
     android:layout_marginRight="4dp"
     android:layout_marginTop="@dimen/pill_margin_top_normal"
     android:background="@drawable/pill_drawable"
+    android:clickable="true"
+    android:focusable="true"
     android:elevation="2dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="@dimen/pill_border_stroke_width"
+    style="@style/AppTheme">
 
     <LinearLayout
         android:id="@+id/pill_tap_flash"
@@ -18,13 +22,21 @@
         android:layout_height="match_parent"
         android:background="@drawable/pill_tap_flash"
         android:alpha="0"
+        android:elevation="2dp"
         android:orientation="horizontal"
+        />
+
+    <View
+        android:id="@+id/section_1_flash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         />
 
     <View
         android:id="@+id/divider_1"
         android:layout_width="1dp"
         android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
         />
 
     <View

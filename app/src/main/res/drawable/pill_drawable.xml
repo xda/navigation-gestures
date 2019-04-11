@@ -3,15 +3,11 @@
     <item android:id="@+id/background">
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/pill_radius_default" />
-            <solid android:color="#eecccccc" />
-        </shape>
-    </item>
-    <item android:id="@+id/foreground">
-        <shape android:shape="rectangle">
-            <corners android:radius="@dimen/pill_radius_default" />
+            <solid android:color="@color/pill_color" />
             <stroke
-                android:width="1dp"
-                android:color="#32222222" />
+                android:width="@dimen/pill_border_stroke_width"
+                android:color="@color/pill_border_color"
+                />
         </shape>
     </item>
 </layer-list>

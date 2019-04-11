@@ -9,6 +9,7 @@
     <color name="pill_divider_color">#00000000</color>
     <color name="color_disabled">#aaa</color>
     <color name="icon_color">#ffffff</color>
+    <color name="color_translucent">#33000000</color>
 
     <color name="slide_1">#c62828</color>
     <color name="slide_2">#d84315</color>

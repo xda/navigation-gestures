@@ -209,12 +209,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
             setColor(context.prefManager.pillBGColor)
-            cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
-        }
-        (layers.findDrawableByLayerId(R.id.foreground) as GradientDrawable).apply {
             setStroke(dp, fgColor)
             cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
         }
+
 
         (pill_tap_flash.background as GradientDrawable).apply {
             cornerRadius = context.prefManager.pillCornerRadiusPx.toFloat()
@@ -224,15 +222,17 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private fun updateDividers() {
         val dividerColor = context.prefManager.pillDividerColor
 
-        val dp = context.dpAsPx(1)
+        val dp = context.resources.getDimensionPixelSize(R.dimen.pill_border_stroke_width)
         val pillWidth = context.prefManager.customWidth
         val splitPill = context.prefManager.sectionedPill
 
-        divider_1.setBackgroundColor(if (splitPill) dividerColor else Color.TRANSPARENT)
-        divider_2.setBackgroundColor(if (splitPill) dividerColor else Color.TRANSPARENT)
+        val color = if (splitPill) dividerColor else Color.TRANSPARENT
 
-        val pos1 = pillWidth / 3f - dp / 2f
-        val pos2 = pillWidth * 2f/3f - dp /2f
+        divider_1.setBackgroundColor(color)
+        divider_2.setBackgroundColor(color)
+
+        val pos1Left = pillWidth / 3f - dp / 2f
+        val pos2Left = pillWidth * 2f/3f - dp /2f
 
         val params = FrameLayout.LayoutParams(
                 if (isVertical) FrameLayout.LayoutParams.MATCH_PARENT else dp,
@@ -243,22 +243,22 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             layoutParams = params
 
             if (isVertical) {
-                y = pos1
-                x = 0f
+                y = pos1Left
+                x = dp.toFloat()
             } else {
-                x = pos1
-                y = 0f
+                x = pos1Left
+                y = dp.toFloat()
             }
         }
         divider_2.apply {
             layoutParams = params
 
             if (isVertical) {
-                y = pos2
-                x = 0f
+                y = pos2Left
+                x = dp.toFloat()
             } else {
-                x = pos2
-                y = 0f
+                x = pos2Left
+                y = dp.toFloat()
             }
         }
     }
@@ -288,6 +288,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         return currentGestureDetector.onTouchEvent(event)
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        super.onInterceptTouchEvent(ev)
+        return onTouchEvent(ev)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
