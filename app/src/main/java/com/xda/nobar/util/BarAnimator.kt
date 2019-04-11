@@ -88,6 +88,7 @@ class BarAnimator(private val bar: BarView) {
                             .setInterpolator(BarView.EXIT_INTERPOLATOR)
                             .duration = bar.getAnimationDurationMs()
                 }
+                .start()
     }
 
     fun jiggleLeftHold() {
@@ -103,6 +104,7 @@ class BarAnimator(private val bar: BarView) {
                             .setInterpolator(BarView.EXIT_INTERPOLATOR)
                             .duration = bar.getAnimationDurationMs()
                 }
+                .start()
     }
 
     fun jiggleRightHold() {
@@ -118,6 +120,7 @@ class BarAnimator(private val bar: BarView) {
                             .setInterpolator(BarView.EXIT_INTERPOLATOR)
                             .duration = bar.getAnimationDurationMs()
                 }
+                .start()
     }
 
     fun jiggleDownHold() {
@@ -133,6 +136,7 @@ class BarAnimator(private val bar: BarView) {
                             .setInterpolator(BarView.EXIT_INTERPOLATOR)
                             .duration = bar.getAnimationDurationMs()
                 }
+                .start()
     }
 
     fun jiggleHold() {
@@ -146,6 +150,7 @@ class BarAnimator(private val bar: BarView) {
                             .setInterpolator(BarView.EXIT_INTERPOLATOR)
                             .duration = bar.getAnimationDurationMs()
                 }
+                .start()
     }
 
     fun jiggleHoldUp() {
@@ -161,6 +166,7 @@ class BarAnimator(private val bar: BarView) {
                             .setInterpolator(BarView.EXIT_INTERPOLATOR)
                             .duration = bar.getAnimationDurationMs()
                 }
+                .start()
     }
 
     fun jiggleDoubleTap() {
@@ -180,6 +186,7 @@ class BarAnimator(private val bar: BarView) {
                                         .duration = bar.getAnimationDurationMs()
                             }
                 }
+                .start()
     }
 
     private fun cancelVertical() {
