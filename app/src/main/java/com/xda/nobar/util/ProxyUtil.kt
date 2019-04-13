@@ -6,8 +6,10 @@ import android.graphics.Rect
 import android.hardware.input.InputManager
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.view.Display
 import android.view.InputEvent
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 
 const val POLICY_CONTROL = "policy_control"
@@ -81,10 +83,16 @@ fun InputManager.injectInputEvent(event: InputEvent, mode: Int) {
 
 fun checkEMUI() = !getSystemProperty("ro.build.version.emui").isNullOrEmpty()
 
-val iPackageManager: Any
-    @SuppressLint("PrivateApi")
-    get() {
-        val aThreadClass = Class.forName("android.app.ActivityThread")
-        return aThreadClass.getMethod("getPackageManager")
-                .invoke(null)
+fun printAddedViews() {
+    val wmg = Class.forName("android.view.WindowManagerGlobal")
+    val wmgInstance = wmg.getMethod("getInstance").invoke(null)
+
+    val viewsField = wmg.getDeclaredField("mViews")
+    viewsField.isAccessible = true
+
+    val views = viewsField.get(wmgInstance) as List<View>
+
+    views.forEach {
+        Log.e("NoBar", it::class.java.canonicalName)
     }
+}
