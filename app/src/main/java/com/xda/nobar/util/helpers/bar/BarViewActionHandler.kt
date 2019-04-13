@@ -34,8 +34,6 @@ import com.xda.nobar.util.*
 import com.xda.nobar.util.flashlight.FlashlightControllerLollipop
 import com.xda.nobar.util.flashlight.FlashlightControllerMarshmallow
 import com.xda.nobar.views.BarView
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class BarViewActionHandler(private val bar: BarView) {
     private val context = bar.context
@@ -61,7 +59,7 @@ class BarViewActionHandler(private val bar: BarView) {
         set(value) {
             field = value
             orientationEventListener.disable()
-            mainHandler.postDelayed({
+            logicHandler.postDelayed({
                 val currentAcc = Settings.System.getInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
                 if (currentAcc == 0) {
                     val rotation = when (currentDegree) {
@@ -129,7 +127,7 @@ class BarViewActionHandler(private val bar: BarView) {
     }
 
     fun handleAction(which: Int, key: String) {
-        GlobalScope.launch {
+        logicHandler.post {
             if (Looper.myLooper() == null) Looper.prepare()
             
             try {

@@ -267,8 +267,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      * Add the pill to the screen
      */
     fun addBar(callListeners: Boolean = true) {
-        if (disabledBarReasonManager.isEmpty()) {
-            mainHandler.post {
+        mainHandler.post {
+            if (disabledBarReasonManager.isEmpty()) {
                 if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, true) }
 
                 addBarInternal()
@@ -348,32 +348,30 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      * Hide the navbar
      */
     fun hideNav(callListeners: Boolean = true) {
-        logicHandler.post {
-            if (prefManager.shouldUseOverscanMethod
-                    && disabledNavReasonManager.isEmpty()
-                    && hasWss) {
-                addImmersiveHelper()
+        if (prefManager.shouldUseOverscanMethod
+                && disabledNavReasonManager.isEmpty()
+                && hasWss) {
+            addImmersiveHelper()
 
-                val overscan = -adjustedNavBarHeight
+            val overscan = -adjustedNavBarHeight
 
-                if (!prefManager.useRot270Fix
-                        && !prefManager.useTabletMode
-                        && !prefManager.useRot180Fix
-                        && Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
-                    IWindowManager.setOverscanAsync(0, 0, 0, overscan)
-                else {
-                    uiHandler.handleRot(true)
-                }
-
-                val fullOverscan = prefManager.useFullOverscan
-                if (fullOverscan == blackNav) blackNav = !fullOverscan
-
-                if (isTouchWiz && !prefManager.useImmersiveWhenNavHidden) {
-                    touchWizNavEnabled = true
-                }
-
-                navHidden = true
+            if (!prefManager.useRot270Fix
+                    && !prefManager.useTabletMode
+                    && !prefManager.useRot180Fix
+                    && Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
+                IWindowManager.setOverscanAsync(0, 0, 0, overscan)
+            else {
+                uiHandler.handleRot(true)
             }
+
+            val fullOverscan = prefManager.useFullOverscan
+            if (fullOverscan == blackNav) blackNav = !fullOverscan
+
+            if (isTouchWiz && !prefManager.useImmersiveWhenNavHidden) {
+                touchWizNavEnabled = true
+            }
+
+            navHidden = true
         }
 
         mainHandler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(true) } }
@@ -413,17 +411,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     fun addBarInternal(isRefresh: Boolean = true) {
-        mainHandler.post {
-            try {
-                bar.shouldReAddOnDetach = isRefresh
-                if (isRefresh) wm.removeView(bar)
-                else addBarInternalUnconditionally()
-            } catch (e: Exception) {
-                addBarInternalUnconditionally()
-            }
-
-            addImmersiveHelper()
+        try {
+            bar.shouldReAddOnDetach = isRefresh
+            if (isRefresh) wm.removeView(bar)
+            else addBarInternalUnconditionally()
+        } catch (e: Exception) {
+            addBarInternalUnconditionally()
         }
+
+        addImmersiveHelper()
     }
 
     private val screenOnNotif by lazy {
@@ -436,26 +432,23 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     fun toggleScreenOn() {
-        mainHandler.post {
-            val hasScreenOn = bar.toggleScreenOn()
+        val hasScreenOn = bar.toggleScreenOn()
 
-            if (hasScreenOn) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-                    nm.createNotificationChannel(NotificationChannel("nobar-screen-on", resources.getString(R.string.screen_timeout), NotificationManager.IMPORTANCE_LOW))
-                }
-
-                nm.notify(100, screenOnNotif.build())
-            } else {
-                nm.cancel(100)
+        if (hasScreenOn) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+                nm.createNotificationChannel(NotificationChannel("nobar-screen-on", resources.getString(R.string.screen_timeout), NotificationManager.IMPORTANCE_LOW))
             }
+
+            nm.notify(100, screenOnNotif.build())
+        } else {
+            nm.cancel(100)
         }
     }
 
     private fun addBarInternalUnconditionally() {
         try {
             wm.addView(bar, bar.params)
-        } catch (e: Exception) {
-        }
+        } catch (e: Exception) {}
     }
 
     /**
@@ -566,23 +559,20 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private var asDidContainApp: Boolean = false
 
         fun register() {
-            logicHandler.post {
-                contentResolver.registerContentObserver(Settings.Global.getUriFor(POLICY_CONTROL), true, this)
-                contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
-                contentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, this)
+            contentResolver.registerContentObserver(Settings.Global.getUriFor(POLICY_CONTROL), true, this)
+            contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
+            contentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, this)
 
-                bar.immersiveNav = immersiveHelperManager.isNavImmersive()
+            bar.immersiveNav = immersiveHelperManager.isNavImmersive()
 
-                asDidContainApp = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
-            }
+            asDidContainApp = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
         }
 
         fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
             logicHandler.post {
                 try {
                     handleNewEvent(info ?: return@post)
-                } catch (e: NullPointerException) {
-                }
+                } catch (e: NullPointerException) {}
             }
         }
 
@@ -607,8 +597,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     }
                 }
                 runNewNodeInfo(pName)
-            } else {
-                onGlobalLayout()
             }
         }
 
@@ -644,8 +632,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     }
                 } else if (isInOtherWindowApp) isInOtherWindowApp = false
             }
-
-            onGlobalLayout()
         }
 
         override fun invoke(isImmersive: Boolean) {
@@ -781,7 +767,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (changed) {
                         asDidContainApp = contains
                         if (wm.defaultDisplay.state == Display.STATE_ON) {
-                            logicHandler.postDelayed({
+                            mainHandler.postDelayed({
                                 if (contains && prefManager.isActive) {
                                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
                                             || Settings.canDrawOverlays(this@App)) addBar(false)
@@ -797,19 +783,17 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         private fun handleImmersiveChange(isImmersive: Boolean) {
             if (!IntroActivity.needsToRun(this@App)) {
-                mainHandler.post {
-                    bar.isImmersive = isImmersive
+                bar.isImmersive = isImmersive
 
-                    val hideInFullScreen = prefManager.hideInFullscreen
-                    val fadeInFullScreen = prefManager.fullscreenFade
+                val hideInFullScreen = prefManager.hideInFullscreen
+                val fadeInFullScreen = prefManager.fullscreenFade
 
-                    if (isImmersive) {
-                        if (hideInFullScreen && !fadeInFullScreen) bar.scheduleHide(HiddenPillReasonManager.FULLSCREEN)
-                        if (fadeInFullScreen && !hideInFullScreen) bar.scheduleFade(prefManager.fullscreenFadeTime)
-                    } else {
-                        bar.showPill(HiddenPillReasonManager.FULLSCREEN)
-                        bar.scheduleUnfade()
-                    }
+                if (isImmersive) {
+                    if (hideInFullScreen && !fadeInFullScreen) bar.scheduleHide(HiddenPillReasonManager.FULLSCREEN)
+                    if (fadeInFullScreen && !hideInFullScreen) bar.scheduleFade(prefManager.fullscreenFadeTime)
+                } else {
+                    bar.showPill(HiddenPillReasonManager.FULLSCREEN)
+                    bar.scheduleUnfade()
                 }
             }
         }
@@ -822,15 +806,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     bar.handleRotationOrAnchorUpdate()
                 }
 
-                logicHandler.post {
-                    if (prefManager.shouldUseOverscanMethod) {
-                        if (prefManager.useRot270Fix) handle270()
-                        if (prefManager.useRot180Fix) handle180()
-                        if (prefManager.useTabletMode) handleTablet()
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) handlePie()
+                if (prefManager.shouldUseOverscanMethod) {
+                    if (prefManager.useRot270Fix) handle270()
+                    if (prefManager.useRot180Fix) handle180()
+                    if (prefManager.useTabletMode) handleTablet()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) handlePie()
 
-                        if (blackNav) blackout.add()
-                    }
+                    if (blackNav) blackout.add()
                 }
 
                 oldRot = rot

@@ -61,15 +61,19 @@ class NavBlackout : LinearLayout {
 
         remove()
 
-        try {
-            context.app.wm.addView(this, params)
-        } catch (e: Exception) {}
+        mainHandler.post {
+            try {
+                context.app.wm.addView(this, params)
+            } catch (e: Exception) {}
+        }
     }
 
     fun remove() {
-        try {
-            context.app.wm.removeView(this)
-        } catch (e: Exception) {}
+        mainHandler.post {
+            try {
+                context.app.wm.removeView(this)
+            } catch (e: Exception) {}
+        }
     }
 
     private val WindowManager.LayoutParams.copy: WindowManager.LayoutParams
