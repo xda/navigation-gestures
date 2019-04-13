@@ -86,7 +86,7 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
                         val screenHeight = context.realScreenSize.y
 
                         if (bar.params.y > screenHeight - screenHeight / 6 - context.app.prefManager.homeY
-                                && bar.getAnimationDurationMs() > 0) {
+                                && bar.shouldAnimate) {
                             bar.params.y -= (velocity / 2).toInt()
                             bar.updateLayout()
                         }
@@ -100,7 +100,7 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
                         val velocity = (oldY - ev.rawY)
                         oldY = ev.rawY
 
-                        if (bar.getAnimationDurationMs() > 0) {
+                        if (bar.shouldAnimate) {
                             bar.params.y -= (velocity / 2).toInt()
                             bar.updateLayout()
                         }
@@ -118,7 +118,7 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
                         val leftParam = bar.params.x - context.app.prefManager.customWidth.toFloat() / 2f
                         val rightParam = bar.params.x + context.app.prefManager.customWidth.toFloat() / 2f
 
-                        if (bar.getAnimationDurationMs() > 0) {
+                        if (bar.shouldAnimate) {
                             when {
                                 leftParam <= -halfScreen && !isSwipeRight -> {
                                     bar.pill.translationX += velocity

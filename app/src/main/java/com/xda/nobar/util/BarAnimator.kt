@@ -41,152 +41,170 @@ class BarAnimator(private val bar: BarView) {
                           to: Int) {
         cancelVertical()
 
-        verticalAnimator = SpringAnimation(bar.params, object : FloatPropertyCompat<WindowManager.LayoutParams>("y") {
-            override fun getValue(`object`: WindowManager.LayoutParams): Float {
-                return `object`.y.toFloat()
+        if (bar.shouldAnimate) {
+            verticalAnimator = SpringAnimation(bar.params, object : FloatPropertyCompat<WindowManager.LayoutParams>("y") {
+                override fun getValue(`object`: WindowManager.LayoutParams): Float {
+                    return `object`.y.toFloat()
+                }
+
+                override fun setValue(`object`: WindowManager.LayoutParams, value: Float) {
+                    `object`.y = value.toInt()
+                    bar.updateLayout()
+                }
+            }, to.toFloat()).apply {
+                addEndListener(listener)
             }
 
-            override fun setValue(`object`: WindowManager.LayoutParams, value: Float) {
-                `object`.y = value.toInt()
-                bar.updateLayout()
-            }
-        }, to.toFloat()).apply {
-            addEndListener(listener)
+            verticalAnimator?.start()
         }
-
-        verticalAnimator?.start()
     }
 
     fun animateHorizontally(listener: DynamicAnimation.OnAnimationEndListener? = null,
                             to: Int) {
         cancelHorizontal()
 
-        horizontalAnimator = SpringAnimation(bar.params, object : FloatPropertyCompat<WindowManager.LayoutParams>("x") {
-            override fun getValue(`object`: WindowManager.LayoutParams): Float {
-                return `object`.x.toFloat()
+        if (bar.shouldAnimate) {
+            horizontalAnimator = SpringAnimation(bar.params, object : FloatPropertyCompat<WindowManager.LayoutParams>("x") {
+                override fun getValue(`object`: WindowManager.LayoutParams): Float {
+                    return `object`.x.toFloat()
+                }
+
+                override fun setValue(`object`: WindowManager.LayoutParams, value: Float) {
+                    `object`.x = value.toInt()
+                    bar.updateLayout()
+                }
+            }, to.toFloat()).apply {
+                addEndListener(listener)
             }
 
-            override fun setValue(`object`: WindowManager.LayoutParams, value: Float) {
-                `object`.x = value.toInt()
-                bar.updateLayout()
-            }
-        }, to.toFloat()).apply {
-            addEndListener(listener)
+            horizontalAnimator?.start()
         }
-
-        horizontalAnimator?.start()
     }
 
     fun jiggleTap() {
-        bar.animate()
-                .scaleX(BarView.SCALE_MID)
-                .setInterpolator(BarView.ENTER_INTERPOLATOR)
-                .setDuration(bar.getAnimationDurationMs())
-                .withEndAction {
-                    bar.animate()
-                            .scaleX(BarView.SCALE_NORMAL)
-                            .setInterpolator(BarView.EXIT_INTERPOLATOR)
-                            .duration = bar.getAnimationDurationMs()
-                }
-                .start()
+        if (bar.shouldAnimate) {
+            bar.animate()
+                    .scaleX(BarView.SCALE_MID)
+                    .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                    .setDuration(bar.animationDurationMs)
+                    .withEndAction {
+                        bar.animate()
+                                .scaleX(BarView.SCALE_NORMAL)
+                                .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                                .duration = bar.animationDurationMs
+                    }
+                    .start()
+        }
     }
 
     fun jiggleLeftHold() {
-        bar.animate()
-                .scaleX(BarView.SCALE_SMALL)
-                .x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
-                .setInterpolator(BarView.ENTER_INTERPOLATOR)
-                .setDuration(bar.getAnimationDurationMs())
-                .withEndAction {
-                    bar.animate()
-                            .scaleX(BarView.SCALE_NORMAL)
-                            .x(0f)
-                            .setInterpolator(BarView.EXIT_INTERPOLATOR)
-                            .duration = bar.getAnimationDurationMs()
-                }
-                .start()
+        if (bar.shouldAnimate) {
+            bar.animate()
+                    .scaleX(BarView.SCALE_SMALL)
+                    .x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                    .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                    .setDuration(bar.animationDurationMs)
+                    .withEndAction {
+                        bar.animate()
+                                .scaleX(BarView.SCALE_NORMAL)
+                                .x(0f)
+                                .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                                .duration = bar.animationDurationMs
+                    }
+                    .start()
+        }
     }
 
     fun jiggleRightHold() {
-        bar.animate()
-                .scaleX(BarView.SCALE_SMALL)
-                .x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
-                .setInterpolator(BarView.ENTER_INTERPOLATOR)
-                .setDuration(bar.getAnimationDurationMs())
-                .withEndAction {
-                    bar.animate()
-                            .scaleX(BarView.SCALE_NORMAL)
-                            .x(0f)
-                            .setInterpolator(BarView.EXIT_INTERPOLATOR)
-                            .duration = bar.getAnimationDurationMs()
-                }
-                .start()
+        if (bar.shouldAnimate) {
+            bar.animate()
+                    .scaleX(BarView.SCALE_SMALL)
+                    .x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                    .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                    .setDuration(bar.animationDurationMs)
+                    .withEndAction {
+                        bar.animate()
+                                .scaleX(BarView.SCALE_NORMAL)
+                                .x(0f)
+                                .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                                .duration = bar.animationDurationMs
+                    }
+                    .start()
+        }
     }
 
     fun jiggleDownHold() {
-        bar.animate()
-                .scaleY(BarView.SCALE_SMALL)
-                .y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                .setInterpolator(BarView.ENTER_INTERPOLATOR)
-                .setDuration(bar.getAnimationDurationMs())
-                .withEndAction {
-                    bar.animate()
-                            .scaleY(BarView.SCALE_NORMAL)
-                            .y(0f)
-                            .setInterpolator(BarView.EXIT_INTERPOLATOR)
-                            .duration = bar.getAnimationDurationMs()
-                }
-                .start()
+        if (bar.shouldAnimate) {
+            bar.animate()
+                    .scaleY(BarView.SCALE_SMALL)
+                    .y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                    .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                    .setDuration(bar.animationDurationMs)
+                    .withEndAction {
+                        bar.animate()
+                                .scaleY(BarView.SCALE_NORMAL)
+                                .y(0f)
+                                .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                                .duration = bar.animationDurationMs
+                    }
+                    .start()
+        }
     }
 
     fun jiggleHold() {
-        bar.animate()
-                .scaleX(BarView.SCALE_SMALL)
-                .setInterpolator(BarView.ENTER_INTERPOLATOR)
-                .setDuration(bar.getAnimationDurationMs())
-                .withEndAction {
-                    bar.animate()
-                            .scaleX(BarView.SCALE_NORMAL)
-                            .setInterpolator(BarView.EXIT_INTERPOLATOR)
-                            .duration = bar.getAnimationDurationMs()
-                }
-                .start()
+        if (bar.shouldAnimate) {
+            bar.animate()
+                    .scaleX(BarView.SCALE_SMALL)
+                    .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                    .setDuration(bar.animationDurationMs)
+                    .withEndAction {
+                        bar.animate()
+                                .scaleX(BarView.SCALE_NORMAL)
+                                .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                                .duration = bar.animationDurationMs
+                    }
+                    .start()
+        }
     }
 
     fun jiggleHoldUp() {
-        bar.animate()
-                .scaleY(BarView.SCALE_SMALL)
-                .y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                .setInterpolator(BarView.ENTER_INTERPOLATOR)
-                .setDuration(bar.getAnimationDurationMs())
-                .withEndAction {
-                    bar.animate()
-                            .scaleY(BarView.SCALE_NORMAL)
-                            .y(0f)
-                            .setInterpolator(BarView.EXIT_INTERPOLATOR)
-                            .duration = bar.getAnimationDurationMs()
-                }
-                .start()
+        if (bar.shouldAnimate) {
+            bar.animate()
+                    .scaleY(BarView.SCALE_SMALL)
+                    .y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                    .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                    .setDuration(bar.animationDurationMs)
+                    .withEndAction {
+                        bar.animate()
+                                .scaleY(BarView.SCALE_NORMAL)
+                                .y(0f)
+                                .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                                .duration = bar.animationDurationMs
+                    }
+                    .start()
+        }
     }
 
     fun jiggleDoubleTap() {
-        bar.animate()
-                .scaleX(BarView.SCALE_MID)
-                .setInterpolator(AccelerateInterpolator())
-                .setDuration(bar.getAnimationDurationMs())
-                .withEndAction {
-                    bar.animate()
-                            .scaleX(BarView.SCALE_SMALL)
-                            .setInterpolator(BarView.ENTER_INTERPOLATOR)
-                            .setDuration(bar.getAnimationDurationMs())
-                            .withEndAction {
-                                bar.animate()
-                                        .scaleX(BarView.SCALE_NORMAL)
-                                        .setInterpolator(BarView.EXIT_INTERPOLATOR)
-                                        .duration = bar.getAnimationDurationMs()
-                            }
-                }
-                .start()
+        if (bar.shouldAnimate) {
+            bar.animate()
+                    .scaleX(BarView.SCALE_MID)
+                    .setInterpolator(AccelerateInterpolator())
+                    .setDuration(bar.animationDurationMs)
+                    .withEndAction {
+                        bar.animate()
+                                .scaleX(BarView.SCALE_SMALL)
+                                .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                                .setDuration(bar.animationDurationMs)
+                                .withEndAction {
+                                    bar.animate()
+                                            .scaleX(BarView.SCALE_NORMAL)
+                                            .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                                            .duration = bar.animationDurationMs
+                                }
+                    }
+                    .start()
+        }
     }
 
     private fun cancelVertical() {

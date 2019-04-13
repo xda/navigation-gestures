@@ -90,6 +90,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
     private val hiddenPillReasons = HiddenPillReasonManager()
 
+    /**
+     * Get the user-defined or default duration of the pill animations
+     * @return the duration, in ms
+     */
+    val animationDurationMs: Long
+        get() = context.prefManager.animationDurationMs.toLong()
+
+    val shouldAnimate: Boolean
+        get() = animationDurationMs > 0
+
     val adjustedHomeY: Int
         get() = if (isVertical) (if (is270Vertical) 1 else -1) * anchoredHomeX else actualHomeY
 
@@ -496,7 +506,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     fun animate(listener: Animator.AnimatorListener?, alpha: Float) {
         mainHandler.post {
-            animate().alpha(alpha).setDuration(getAnimationDurationMs())
+            animate().alpha(alpha).setDuration(animationDurationMs)
                     .setListener(object : Animator.AnimatorListener {
                         override fun onAnimationCancel(animation: Animator?) {
                             listener?.onAnimationCancel(animation)
@@ -551,7 +561,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         pill.animate()
                 .alpha(ALPHA_HIDDEN)
                 .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(getAnimationDurationMs())
+                .setDuration(animationDurationMs)
                 .withEndAction {
                     isHidden = true
 
@@ -607,7 +617,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     pill.animate()
                             .alpha(ALPHA_ACTIVE)
                             .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(getAnimationDurationMs())
+                            .setDuration(animationDurationMs)
                             .withEndAction {
                                 animateShow(!reallyForceNotAuto, autoReasonToRemove)
                             }
@@ -631,7 +641,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     scheduleHide(if (reason == HiddenPillReasonManager.MANUAL)
                         hiddenPillReasons.getMostRecentReason() ?: return@Runnable else reason)
                 }
-            }, (if (getAnimationDurationMs() < 12) 12 else 0))
+            }, (if (animationDurationMs < 12) 12 else 0))
         })
     }
 
@@ -705,14 +715,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 wm.updateViewLayout(this, params)
             } catch (e: Exception) {}
         }
-    }
-
-    /**
-     * Get the user-defined or default duration of the pill animations
-     * @return the duration, in ms
-     */
-    fun getAnimationDurationMs(): Long {
-        return context.prefManager.animationDurationMs.toLong()
     }
 
 //    /**
@@ -865,9 +867,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
 
-        if (changed) updateLayout()
+        if (changed) {
+            updateLayout()
 
-        currentGestureDetector.singleton.loadActionMap()
+            currentGestureDetector.singleton.loadActionMap()
+        }
     }
 
     fun updateLargerHitbox() {
