@@ -176,10 +176,6 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/actions" />
         </service>
-        <service
-            android:name=".services.ForegroundService"
-            android:enabled="true"
-            android:exported="true" />
 
         <receiver
             android:name=".providers.HomeScreenProviderHoriz"

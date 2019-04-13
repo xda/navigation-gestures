@@ -3,9 +3,8 @@ package com.xda.nobar.receivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.content.ContextCompat
 import com.xda.nobar.BuildConfig
-import com.xda.nobar.services.ForegroundService
+import com.xda.nobar.services.Actions
 
 class StartupReceiver : BroadcastReceiver() {
     companion object {
@@ -18,8 +17,8 @@ class StartupReceiver : BroadcastReceiver() {
             Intent.ACTION_LOCKED_BOOT_COMPLETED,
             Intent.ACTION_MY_PACKAGE_REPLACED,
             ACTION_RELAUNCH -> {
-                val service = Intent(context, ForegroundService::class.java)
-                ContextCompat.startForegroundService(context, service)
+                val service = Intent(context, Actions::class.java)
+                context.startService(service)
             }
         }
     }

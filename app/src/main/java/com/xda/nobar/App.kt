@@ -21,7 +21,6 @@ import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
@@ -34,7 +33,6 @@ import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.providers.BaseProvider
 import com.xda.nobar.root.RootWrapper
 import com.xda.nobar.services.Actions
-import com.xda.nobar.services.ForegroundService
 import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.*
 import com.xda.nobar.views.BarView
@@ -308,8 +306,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (!navHidden) removeImmersiveHelper()
                 }
             })
-
-            if (!navHidden) stopService(Intent(this, ForegroundService::class.java))
         }
     }
 
@@ -404,11 +400,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             navHidden = false
 
             if (!prefManager.isActive) {
-                stopService(Intent(this, ForegroundService::class.java))
                 removeImmersiveHelper()
             }
-
-            if (!pillShown) removeImmersiveHelper()
         }
     }
 
@@ -430,7 +423,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
 
             addImmersiveHelper()
-            ContextCompat.startForegroundService(this, Intent(this, ForegroundService::class.java))
         }
     }
 
