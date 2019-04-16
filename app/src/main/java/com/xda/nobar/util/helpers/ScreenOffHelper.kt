@@ -10,6 +10,7 @@ import android.provider.Settings
 import android.view.WindowManager
 import android.widget.LinearLayout
 import com.xda.nobar.App
+import com.xda.nobar.util.app
 import com.xda.nobar.util.prefManager
 import com.xda.nobar.util.realScreenSize
 
@@ -111,6 +112,11 @@ class ScreenOffHelper(private val app: App) {
 
         init {
             setBackgroundColor(Color.BLACK)
+
+            setOnLongClickListener {
+                context.app.screenOffHelper.destroy()
+                true
+            }
         }
 
         fun add() {
