@@ -107,7 +107,7 @@ class TroubleshootingFragment : BasePrefFragment() {
                 context?.launchUrl("https://github.com/zacharee/nobar-issues")
                 true
             }
-            else -> return super.onPreferenceTreeClick(preference)
+            else -> super.onPreferenceTreeClick(preference)
         }
     }
 
@@ -115,7 +115,7 @@ class TroubleshootingFragment : BasePrefFragment() {
         findNavController().navigate(
                 action,
                 Bundle().apply {
-                    putString(BasePrefFragment.PREF_KEY_TO_HIGHLIGHT, highlightKey ?: return@apply)
+                    putString(PREF_KEY_TO_HIGHLIGHT, highlightKey ?: return@apply)
                 },
                 navOptions
         )

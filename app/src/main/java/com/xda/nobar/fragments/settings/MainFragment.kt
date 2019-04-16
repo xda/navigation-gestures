@@ -1,15 +1,14 @@
 package com.xda.nobar.fragments.settings
 
-import android.os.Bundle
+import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import com.xda.nobar.R
-import com.xda.nobar.util.beginAnimatedTransaction
+import com.xda.nobar.util.navOptions
 
 /**
  * Main settings page
  */
-class MainFragment : PreferenceFragmentCompat() {
+class MainFragment : BasePrefFragment() {
     companion object {
         const val GESTURES = "gestures"
         const val APPEARANCE = "appearance"
@@ -19,9 +18,7 @@ class MainFragment : PreferenceFragmentCompat() {
         const val BACKUP_RESTORE = "backup_and_restore"
     }
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        addPreferencesFromResource(R.xml.prefs_main)
-    }
+    override val resId = R.xml.prefs_main
 
     override fun onResume() {
         super.onResume()
@@ -30,24 +27,28 @@ class MainFragment : PreferenceFragmentCompat() {
     }
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-        val (frag, ret) = when (preference?.key) {
-            GESTURES -> GestureFragment() to true
-            APPEARANCE -> AppearanceFragment() to true
-            BEHAVIOR -> BehaviorFragment() to true
-            COMPATIBILITY -> CompatibilityFragment() to true
-            EXPERIMENTAL -> ExperimentalFragment() to true
-            BACKUP_RESTORE -> BackupRestoreFragment() to true
+        val (action, ret) = when (preference?.key) {
+            GESTURES -> R.id.action_mainFragment_to_gestureFragment to true
+            APPEARANCE -> R.id.action_mainFragment_to_appearanceFragment to true
+            BEHAVIOR -> R.id.action_mainFragment_to_behaviorFragment to true
+            COMPATIBILITY -> R.id.action_mainFragment_to_compatibilityFragment to true
+            EXPERIMENTAL -> R.id.action_mainFragment_to_experimentalFragment to true
+            BACKUP_RESTORE -> R.id.action_mainFragment_to_backupRestoreFragment to true
             else -> null to super.onPreferenceTreeClick(preference)
         }
 
-        if (frag != null) {
-            fragmentManager
-                    ?.beginAnimatedTransaction()
-                    ?.replace(R.id.content, frag, preference?.key)
-                    ?.addToBackStack(preference?.key)
-                    ?.commit()
+        if (action != null) {
+            navigateTo(action)
         }
 
         return ret
+    }
+
+    private fun navigateTo(action: Int) {
+        findNavController().navigate(
+                action,
+                null,
+                navOptions
+        )
     }
 }
