@@ -822,16 +822,23 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
 
                 if (prefManager.shouldUseOverscanMethod) {
-                    if (prefManager.useRot270Fix) handle270()
-                    if (prefManager.useRot180Fix) handle180()
-                    if (prefManager.useTabletMode) handleTablet()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) handlePie()
+                    when {
+                        prefManager.useRot270Fix -> handle270()
+                        prefManager.useRot180Fix -> handle180()
+                        prefManager.useTabletMode -> handleTablet()
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie()
+                        else -> handle0()
+                    }
 
                     if (blackNav) blackout.add()
                 }
 
                 oldRot = rot
             }
+        }
+
+        private fun handle0() {
+            IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
         }
 
         private fun handle270() {
