@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
@@ -459,6 +460,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+
+        forceActionUp()
+    }
+
     /**
      * Perform cleanup
      */
@@ -479,6 +486,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     override fun hashCode(): Int {
         return 1
+    }
+
+    fun forceActionUp() {
+        val uptime = SystemClock.uptimeMillis()
+        currentGestureDetector.onTouchEvent(MotionEvent.obtain(uptime, uptime, MotionEvent.ACTION_UP, 0f, 0f, 0))
     }
 
     /**

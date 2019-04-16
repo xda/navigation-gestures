@@ -13,7 +13,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
-import android.util.Log
 import android.view.Display
 import android.view.Surface
 import android.view.ViewTreeObserver
@@ -50,6 +49,8 @@ import kotlinx.coroutines.launch
 class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
     companion object {
         const val EDGE_TYPE_ACTIVE = 2
+
+        private const val ACTION_MINIVIEW_SETTINGS_CHANGED = "com.lge.android.intent.action.MINIVIEW_SETTINGS_CHANGED"
     }
 
     val wm by lazy { getSystemService(Context.WINDOW_SERVICE) as WindowManager }
@@ -76,6 +77,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     private val premiumInstallListener = PremiumInstallListener()
     private val permissionListener = PermissionReceiver()
     private val displayChangeListener = DisplayChangeListener()
+    private val miniViewListener = MiniViewListener()
 
     private val prefChangeListeners = ArrayList<SharedPreferences.OnSharedPreferenceChangeListener>()
 
@@ -154,8 +156,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         carModeHandler.register()
         premiumInstallListener.register()
         permissionListener.register()
-
         dm.registerDisplayListener(displayChangeListener, mainHandler)
+        miniViewListener.register()
 
         isValidPremium = prefManager.validPrem
 
@@ -481,6 +483,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         Intent.ACTION_SHUTDOWN,
                         Intent.ACTION_SCREEN_OFF -> {
                             if (prefManager.shouldntKeepOverscanOnLock) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
+                            bar.forceActionUp()
 
                             uiHandler.onGlobalLayout()
                         }
@@ -1005,5 +1008,22 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         override fun onDisplayAdded(displayId: Int) {}
 
         override fun onDisplayRemoved(displayId: Int) {}
+    }
+
+    inner class MiniViewListener : BroadcastReceiver() {
+        fun register() {
+            val filter = IntentFilter()
+            filter.addAction(ACTION_MINIVIEW_SETTINGS_CHANGED)
+
+            registerReceiver(this, filter)
+        }
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action) {
+                ACTION_MINIVIEW_SETTINGS_CHANGED -> {
+                    bar.forceActionUp()
+                }
+            }
+        }
     }
 }
