@@ -155,6 +155,10 @@
     <string name="fade_opacity">Fade Opacity</string>
     <string name="pill_fading">Pill Fading</string>
     <string name="pill_fade_duration">Pill Fade Duration</string>
+    <string name="sign_up_for_beta">Sign up for Beta</string>
+    <string name="try_beta">Try the Beta!</string>
+    <string name="hide_beta_prompt">Hide the Beta Button</string>
+    <string name="hide_text">Hide</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personnaliser les actions de geste</string>
     <string name="appearance_desc">Personnaliser l’apparence de la pilule de navigation</string>
@@ -222,6 +226,9 @@
     <string name="section_divider_color_desc">Set the color of dividers to appear between the sections of the split pill.</string>
     <string name="fade_after_specified_delay_desc">When enabled, the pill will automatically fade to the specified opacity after the specified delay.</string>
     <string name="fade_in_fullscreen_apps_desc">When enabled, the pill will automatically fade in fullscreen apps to the specified opacity after the specified delay.</string>
+    <string name="sign_up_for_beta_troubleshooting_desc">The beta version of Navigation Gestures may have already fixed your issue. Give it a try!</string>
+    <string name="sign_up_for_beta_desc">Live on the bleeding edge with new features and improvements by signing up for the beta program.</string>
+    <string name="hide_beta_prompt_desc">Hide the beta sign-up button from the main screen.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Cette appli offre de somptueux gestes de navigation pour n\'importe quel appareil Android. Le mieux, elle n\'a pas besoin de root ! Avant de pouvoir utiliser les gestes, quelques paramétrages sont nécessaires.</string>
     <string name="draw_over_apps_desc">Afin d\'afficher la pilule de Navigation Gestures, vous devrez accorder la permission \"Superposer aux autres applis\". Appuyez sur le bouton ci-dessous pour le faire. Si vous avez installé depuis le Play Store, cette permission est déjà accordée.</string>
