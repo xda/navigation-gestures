@@ -105,6 +105,26 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         refresh()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (prefManager.hideBetaPrompt) {
+            beta.visibility = View.GONE
+        } else {
+            beta.setOnClickListener {
+                AlertDialog.Builder(this)
+                        .setTitle(R.string.sign_up_for_beta)
+                        .setMessage(R.string.sign_up_for_beta_desc)
+                        .setPositiveButton(android.R.string.ok) { _, _ -> launchUrl("https://play.google.com/apps/testing/com.xda.nobar") }
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setNeutralButton(R.string.hide_text) { _,_ ->
+                            startActivity(Intent(this, HelpAboutActivity::class.java))
+                        }
+                        .show()
+            }
+        }
+    }
+
     override fun onGestureStateChange(barView: BarView?, activated: Boolean) {
         activate.isChecked = activated
     }

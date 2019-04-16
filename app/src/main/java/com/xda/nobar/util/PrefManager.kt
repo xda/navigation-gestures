@@ -58,6 +58,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val CUSTOM_VIBRATION_STRENGTH = "custom_vibration_strength"
         const val FADE_AFTER_SPECIFIED_DELAY = "fade_after_specified_delay"
         const val FADE_IN_FULLSCREEN_APPS = "fade_in_fullscreen_apps"
+        const val HIDE_BETA_PROMPT = "hide_beta_prompt"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
@@ -217,6 +218,11 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getBoolean(FLASHLIGHT_COMPAT, resources.getBoolean(R.bool.flashlight_compat_default))
     val customVibrationStrength: Boolean
         get() = getBoolean(CUSTOM_VIBRATION_STRENGTH, resources.getBoolean(R.bool.custom_vibration_strength_default))
+    var hideBetaPrompt: Boolean
+        get() = getBoolean(HIDE_BETA_PROMPT, resources.getBoolean(R.bool.hide_beta_prompt_default))
+        set(value) {
+            putBoolean(HIDE_BETA_PROMPT, value)
+        }
 
     /**
      * Get the user-defined or default pill color
