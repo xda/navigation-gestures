@@ -70,6 +70,12 @@
             />
 
         <Preference
+            android:summary="@string/sign_up_for_beta_troubleshooting_desc"
+            android:key="beta_sign_up"
+            android:icon="@drawable/circle_small"
+            />
+
+        <Preference
             android:summary="@string/report_to_github"
             android:key="report_to_github"
             android:icon="@drawable/circle_small"

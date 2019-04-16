@@ -24,6 +24,7 @@ class TroubleshootingFragment : BasePrefFragment() {
         const val SOMETHING_ELSE = "something_else"
         const val REPORT_TO_GITHUB = "report_to_github"
         const val PIXEL_AMBIENT_CUT_OFF = "pixel_ambient_cut_off"
+        const val BETA_SIGN_UP = "beta_sign_up"
     }
 
     override val resId = R.xml.prefs_troubleshooting
@@ -104,6 +105,10 @@ class TroubleshootingFragment : BasePrefFragment() {
             }
             REPORT_TO_GITHUB -> {
                 context?.launchUrl("https://github.com/zacharee/nobar-issues")
+                true
+            }
+            BETA_SIGN_UP -> {
+                context?.launchUrl("https://play.google.com/apps/testing/com.xda.nobar")
                 true
             }
             else -> super.onPreferenceTreeClick(preference)
