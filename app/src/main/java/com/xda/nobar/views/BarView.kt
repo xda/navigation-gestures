@@ -12,7 +12,6 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.*
-import android.preference.PreferenceManager
 import android.util.AttributeSet
 import android.view.*
 import android.view.animation.AccelerateInterpolator
@@ -205,7 +204,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         View.inflate(context, R.layout.pill, this)
 
         currentGestureDetector.singleton.loadActionMap()
-        PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(this)
         isSoundEffectsEnabled = context.prefManager.feedbackSound
 
         updatePillColorsAndRadii()
@@ -367,6 +365,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         handleRotationOrAnchorUpdate()
         updateFlashColor()
+
+        context.app.registerOnSharedPreferenceChangeListener(this)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -468,9 +468,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (shouldReAddOnDetach) {
             context.app.addBarInternal(false)
             shouldReAddOnDetach = false
-        } else {
-            PreferenceManager.getDefaultSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(this)
         }
+
+        context.app.pillShown = false
     }
 
     override fun equals(other: Any?): Boolean {

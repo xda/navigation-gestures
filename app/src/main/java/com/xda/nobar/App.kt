@@ -12,7 +12,6 @@ import android.hardware.display.DisplayManager
 import android.net.Uri
 import android.os.Build
 import android.os.Process
-import android.preference.PreferenceManager
 import android.provider.Settings
 import android.view.Display
 import android.view.Surface
@@ -39,7 +38,6 @@ import com.xda.nobar.views.BarView
 import com.xda.nobar.views.NavBlackout
 import io.fabric.sdk.android.Fabric
 import io.fabric.sdk.android.InitializationCallback
-import java.util.*
 
 
 /**
@@ -75,6 +73,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     private val premiumInstallListener = PremiumInstallListener()
     private val permissionListener = PermissionReceiver()
     private val displayChangeListener = DisplayChangeListener()
+
+    private val prefChangeListeners = ArrayList<SharedPreferences.OnSharedPreferenceChangeListener>()
 
     val immersiveHelperManager by lazy { ImmersiveHelperManager(this) }
     val screenOffHelper by lazy { ScreenOffHelper(this) }
@@ -156,8 +156,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         isValidPremium = prefManager.validPrem
 
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .registerOnSharedPreferenceChangeListener(this)
+        prefManager.registerOnSharedPreferenceChangeListener(this)
 
         refreshPremium()
 
@@ -223,6 +222,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 if (prefManager.shouldUseOverscanMethod) hideNav(false)
             }
         }
+
+        prefChangeListeners.forEach { it.onSharedPreferenceChanged(sharedPreferences, key) }
     }
 
     override fun onOpChanged(op: String?, packageName: String?) {
@@ -263,12 +264,20 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     fun removeLicenseCheckListener(listener: OnLicenseCheckResultListener) = licenseCheckListeners.remove(listener)
 
+    fun registerOnSharedPreferenceChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefChangeListeners.add(listener)
+    }
+
+    fun unregisterOnSharedPreferenceChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefChangeListeners.remove(listener)
+    }
+
     /**
      * Add the pill to the screen
      */
     fun addBar(callListeners: Boolean = true) {
         mainHandler.post {
-            if (disabledBarReasonManager.isEmpty()) {
+            if (disabledBarReasonManager.isEmpty() && !pillShown) {
                 if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, true) }
 
                 addBarInternal()
@@ -473,8 +482,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         override fun onReceive(context: Context?, intent: Intent?) {
             if (!IntroActivity.needsToRun(this@App)) {
                 mainHandler.postDelayed({
-                    val action = intent?.action
-                    when (action) {
+                    when (intent?.action) {
                         Intent.ACTION_REBOOT,
                         Intent.ACTION_SHUTDOWN,
                         Intent.ACTION_SCREEN_OFF -> {
@@ -489,11 +497,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                 disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             }
 
-                            if (prefManager.isActive) addBar()
+                            if (prefManager.isActive) addBar(false)
                         }
                         Intent.ACTION_USER_PRESENT -> {
                             disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
-                            if (prefManager.isActive) addBar()
+                            if (prefManager.isActive) addBar(false)
                         }
                     }
                 }, 50)

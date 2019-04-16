@@ -62,12 +62,6 @@ class CompatibilityFragment : BasePrefFragment() {
         setUpImmersiveListeners()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
-    }
-
     private fun setUpRotListeners() {
         val rot180Fix = findPreference<SwitchPreference>(PrefManager.ROT180_FIX)!!
         val rot270Fix = findPreference<SwitchPreference>(PrefManager.ROT270_FIX)!!

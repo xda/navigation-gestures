@@ -8,6 +8,7 @@ import android.view.animation.Animation
 import androidx.annotation.CallSuper
 import androidx.preference.*
 import androidx.recyclerview.widget.RecyclerView
+import com.xda.nobar.util.app
 import com.xda.nobar.util.prefManager
 import tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
 import tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceGroupAdapter
@@ -33,7 +34,7 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
     @CallSuper
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(resId, rootKey)
-        preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        context!!.app.registerOnSharedPreferenceChangeListener(this)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {}
@@ -91,7 +92,7 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
     override fun onDestroy() {
         super.onDestroy()
 
-        preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        context!!.app.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onDestroyView() {

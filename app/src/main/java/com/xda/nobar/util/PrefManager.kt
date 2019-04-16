@@ -5,6 +5,7 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
@@ -504,5 +505,13 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
             is String -> putString(key, value)
             is Set<*> -> putStringSet(key, value as Set<String>)
         }
+    }
+
+    fun registerOnSharedPreferenceChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun unregisterOnSharedPreferenceChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefs.unregisterOnSharedPreferenceChangeListener(listener)
     }
 }
