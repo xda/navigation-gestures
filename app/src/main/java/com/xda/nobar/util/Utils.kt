@@ -16,8 +16,12 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.os.Vibrator
 import android.provider.Settings
+import android.util.Log
 import android.util.TypedValue
 import android.view.Surface
 import android.view.WindowManager
@@ -35,10 +39,8 @@ import com.xda.nobar.views.BarView
 import eu.chainfire.libsuperuser.Shell
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-
-val logicThread = HandlerThread("NoBar-Logic").apply { start() }
-
-val logicHandler = Handler(logicThread.looper)
+import java.io.PrintWriter
+import java.io.StringWriter
 
 val mainHandler = Handler(Looper.getMainLooper())
 
@@ -228,7 +230,9 @@ val Context.vibrator: Vibrator
     get() = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
 fun Context.allowHiddenMethods() {
-    if (hasWss) Settings.Global.putInt(contentResolver, "hidden_api_policy_p_apps", 1)
+    if (hasWss) GlobalScope.launch {
+        Settings.Global.putInt(contentResolver, "hidden_api_policy_p_apps", 1)
+    }
 }
 
 fun Context.checkNavHiddenAsync(listener: (Boolean) -> Unit) {
@@ -427,7 +431,7 @@ val isSu: Boolean
  * This can also be used to refresh the cached value.
  */
 fun isSuAsync(resultHandler: Handler = mainHandler, listener: ((Boolean) -> Unit)? = null) {
-    logicHandler.post {
+    GlobalScope.launch {
         cachedSu = Shell.SU.available()
 
         listener?.let {
@@ -436,4 +440,13 @@ fun isSuAsync(resultHandler: Handler = mainHandler, listener: ((Boolean) -> Unit
             }
         }
     }
+}
+
+fun Exception.logStack() {
+    val writer = StringWriter()
+    val printer = PrintWriter(writer)
+
+    printStackTrace(printer)
+
+    Log.e("NoBar", writer.toString())
 }

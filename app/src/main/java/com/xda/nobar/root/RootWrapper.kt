@@ -3,7 +3,6 @@ package com.xda.nobar.root
 import android.content.Context
 import com.xda.nobar.RootActions
 import com.xda.nobar.util.isSuAsync
-import com.xda.nobar.util.logicHandler
 import eu.chainfire.librootjava.BuildConfig
 import eu.chainfire.librootjava.RootIPCReceiver
 import eu.chainfire.librootjava.RootJava
@@ -33,8 +32,10 @@ class RootWrapper(private val context: Context) {
                     RootJava.getLaunchScript(context, RootHandler::class.java, null,
                             null, null, BuildConfig.APPLICATION_ID + ":root")
 
-            isSuAsync(logicHandler) {
-                Shell.SU.run(script.toTypedArray())
+            isSuAsync {
+                GlobalScope.launch {
+                    Shell.SU.run(script.toTypedArray())
+                }
             }
         }
     }
