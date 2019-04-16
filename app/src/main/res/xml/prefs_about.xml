@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <Preference
+        android:title="@string/version"
+        android:key="version"
+        android:enabled="false"
+        />
+
     <SwitchPreference
         android:title="@string/hide_beta_prompt"
         android:summary="@string/hide_beta_prompt_desc"
         android:key="hide_beta_prompt"
         android:defaultValue="@bool/hide_beta_prompt_default"
-        />
-
-    <Preference
-        android:title="@string/version"
-        android:key="version"
         />
 
     <Preference
