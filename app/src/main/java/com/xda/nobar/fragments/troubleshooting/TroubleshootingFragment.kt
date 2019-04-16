@@ -1,6 +1,5 @@
 package com.xda.nobar.fragments.troubleshooting
 
-import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
@@ -10,7 +9,7 @@ import com.xda.nobar.fragments.settings.CompatibilityFragment
 import com.xda.nobar.fragments.settings.ExperimentalFragment
 import com.xda.nobar.util.PrefManager
 import com.xda.nobar.util.launchUrl
-import com.xda.nobar.util.navOptions
+import com.xda.nobar.util.navigateTo
 
 class TroubleshootingFragment : BasePrefFragment() {
     companion object {
@@ -109,16 +108,6 @@ class TroubleshootingFragment : BasePrefFragment() {
             }
             else -> super.onPreferenceTreeClick(preference)
         }
-    }
-
-    private fun navigateTo(action: Int, highlightKey: String? = null) {
-        findNavController().navigate(
-                action,
-                Bundle().apply {
-                    putString(PREF_KEY_TO_HIGHLIGHT, highlightKey ?: return@apply)
-                },
-                navOptions
-        )
     }
 
     private fun showExplanation(title: CharSequence, message: Int) {

@@ -1,9 +1,8 @@
 package com.xda.nobar.fragments.settings
 
-import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import com.xda.nobar.R
-import com.xda.nobar.util.navOptions
+import com.xda.nobar.util.navigateTo
 
 /**
  * Main settings page
@@ -42,13 +41,5 @@ class MainFragment : BasePrefFragment() {
         }
 
         return ret
-    }
-
-    private fun navigateTo(action: Int) {
-        findNavController().navigate(
-                action,
-                null,
-                navOptions
-        )
     }
 }

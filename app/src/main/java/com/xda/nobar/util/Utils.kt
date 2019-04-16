@@ -16,10 +16,7 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.os.Vibrator
+import android.os.*
 import android.provider.Settings
 import android.util.Log
 import android.util.TypedValue
@@ -27,12 +24,15 @@ import android.view.Surface
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import com.xda.nobar.App
 import com.xda.nobar.R
 import com.xda.nobar.activities.helpers.DialogActivity
 import com.xda.nobar.activities.ui.IntroActivity
+import com.xda.nobar.fragments.settings.BasePrefFragment
 import com.xda.nobar.interfaces.OnDialogChoiceMadeListener
 import com.xda.nobar.util.helpers.bar.ActionHolder
 import com.xda.nobar.views.BarView
@@ -449,4 +449,14 @@ fun Exception.logStack() {
     printStackTrace(printer)
 
     Log.e("NoBar", writer.toString())
+}
+
+fun Fragment.navigateTo(action: Int, highlightKey: String? = null) {
+    findNavController().navigate(
+            action,
+            Bundle().apply {
+                putString(BasePrefFragment.PREF_KEY_TO_HIGHLIGHT, highlightKey ?: return@apply)
+            },
+            navOptions
+    )
 }
