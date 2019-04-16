@@ -76,7 +76,9 @@
         <activity
             android:name=".activities.ui.SettingsActivity"
             android:configChanges="screenSize|orientation|screenLayout" />
-        <activity android:name=".activities.ui.HelpAboutActivity" />
+        <activity android:name=".activities.ui.HelpAboutActivity"
+            android:label="@string/help_about"
+            />
         <activity
             android:name=".activities.ui.IntroActivity"
             android:launchMode="singleInstance"

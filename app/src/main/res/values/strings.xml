@@ -158,6 +158,7 @@
     <string name="try_beta">Try the Beta!</string>
     <string name="hide_beta_prompt">Hide the Beta Button</string>
     <string name="hide_text">Hide</string>
+    <string name="help_about">Help &amp; About</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
