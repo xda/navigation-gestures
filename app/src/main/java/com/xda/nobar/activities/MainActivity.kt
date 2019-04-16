@@ -111,6 +111,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         if (prefManager.hideBetaPrompt) {
             beta.visibility = View.GONE
         } else {
+            beta.visibility = View.VISIBLE
             beta.setOnClickListener {
                 AlertDialog.Builder(this)
                         .setTitle(R.string.sign_up_for_beta)
