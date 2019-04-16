@@ -155,6 +155,7 @@
     <string name="fade_opacity">Fade Opacity</string>
     <string name="pill_fading">Pill Fading</string>
     <string name="pill_fade_duration">Pill Fade Duration</string>
+    <string name="sign_up_for_beta">Sign up for Beta</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizar Acções dos Gestos</string>
     <string name="appearance_desc">Personalizar Aparência da Barra de Navegação</string>
@@ -222,6 +223,7 @@
     <string name="section_divider_color_desc">Set the color of dividers to appear between the sections of the split pill.</string>
     <string name="fade_after_specified_delay_desc">When enabled, the pill will automatically fade to the specified opacity after the specified delay.</string>
     <string name="fade_in_fullscreen_apps_desc">When enabled, the pill will automatically fade in fullscreen apps to the specified opacity after the specified delay.</string>
+    <string name="sign_up_for_beta_troubleshooting_desc">The beta version of Navigation Gestures may have already fixed your issue. Give it a try!</string>
     <!--Paragraphs-->
     <string name="app_purpose">Este aplicativo traz gestos de navegação impressionantes para qualquer dispositivo Android. O melhor de tudo, não precisa de root! Antes de usar os gestos, há algumas coisas que precisamos fazer para preparar a aplicação.</string>
     <string name="draw_over_apps_desc">Para que os Gestos de Navegação mostrem a navegação de barra, precisa de conceder permissão para sobreposição sobre outras aplicações. Toque no botão em baixo para fazer isso. Se instalou a partir da Play Store, essa permissão já está concedida.</string>
