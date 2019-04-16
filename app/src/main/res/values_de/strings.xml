@@ -155,6 +155,7 @@
     <string name="fade_opacity">Fade Opacity</string>
     <string name="pill_fading">Pill Fading</string>
     <string name="pill_fade_duration">Pill Fade Duration</string>
+    <string name="sign_up_for_beta">Sign up for Beta</string>
     <!--Descriptions-->
     <string name="gestures_desc">Gestenaktionen anpassen</string>
     <string name="appearance_desc">Aussehen der Navigation-Pille anpassen</string>
@@ -222,6 +223,7 @@
     <string name="section_divider_color_desc">Set the color of dividers to appear between the sections of the split pill.</string>
     <string name="fade_after_specified_delay_desc">When enabled, the pill will automatically fade to the specified opacity after the specified delay.</string>
     <string name="fade_in_fullscreen_apps_desc">When enabled, the pill will automatically fade in fullscreen apps to the specified opacity after the specified delay.</string>
+    <string name="sign_up_for_beta_troubleshooting_desc">The beta version of Navigation Gestures may have already fixed your issue. Give it a try!</string>
     <!--Paragraphs-->
     <string name="app_purpose">Diese App bringt großartige Gestennavigation auf jedes Android Gerät. Und das Beste ist, man benötigt hierfür keinen Root-Zugriff. Bevor du die Gestennavigation nutzen kann gibt es ein paar Sachen, die noch eingestellt werden müssen.</string>
     <string name="draw_over_apps_desc">Damit Navigation Gestures den Pill-Nav anzeigen kann, musst du der App Berechtigung geben, damit es über anderen Apps angezeigt werden kann. Tippe den unteren Knopf um dies zu tun. Wenn du die App über den Play Store installiert hat, wurde die berechtigung schon gewährt.</string>
