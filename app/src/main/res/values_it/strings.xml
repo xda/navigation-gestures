@@ -156,6 +156,9 @@
     <string name="pill_fading">Pill Fading</string>
     <string name="pill_fade_duration">Pill Fade Duration</string>
     <string name="sign_up_for_beta">Sign up for Beta</string>
+    <string name="try_beta">Try the Beta!</string>
+    <string name="hide_beta_prompt">Hide the Beta Button</string>
+    <string name="hide_text">Hide</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizza gesture</string>
     <string name="appearance_desc">Personalizza l\'aspetto della pillola</string>
@@ -224,6 +227,8 @@
     <string name="fade_after_specified_delay_desc">When enabled, the pill will automatically fade to the specified opacity after the specified delay.</string>
     <string name="fade_in_fullscreen_apps_desc">When enabled, the pill will automatically fade in fullscreen apps to the specified opacity after the specified delay.</string>
     <string name="sign_up_for_beta_troubleshooting_desc">The beta version of Navigation Gestures may have already fixed your issue. Give it a try!</string>
+    <string name="sign_up_for_beta_desc">Live on the bleeding edge with new features and improvements by signing up for the beta program.</string>
+    <string name="hide_beta_prompt_desc">Hide the beta sign-up button from the main screen.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Quest\'applicazione rende disponibili I gesti di navigazione per tutti i dispositivi Android. E non è tutto, non richiede il Root! Prima che tu possa usare i gesti, ci sono alcune cose da impostare per farla funzionare.</string>
     <string name="draw_over_apps_desc">Per rendere visibile della barra, avrai bisogno di consentire il permesso per essere mostrata sopra altre applicazioni. Tocca il pulsante sotto per farlo. Se l\'hai installata dal Play Store, questo permesso sarà già stato concesso.</string>
