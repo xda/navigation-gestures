@@ -17,8 +17,10 @@ class StartupReceiver : BroadcastReceiver() {
             Intent.ACTION_LOCKED_BOOT_COMPLETED,
             Intent.ACTION_MY_PACKAGE_REPLACED,
             ACTION_RELAUNCH -> {
-                val service = Intent(context, Actions::class.java)
-                context.startService(service)
+                try {
+                    val service = Intent(context, Actions::class.java)
+                    context.startService(service)
+                } catch (e: Exception) {}
             }
         }
     }

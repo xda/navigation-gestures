@@ -271,8 +271,8 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
         }
     }
 
-    private fun updateIntentSummary(key: String, res: Int) {
-        if (res < 1) return
+    private fun updateIntentSummary(key: String, res: Int?) {
+        if (res == null || res < 1) return
 
         findPreference<Preference?>(key)?.apply {
             summary = try {
@@ -313,7 +313,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
                 }
             } else if (it.getSavedValue() == actionHolder.premTypeIntent.toString()) {
                 val res = prefManager.getIntentKey(it.key)
-                updateIntentSummary(it.key, IntentSelectorActivity.INTENTS[res]!!.res)
+                updateIntentSummary(it.key, IntentSelectorActivity.INTENTS[res]?.res)
             } else if (it.getSavedValue() == actionHolder.premTypeLaunchShortcut.toString()) {
                 val shortcut = prefManager.getShortcut(it.key) ?: return
                 updateShortcutSummary(it.key, shortcut)
