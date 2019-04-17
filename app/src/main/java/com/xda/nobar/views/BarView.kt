@@ -478,6 +478,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         context.app.pillShown = false
+
+        forceActionUp()
     }
 
     override fun equals(other: Any?): Boolean {
