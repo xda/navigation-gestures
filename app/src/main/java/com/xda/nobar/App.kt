@@ -819,6 +819,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (oldRot != rot || overrideChange) {
                 if (pillShown) {
                     bar.handleRotationOrAnchorUpdate()
+                    bar.forceActionUp()
                 }
 
                 if (prefManager.shouldUseOverscanMethod) {
