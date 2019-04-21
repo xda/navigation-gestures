@@ -9,11 +9,7 @@ import android.os.Bundle
 import android.view.accessibility.AccessibilityEvent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.xda.nobar.interfaces.ReceiverCallback
-import com.xda.nobar.receivers.ActionReceiver
-import com.xda.nobar.util.actionHolder
-import com.xda.nobar.util.mainHandler
-import com.xda.nobar.util.runNougatAction
-import com.xda.nobar.util.runPremiumAction
+import com.xda.nobar.util.*
 
 
 class Actions : AccessibilityService(), ReceiverCallback {
@@ -40,7 +36,7 @@ class Actions : AccessibilityService(), ReceiverCallback {
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         val newEvent = AccessibilityEvent.obtain(event)
 
-        ActionReceiver.handleEvent(this, newEvent)
+        app.uiHandler.setNodeInfoAndUpdate(newEvent)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

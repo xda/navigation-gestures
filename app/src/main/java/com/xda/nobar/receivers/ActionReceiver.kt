@@ -13,9 +13,6 @@ class ActionReceiver : BroadcastReceiver() {
         const val ACTION_TOGGLE_SCREEN_ON = "toggle_screen_on"
         const val ACTION_SCREEN_OFF = "screen_off"
         const val ACTION_TOGGLE_NAV = "toggle_nav"
-        const val ACTION_HANDLE_EVENT = "handle_event"
-
-        const val EXTRA_EVENT = "event"
 
         fun toggleScreenOn(context: Context) {
             sendIntent(context, ACTION_TOGGLE_SCREEN_ON)
@@ -27,12 +24,6 @@ class ActionReceiver : BroadcastReceiver() {
 
         fun toggleNav(context: Context) {
             sendIntent(context, ACTION_TOGGLE_NAV)
-        }
-
-        fun handleEvent(context: Context, event: AccessibilityEvent) {
-            val bundle = Bundle()
-            bundle.putParcelable(EXTRA_EVENT, event)
-            sendIntent(context, ACTION_HANDLE_EVENT, bundle)
         }
 
         private fun sendIntent(context: Context, action: String, extras: Bundle? = null) {
@@ -53,7 +44,6 @@ class ActionReceiver : BroadcastReceiver() {
             ACTION_TOGGLE_SCREEN_ON -> context.app.toggleScreenOn()
             ACTION_SCREEN_OFF -> context.app.screenOffHelper.create()
             ACTION_TOGGLE_NAV -> context.app.toggleNavState()
-            ACTION_HANDLE_EVENT -> context.app.uiHandler.setNodeInfoAndUpdate(intent.getParcelableExtra(EXTRA_EVENT))
         }
     }
 }
