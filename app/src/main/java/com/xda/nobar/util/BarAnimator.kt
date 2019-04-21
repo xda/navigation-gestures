@@ -37,8 +37,7 @@ class BarAnimator(private val bar: BarView) {
         else animateVertically(listener, bar.zeroY)
     }
 
-    fun animateVertically(listener: DynamicAnimation.OnAnimationEndListener? = null,
-                          to: Int) {
+    fun animateVertically(listener: DynamicAnimation.OnAnimationEndListener? = null, to: Int) {
         cancelVertical()
 
         if (bar.shouldAnimate) {
@@ -56,11 +55,12 @@ class BarAnimator(private val bar: BarView) {
             }
 
             verticalAnimator?.start()
+        } else {
+            listener?.onAnimationEnd(null, false, -1f, -1f)
         }
     }
 
-    fun animateHorizontally(listener: DynamicAnimation.OnAnimationEndListener? = null,
-                            to: Int) {
+    fun animateHorizontally(listener: DynamicAnimation.OnAnimationEndListener? = null, to: Int) {
         cancelHorizontal()
 
         if (bar.shouldAnimate) {
@@ -78,6 +78,8 @@ class BarAnimator(private val bar: BarView) {
             }
 
             horizontalAnimator?.start()
+        } else {
+            listener?.onAnimationEnd(null, false, -1f, -1f)
         }
     }
 
