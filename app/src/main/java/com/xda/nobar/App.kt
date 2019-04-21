@@ -830,8 +830,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                 if (prefManager.shouldUseOverscanMethod) {
                     when {
-                        prefManager.useRot270Fix -> handle270()
-                        prefManager.useRot180Fix -> handle180()
+                        prefManager.useRot270Fix ||
+                                prefManager.useRot180Fix -> handle180Or270()
                         prefManager.useTabletMode -> handleTablet()
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie()
                         else -> handle0()
@@ -848,16 +848,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
         }
 
-        private fun handle270() {
+        private fun handle180Or270() {
             if (wm.defaultDisplay.rotation == Surface.ROTATION_270) {
                 IWindowManager.setOverscanAsync(0, -adjustedNavBarHeight, 0, 0)
             } else {
                 IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
             }
-        }
-
-        private fun handle180() {
-            handle270()
         }
 
         private fun handleTablet() {

@@ -2,7 +2,6 @@ package com.xda.nobar.fragments.settings
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.xda.nobar.R
@@ -23,18 +22,13 @@ class CompatibilityFragment : BasePrefFragment() {
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
             PrefManager.ROT270_FIX -> {
-                val enabled = sharedPreferences.getBoolean(key, false)
-                val tabletMode = findPreference<SwitchPreference>(PrefManager.TABLET_MODE)!!
-
-                tabletMode.isEnabled = !enabled
-                tabletMode.isChecked = if (enabled) false else tabletMode.isChecked
+                updateEnabledStates()
+            }
+            PrefManager.ROT180_FIX -> {
+                updateEnabledStates()
             }
             PrefManager.TABLET_MODE -> {
-                val enabled = sharedPreferences.getBoolean(key, false)
-                val rot270Fix = findPreference<SwitchPreference>(PrefManager.ROT270_FIX)!!
-
-                rot270Fix.isEnabled = !enabled
-                rot270Fix.isChecked = if (enabled) false else rot270Fix.isChecked
+               updateEnabledStates()
             }
             PrefManager.ORIG_NAV_IN_IMMERSIVE -> {
                 val enabled = sharedPreferences.getBoolean(key, false)
@@ -58,29 +52,29 @@ class CompatibilityFragment : BasePrefFragment() {
 
         activity?.title = resources.getText(R.string.compatibility)
 
-        setUpRotListeners()
+        updateEnabledStates()
         setUpImmersiveListeners()
     }
 
-    private fun setUpRotListeners() {
+    private fun updateEnabledStates() {
         val rot180Fix = findPreference<SwitchPreference>(PrefManager.ROT180_FIX)!!
         val rot270Fix = findPreference<SwitchPreference>(PrefManager.ROT270_FIX)!!
         val tabletMode = findPreference<SwitchPreference>(PrefManager.TABLET_MODE)!!
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            if (rot270Fix.isChecked) {
-                tabletMode.isChecked = false
-                tabletMode.isEnabled = false
-            }
+        (!rot270Fix.isChecked && !rot180Fix.isChecked).apply {
+            tabletMode.isEnabled = this
 
-            if (tabletMode.isChecked) {
+            if (!this) tabletMode.isChecked = false
+        }
+
+        (!tabletMode.isChecked).apply {
+            rot270Fix.isEnabled = this
+            rot180Fix.isEnabled = this
+
+            if (!this) {
                 rot270Fix.isChecked = false
-                rot270Fix.isEnabled = false
+                rot180Fix.isChecked = false
             }
-        } else {
-            rot180Fix.isEnabled = false
-            rot270Fix.isEnabled = false
-            tabletMode.isEnabled = false
         }
     }
 
