@@ -14,16 +14,10 @@ class LibraryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_settings)
+        setContentView(R.layout.activity_library)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        supportFragmentManager
-                .beginAnimatedTransaction()
-                .replace(R.id.content, LibraryPrefs())
-                .commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

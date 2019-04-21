@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.xda.nobar.R
-import com.xda.nobar.fragments.settings.HelpFragment
-import com.xda.nobar.util.beginAnimatedTransaction
 
 /**
  * Information about the app
@@ -14,15 +12,10 @@ class HelpAboutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        setContentView(R.layout.activity_help)
 
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        supportFragmentManager
-                .beginAnimatedTransaction()
-                .replace(R.id.content, HelpFragment())
-                .commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
