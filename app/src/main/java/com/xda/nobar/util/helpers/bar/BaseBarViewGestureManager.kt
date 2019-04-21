@@ -78,6 +78,8 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         }
     }
 
+    var isForceUp = false
+
     internal abstract val adjCoord: Float
     internal abstract val gestureHandler: BaseGestureHandler
 
@@ -151,6 +153,8 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
                 lastTouchTime = -1L
 
                 displayProperFlash(false)
+
+                isForceUp = false
             }
         }
 
@@ -244,7 +248,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
     open inner class BaseDetector : GestureDetector.SimpleOnGestureListener() {
         override fun onSingleTapUp(ev: MotionEvent): Boolean {
             return if (!context.actionHolder.hasAnyOfActions(bar.actionHolder.actionDouble)
-                    && !isActing && !wasHidden) {
+                    && !isActing && !wasHidden && !isForceUp) {
                 isOverrideTap = true
                 gestureHandler.sendTap()
                 isActing = false
@@ -267,7 +271,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         }
 
         override fun onDoubleTap(ev: MotionEvent): Boolean {
-            return if (!bar.isHidden && !isActing) {
+            return if (!bar.isHidden && !isActing && !isForceUp) {
                 isActing = true
                 gestureHandler.sendDoubleTap()
                 true
@@ -275,7 +279,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         }
 
         override fun onSingleTapConfirmed(ev: MotionEvent): Boolean {
-            return if (!isOverrideTap && !bar.isHidden) {
+            return if (!isOverrideTap && !bar.isHidden && !isForceUp) {
                 isActing = false
 
                 gestureHandler.sendTap()

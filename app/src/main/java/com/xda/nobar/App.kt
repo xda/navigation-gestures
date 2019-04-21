@@ -210,9 +210,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 if (um.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
                     if (enabled) {
                         disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
+                        disabledImmReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         if (prefManager.isActive && !pillShown) addBar(false)
                     } else {
                         disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
+                        disabledImmReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         if (prefManager.isActive && !pillShown) removeBar(false)
                     }
                 }
@@ -529,7 +531,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             when (intent?.action) {
                 UiModeManager.ACTION_ENTER_CAR_MODE -> {
                     if (prefManager.enableInCarMode) {
-                        if (pillShown) bar.params.height = prefManager.customHeight * 2
+                        if (pillShown) {
+                            bar.params.height = prefManager.customHeight * 2
+                            bar.updateLayout()
+                        }
                     } else {
                         if (pillShown) removeBar()
                         disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
@@ -539,7 +544,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                 UiModeManager.ACTION_EXIT_CAR_MODE -> {
                     if (prefManager.enableInCarMode) {
-                        if (pillShown) bar.params.height = prefManager.customHeight
+                        if (pillShown) {
+                            bar.params.height = prefManager.customHeight
+                            bar.updateLayout()
+                        }
                     } else {
                         if (prefManager.isActive) addBar()
                         disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
@@ -724,11 +732,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                             bar.immersiveNav = immersiveHelperManager.isNavImmersive() && !keyboardShown
 
-                            mainHandler.post {
-                                if (prefManager.hidePillWhenKeyboardShown) {
-                                    if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
-                                    else bar.showPill(HiddenPillReasonManager.KEYBOARD)
-                                }
+                            if (prefManager.hidePillWhenKeyboardShown) {
+                                if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
+                                else bar.showPill(HiddenPillReasonManager.KEYBOARD)
                             }
 
                             if (disabledImmReasonManager.isEmpty()) {
