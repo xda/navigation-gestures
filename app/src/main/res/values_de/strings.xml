@@ -160,6 +160,7 @@
     <string name="hide_beta_prompt">Hide the Beta Button</string>
     <string name="hide_text">Hide</string>
     <string name="help_about">Help &amp; About</string>
+    <string name="restart_nobar">Restart Navigation Gestures</string>
     <!--Descriptions-->
     <string name="gestures_desc">Gestenaktionen anpassen</string>
     <string name="appearance_desc">Aussehen der Navigation-Pille anpassen</string>
@@ -230,6 +231,8 @@
     <string name="sign_up_for_beta_troubleshooting_desc">The beta version of Navigation Gestures may have already fixed your issue. Give it a try!</string>
     <string name="sign_up_for_beta_desc">Live on the bleeding edge with new features and improvements by signing up for the beta program.</string>
     <string name="hide_beta_prompt_desc">Hide the beta sign-up button from the main screen.</string>
+    <string name="hidden_methods_desc">In order to work properly, Navigation Gestures needs to restart. This should be a one-time thing.</string>
+    <string name="pill_not_showing">The pill isn\'t showing on the lock screen, app permissions page, etc.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Diese App bringt großartige Gestennavigation auf jedes Android Gerät. Und das Beste ist, man benötigt hierfür keinen Root-Zugriff. Bevor du die Gestennavigation nutzen kann gibt es ein paar Sachen, die noch eingestellt werden müssen.</string>
     <string name="draw_over_apps_desc">Damit Navigation Gestures den Pill-Nav anzeigen kann, musst du der App Berechtigung geben, damit es über anderen Apps angezeigt werden kann. Tippe den unteren Knopf um dies zu tun. Wenn du die App über den Play Store installiert hat, wurde die berechtigung schon gewährt.</string>
@@ -251,6 +254,7 @@
     <string name="feature_not_avail">Dieses Feature kann nicht verwendet werden während Navigation Gestures die Navigationsleiste versteckt.</string>
     <string name="pill_overlaps_content_expl">Unfortunately, there\'s no way to fix this. We can\'t make a dedicated navigation space for the pill. Try lowering the pill height or turning off Larger Hitbox in Behavior.</string>
     <string name="crash_message">Navigation Gestures has crashed! Don\'t worry, we\'ve already got the information. If this happens often, consider enabling your Crashlytics ID and sending it to us. You can turn it on from the \"i\" button on the main screen of the app.</string>
+    <string name="pill_not_showing_desc">This is a security feature in Android. In certain locations, such as the lock screen, notification shade, app permissions screen, and APK installation screen, overlays can\'t be shown. There\'s no way around this.</string>
     <!--Gestures-->
     <string name="tap">Tippen</string>
     <string name="left">Nach links streichen</string>
