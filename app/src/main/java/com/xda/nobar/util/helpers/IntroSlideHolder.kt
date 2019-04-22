@@ -116,10 +116,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                             }
                         }
         ) {
-            prefManager.confirmedSkipWss || (if (hasWss) {
-                allowHiddenMethods()
-                true
-            } else false)
+            prefManager.confirmedSkipWss || hasWss
         }
     }
 

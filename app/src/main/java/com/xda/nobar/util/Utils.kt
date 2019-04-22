@@ -3,7 +3,9 @@
 package com.xda.nobar.util
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.KeyguardManager
+import android.app.PendingIntent
 import android.app.UiModeManager
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -30,10 +32,13 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.xda.nobar.App
 import com.xda.nobar.R
+import com.xda.nobar.activities.MainActivity
 import com.xda.nobar.activities.helpers.DialogActivity
+import com.xda.nobar.activities.ui.HelpAboutActivity
 import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.fragments.settings.BasePrefFragment
 import com.xda.nobar.interfaces.OnDialogChoiceMadeListener
+import com.xda.nobar.receivers.StartupReceiver
 import com.xda.nobar.util.helpers.bar.ActionHolder
 import com.xda.nobar.views.BarView
 import eu.chainfire.libsuperuser.Shell
@@ -228,6 +233,16 @@ var Context.touchWizNavEnabled: Boolean
 
 val Context.vibrator: Vibrator
     get() = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+val Context.alarmManager: AlarmManager
+    get() = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+val Context.areHiddenMethodsAllowed: Boolean
+    get() = Settings.Global.getString(
+            contentResolver,
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) "hidden_api_policy"
+            else "hidden_api_policy_p_apps"
+    ).run { contains("0") || contains("1") }
 
 fun Context.allowHiddenMethods() {
     if (hasWss) GlobalScope.launch {
@@ -464,4 +479,32 @@ fun Fragment.navigateTo(action: Int, highlightKey: String? = null) {
             },
             navOptions
     )
+}
+
+fun Context.relaunch(isForCrashlytics: Boolean = false, isForMainActivity: Boolean = false) {
+    val startup = when {
+        isForCrashlytics -> PendingIntent.getActivity(
+                this,
+                11,
+                Intent(this, HelpAboutActivity::class.java),
+                PendingIntent.FLAG_ONE_SHOT
+        )
+        isForMainActivity -> PendingIntent.getActivity(
+                this,
+                12,
+                Intent(this, MainActivity::class.java),
+                PendingIntent.FLAG_ONE_SHOT
+        )
+        else -> PendingIntent.getBroadcast(
+                this,
+                10,
+                Intent(this, StartupReceiver::class.java).apply { action = StartupReceiver.ACTION_RELAUNCH },
+                PendingIntent.FLAG_ONE_SHOT
+        )
+    }
+
+    val am = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 100, startup)
+
+    Process.killProcess(Process.myPid())
 }

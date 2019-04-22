@@ -55,8 +55,6 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             if (it) IntroActivity.start(this)
         }
 
-        allowHiddenMethods()
-
         setContentView(R.layout.activity_main)
         setUpActionBar()
 
@@ -120,6 +118,19 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
                         .setNegativeButton(android.R.string.cancel, null)
                         .setNeutralButton(R.string.hide_text) { _,_ ->
                             startActivity(Intent(this, HelpAboutActivity::class.java))
+                        }
+                        .show()
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            if (!areHiddenMethodsAllowed && hasWss) {
+                allowHiddenMethods()
+                AlertDialog.Builder(this)
+                        .setTitle(R.string.restart_nobar)
+                        .setMessage(R.string.hidden_methods_desc)
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
+                            relaunch(isForCrashlytics = false, isForMainActivity = true)
                         }
                         .show()
             }

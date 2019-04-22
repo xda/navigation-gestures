@@ -145,8 +145,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             Crashlytics.logException(it)
         }
 
-        allowHiddenMethods()
-
         if (IntroActivity.needsToRun(this)) {
             IntroActivity.start(this)
         }
