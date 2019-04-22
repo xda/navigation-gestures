@@ -180,6 +180,7 @@ class ActionHolder private constructor(private val context: Context) {
     val premTypeBatterySaver by lazy { context.resources.getString(R.string.prem_type_battery_saver).toInt() }
     val premTypeScreenTimeout by lazy { context.resources.getString(R.string.prem_type_screen_timeout).toInt() }
     val premTypeLaunchShortcut by lazy { context.resources.getString(R.string.prem_type_launch_shortcut).toInt() }
+    val premTypeKillBackground by lazy { context.resources.getString(R.string.prem_type_kill_background).toInt() }
 
     val typeRootHoldBack by lazy { context.resources.getString(R.string.type_hold_back).toInt() }
     val typeRootForward by lazy { context.resources.getString(R.string.type_forward).toInt() }

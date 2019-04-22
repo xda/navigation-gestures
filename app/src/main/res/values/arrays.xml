@@ -94,6 +94,7 @@
         <item>@string/prem_launch_shortcut_no_format</item>
         <item>@string/prem_tasker_event</item>
         <item>@string/prem_intent_no_format</item>
+        <item>@string/prem_kill_background</item>
     </string-array>
 
     <string-array name="apps_action_values">
@@ -102,6 +103,7 @@
         <item>@string/prem_type_launch_shortcut</item>
         <item>@string/prem_type_tasker_event</item>
         <item>@string/prem_type_intent</item>
+        <item>@string/prem_type_kill_background</item>
     </string-array>
     
     <string-array name="action_section_names">

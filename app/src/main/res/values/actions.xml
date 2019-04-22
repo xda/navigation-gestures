@@ -41,6 +41,7 @@
     <string name="prem_toggle_screen_timeout">Toggle Screen Timeout (Premium)</string>
     <string name="prem_launch_shortcut_no_format">Launch Shortcut (Premium)</string>
     <string name="prem_launch_shortcut">Launch Shortcut (Premium) (%s)</string>
+    <string name="prem_kill_background">Kill All Background Apps (Premium)</string>
 
     <!--Action Values-->
     <string name="type_no_action">-1</string>
@@ -83,6 +84,7 @@
     <string name="prem_type_battery_saver">36</string>
     <string name="prem_type_screen_timeout">37</string>
     <string name="prem_type_launch_shortcut">38</string>
+    <string name="prem_type_kill_background">39</string>
 
     <!--Main Action Keys-->
     <string name="action_left">left</string>

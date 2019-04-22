@@ -355,6 +355,9 @@ class BarViewActionHandler(private val bar: BarView) {
                     bar.actionHolder.premTypeQs -> context.runPremiumAction {
                         expandSettingsPanel()
                     }
+                    bar.actionHolder.premTypeKillBackground -> context.runPremiumAction {
+                        killAllBackgroundProcesses()
+                    }
                     bar.actionHolder.premTypeVibe -> {
                         //TODO: Implement
                     }

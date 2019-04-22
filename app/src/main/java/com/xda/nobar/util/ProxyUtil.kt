@@ -83,6 +83,18 @@ fun InputManager.injectInputEvent(event: InputEvent, mode: Int) {
 
 fun checkEMUI() = !getSystemProperty("ro.build.version.emui").isNullOrEmpty()
 
+fun killAllBackgroundProcesses() {
+    val iAmStub = Class.forName("android.app.IActivityManager\$Stub")
+    val serviceMan = Class.forName("android.os.ServiceManager")
+    val checkService = serviceMan.getMethod("checkService", String::class.java)
+
+    val asInterface = iAmStub.getMethod("asInterface", IBinder::class.java)
+    val iAmInstance = asInterface.invoke(null, checkService.invoke(null, "activity"))
+
+    val killAllBackgroundProcesses = iAmStub.getMethod("killAllBackgroundProcesses")
+    killAllBackgroundProcesses.invoke(iAmInstance)
+}
+
 fun printAddedViews() {
     val wmg = Class.forName("android.view.WindowManagerGlobal")
     val wmgInstance = wmg.getMethod("getInstance").invoke(null)
