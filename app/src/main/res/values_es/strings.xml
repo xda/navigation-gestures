@@ -160,6 +160,7 @@
     <string name="hide_beta_prompt">Hide the Beta Button</string>
     <string name="hide_text">Hide</string>
     <string name="help_about">Help &amp; About</string>
+    <string name="restart_nobar">Restart Navigation Gestures</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizar acciones de gestos</string>
     <string name="appearance_desc">Personalizar el aspecto de la barra de gestos</string>
@@ -230,6 +231,7 @@
     <string name="sign_up_for_beta_troubleshooting_desc">The beta version of Navigation Gestures may have already fixed your issue. Give it a try!</string>
     <string name="sign_up_for_beta_desc">Live on the bleeding edge with new features and improvements by signing up for the beta program.</string>
     <string name="hide_beta_prompt_desc">Hide the beta sign-up button from the main screen.</string>
+    <string name="hidden_methods_desc">In order to work properly, Navigation Gestures needs to restart. This should be a one-time thing.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Esta aplicación proporciona increíbles gestos de navegación para cualquier dispositivo Android. ¡Lo mejor de todo es que no necesita root! Antes de utilizar los gestos, hay algunas cosas que tenemos que hacer para configurar la aplicación.</string>
     <string name="draw_over_apps_desc">Para que Navigation Gestures muestre la barra, tendrás que otorgar el permiso para que pueda dibujarse sobre otras aplicaciones. Pulsa el botón de abajo para hacerlo. Si lo instalaste desde Play Store, ya se habrá otorgado este permiso.</string>
