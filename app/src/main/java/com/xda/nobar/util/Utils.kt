@@ -231,7 +231,12 @@ val Context.vibrator: Vibrator
 
 fun Context.allowHiddenMethods() {
     if (hasWss) GlobalScope.launch {
-        Settings.Global.putInt(contentResolver, "hidden_api_policy_p_apps", 1)
+        Settings.Global.putInt(
+                contentResolver,
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) "hidden_api_policy"
+                else "hidden_api_policy_p_apps",
+                0
+        )
     }
 }
 
@@ -442,7 +447,7 @@ fun isSuAsync(resultHandler: Handler = mainHandler, listener: ((Boolean) -> Unit
     }
 }
 
-fun Exception.logStack() {
+fun Throwable.logStack() {
     val writer = StringWriter()
     val printer = PrintWriter(writer)
 
