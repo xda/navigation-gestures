@@ -51,8 +51,8 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (IntroActivity.needsToRun(this)) {
-            IntroActivity.start(this)
+        IntroActivity.needsToRunAsync(this) {
+            if (it) IntroActivity.start(this)
         }
 
         allowHiddenMethods()
