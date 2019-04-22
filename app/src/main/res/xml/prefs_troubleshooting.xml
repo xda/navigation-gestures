@@ -58,6 +58,12 @@
             android:icon="@drawable/circle_small"
             />
 
+        <Preference
+            android:summary="@string/pill_not_showing"
+            android:key="pill_not_showing"
+            android:icon="@drawable/circle_small"
+            />
+
     </PreferenceCategory>
 
     <PreferenceCategory

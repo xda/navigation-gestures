@@ -25,6 +25,7 @@ class TroubleshootingFragment : BasePrefFragment() {
         const val REPORT_TO_GITHUB = "report_to_github"
         const val PIXEL_AMBIENT_CUT_OFF = "pixel_ambient_cut_off"
         const val BETA_SIGN_UP = "beta_sign_up"
+        const val PILL_NOT_SHOWING = "pill_not_showing"
     }
 
     override val resId = R.xml.prefs_troubleshooting
@@ -109,6 +110,10 @@ class TroubleshootingFragment : BasePrefFragment() {
             }
             BETA_SIGN_UP -> {
                 context?.launchUrl("https://play.google.com/apps/testing/com.xda.nobar")
+                true
+            }
+            PILL_NOT_SHOWING -> {
+                showExplanation(preference.summary, R.string.pill_not_showing_desc)
                 true
             }
             else -> super.onPreferenceTreeClick(preference)
