@@ -6,7 +6,6 @@ import android.content.Context
 import android.graphics.Rect
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import android.view.Display
 import eu.chainfire.libsuperuser.Shell
 import kotlinx.coroutines.GlobalScope
@@ -90,7 +89,6 @@ object IWindowManager {
                 canRunCommands()
             } catch (e: Throwable) {
                 val res = Shell.run("sh", arrayOf("wm overscan $left,$top,$right,$bottom"), null, true)
-                        .apply { Log.e("NoBar", toString()) }
                 res.joinToString("").isBlank()
             }
         } else {
