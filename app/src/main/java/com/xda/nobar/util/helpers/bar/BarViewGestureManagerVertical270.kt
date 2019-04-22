@@ -27,52 +27,6 @@ class BarViewGestureManagerVertical270(bar: BarView) : BaseBarViewGestureManager
         var ultimateReturn = false
 
         when (ev?.action) {
-            MotionEvent.ACTION_UP -> {
-                if (wasHidden) {
-                    isSwipeRight = false
-                }
-
-                gestureHandler.clearLongQueues()
-
-                parseSwipe()
-
-                bar.animatePillToHome(
-                        {
-                            if (bar.params.y == bar.adjustedHomeY) {
-                                isActing = false
-                                isSwipeUp = false
-                                isSwipeDown = false
-                            }
-                        },
-                        {
-                            if (bar.params.x == bar.adjustedHomeX) {
-                                isActing = false
-                                bar.isCarryingOutTouchAction = false
-                            }
-                        }
-                )
-
-                when {
-                    bar.params.x != bar.adjustedHomeX && !bar.isHidden && !bar.isPillHidingOrShowing -> {
-                        bar.animator.verticalHomeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
-                            isActing = false
-                            bar.isCarryingOutTouchAction = false
-                        })
-                    }
-                    bar.params.y != bar.adjustedHomeY -> {
-                        bar.animator.verticalHomeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
-                            isActing = false
-                            bar.isCarryingOutTouchAction = false
-                        })
-                    }
-                    else -> {
-                        isActing = false
-                        bar.isCarryingOutTouchAction = false
-                    }
-                }
-
-                finishUp()
-            }
             MotionEvent.ACTION_MOVE -> {
                 ultimateReturn = handlePotentialSwipe(ev)
 
@@ -146,6 +100,55 @@ class BarViewGestureManagerVertical270(bar: BarView) : BaseBarViewGestureManager
         }
 
         return ultimateReturn
+    }
+
+    override fun handleActionUp(isForce: Boolean) {
+        super.handleActionUp(isForce)
+
+        if (wasHidden) {
+            isSwipeRight = false
+        }
+
+        gestureHandler.clearLongQueues()
+
+        if (!isForce) parseSwipe()
+
+        bar.animatePillToHome(
+                {
+                    if (bar.params.y == bar.adjustedHomeY) {
+                        isActing = false
+                        isSwipeUp = false
+                        isSwipeDown = false
+                    }
+                },
+                {
+                    if (bar.params.x == bar.adjustedHomeX) {
+                        isActing = false
+                        bar.isCarryingOutTouchAction = false
+                    }
+                }
+        )
+
+        when {
+            bar.params.x != bar.adjustedHomeX && !bar.isHidden && !bar.isPillHidingOrShowing -> {
+                bar.animator.verticalHomeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                    isActing = false
+                    bar.isCarryingOutTouchAction = false
+                })
+            }
+            bar.params.y != bar.adjustedHomeY -> {
+                bar.animator.verticalHomeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                    isActing = false
+                    bar.isCarryingOutTouchAction = false
+                })
+            }
+            else -> {
+                isActing = false
+                bar.isCarryingOutTouchAction = false
+            }
+        }
+
+        finishUp()
     }
 
     private fun handlePotentialSwipe(motionEvent: MotionEvent?): Boolean {

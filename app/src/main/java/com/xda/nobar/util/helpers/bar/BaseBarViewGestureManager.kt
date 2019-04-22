@@ -78,8 +78,6 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         }
     }
 
-    var isForceUp = false
-
     internal abstract val adjCoord: Float
     internal abstract val gestureHandler: BaseGestureHandler
 
@@ -149,12 +147,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
             }
 
             MotionEvent.ACTION_UP -> {
-                bar.beingTouched = false
-                lastTouchTime = -1L
-
-                displayProperFlash(false)
-
-                isForceUp = false
+                handleActionUp()
             }
         }
 
@@ -245,10 +238,18 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
             bar.actionHolder.actionUpHold
     ).contains(this) && context.app.prefManager.sectionedPill
 
+    @CallSuper
+    open fun handleActionUp(isForce: Boolean = false) {
+        bar.beingTouched = false
+        lastTouchTime = -1L
+
+        displayProperFlash(false)
+    }
+
     open inner class BaseDetector : GestureDetector.SimpleOnGestureListener() {
         override fun onSingleTapUp(ev: MotionEvent): Boolean {
             return if (!context.actionHolder.hasAnyOfActions(bar.actionHolder.actionDouble)
-                    && !isActing && !wasHidden && !isForceUp) {
+                    && !isActing && !wasHidden) {
                 isOverrideTap = true
                 gestureHandler.sendTap()
                 isActing = false
@@ -271,7 +272,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         }
 
         override fun onDoubleTap(ev: MotionEvent): Boolean {
-            return if (!bar.isHidden && !isActing && !isForceUp) {
+            return if (!bar.isHidden && !isActing) {
                 isActing = true
                 gestureHandler.sendDoubleTap()
                 true
@@ -279,7 +280,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         }
 
         override fun onSingleTapConfirmed(ev: MotionEvent): Boolean {
-            return if (!isOverrideTap && !bar.isHidden && !isForceUp) {
+            return if (!isOverrideTap && !bar.isHidden) {
                 isActing = false
 
                 gestureHandler.sendTap()

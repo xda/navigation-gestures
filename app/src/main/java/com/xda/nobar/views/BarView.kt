@@ -492,10 +492,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     fun forceActionUp() {
         mainHandler.post {
-            currentGestureDetector.isForceUp = true
+//            val uptime = SystemClock.uptimeMillis()
+//            currentGestureDetector.onTouchEvent(MotionEvent.obtain(uptime, uptime, MotionEvent.ACTION_UP, 0f, 0f, 0))
 
-            val uptime = SystemClock.uptimeMillis()
-            currentGestureDetector.onTouchEvent(MotionEvent.obtain(uptime, uptime, MotionEvent.ACTION_UP, 0f, 0f, 0))
+            currentGestureDetector.handleActionUp(true)
         }
     }
 
