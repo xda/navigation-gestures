@@ -232,6 +232,7 @@
     <string name="sign_up_for_beta_desc">Live on the bleeding edge with new features and improvements by signing up for the beta program.</string>
     <string name="hide_beta_prompt_desc">Hide the beta sign-up button from the main screen.</string>
     <string name="hidden_methods_desc">In order to work properly, Navigation Gestures needs to restart. This should be a one-time thing.</string>
+    <string name="pill_not_showing">The pill isn\'t showing on the lock screen, app permissions page, etc.</string>
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
     <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
@@ -253,6 +254,7 @@
     <string name="feature_not_avail">This feature cannot be used while Navigation Gestures is hiding the navigation bar.</string>
     <string name="pill_overlaps_content_expl">Unfortunately, there\'s no way to fix this. We can\'t make a dedicated navigation space for the pill. Try lowering the pill height or turning off Larger Hitbox in Behavior.</string>
     <string name="crash_message">Navigation Gestures has crashed! Don\'t worry, we\'ve already got the information. If this happens often, consider enabling your Crashlytics ID and sending it to us. You can turn it on from the \"i\" button on the main screen of the app.</string>
+    <string name="pill_not_showing_desc">This is a security feature in Android. In certain locations, such as the lock screen, notification shade, app permissions screen, and APK installation screen, overlays can\'t be shown. There\'s no way around this.</string>
     <!--Gestures-->
     <string name="tap">Касание</string>
     <string name="left">Свайп влево</string>
