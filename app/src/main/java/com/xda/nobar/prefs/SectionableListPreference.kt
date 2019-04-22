@@ -242,7 +242,8 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     inner class SectionTitleView(context: Context) : AppCompatTextView(context) {
-        var name: String? = null
+        var name: String?
+            get() = text?.toString()
             set(value) {
                 text = value
             }
