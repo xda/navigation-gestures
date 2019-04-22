@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Rect
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import android.view.Display
 import eu.chainfire.libsuperuser.Shell
 import kotlinx.coroutines.GlobalScope
@@ -26,6 +27,10 @@ object IWindowManager {
     var rightOverscan = 0
     var bottomOverscan = 0
 
+    private var isRunningOverscan = false
+
+    private val queuedOverscanActions = ArrayList<OverscanInfo>()
+
     private val iWindowManagerClass: Class<*> = Class.forName("android.view.IWindowManager")
     private val iWindowManager: Any = run {
         val stubClass = Class.forName("android.view.IWindowManager\$Stub")
@@ -36,13 +41,29 @@ object IWindowManager {
     }
 
     fun setOverscanAsync(left: Int, top: Int, right: Int, bottom: Int, listener: ((Boolean) -> Unit)? = null) {
-        GlobalScope.launch {
-            val ret = setOverscan(left, top, right, bottom)
+        if (!isRunningOverscan) {
+            isRunningOverscan = true
 
-            mainHandler.post {
-                listener?.invoke(ret)
+            GlobalScope.launch {
+                val ret = setOverscan(
+                        left,
+                        top,
+                        right,
+                        bottom
+                )
+
+                mainHandler.post {
+                    listener?.invoke(ret)
+                }
+
+                isRunningOverscan = false
+
+                if (queuedOverscanActions.isNotEmpty()) {
+                    val queuedInfo = queuedOverscanActions.removeAt(0)
+                    setOverscanAsync(queuedInfo.left, queuedInfo.top, queuedInfo.right, queuedInfo.bottom, queuedInfo.listener)
+                }
             }
-        }
+        } else queuedOverscanActions.add(OverscanInfo(left, top, right, bottom, listener))
     }
 
     /**
@@ -68,12 +89,9 @@ object IWindowManager {
                         .invoke(iWindowManager, Display.DEFAULT_DISPLAY, left, top, right, bottom)
                 canRunCommands()
             } catch (e: Throwable) {
-                try {
-                    Shell.SH.run("wm overscan $left,$top,$right,$bottom")
-                    true
-                } catch (e: Exception) {
-                    false
-                }
+                val res = Shell.run("sh", arrayOf("wm overscan $left,$top,$right,$bottom"), null, true)
+                        .apply { Log.e("NoBar", toString()) }
+                res.joinToString("").isBlank()
             }
         } else {
             false
@@ -122,7 +140,21 @@ object IWindowManager {
                     .getMethod("getNavBarPosition")
                     .invoke(iWindowManager) as Int
         } catch (e: Exception) {
-            Integer.MIN_VALUE
+            try {
+                iWindowManagerClass
+                        .getMethod("getNavBarPosition", Int::class.java)
+                        .invoke(iWindowManager, Display.DEFAULT_DISPLAY) as Int
+            } catch (e: Exception) {
+                Integer.MIN_VALUE
+            }
         }
     }
+
+    private class OverscanInfo(
+            val left: Int,
+            val top: Int,
+            val right: Int,
+            val bottom: Int,
+            val listener: ((Boolean) -> Unit)?
+    )
 }
