@@ -242,7 +242,7 @@ val Context.areHiddenMethodsAllowed: Boolean
             contentResolver,
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) "hidden_api_policy"
             else "hidden_api_policy_p_apps"
-    ).run { contains("0") || contains("1") }
+    ).run { this != null && (contains("0") || contains("1")) }
 
 fun Context.allowHiddenMethods() {
     if (hasWss) GlobalScope.launch {
