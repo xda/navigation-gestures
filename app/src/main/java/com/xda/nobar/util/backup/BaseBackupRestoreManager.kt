@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
+import com.xda.nobar.R
 import com.xda.nobar.util.prefManager
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -30,14 +32,25 @@ abstract class BaseBackupRestoreManager(context: Context) : ContextWrapper(conte
             type = "application/vnd.nobar.${this@BaseBackupRestoreManager.type}"
 
             addCategory(Intent.CATEGORY_OPENABLE)
-            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("application/nobarbak", "application/octet-stream", "nobar/${this@BaseBackupRestoreManager.type}"))
+            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf(
+                    "application/nobarbak",
+                    "application/octet-stream",
+                    "nobar/${this@BaseBackupRestoreManager.type}",
+                    "application/vnd.nobar.${this@BaseBackupRestoreManager.type}"
+            ))
         }
 
     abstract fun saveBackup(dest: Uri)
 
     open fun applyBackup(src: Uri) {
-        deserialize(src)?.forEach {
-            prefManager.put(it.key, it.value)
+        val deserialize = deserialize(src)
+
+        if (deserialize == null) toastInvalid()
+        else {
+            deserialize.forEach {
+                prefManager.put(it.key, it.value)
+            }
+            restored()
         }
     }
 
@@ -52,18 +65,24 @@ abstract class BaseBackupRestoreManager(context: Context) : ContextWrapper(conte
     }
 
     internal fun deserialize(src: Uri): HashMap<String, Any?>? {
-        contentResolver.openFileDescriptor(src, "r")?.use { fd ->
-            FileInputStream(fd.fileDescriptor).use { input ->
-                ObjectInputStream(input).use { ois ->
-                    return try {
-                        ois.readObject() as HashMap<String, Any?>
-                    } catch (e: Exception) {
-                        null
+        try {
+            contentResolver.openFileDescriptor(src, "r")?.use { fd ->
+                FileInputStream(fd.fileDescriptor).use { input ->
+                    ObjectInputStream(input).use { ois ->
+                        return ois.readObject() as HashMap<String, Any?>
                     }
                 }
             }
-        }
+        } catch (e: Exception) {}
 
         return null
+    }
+
+    private fun toastInvalid() {
+        Toast.makeText(this, R.string.invalid_backup, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun restored() {
+        Toast.makeText(this, R.string.restored, Toast.LENGTH_SHORT).show()
     }
 }

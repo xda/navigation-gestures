@@ -110,19 +110,15 @@ class BackupRestoreFragment : BasePrefFragment() {
 
                 REQ_RESTORE_GESTURES -> {
                     gesture.applyBackup(data?.data ?: return)
-                    restored()
                 }
                 REQ_RESTORE_APPEARANCE -> {
                     appearance.applyBackup(data?.data ?: return)
-                    restored()
                 }
                 REQ_RESTORE_BEHAVIOR -> {
                     behavior.applyBackup(data?.data ?: return)
-                    restored()
                 }
                 REQ_RESTORE_OMNI -> {
                     omni.applyBackup(data?.data ?: return)
-                    restored()
                 }
             }
         }
@@ -130,9 +126,5 @@ class BackupRestoreFragment : BasePrefFragment() {
 
     private fun saved() {
         Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun restored() {
-        Toast.makeText(context, R.string.restored, Toast.LENGTH_SHORT).show()
     }
 }
