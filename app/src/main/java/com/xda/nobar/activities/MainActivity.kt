@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
     private val navListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
         app.toggleNavState(!isChecked)
         if (!hasWss) onNavStateChange(!isChecked)
-        if (hasWss) fix_immersive_wrapper.visibility = if (isChecked) View.GONE else View.VISIBLE
     }
 
     private var currentPremReason: String? = null
@@ -87,13 +86,6 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
             AlertDialog.Builder(this)
                     .setMessage(currentPremReason)
                     .show()
-        }
-
-        fix_immersive_wrapper.visibility = if (hasWss && !hide_nav.isChecked) View.VISIBLE else View.GONE
-        fix_immersive.setOnClickListener {
-            runSecureSettingsAction {
-                Settings.Global.putString(contentResolver, POLICY_CONTROL, null)
-            }
         }
 
         troubleshoot.setOnClickListener {

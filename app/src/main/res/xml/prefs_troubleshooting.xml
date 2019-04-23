@@ -5,6 +5,12 @@
         android:title="@string/common_issues">
 
         <Preference
+            android:summary="@string/auto_hiding_navbar"
+            android:key="auto_hiding_nav"
+            android:icon="@drawable/circle_small"
+            />
+
+        <Preference
             android:summary="@string/nav_not_hiding_desc"
             android:key="nav_not_hiding"
             android:icon="@drawable/circle_small"

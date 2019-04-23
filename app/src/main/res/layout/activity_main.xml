@@ -32,6 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/switch_wrapper"
         app:layout_constraintVertical_bias="0.13"
         />
 
@@ -68,35 +69,6 @@
             app:title_text="@string/hide_nav"
             app:title_text_size="18sp"
             />
-
-        <LinearLayout
-            android:id="@+id/fix_immersive_wrapper"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:visibility="gone"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/fix_immersive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/fix_immersive"
-                style="@style/Widget.AppCompat.Button"
-                />
-
-            <TextView
-                android:id="@+id/fix_immersive_summary"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textAlignment="center"
-                android:text="@string/fix_immersive_desc"
-                />
-
-        </LinearLayout>
 
     </LinearLayout>
 
