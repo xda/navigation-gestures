@@ -57,6 +57,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".activities.MainActivity"
+            android:configChanges="orientation|keyboard|screenSize|density|keyboardHidden"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoBar">
             <intent-filter>
