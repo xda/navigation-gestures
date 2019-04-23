@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import com.xda.nobar.util.prefManager
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -21,16 +20,17 @@ abstract class BaseBackupRestoreManager(context: Context) : ContextWrapper(conte
 
     val saveIntent: Intent
         get() = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            type = "nobar/${this@BaseBackupRestoreManager.type}"
+            type = "application/vnd.nobar.${this@BaseBackupRestoreManager.type}"
             putExtra(Intent.EXTRA_TITLE,
                     "NoBar_$name-${dateFormat.format(Date())}.nobarbak")
         }
 
     val openIntent: Intent
         get() = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            type = "nobar/${this@BaseBackupRestoreManager.type}"
+            type = "application/vnd.nobar.${this@BaseBackupRestoreManager.type}"
 
             addCategory(Intent.CATEGORY_OPENABLE)
+            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("application/nobarbak", "application/octet-stream", "nobar/${this@BaseBackupRestoreManager.type}"))
         }
 
     abstract fun saveBackup(dest: Uri)
@@ -55,7 +55,11 @@ abstract class BaseBackupRestoreManager(context: Context) : ContextWrapper(conte
         contentResolver.openFileDescriptor(src, "r")?.use { fd ->
             FileInputStream(fd.fileDescriptor).use { input ->
                 ObjectInputStream(input).use { ois ->
-                    return ois.readObject() as HashMap<String, Any?>
+                    return try {
+                        ois.readObject() as HashMap<String, Any?>
+                    } catch (e: Exception) {
+                        null
+                    }
                 }
             }
         }
