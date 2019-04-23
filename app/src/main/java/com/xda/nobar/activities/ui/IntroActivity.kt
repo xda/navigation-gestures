@@ -11,8 +11,6 @@ import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
 import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.IntroSlideHolder
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 /**
  * Introduction activity for Navigation Gestures
@@ -42,7 +40,7 @@ class IntroActivity : IntroActivity() {
         }
 
         fun needsToRunAsync(context: Context, listener: (Boolean) -> Unit) {
-            GlobalScope.launch {
+            logicHandler.post {
                 val needsToRun = needsToRun(context)
 
                 mainHandler.post { listener.invoke(needsToRun) }

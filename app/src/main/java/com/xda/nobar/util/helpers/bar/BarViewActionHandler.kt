@@ -34,8 +34,6 @@ import com.xda.nobar.util.*
 import com.xda.nobar.util.flashlight.FlashlightControllerLollipop
 import com.xda.nobar.util.flashlight.FlashlightControllerMarshmallow
 import com.xda.nobar.views.BarView
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class BarViewActionHandler(private val bar: BarView) {
     private val context = bar.context
@@ -62,19 +60,17 @@ class BarViewActionHandler(private val bar: BarView) {
             field = value
             orientationEventListener.disable()
 
-            mainHandler.postDelayed({
-                GlobalScope.launch {
-                    val currentAcc = Settings.System.getInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
-                    if (currentAcc == 0) {
-                        val rotation = when (currentDegree) {
-                            in 45..134 -> Surface.ROTATION_270
-                            in 135..224 -> Surface.ROTATION_180
-                            in 225..314 -> Surface.ROTATION_90
-                            else -> Surface.ROTATION_0
-                        }
-
-                        Settings.System.putInt(context.contentResolver, Settings.System.USER_ROTATION, rotation)
+            logicHandler.postDelayed({
+                val currentAcc = Settings.System.getInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
+                if (currentAcc == 0) {
+                    val rotation = when (currentDegree) {
+                        in 45..134 -> Surface.ROTATION_270
+                        in 135..224 -> Surface.ROTATION_180
+                        in 225..314 -> Surface.ROTATION_90
+                        else -> Surface.ROTATION_0
                     }
+
+                    Settings.System.putInt(context.contentResolver, Settings.System.USER_ROTATION, rotation)
                 }
             }, 20)
         }
@@ -132,9 +128,9 @@ class BarViewActionHandler(private val bar: BarView) {
     }
 
     fun handleAction(which: Int, key: String) {
-        GlobalScope.launch {
+        logicHandler.post {
             if (Looper.myLooper() == null) Looper.prepare()
-            
+
             try {
                 when (which) {
                     bar.actionHolder.typeAssist -> {

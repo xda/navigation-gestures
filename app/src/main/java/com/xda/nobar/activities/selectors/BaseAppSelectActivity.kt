@@ -16,8 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rey.material.widget.ProgressView
 import com.xda.nobar.R
 import com.xda.nobar.adapters.BaseSelectAdapter
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import com.xda.nobar.util.logicHandler
 import java.util.*
 
 /**
@@ -133,45 +132,47 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
     }
 
     @SuppressLint("CheckResult")
-    internal fun reloadList() = GlobalScope.async {
-        runOnUiThread {
-            loader.visibility = View.VISIBLE
-            list.visibility = View.GONE
+    internal fun reloadList() {
+        logicHandler.post {
+            runOnUiThread {
+                loader.visibility = View.VISIBLE
+                list.visibility = View.GONE
 
-            adapter.clear()
-        }
+                adapter.clear()
+            }
 
-        val appList = loadAppList()
-        appList.forEach { info ->
-            val appInfo = loadAppInfo(info)
+            val appList = loadAppList()
+            appList.forEach { info ->
+                val appInfo = loadAppInfo(info)
 
-            if (appInfo != null) {
-                if (shouldAddInfo(appInfo)) {
-                    runOnUiThread {
-                        adapter.add(appInfo)
+                if (appInfo != null) {
+                    if (shouldAddInfo(appInfo)) {
+                        runOnUiThread {
+                            adapter.add(appInfo)
+                        }
+                        origAppSet.add(appInfo)
                     }
-                    origAppSet.add(appInfo)
+                }
+
+                val index = appList.indexOf(info)
+                val percent = index.toFloat() / appList.size.toFloat()
+
+                runOnUiThread {
+                    loader.progress = percent
                 }
             }
 
-            val index = appList.indexOf(info)
-            val percent = index.toFloat() / appList.size.toFloat()
-
             runOnUiThread {
-                loader.progress = percent
-            }
-        }
+                isCreated = true
 
-        runOnUiThread {
-            isCreated = true
+                list.adapter = adapter
+                loader.visibility = View.GONE
+                list.visibility = View.VISIBLE
 
-            list.adapter = adapter
-            loader.visibility = View.GONE
-            list.visibility = View.VISIBLE
-
-            try {
-                searchItem.isVisible = true
-            } catch (e: UninitializedPropertyAccessException) {
+                try {
+                    searchItem.isVisible = true
+                } catch (e: UninitializedPropertyAccessException) {
+                }
             }
         }
     }

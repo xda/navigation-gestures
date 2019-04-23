@@ -38,8 +38,6 @@ import com.xda.nobar.views.BarView
 import com.xda.nobar.views.NavBlackout
 import io.fabric.sdk.android.Fabric
 import io.fabric.sdk.android.InitializationCallback
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 /**
@@ -58,7 +56,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val appOps by lazy { getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager }
     val nm by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
     val imm by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
-    val dm  by lazy { getSystemService(Context.DISPLAY_SERVICE) as DisplayManager }
+    val dm by lazy { getSystemService(Context.DISPLAY_SERVICE) as DisplayManager }
 
     val rootWrapper by lazy { RootWrapper(this) }
     val blackout by lazy { NavBlackout(this) }
@@ -133,7 +131,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
 
         if (!prefManager.firstRun) {
-            isSuAsync {
+            isSuAsync(mainHandler) {
                 if (it) rootWrapper.onCreate()
             }
         }
@@ -154,7 +152,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         carModeHandler.register()
         premiumInstallListener.register()
         permissionListener.register()
-        dm.registerDisplayListener(displayChangeListener, mainHandler)
+        dm.registerDisplayListener(displayChangeListener, logicHandler)
         miniViewListener.register()
 
         isValidPremium = prefManager.validPrem
@@ -453,7 +451,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     private fun addBarInternalUnconditionally() {
         try {
             wm.addView(bar, bar.params)
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     /**
@@ -571,7 +570,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      * Listens for TouchWiz navbar hiding and coloring and adjusts appropriately
      * //TODO: More work may be needed on immersive detection
      */
-    inner class UIHandler : ContentObserver(mainHandler), ViewTreeObserver.OnGlobalLayoutListener, (Boolean) -> Unit {
+    inner class UIHandler : ContentObserver(logicHandler), ViewTreeObserver.OnGlobalLayoutListener, (Boolean) -> Unit {
         private var oldRot = Surface.ROTATION_0
         private var asDidContainApp: Boolean = false
 
@@ -586,9 +585,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
-            GlobalScope.launch {
+            logicHandler.post {
                 try {
-                    handleNewEvent(info ?: return@launch)
+                    handleNewEvent(info ?: return@post)
                 } catch (e: NullPointerException) {}
             }
         }
@@ -663,7 +662,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             handleRot()
 
-            GlobalScope.launch {
+            logicHandler.post {
                 if (!bar.isCarryingOutTouchAction) {
                     keyboardShown = imm.inputMethodWindowVisibleHeight > 0
 
@@ -749,7 +748,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                 removeBar(false)
                             }
 
-                        } catch (e: NullPointerException) {}
+                        } catch (e: NullPointerException) {
+                        }
                     }
 
                     if (prefManager.shouldUseOverscanMethod) {
@@ -766,7 +766,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         override fun onChange(selfChange: Boolean, uri: Uri?) {
-            GlobalScope.launch {
+            logicHandler.post {
                 when (uri) {
                     Settings.Global.getUriFor(POLICY_CONTROL) -> {
                         handleImmersiveChange(immersiveHelperManager.isFullImmersive())
@@ -1001,14 +1001,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     inner class DisplayChangeListener : DisplayManager.DisplayListener {
         override fun onDisplayChanged(displayId: Int) {
-            GlobalScope.launch {
-                if (displayId == wm.defaultDisplay.displayId) {
-                    val oldSize = realScreenSize
-                    val newSize = refreshScreenSize()
+            if (displayId == wm.defaultDisplay.displayId) {
+                val oldSize = realScreenSize
+                val newSize = refreshScreenSize()
 
-                    if (oldSize != newSize) {
-                        bar.updatePositionAndDimens()
-                    }
+                if (oldSize != newSize) {
+                    bar.updatePositionAndDimens()
                 }
             }
         }

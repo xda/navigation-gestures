@@ -8,8 +8,6 @@ import android.os.Build
 import android.os.IBinder
 import android.view.Display
 import eu.chainfire.libsuperuser.Shell
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 /**
@@ -43,7 +41,7 @@ object IWindowManager {
         if (!isRunningOverscan) {
             isRunningOverscan = true
 
-            GlobalScope.launch {
+            logicHandler.post {
                 val ret = setOverscan(
                         left,
                         top,

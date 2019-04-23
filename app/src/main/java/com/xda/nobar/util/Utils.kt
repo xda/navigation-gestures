@@ -42,12 +42,13 @@ import com.xda.nobar.receivers.StartupReceiver
 import com.xda.nobar.util.helpers.bar.ActionHolder
 import com.xda.nobar.views.BarView
 import eu.chainfire.libsuperuser.Shell
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.PrintWriter
 import java.io.StringWriter
 
 val mainHandler = Handler(Looper.getMainLooper())
+
+val logicThread = HandlerThread("NoBar-logic", Process.THREAD_PRIORITY_FOREGROUND).apply { start() }
+val logicHandler = Handler(logicThread.looper)
 
 /* Context */
 
@@ -245,7 +246,7 @@ val Context.areHiddenMethodsAllowed: Boolean
     ).run { this != null && (contains("0") || contains("1")) }
 
 fun Context.allowHiddenMethods() {
-    if (hasWss) GlobalScope.launch {
+    if (hasWss) logicHandler.post {
         Settings.Global.putInt(
                 contentResolver,
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) "hidden_api_policy"
@@ -256,7 +257,7 @@ fun Context.allowHiddenMethods() {
 }
 
 fun Context.checkNavHiddenAsync(listener: (Boolean) -> Unit) {
-    GlobalScope.launch {
+    logicHandler.post {
         val hidden = isNavBarHidden
 
         mainHandler.postAtFrontOfQueue {
@@ -450,15 +451,17 @@ val isSu: Boolean
  * By default, the result will be posted on the main Thread.
  * This can also be used to refresh the cached value.
  */
-fun isSuAsync(resultHandler: Handler = mainHandler, listener: ((Boolean) -> Unit)? = null) {
-    GlobalScope.launch {
+fun isSuAsync(resultHandler: Handler, listener: ((Boolean) -> Unit)? = null) {
+    isSuAsync { su ->
+        listener?.let { resultHandler.post { it.invoke(su) } }
+    }
+}
+
+fun isSuAsync(listener: ((Boolean) -> Unit)? = null) {
+    logicHandler.post {
         cachedSu = Shell.SU.available()
 
-        listener?.let {
-            resultHandler.post {
-                it.invoke(cachedSu)
-            }
-        }
+        listener?.invoke(cachedSu)
     }
 }
 

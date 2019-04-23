@@ -18,8 +18,6 @@ import com.xda.nobar.fragments.intro.WelcomeFragment
 import com.xda.nobar.fragments.intro.WriteSecureFragment
 import com.xda.nobar.util.*
 import eu.chainfire.libsuperuser.Shell
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 @SuppressLint("InlinedApi")
 class IntroSlideHolder(context: Context) : ContextWrapper(context) {
@@ -95,14 +93,14 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                         .fragment(WriteSecureFragment())
                         .buttonCtaLabel(R.string.grant)
                         .buttonCtaClickListener {
-                            isSuAsync {
+                            isSuAsync(mainHandler) {
                                 if (it) {
                                     app.rootWrapper.onCreate()
                                     AlertDialog.Builder(this)
                                             .setTitle(R.string.root_found)
                                             .setMessage(R.string.root_found_desc)
                                             .setPositiveButton(R.string.use_root) { _, _ ->
-                                                GlobalScope.launch {
+                                                logicHandler.post {
                                                     Shell.SU.run("pm grant $packageName ${android.Manifest.permission.WRITE_SECURE_SETTINGS}")
                                                 }
                                             }
