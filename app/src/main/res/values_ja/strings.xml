@@ -125,7 +125,6 @@
     <string name="general">General</string>
     <string name="anchor_pill">Anchor Pill</string>
     <string name="flashlight_toggle_compat">Flashlight Fix</string>
-    <string name="fix_immersive">Fix Auto-Hiding NavBar</string>
     <string name="nav_hiding">NavBar Hiding</string>
     <string name="problems">Problems?</string>
     <string name="troubleshooting">Troubleshooting</string>
@@ -161,6 +160,7 @@
     <string name="hide_text">Hide</string>
     <string name="help_about">Help &amp; About</string>
     <string name="restart_nobar">Restart Navigation Gestures</string>
+    <string name="fixed">Fixed!</string>
     <!--Descriptions-->
     <string name="gestures_desc">ジェスチャーアクションのカスタマイズ</string>
     <string name="appearance_desc">ピルの外観をカスタマイズする</string>
@@ -209,7 +209,6 @@
     <string name="battery_optimizations_desc">Android has a built-in battery optimization feature, which tends to kill Navigation Gestures. Press the button below to disable optimizations for this app.</string>
     <string name="anchor_pill_desc">When enabled, the pill will stay anchored to the physical bottom of the device.</string>
     <string name="flashlight_toggle_compat_desc">Enable this if having the flashlight toggle action assigned to a gesture breaks other flashlight toggles, such as Quick Settings.</string>
-    <string name="fix_immersive_desc">Use this if, after turning off \"Hide Navigation Bar,\" your native navigation bar automatically hides itself after a few seconds.</string>
     <string name="nav_not_hiding_desc">My navigation bar doesn\'t hide in certain rotations.</string>
     <string name="force_touch_not_working">My Galaxy device\'s force touch isn\'t working.</string>
     <string name="home_action_not_working">The \"Home\" action isn\'t working.</string>
@@ -233,6 +232,7 @@
     <string name="hide_beta_prompt_desc">Hide the beta sign-up button from the main screen.</string>
     <string name="hidden_methods_desc">In order to work properly, Navigation Gestures needs to restart. This should be a one-time thing.</string>
     <string name="pill_not_showing">The pill isn\'t showing on the lock screen, app permissions page, etc.</string>
+    <string name="auto_hiding_navbar">The native navigation bar keeps hiding itself after I toggle off \"Hide Navigation Bar\".</string>
     <!--Paragraphs-->
     <string name="app_purpose">このアプリでどのデバイスでも非ルートでナビゲーションジェスチャーを使えるようになります! 利用する前にいくつか設定が必要です。</string>
     <string name="draw_over_apps_desc">ピルを表示させるために\”他のアプリの上に重ねて表示\”を有効にしないといけません。下のボタンをタップして有効にしてください。Playストアからインストールした場合には既に有効になっています。</string>
