@@ -100,7 +100,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                                             .setTitle(R.string.root_found)
                                             .setMessage(R.string.root_found_desc)
                                             .setPositiveButton(R.string.use_root) { _, _ ->
-                                                logicHandler.post {
+                                                logicHandler.postLogged {
                                                     Shell.SU.run("pm grant $packageName ${android.Manifest.permission.WRITE_SECURE_SETTINGS}")
                                                 }
                                             }

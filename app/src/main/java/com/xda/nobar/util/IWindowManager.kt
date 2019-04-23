@@ -41,7 +41,7 @@ object IWindowManager {
         if (!isRunningOverscan) {
             isRunningOverscan = true
 
-            logicHandler.post {
+            logicHandler.postLogged {
                 val ret = setOverscan(
                         left,
                         top,

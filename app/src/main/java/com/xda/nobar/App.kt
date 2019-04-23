@@ -585,9 +585,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
-            logicHandler.post {
+            logicHandler.postLogged {
                 try {
-                    handleNewEvent(info ?: return@post)
+                    handleNewEvent(info ?: return@postLogged)
                 } catch (e: NullPointerException) {}
             }
         }
@@ -662,7 +662,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             handleRot()
 
-            logicHandler.post {
+            logicHandler.postLogged {
                 if (!bar.isCarryingOutTouchAction) {
                     keyboardShown = imm.inputMethodWindowVisibleHeight > 0
 
@@ -766,7 +766,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         override fun onChange(selfChange: Boolean, uri: Uri?) {
-            logicHandler.post {
+            logicHandler.postLogged {
                 when (uri) {
                     Settings.Global.getUriFor(POLICY_CONTROL) -> {
                         handleImmersiveChange(immersiveHelperManager.isFullImmersive())

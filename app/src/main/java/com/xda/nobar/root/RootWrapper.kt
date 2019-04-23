@@ -41,7 +41,7 @@ class RootWrapper(private val context: Context) {
         receiver.release()
         isCreated = false
 
-        logicHandler.post {
+        logicHandler.postLogged {
             RootJava.cleanupCache(context)
         }
     }

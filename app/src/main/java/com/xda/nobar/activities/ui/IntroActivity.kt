@@ -40,7 +40,7 @@ class IntroActivity : IntroActivity() {
         }
 
         fun needsToRunAsync(context: Context, listener: (Boolean) -> Unit) {
-            logicHandler.post {
+            logicHandler.postLogged {
                 val needsToRun = needsToRun(context)
 
                 mainHandler.post { listener.invoke(needsToRun) }

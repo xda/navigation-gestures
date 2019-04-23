@@ -133,7 +133,7 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
 
     @SuppressLint("CheckResult")
     internal fun reloadList() {
-        logicHandler.post {
+        logicHandler.postLogged {
             runOnUiThread {
                 loader.visibility = View.VISIBLE
                 list.visibility = View.GONE

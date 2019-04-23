@@ -128,7 +128,7 @@ class BarViewActionHandler(private val bar: BarView) {
     }
 
     fun handleAction(which: Int, key: String) {
-        logicHandler.post {
+        logicHandler.postLogged {
             if (Looper.myLooper() == null) Looper.prepare()
 
             try {

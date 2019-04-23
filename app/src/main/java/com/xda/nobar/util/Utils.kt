@@ -48,7 +48,7 @@ import java.io.StringWriter
 val mainHandler = Handler(Looper.getMainLooper())
 
 val logicThread = HandlerThread("NoBar-logic", Process.THREAD_PRIORITY_FOREGROUND).apply { start() }
-val logicHandler = Handler(logicThread.looper)
+val logicHandler = LogicHandler(logicThread.looper)
 
 /* Context */
 
@@ -246,7 +246,7 @@ val Context.areHiddenMethodsAllowed: Boolean
     ).run { this != null && (contains("0") || contains("1")) }
 
 fun Context.allowHiddenMethods() {
-    if (hasWss) logicHandler.post {
+    if (hasWss) logicHandler.postLogged {
         Settings.Global.putInt(
                 contentResolver,
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) "hidden_api_policy"
@@ -257,7 +257,7 @@ fun Context.allowHiddenMethods() {
 }
 
 fun Context.checkNavHiddenAsync(listener: (Boolean) -> Unit) {
-    logicHandler.post {
+    logicHandler.postLogged {
         val hidden = isNavBarHidden
 
         mainHandler.postAtFrontOfQueue {
@@ -458,7 +458,7 @@ fun isSuAsync(resultHandler: Handler, listener: ((Boolean) -> Unit)? = null) {
 }
 
 fun isSuAsync(listener: ((Boolean) -> Unit)? = null) {
-    logicHandler.post {
+    logicHandler.postLogged {
         cachedSu = Shell.SU.available()
 
         listener?.invoke(cachedSu)
