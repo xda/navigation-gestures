@@ -18,8 +18,7 @@ import com.xda.nobar.fragments.intro.WelcomeFragment
 import com.xda.nobar.fragments.intro.WriteSecureFragment
 import com.xda.nobar.util.*
 import eu.chainfire.libsuperuser.Shell
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 @SuppressLint("InlinedApi")
 class IntroSlideHolder(context: Context) : ContextWrapper(context) {
@@ -102,7 +101,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                                             .setTitle(R.string.root_found)
                                             .setMessage(R.string.root_found_desc)
                                             .setPositiveButton(R.string.use_root) { _, _ ->
-                                                GlobalScope.async {
+                                                logicScope.launch {
                                                     Shell.SU.run("pm grant $packageName ${android.Manifest.permission.WRITE_SECURE_SETTINGS}")
                                                 }
                                             }

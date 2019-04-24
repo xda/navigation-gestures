@@ -40,6 +40,7 @@ import io.fabric.sdk.android.Fabric
 import io.fabric.sdk.android.InitializationCallback
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 
 /**
@@ -587,9 +588,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
-            GlobalScope.async {
+            logicScope.launch {
                 try {
-                    handleNewEvent(info ?: return@async)
+                    handleNewEvent(info ?: return@launch)
                 } catch (e: NullPointerException) {}
             }
         }
@@ -664,7 +665,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             handleRot()
 
-            GlobalScope.async {
+            logicScope.launch {
                 if (!bar.isCarryingOutTouchAction) {
                     keyboardShown = imm.inputMethodWindowVisibleHeight > 0
 
@@ -768,7 +769,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         override fun onChange(selfChange: Boolean, uri: Uri?) {
-            GlobalScope.async {
+            logicScope.launch {
                 when (uri) {
                     Settings.Global.getUriFor(POLICY_CONTROL) -> {
                         handleImmersiveChange(immersiveHelperManager.isFullImmersive())

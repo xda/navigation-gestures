@@ -3,12 +3,12 @@ package com.xda.nobar.root
 import android.content.Context
 import com.xda.nobar.RootActions
 import com.xda.nobar.util.isSuAsync
+import com.xda.nobar.util.logicScope
 import eu.chainfire.librootjava.BuildConfig
 import eu.chainfire.librootjava.RootIPCReceiver
 import eu.chainfire.librootjava.RootJava
 import eu.chainfire.libsuperuser.Shell
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class RootWrapper(private val context: Context) {
     private val receiver = object : RootIPCReceiver<RootActions>(context, 200, RootActions::class.java) {
@@ -42,7 +42,7 @@ class RootWrapper(private val context: Context) {
         receiver.release()
         isCreated = false
 
-        GlobalScope.async {
+        logicScope.launch {
             RootJava.cleanupCache(context)
         }
     }

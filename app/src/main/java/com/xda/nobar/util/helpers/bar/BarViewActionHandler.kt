@@ -33,8 +33,7 @@ import com.xda.nobar.util.*
 import com.xda.nobar.util.flashlight.FlashlightControllerLollipop
 import com.xda.nobar.util.flashlight.FlashlightControllerMarshmallow
 import com.xda.nobar.views.BarView
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class BarViewActionHandler(private val bar: BarView) {
     private val context = bar.context
@@ -129,7 +128,7 @@ class BarViewActionHandler(private val bar: BarView) {
     }
 
     fun handleAction(which: Int, key: String) {
-        GlobalScope.async<Unit> {
+        logicScope.launch {
             try {
                 when (which) {
                     bar.actionHolder.typeAssist -> {

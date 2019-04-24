@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rey.material.widget.ProgressView
 import com.xda.nobar.R
 import com.xda.nobar.adapters.BaseSelectAdapter
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import com.xda.nobar.util.logicScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -134,7 +134,7 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
 
     @SuppressLint("CheckResult")
     internal fun reloadList() {
-        GlobalScope.async {
+        logicScope.launch {
             runOnUiThread {
                 loader.visibility = View.VISIBLE
                 list.visibility = View.GONE
