@@ -167,25 +167,25 @@ class BarViewGestureManagerVertical270(bar: BarView) : BaseBarViewGestureManager
         return if (!bar.isHidden && !isActing) {
             when {
                 context.actionHolder.run { hasAnyOfActions(actionRight, actionRightHold) }
-                        && distanceY > xThresh
+//                        && distanceY > xThresh
                         && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
                     isSwipeDown = true
                     true
                 }
                 context.actionHolder.run { hasAnyOfActions(actionLeft, actionLeftHold) }
-                        && distanceY < -xThresh
+//                        && distanceY < -xThresh
                         && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe
                     isSwipeUp = true
                     true
                 }
                 context.actionHolder.hasSomeUpAction()
-                        && distanceX > yThreshUp
+//                        && distanceX > yThreshUp
                         && distanceY.absoluteValue < distanceX.absoluteValue -> { //right swipe
                     isSwipeRight = true
                     true
                 }
                 context.actionHolder.run { hasAnyOfActions(actionDown, actionDownHold) }
-                        && distanceX < -yThreshDown
+//                        && distanceX < -yThreshDown
                         && distanceY.absoluteValue < distanceX.absoluteValue -> { //left swipe
                     isSwipeLeft = true
                     true
@@ -194,7 +194,7 @@ class BarViewGestureManagerVertical270(bar: BarView) : BaseBarViewGestureManager
             }
         } else if (bar.isHidden
                 && !isActing
-                && distanceX > yThreshUp
+//                && distanceX > yThreshUp
                 && distanceY.absoluteValue < distanceX.absoluteValue) { //right swipe
             if (bar.isHidden && !bar.isPillHidingOrShowing && !bar.beingTouched) {
                 bar.vibrate(context.prefManager.vibrationDuration.toLong())

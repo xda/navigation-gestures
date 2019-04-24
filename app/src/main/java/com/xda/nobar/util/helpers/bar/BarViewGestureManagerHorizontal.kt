@@ -165,25 +165,29 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
         return if (!bar.isHidden && !isActing) {
             when {
                 context.actionHolder.run { hasAnyOfActions(actionLeft, actionLeftHold) }
-                        && distanceX < -xThresh
+                        && distanceX < 0
+//                        && distanceX < -xThresh
                         && distanceY.absoluteValue <= distanceX.absoluteValue -> { //left swipe
                     isSwipeLeft = true
                     true
                 }
                 context.actionHolder.run { hasAnyOfActions(actionRight, actionRightHold) }
-                        && distanceX > xThresh
+                        && distanceX > 0
+//                        && distanceX > xThresh
                         && distanceY.absoluteValue <= distanceX.absoluteValue -> { //right swipe
                     isSwipeRight = true
                     true
                 }
                 context.actionHolder.run { hasAnyOfActions(actionDown, actionDownHold) }
-                        && distanceY > yThreshDown
+                        && distanceY > 0
+//                        && distanceY > yThreshDown
                         && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe and down hold-swipe
                     isSwipeDown = true
                     true
                 }
                 context.actionHolder.hasSomeUpAction()
-                        && distanceY < -yThreshUp
+                        && distanceY < 0
+//                        && distanceY < -yThreshUp
                         && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe and up hold-swipe
                     isSwipeUp = true
                     true
@@ -192,7 +196,7 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
             }
         } else if (bar.isHidden
                 && !isActing
-                && distanceY < -yThreshUp
+//                && distanceY < -yThreshUp
                 && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
             if (!bar.isPillHidingOrShowing && !bar.beingTouched) {
                 bar.vibrate(context.prefManager.vibrationDuration.toLong())
