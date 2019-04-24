@@ -113,6 +113,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     val adjustedHomeX: Int
         get() = if (isVertical) anchoredHomeY else actualHomeX
 
+    val viewConfig = ViewConfiguration.get(context)!!
+
     private val actualHomeX: Int
         get() {
             val diff = try {

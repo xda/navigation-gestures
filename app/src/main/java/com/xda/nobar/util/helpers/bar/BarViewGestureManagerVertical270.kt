@@ -160,6 +160,10 @@ class BarViewGestureManagerVertical270(bar: BarView) : BaseBarViewGestureManager
         val yThreshUp = context.prefManager.yThresholdUpPx
         val yThreshDown = context.prefManager.yThresholdDownPx
 
+        val slop = bar.viewConfig.scaledTouchSlop
+
+        if (distanceX.absoluteValue < slop && distanceY.absoluteValue < slop) return false
+
         return if (!bar.isHidden && !isActing) {
             when {
                 context.actionHolder.run { hasAnyOfActions(actionRight, actionRightHold) }
