@@ -196,6 +196,7 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
             }
         } else if (bar.isHidden
                 && !isActing
+                && distanceY < 0
 //                && distanceY < -yThreshUp
                 && distanceY.absoluteValue > distanceX.absoluteValue) { //up swipe
             if (!bar.isPillHidingOrShowing && !bar.beingTouched) {
