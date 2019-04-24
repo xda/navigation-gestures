@@ -4,11 +4,8 @@ import android.annotation.SuppressLint
 import android.os.Looper
 import android.view.MotionEvent
 import androidx.dynamicanimation.animation.DynamicAnimation
-import com.xda.nobar.util.actionHolder
-import com.xda.nobar.util.app
+import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.HiddenPillReasonManager
-import com.xda.nobar.util.prefManager
-import com.xda.nobar.util.realScreenSize
 import com.xda.nobar.views.BarView
 import kotlinx.android.synthetic.main.pill.view.*
 import kotlin.math.absoluteValue
@@ -39,7 +36,13 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
 
                         val screenHeight = context.realScreenSize.y
 
-                        if (bar.params.y > screenHeight - screenHeight / 6 - context.app.prefManager.homeY
+                        val threshold = screenHeight -
+                                screenHeight / 6 -
+                                context.app.prefManager.homeY -
+                                if (context.prefManager.dontMoveForKeyboard) 0
+                                else context.app.imm.inputMethodWindowVisibleHeight
+
+                        if (bar.params.y > threshold
                                 && bar.shouldAnimate) {
                             bar.params.y -= (velocity / 2).toInt()
                             bar.updateLayout()

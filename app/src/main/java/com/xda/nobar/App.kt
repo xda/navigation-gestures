@@ -38,8 +38,6 @@ import com.xda.nobar.views.BarView
 import com.xda.nobar.views.NavBlackout
 import io.fabric.sdk.android.Fabric
 import io.fabric.sdk.android.InitializationCallback
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 
@@ -487,7 +485,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             if (prefManager.shouldntKeepOverscanOnLock) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             bar.forceActionUp()
 
-                            uiHandler.onGlobalLayout()
+                            uiHandler.updateBlacklists()
                         }
                         Intent.ACTION_SCREEN_ON,
                         Intent.ACTION_BOOT_COMPLETED,
@@ -500,13 +498,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                             if (prefManager.isActive) addBar(false)
 
-                            uiHandler.onGlobalLayout()
+                            uiHandler.updateBlacklists()
                         }
                         Intent.ACTION_USER_PRESENT -> {
                             disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
                             if (prefManager.isActive) addBar(false)
 
-                            uiHandler.onGlobalLayout()
+                            uiHandler.updateBlacklists()
                         }
                     }
                 }, 50)
@@ -617,6 +615,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
                 runNewNodeInfo(pName)
             }
+
+            onGlobalLayout()
         }
 
         private fun runNewNodeInfo(pName: String?) {
@@ -653,6 +653,68 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
+        fun updateKeyboardFlagState() {
+            val kbHeight = imm.inputMethodWindowVisibleHeight
+            keyboardShown = kbHeight > 0
+
+            if (prefManager.showNavWithKeyboard) {
+                if (keyboardShown) {
+                    showNav(false)
+                    disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYBOARD)
+                } else if (prefManager.shouldUseOverscanMethod) {
+                    disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYBOARD)
+                }
+            }
+
+            if (!prefManager.dontMoveForKeyboard) {
+                var changed = false
+
+                if (keyboardShown) {
+                    if (bar.params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN != 0) {
+                        bar.params.flags = bar.params.flags and
+                                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
+                        changed = true
+                    }
+                } else {
+                    if (bar.params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN == 0) {
+                        bar.params.flags = bar.params.flags or
+                                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        changed = true
+                    }
+                }
+
+                if (changed) bar.updateLayout()
+            }
+        }
+
+        fun updateBlacklists() {
+            if (isPillShown()) {
+                if (disabledImmReasonManager.isEmpty()) {
+                    if (prefManager.shouldUseOverscanMethod
+                            && prefManager.useImmersiveWhenNavHidden) immersiveHelperManager.enterNavImmersive()
+                } else {
+                    immersiveHelperManager.exitNavImmersive()
+                }
+
+                if (disabledBarReasonManager.isEmpty()) {
+                    if (prefManager.isActive
+                            && !pillShown) addBar(false)
+                } else {
+                    removeBar(false)
+                }
+            }
+
+            if (prefManager.shouldUseOverscanMethod) {
+                if (disabledNavReasonManager.isEmpty()) {
+                    hideNav()
+                } else {
+                    showNav()
+                }
+            } else {
+                showNav()
+            }
+        }
+
         override fun invoke(isImmersive: Boolean) {
             handleImmersiveChange(isImmersive)
         }
@@ -667,36 +729,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             logicScope.launch {
                 if (!bar.isCarryingOutTouchAction) {
-                    keyboardShown = imm.inputMethodWindowVisibleHeight > 0
-
-                    if (prefManager.showNavWithKeyboard) {
-                        if (keyboardShown) {
-                            showNav(false)
-                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYBOARD)
-                        } else if (prefManager.shouldUseOverscanMethod) {
-                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYBOARD)
-                        }
-                    }
-
-                    if (!prefManager.dontMoveForKeyboard) {
-                        var changed = false
-
-                        if (keyboardShown) {
-                            if (bar.params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN != 0) {
-                                bar.params.flags = bar.params.flags and
-                                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
-                                changed = true
-                            }
-                        } else {
-                            if (bar.params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN == 0) {
-                                bar.params.flags = bar.params.flags or
-                                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                                changed = true
-                            }
-                        }
-
-                        if (changed) bar.updateLayout()
-                    }
+                    updateKeyboardFlagState()
 
                     if (isTouchWiz) {
                         try {
@@ -736,34 +769,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                 if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
                                 else bar.showPill(HiddenPillReasonManager.KEYBOARD)
                             }
-
-                            if (disabledImmReasonManager.isEmpty()) {
-                                if (prefManager.shouldUseOverscanMethod
-                                        && prefManager.useImmersiveWhenNavHidden) immersiveHelperManager.enterNavImmersive()
-                            } else {
-                                immersiveHelperManager.exitNavImmersive()
-                            }
-
-                            if (disabledBarReasonManager.isEmpty()) {
-                                if (prefManager.isActive
-                                        && !pillShown) addBar(false)
-                            } else {
-                                removeBar(false)
-                            }
-
-                        } catch (e: NullPointerException) {
-                        }
+                        } catch (e: NullPointerException) {}
                     }
 
-                    if (prefManager.shouldUseOverscanMethod) {
-                        if (disabledNavReasonManager.isEmpty()) {
-                            hideNav()
-                        } else {
-                            showNav()
-                        }
-                    } else {
-                        showNav()
-                    }
+                    updateBlacklists()
                 }
             }
         }
