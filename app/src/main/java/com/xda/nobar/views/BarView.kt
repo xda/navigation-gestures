@@ -31,6 +31,7 @@ import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical
 import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical270
 import com.xda.nobar.util.helpers.bar.BaseBarViewGestureManager
 import kotlinx.android.synthetic.main.pill.view.*
+import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 /**
@@ -491,7 +492,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun forceActionUp() {
-        mainHandler.post {
+        mainScope.launch {
 //            val uptime = SystemClock.uptimeMillis()
 //            currentGestureDetector.onTouchEvent(MotionEvent.obtain(uptime, uptime, MotionEvent.ACTION_UP, 0f, 0f, 0))
 
@@ -523,7 +524,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param alpha desired alpha level (0-1)
      */
     fun animate(listener: Animator.AnimatorListener?, alpha: Float) {
-        mainHandler.post {
+        mainScope.launch {
             animate().alpha(alpha).setDuration(animationDurationMs)
                     .setListener(object : Animator.AnimatorListener {
                         override fun onAnimationCancel(animation: Animator?) {
@@ -553,7 +554,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Hide" the pill by moving it partially offscreen
      */
     fun hidePill(auto: Boolean, autoReason: String?, overrideBeingTouched: Boolean = false) {
-        mainHandler.post {
+        mainScope.launch {
             if (auto && autoReason == null) throw IllegalArgumentException("autoReason must not be null when auto is true")
             if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
 
@@ -570,7 +571,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     showHiddenToast()
                 }
             } else {
-                scheduleHide(autoReason ?: return@post)
+                scheduleHide(autoReason ?: return@launch)
             }
         }
     }
@@ -620,7 +621,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * "Show" the pill by moving it back to its normal position
      */
     private fun showPillInternal(autoReasonToRemove: String?, forceShow: Boolean = false) {
-        mainHandler.post {
+        mainScope.launch {
             if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
 
             if (context.app.isPillShown()) {
@@ -728,9 +729,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun updateLayout(params: WindowManager.LayoutParams = this.params) {
-        mainHandler.post {
+        mainScope.launch {
             try {
-                wm.updateViewLayout(this, params)
+                wm.updateViewLayout(this@BarView, params)
             } catch (e: Exception) {}
         }
     }
@@ -784,7 +785,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         val wasMoving = params.flags and WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM != 0
 
         if (move != wasMoving) {
-            mainHandler.post {
+            mainScope.launch {
                 if (move) {
                     params.flags = params.flags or
                             WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
@@ -805,7 +806,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param duration the desired duration
      */
     fun vibrate(duration: Long) {
-        mainHandler.post {
+        mainScope.launch {
             if (isSoundEffectsEnabled) {
                 try {
                     playSoundEffect(SoundEffectConstants.CLICK)
@@ -827,7 +828,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun handleRotationOrAnchorUpdate() {
-        mainHandler.postAtFrontOfQueue {
+        mainScope.launch {
             verticalMode(isVertical)
 
             adjustPillShadow()

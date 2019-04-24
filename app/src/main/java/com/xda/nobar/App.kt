@@ -282,7 +282,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      * Add the pill to the screen
      */
     fun addBar(callListeners: Boolean = true) {
-        mainHandler.post {
+        mainScope.launch {
             if (disabledBarReasonManager.isEmpty() && !pillShown) {
                 if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, true) }
 
@@ -292,7 +292,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     fun addImmersiveHelper() {
-        mainHandler.post {
+        mainScope.launch {
             if (!helperAdded) immersiveHelperManager.add()
         }
     }
@@ -301,7 +301,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      * Remove the pill from the screen
      */
     fun removeBar(callListeners: Boolean = true) {
-        mainHandler.post {
+        mainScope.launch {
             if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, false) }
 
             bar.hide(object : Animator.AnimatorListener {
@@ -325,7 +325,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     fun removeImmersiveHelper() {
-        mainHandler.post {
+        mainScope.launch {
             immersiveHelperManager.remove()
         }
     }
@@ -380,7 +380,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             navHidden = true
         }
 
-        mainHandler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(true) } }
+        mainScope.launch { if (callListeners) navbarListeners.forEach { it.onNavStateChange(true) } }
     }
 
     /**
@@ -391,7 +391,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (removeImmersive && prefManager.useImmersiveWhenNavHidden)
                 immersiveHelperManager.exitNavImmersive()
 
-            mainHandler.post { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
+            mainScope.launch { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
 
             IWindowManager.setOverscanAsync(0, 0, 0, 0)
 

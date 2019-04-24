@@ -76,12 +76,12 @@ class BarViewActionHandler(private val bar: BarView) {
         }
 
     fun sendActionInternal(key: String, map: Map<String, Int>) {
-        mainHandler.post {
-            val which = map[key] ?: return@post
+        mainScope.launch {
+            val which = map[key] ?: return@launch
 
-            if (which == bar.actionHolder.typeNoAction) return@post
+            if (which == bar.actionHolder.typeNoAction) return@launch
 
-            if (bar.isHidden || bar.isPillHidingOrShowing) return@post
+            if (bar.isHidden || bar.isPillHidingOrShowing) return@launch
 
             bar.vibrate(context.prefManager.vibrationDuration.toLong())
 
@@ -91,7 +91,7 @@ class BarViewActionHandler(private val bar: BarView) {
 
             if (which == bar.actionHolder.typeHide) {
                 bar.hidePill(false, null, true)
-                return@post
+                return@launch
             }
 
             when (key) {
@@ -327,7 +327,7 @@ class BarViewActionHandler(private val bar: BarView) {
                                 }
                             }
                         } catch (e: ActivityNotFoundException) {
-                            mainHandler.post {
+                            mainScope.launch {
                                 Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
                             }
                         }

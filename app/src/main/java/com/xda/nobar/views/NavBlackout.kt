@@ -10,6 +10,7 @@ import android.view.Surface
 import android.view.WindowManager
 import android.widget.LinearLayout
 import com.xda.nobar.util.*
+import kotlinx.coroutines.launch
 
 class NavBlackout : LinearLayout {
     constructor(context: Context) : super(context)
@@ -61,17 +62,17 @@ class NavBlackout : LinearLayout {
 
         remove()
 
-        mainHandler.post {
+        mainScope.launch {
             try {
-                context.app.wm.addView(this, params)
+                context.app.wm.addView(this@NavBlackout, params)
             } catch (e: Exception) {}
         }
     }
 
     fun remove() {
-        mainHandler.post {
+        mainScope.launch {
             try {
-                context.app.wm.removeView(this)
+                context.app.wm.removeView(this@NavBlackout)
             } catch (e: Exception) {}
         }
     }

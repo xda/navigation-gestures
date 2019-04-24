@@ -50,7 +50,7 @@ object IWindowManager {
                         bottom
                 )
 
-                mainHandler.post {
+                mainScope.launch {
                     listener?.invoke(ret)
                 }
 

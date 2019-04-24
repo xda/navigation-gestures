@@ -10,6 +10,7 @@ import android.view.View
 import android.view.WindowManager
 import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.ImmersiveHelperManager
+import kotlinx.coroutines.launch
 
 @SuppressLint("ViewConstructor")
 @Suppress("DEPRECATION")
@@ -65,17 +66,17 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
     }
 
     fun updateLayout() {
-        mainHandler.post {
+        mainScope.launch {
             try {
                 context.getSystemServiceCast<WindowManager>(Context.WINDOW_SERVICE)
-                        ?.updateViewLayout(this, params)
+                        ?.updateViewLayout(this@BaseImmersiveHelperView, params)
             } catch (e: Exception) {
             }
         }
     }
 
     fun enterNavImmersive() {
-        mainHandler.post {
+        mainScope.launch {
             systemUiVisibility = systemUiVisibility or
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -85,7 +86,7 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
     }
 
     fun exitNavImmersive() {
-        mainHandler.post {
+        mainScope.launch {
             systemUiVisibility = systemUiVisibility and
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv() and
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()

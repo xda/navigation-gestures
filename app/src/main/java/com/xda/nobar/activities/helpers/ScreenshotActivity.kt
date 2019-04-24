@@ -30,6 +30,8 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.xda.nobar.util.mainHandler
+import com.xda.nobar.util.mainScope
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -120,7 +122,7 @@ class ScreenshotActivity : AppCompatActivity() {
     }
 
     private fun stop() {
-        mainHandler.post {
+        mainScope.launch {
             projection.stop()
         }
 
@@ -259,10 +261,10 @@ class ScreenshotActivity : AppCompatActivity() {
 
     private inner class MediaProjectionStopCallback : MediaProjection.Callback() {
         override fun onStop() {
-            mainHandler.post {
+            mainScope.launch {
                 virtualDisplay.release()
                 imageReader.setOnImageAvailableListener(null, null)
-                projection.unregisterCallback(this)
+                projection.unregisterCallback(this@MediaProjectionStopCallback)
             }
         }
     }

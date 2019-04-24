@@ -5,7 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.xda.nobar.util.app
-import com.xda.nobar.util.mainHandler
+import com.xda.nobar.util.mainScope
+import kotlinx.coroutines.launch
 
 class ActionReceiver : BroadcastReceiver() {
     companion object {
@@ -26,7 +27,7 @@ class ActionReceiver : BroadcastReceiver() {
         }
 
         private fun sendIntent(context: Context, action: String, extras: Bundle? = null) {
-            mainHandler.postAtFrontOfQueue {
+            mainScope.launch {
                 val intent = Intent(context, ActionReceiver::class.java)
                 intent.action = action
                 if (extras != null) intent.putExtras(extras)

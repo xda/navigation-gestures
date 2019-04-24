@@ -44,7 +44,7 @@ class IntroActivity : IntroActivity() {
             logicScope.launch {
                 val needsToRun = needsToRun(context)
 
-                mainHandler.post { listener.invoke(needsToRun) }
+                mainScope.launch { listener.invoke(needsToRun) }
             }
         }
     }
