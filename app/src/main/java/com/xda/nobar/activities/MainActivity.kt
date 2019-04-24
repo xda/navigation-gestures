@@ -76,7 +76,10 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         }
 
         hide_nav.onCheckedChangeListener = navListener
-        checkNavHiddenAsync { hide_nav.isChecked = it }
+
+        checkNavHiddenAsync {
+            onNavStateChange(it)
+        }
 
         refresh_prem.setOnClickListener {
             refresh()

@@ -45,6 +45,7 @@ import eu.chainfire.libsuperuser.Shell
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.PrintWriter
 import java.io.StringWriter
 
@@ -53,6 +54,7 @@ val mainHandler = Handler(Looper.getMainLooper())
 val logicThread = HandlerThread("NoBar-logic", Process.THREAD_PRIORITY_FOREGROUND).apply { start() }
 val logicHandler = LogicHandler(logicThread.looper)
 
+val mainScope = CoroutineScope(Dispatchers.Main)
 val logicScope = CoroutineScope(Dispatchers.IO)
 
 /* Context */
@@ -262,12 +264,10 @@ fun Context.allowHiddenMethods() {
 }
 
 fun Context.checkNavHiddenAsync(listener: (Boolean) -> Unit) {
-    logicScope.launch {
-        val hidden = isNavBarHidden
+    mainScope.launch {
+        val hidden = withContext(Dispatchers.IO) { isNavBarHidden }
 
-        mainHandler.postAtFrontOfQueue {
-            listener.invoke(hidden)
-        }
+        listener.invoke(hidden)
     }
 }
 
