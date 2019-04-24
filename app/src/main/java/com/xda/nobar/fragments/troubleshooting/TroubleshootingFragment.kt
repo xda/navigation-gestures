@@ -1,5 +1,6 @@
 package com.xda.nobar.fragments.troubleshooting
 
+import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
@@ -7,9 +8,8 @@ import com.xda.nobar.R
 import com.xda.nobar.fragments.settings.BasePrefFragment
 import com.xda.nobar.fragments.settings.CompatibilityFragment
 import com.xda.nobar.fragments.settings.ExperimentalFragment
-import com.xda.nobar.util.PrefManager
-import com.xda.nobar.util.launchUrl
-import com.xda.nobar.util.navigateTo
+import com.xda.nobar.util.*
+import kotlinx.coroutines.launch
 
 class TroubleshootingFragment : BasePrefFragment() {
     companion object {
@@ -118,6 +118,11 @@ class TroubleshootingFragment : BasePrefFragment() {
                 true
             }
             AUTO_HIDING_NAV -> {
+                if (context!!.hasWss) {
+                    logicScope.launch {
+                        Settings.Global.putString(context?.contentResolver, POLICY_CONTROL, null)
+                    }
+                }
                 showExplanation(preference.summary, R.string.fixed)
                 true
             }
