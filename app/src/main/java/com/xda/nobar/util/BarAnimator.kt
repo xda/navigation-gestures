@@ -86,14 +86,18 @@ class BarAnimator(private val bar: BarView) {
     fun jiggleTap() {
         if (bar.shouldAnimate) {
             bar.animate()
-                    .scaleX(BarView.SCALE_MID)
                     .setInterpolator(BarView.ENTER_INTERPOLATOR)
                     .setDuration(bar.animationDurationMs)
                     .withEndAction {
                         bar.animate()
                                 .scaleX(BarView.SCALE_NORMAL)
+                                .scaleY(BarView.SCALE_NORMAL)
                                 .setInterpolator(BarView.EXIT_INTERPOLATOR)
                                 .duration = bar.animationDurationMs
+                    }
+                    .apply {
+                        if (bar.isVertical) scaleY(BarView.SCALE_MID)
+                        else scaleX(BarView.SCALE_MID)
                     }
                     .start()
         }
@@ -102,16 +106,25 @@ class BarAnimator(private val bar: BarView) {
     fun jiggleLeftHold() {
         if (bar.shouldAnimate) {
             bar.animate()
-                    .scaleX(BarView.SCALE_SMALL)
-                    .x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
                     .setInterpolator(BarView.ENTER_INTERPOLATOR)
                     .setDuration(bar.animationDurationMs)
                     .withEndAction {
                         bar.animate()
                                 .scaleX(BarView.SCALE_NORMAL)
+                                .scaleY(BarView.SCALE_NORMAL)
                                 .x(0f)
+                                .y(0f)
                                 .setInterpolator(BarView.EXIT_INTERPOLATOR)
                                 .duration = bar.animationDurationMs
+                    }
+                    .apply {
+                        if (bar.isVertical) {
+                            scaleY(BarView.SCALE_SMALL)
+                            y((if (bar.is270Vertical) -1 else 1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        } else {
+                            scaleX(BarView.SCALE_SMALL)
+                            x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                        }
                     }
                     .start()
         }
@@ -120,16 +133,25 @@ class BarAnimator(private val bar: BarView) {
     fun jiggleRightHold() {
         if (bar.shouldAnimate) {
             bar.animate()
-                    .scaleX(BarView.SCALE_SMALL)
-                    .x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
                     .setInterpolator(BarView.ENTER_INTERPOLATOR)
                     .setDuration(bar.animationDurationMs)
                     .withEndAction {
                         bar.animate()
                                 .scaleX(BarView.SCALE_NORMAL)
+                                .scaleY(BarView.SCALE_NORMAL)
                                 .x(0f)
+                                .y(0f)
                                 .setInterpolator(BarView.EXIT_INTERPOLATOR)
                                 .duration = bar.animationDurationMs
+                    }
+                    .apply {
+                        if (bar.isVertical) {
+                            scaleY(BarView.SCALE_SMALL)
+                            y((if (bar.is270Vertical) 1 else -1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        } else {
+                            scaleX(BarView.SCALE_SMALL)
+                            x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                        }
                     }
                     .start()
         }
@@ -138,16 +160,25 @@ class BarAnimator(private val bar: BarView) {
     fun jiggleDownHold() {
         if (bar.shouldAnimate) {
             bar.animate()
-                    .scaleY(BarView.SCALE_SMALL)
-                    .y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
                     .setInterpolator(BarView.ENTER_INTERPOLATOR)
                     .setDuration(bar.animationDurationMs)
                     .withEndAction {
                         bar.animate()
+                                .scaleX(BarView.SCALE_NORMAL)
                                 .scaleY(BarView.SCALE_NORMAL)
+                                .x(0f)
                                 .y(0f)
                                 .setInterpolator(BarView.EXIT_INTERPOLATOR)
                                 .duration = bar.animationDurationMs
+                    }
+                    .apply {
+                        if (bar.isVertical) {
+                            scaleX(BarView.SCALE_SMALL)
+                            x((if (bar.is270Vertical) 1 else -1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        } else {
+                            scaleY(BarView.SCALE_SMALL)
+                            y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        }
                     }
                     .start()
         }
@@ -156,14 +187,21 @@ class BarAnimator(private val bar: BarView) {
     fun jiggleHold() {
         if (bar.shouldAnimate) {
             bar.animate()
-                    .scaleX(BarView.SCALE_SMALL)
                     .setInterpolator(BarView.ENTER_INTERPOLATOR)
                     .setDuration(bar.animationDurationMs)
                     .withEndAction {
                         bar.animate()
                                 .scaleX(BarView.SCALE_NORMAL)
+                                .scaleY(BarView.SCALE_NORMAL)
                                 .setInterpolator(BarView.EXIT_INTERPOLATOR)
                                 .duration = bar.animationDurationMs
+                    }
+                    .apply {
+                        if (bar.isVertical) {
+                            scaleY(BarView.SCALE_SMALL)
+                        } else {
+                            scaleX(BarView.SCALE_SMALL)
+                        }
                     }
                     .start()
         }
@@ -172,16 +210,25 @@ class BarAnimator(private val bar: BarView) {
     fun jiggleHoldUp() {
         if (bar.shouldAnimate) {
             bar.animate()
-                    .scaleY(BarView.SCALE_SMALL)
-                    .y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
                     .setInterpolator(BarView.ENTER_INTERPOLATOR)
                     .setDuration(bar.animationDurationMs)
                     .withEndAction {
                         bar.animate()
+                                .scaleX(BarView.SCALE_NORMAL)
                                 .scaleY(BarView.SCALE_NORMAL)
+                                .x(0f)
                                 .y(0f)
                                 .setInterpolator(BarView.EXIT_INTERPOLATOR)
                                 .duration = bar.animationDurationMs
+                    }
+                    .apply {
+                        if (bar.isVertical) {
+                            scaleX(BarView.SCALE_SMALL)
+                            x((if (bar.is270Vertical) -1 else 1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        } else {
+                            scaleY(BarView.SCALE_SMALL)
+                            y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        }
                     }
                     .start()
         }
@@ -190,20 +237,34 @@ class BarAnimator(private val bar: BarView) {
     fun jiggleDoubleTap() {
         if (bar.shouldAnimate) {
             bar.animate()
-                    .scaleX(BarView.SCALE_MID)
                     .setInterpolator(AccelerateInterpolator())
                     .setDuration(bar.animationDurationMs)
                     .withEndAction {
                         bar.animate()
-                                .scaleX(BarView.SCALE_SMALL)
                                 .setInterpolator(BarView.ENTER_INTERPOLATOR)
                                 .setDuration(bar.animationDurationMs)
                                 .withEndAction {
                                     bar.animate()
                                             .scaleX(BarView.SCALE_NORMAL)
+                                            .scaleY(BarView.SCALE_NORMAL)
                                             .setInterpolator(BarView.EXIT_INTERPOLATOR)
                                             .duration = bar.animationDurationMs
                                 }
+                                .apply {
+                                    if (bar.isVertical) {
+                                        scaleY(BarView.SCALE_SMALL)
+                                    } else {
+                                        scaleX(BarView.SCALE_SMALL)
+                                    }
+                                }
+                                .start()
+                    }
+                    .apply {
+                        if (bar.isVertical) {
+                            scaleY(BarView.SCALE_MID)
+                        } else {
+                            scaleX(BarView.SCALE_MID)
+                        }
                     }
                     .start()
         }
