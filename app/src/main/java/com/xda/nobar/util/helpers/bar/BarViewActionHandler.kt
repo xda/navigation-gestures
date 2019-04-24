@@ -11,7 +11,6 @@ import android.media.AudioManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Looper
 import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.RecognizerIntent
@@ -34,6 +33,8 @@ import com.xda.nobar.util.*
 import com.xda.nobar.util.flashlight.FlashlightControllerLollipop
 import com.xda.nobar.util.flashlight.FlashlightControllerMarshmallow
 import com.xda.nobar.views.BarView
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 
 class BarViewActionHandler(private val bar: BarView) {
     private val context = bar.context
@@ -128,9 +129,7 @@ class BarViewActionHandler(private val bar: BarView) {
     }
 
     fun handleAction(which: Int, key: String) {
-        logicHandler.postLogged {
-            if (Looper.myLooper() == null) Looper.prepare()
-
+        GlobalScope.async<Unit> {
             try {
                 when (which) {
                     bar.actionHolder.typeAssist -> {

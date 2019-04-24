@@ -42,6 +42,8 @@ import com.xda.nobar.receivers.StartupReceiver
 import com.xda.nobar.util.helpers.bar.ActionHolder
 import com.xda.nobar.views.BarView
 import eu.chainfire.libsuperuser.Shell
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import java.io.PrintWriter
 import java.io.StringWriter
 
@@ -246,7 +248,7 @@ val Context.areHiddenMethodsAllowed: Boolean
     ).run { this != null && (contains("0") || contains("1")) }
 
 fun Context.allowHiddenMethods() {
-    if (hasWss) logicHandler.postLogged {
+    if (hasWss) GlobalScope.async {
         Settings.Global.putInt(
                 contentResolver,
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) "hidden_api_policy"
@@ -257,7 +259,7 @@ fun Context.allowHiddenMethods() {
 }
 
 fun Context.checkNavHiddenAsync(listener: (Boolean) -> Unit) {
-    logicHandler.postLogged {
+    GlobalScope.async {
         val hidden = isNavBarHidden
 
         mainHandler.postAtFrontOfQueue {
@@ -458,7 +460,7 @@ fun isSuAsync(resultHandler: Handler, listener: ((Boolean) -> Unit)? = null) {
 }
 
 fun isSuAsync(listener: ((Boolean) -> Unit)? = null) {
-    logicHandler.postLogged {
+    GlobalScope.async {
         cachedSu = Shell.SU.available()
 
         listener?.invoke(cachedSu)
