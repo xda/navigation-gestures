@@ -363,7 +363,9 @@ class BarViewActionHandler(private val bar: BarView) {
                     }
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, R.string.unable_to_execute_action, Toast.LENGTH_SHORT).show()
+                mainScope.launch {
+                    Toast.makeText(context, R.string.unable_to_execute_action, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

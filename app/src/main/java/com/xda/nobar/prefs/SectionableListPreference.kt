@@ -163,7 +163,14 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     override fun onSetInitialValue(defaultValue: Any?) {
-        saveValue(if (isPersistent) getPersistedString(defaultValue.toString()) else defaultValue.toString())
+        saveValue(
+                if (isPersistent) try {
+                    getPersistedString(defaultValue.toString())
+                } catch (e: ClassCastException) {
+                    getPersistedInt(Int.MIN_VALUE).toString()
+                }
+                else defaultValue.toString()
+        )
     }
 
     override fun onItemChosen(value: String?) {

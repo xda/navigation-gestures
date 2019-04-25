@@ -25,8 +25,6 @@ object IWindowManager {
     var rightOverscan = 0
     var bottomOverscan = 0
 
-    private var isRunningOverscan = false
-
     private val queuedOverscanActions = ArrayList<OverscanInfo>()
 
     private val iWindowManagerClass: Class<*> = Class.forName("android.view.IWindowManager")
@@ -39,10 +37,8 @@ object IWindowManager {
     }
 
     fun setOverscanAsync(left: Int, top: Int, right: Int, bottom: Int, listener: ((Boolean) -> Unit)? = null) {
-        if (!isRunningOverscan) {
-            isRunningOverscan = true
-
-            logicScope.launch {
+        logicScope.launch {
+            synchronized(queuedOverscanActions) {
                 val ret = setOverscan(
                         left,
                         top,
@@ -53,15 +49,8 @@ object IWindowManager {
                 mainScope.launch {
                     listener?.invoke(ret)
                 }
-
-                isRunningOverscan = false
-
-                if (queuedOverscanActions.isNotEmpty()) {
-                    val queuedInfo = queuedOverscanActions.removeAt(0)
-                    setOverscanAsync(queuedInfo.left, queuedInfo.top, queuedInfo.right, queuedInfo.bottom, queuedInfo.listener)
-                }
             }
-        } else queuedOverscanActions.add(OverscanInfo(left, top, right, bottom, listener))
+        }
     }
 
     /**
