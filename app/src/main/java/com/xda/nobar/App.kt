@@ -616,7 +616,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 runNewNodeInfo(pName)
             }
 
-            onGlobalLayout()
+            updateKeyboardFlagState()
         }
 
         private fun runNewNodeInfo(pName: String?) {
