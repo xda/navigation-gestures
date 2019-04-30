@@ -168,28 +168,28 @@ class BarViewGestureManagerVertical270(bar: BarView) : BaseBarViewGestureManager
             when {
                 context.actionHolder.run { hasAnyOfActions(actionRight, actionRightHold) }
                         && distanceY > 0
-//                        && distanceY > xThresh
+                        && distanceY > xThresh
                         && distanceY.absoluteValue > distanceX.absoluteValue -> { //down swipe
                     isSwipeDown = true
                     true
                 }
                 context.actionHolder.run { hasAnyOfActions(actionLeft, actionLeftHold) }
                         && distanceY < 0
-//                        && distanceY < -xThresh
+                        && distanceY < -xThresh
                         && distanceY.absoluteValue > distanceX.absoluteValue -> { //up swipe
                     isSwipeUp = true
                     true
                 }
                 context.actionHolder.hasSomeUpAction()
                         && distanceX > 0
-//                        && distanceX > yThreshUp
+                        && distanceX > yThreshUp
                         && distanceY.absoluteValue < distanceX.absoluteValue -> { //right swipe
                     isSwipeRight = true
                     true
                 }
                 context.actionHolder.run { hasAnyOfActions(actionDown, actionDownHold) }
                         && distanceX < 0
-//                        && distanceX < -yThreshDown
+                        && distanceX < -yThreshDown
                         && distanceY.absoluteValue < distanceX.absoluteValue -> { //left swipe
                     isSwipeLeft = true
                     true
@@ -198,7 +198,7 @@ class BarViewGestureManagerVertical270(bar: BarView) : BaseBarViewGestureManager
             }
         } else if (bar.isHidden
                 && !isActing
-//                && distanceX > yThreshUp
+                && distanceX > yThreshUp
                 && distanceX > 0
                 && distanceY.absoluteValue < distanceX.absoluteValue) { //right swipe
             if (bar.isHidden && !bar.isPillHidingOrShowing && !bar.beingTouched) {

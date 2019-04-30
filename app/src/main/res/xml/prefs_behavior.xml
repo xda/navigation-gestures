@@ -223,35 +223,35 @@
             android:defaultValue="@bool/large_hitbox_default"
             />
 
-        <!--<tk.zwander.seekbarpreference.SeekBarPreference-->
-            <!--android:title="@string/x_threshold"-->
-            <!--android:icon="@drawable/swap_horizontal"-->
-            <!--android:defaultValue="@integer/default_x_threshold_dp"-->
-            <!--app:minValue="@integer/min_x_threshold_dp"-->
-            <!--app:maxValue="@integer/max_x_threshold_dp"-->
-            <!--app:units="dp"-->
-            <!--android:key="x_threshold"-->
-            <!--/>-->
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            android:title="@string/x_threshold"
+            android:icon="@drawable/swap_horizontal"
+            android:defaultValue="@integer/default_x_threshold_dp"
+            app:minValue="@integer/min_x_threshold_dp"
+            app:maxValue="@integer/max_x_threshold_dp"
+            app:units="dp"
+            android:key="x_threshold"
+            />
 
-        <!--<tk.zwander.seekbarpreference.SeekBarPreference-->
-            <!--android:title="@string/y_threshold"-->
-            <!--android:icon="@drawable/swap_vertical"-->
-            <!--android:defaultValue="@integer/default_y_threshold_dp"-->
-            <!--app:minValue="@integer/min_y_threshold_dp"-->
-            <!--app:maxValue="@integer/max_y_threshold_dp"-->
-            <!--app:units="dp"-->
-            <!--android:key="y_threshold"-->
-            <!--/>-->
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            android:title="@string/y_threshold"
+            android:icon="@drawable/swap_vertical"
+            android:defaultValue="@integer/default_y_threshold_dp"
+            app:minValue="@integer/min_y_threshold_dp"
+            app:maxValue="@integer/max_y_threshold_dp"
+            app:units="dp"
+            android:key="y_threshold"
+            />
 
-        <!--<tk.zwander.seekbarpreference.SeekBarPreference-->
-            <!--android:title="@string/y_threshold_down"-->
-            <!--android:icon="@drawable/swap_vertical"-->
-            <!--android:defaultValue="@integer/default_y_threshold_dp"-->
-            <!--app:minValue="@integer/min_y_threshold_dp"-->
-            <!--app:maxValue="@integer/max_y_threshold_dp"-->
-            <!--app:units="dp"-->
-            <!--android:key="y_threshold_down"-->
-            <!--/>-->
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            android:title="@string/y_threshold_down"
+            android:icon="@drawable/swap_vertical"
+            android:defaultValue="@integer/default_y_threshold_dp"
+            app:minValue="@integer/min_y_threshold_dp"
+            app:maxValue="@integer/max_y_threshold_dp"
+            app:units="dp"
+            android:key="y_threshold_down"
+            />
 
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
