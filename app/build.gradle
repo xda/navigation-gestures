@@ -10,7 +10,7 @@ apply plugin: 'io.fabric'
 
 apply plugin: 'base'
 
-project.version = 89
+project.version = 90
 def name = "1.11.6"
 
 preBuild {
