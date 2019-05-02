@@ -10,7 +10,7 @@ import com.crashlytics.android.Crashlytics
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.activities.ui.CrashActivity
 
-class CrashHandler(private val prevHandler: Thread.UncaughtExceptionHandler, private val context: Context) : Thread.UncaughtExceptionHandler {
+class CrashHandler(private val prevHandler: Thread.UncaughtExceptionHandler?, private val context: Context) : Thread.UncaughtExceptionHandler {
     private var isCrashing = false
 
     override fun uncaughtException(t: Thread?, e: Throwable) {
@@ -30,7 +30,7 @@ class CrashHandler(private val prevHandler: Thread.UncaughtExceptionHandler, pri
             am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 100, crashIntent)
 
             if (needsToLog) {
-                prevHandler.uncaughtException(t, e)
+                prevHandler?.uncaughtException(t, e)
             } else {
                 if (e !is DeadObjectException) {
                     Crashlytics.logException(e)

@@ -107,6 +107,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     override fun onCreate() {
         super.onCreate()
 
+        if (BuildConfig.DEBUG) {
+            val crashHandler = CrashHandler(null, this@App)
+            Thread.setDefaultUncaughtExceptionHandler(crashHandler)
+        }
+
         val core = CrashlyticsCore.Builder()
                 .disabled(BuildConfig.DEBUG)
                 .build()
