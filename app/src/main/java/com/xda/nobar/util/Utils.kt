@@ -120,7 +120,7 @@ val Context.isLandscape: Boolean
  */
 val Context.isNavBarHidden: Boolean
     get() {
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P || areHiddenMethodsAllowed) {
             val overscan = Rect(0, 0, 0, 0)
 
             (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(overscan)
