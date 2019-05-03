@@ -120,15 +120,11 @@ val Context.isLandscape: Boolean
  */
 val Context.isNavBarHidden: Boolean
     get() {
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P || areHiddenMethodsAllowed) {
-            val overscan = Rect(0, 0, 0, 0)
+        val overscan = Rect(0, 0, 0, 0)
 
-            (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(overscan)
+        (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(overscan)
 
-            overscan.bottom < 0 || overscan.top < 0 || overscan.left < 0 || overscan.right < 0
-        } else {
-            prefManager.shouldUseOverscanMethod
-        }
+        return overscan.bottom < 0 || overscan.top < 0 || overscan.left < 0 || overscan.right < 0
     }
 
 /**
@@ -241,27 +237,6 @@ var Context.touchWizNavEnabled: Boolean
 
 val Context.vibrator: Vibrator
     get() = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-
-val Context.alarmManager: AlarmManager
-    get() = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-val Context.areHiddenMethodsAllowed: Boolean
-    get() = Settings.Global.getString(
-            contentResolver,
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) "hidden_api_policy"
-            else "hidden_api_policy_p_apps"
-    ).run { this != null && (contains("0") || contains("1")) }
-
-fun Context.allowHiddenMethods() {
-    if (hasWss) logicScope.launch {
-        Settings.Global.putInt(
-                contentResolver,
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) "hidden_api_policy"
-                else "hidden_api_policy_p_apps",
-                0
-        )
-    }
-}
 
 fun Context.checkNavHiddenAsync(listener: (Boolean) -> Unit) {
     mainScope.launch {

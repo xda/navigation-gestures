@@ -39,6 +39,7 @@ import com.xda.nobar.views.NavBlackout
 import io.fabric.sdk.android.Fabric
 import io.fabric.sdk.android.InitializationCallback
 import kotlinx.coroutines.launch
+import java.lang.reflect.Method
 
 
 /**
@@ -106,6 +107,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     override fun onCreate() {
         super.onCreate()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val forName = Class::class.java.getDeclaredMethod("forName", String::class.java)
+            val getDeclaredMethod = Class::class.java.getDeclaredMethod("getDeclaredMethod", String::class.java, arrayOf<Class<*>>()::class.java)
+
+            val vmRuntimeClass = forName.invoke(null, "dalvik.system.VMRuntime") as Class<*>
+            val getRuntime = getDeclaredMethod.invoke(vmRuntimeClass, "getRuntime", null) as Method
+            val setHiddenApiExemptions = getDeclaredMethod.invoke(vmRuntimeClass, "setHiddenApiExemptions", arrayOf(arrayOf<String>()::class.java)) as Method
+
+            val vmRuntime = getRuntime.invoke(null)
+
+            setHiddenApiExemptions.invoke(vmRuntime, arrayOf("L"))
+        }
 
         if (BuildConfig.DEBUG) {
             val crashHandler = CrashHandler(null, this@App)

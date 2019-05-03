@@ -117,19 +117,6 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
                         .show()
             }
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (!areHiddenMethodsAllowed && hasWss) {
-                allowHiddenMethods()
-                AlertDialog.Builder(this)
-                        .setTitle(R.string.restart_nobar)
-                        .setMessage(R.string.hidden_methods_desc)
-                        .setPositiveButton(android.R.string.ok) { _, _ ->
-                            relaunch(isForCrashlytics = false, isForMainActivity = true)
-                        }
-                        .show()
-            }
-        }
     }
 
     override fun onGestureStateChange(barView: BarView?, activated: Boolean) {
