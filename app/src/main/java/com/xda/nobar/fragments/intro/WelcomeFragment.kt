@@ -31,6 +31,10 @@ open class WelcomeFragment : SlideFragment(), TextureView.SurfaceTextureListener
 
         mediaPlayer.setSurface(s)
         mediaPlayer.start()
+        mediaPlayer.setOnErrorListener { _, _, _ ->
+            mi_image.visibility = View.GONE
+            true
+        }
     }
 
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
