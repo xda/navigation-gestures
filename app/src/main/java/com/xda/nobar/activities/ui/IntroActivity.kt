@@ -138,7 +138,7 @@ class IntroActivity : IntroActivity() {
 
     override fun onDestroy() {
         prefManager.firstRun = false
-        if (!didntNeedToRun) MainActivity.start(this)
+        if (!didntNeedToRun && !needsToRun(this)) MainActivity.start(this)
 
         super.onDestroy()
     }

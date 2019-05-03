@@ -23,8 +23,10 @@ import android.provider.Settings
 import android.util.Log
 import android.util.TypedValue
 import android.view.Surface
+import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import android.widget.VideoView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -490,4 +492,21 @@ fun Context.relaunch(isForCrashlytics: Boolean = false, isForMainActivity: Boole
     am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 100, startup)
 
     Process.killProcess(Process.myPid())
+}
+
+fun VideoView.setup(src: Uri) {
+    try {
+        setVideoURI(src)
+        setOnErrorListener { _, _, _ ->
+            visibility = View.GONE
+            true
+        }
+
+        setOnPreparedListener {
+            it.isLooping = true
+            it.start()
+        }
+    } catch (e: Exception) {
+        visibility = View.GONE
+    }
 }
