@@ -159,7 +159,6 @@
     <string name="hide_beta_prompt">Hide the Beta Button</string>
     <string name="hide_text">Hide</string>
     <string name="help_about">Help &amp; About</string>
-    <string name="restart_nobar">Restart Navigation Gestures</string>
     <string name="fixed">Fixed!</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizza gesture</string>
@@ -230,7 +229,6 @@
     <string name="sign_up_for_beta_troubleshooting_desc">The beta version of Navigation Gestures may have already fixed your issue. Give it a try!</string>
     <string name="sign_up_for_beta_desc">Live on the bleeding edge with new features and improvements by signing up for the beta program.</string>
     <string name="hide_beta_prompt_desc">Hide the beta sign-up button from the main screen.</string>
-    <string name="hidden_methods_desc">In order to work properly, Navigation Gestures needs to restart. This should be a one-time thing.</string>
     <string name="pill_not_showing">The pill isn\'t showing on the lock screen, app permissions page, etc.</string>
     <string name="auto_hiding_navbar">The native navigation bar keeps hiding itself after I toggle off \"Hide Navigation Bar\".</string>
     <!--Paragraphs-->
