@@ -69,7 +69,7 @@
 
         </LinearLayout>
 
-        <VideoView
+        <TextureView
             android:id="@id/mi_image"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

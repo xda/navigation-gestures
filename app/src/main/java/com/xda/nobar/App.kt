@@ -122,7 +122,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         if (BuildConfig.DEBUG) {
-            val crashHandler = CrashHandler(null, this@App)
+            val crashHandler = CrashHandler(Thread.getDefaultUncaughtExceptionHandler(), this@App)
             Thread.setDefaultUncaughtExceptionHandler(crashHandler)
         }
 
