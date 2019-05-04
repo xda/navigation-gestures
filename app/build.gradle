@@ -68,7 +68,7 @@ dependencies {
     //AndroidX
     implementation 'androidx.core:core:1.1.0-alpha05'
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha5'
     implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha04'
     implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
     implementation 'androidx.preference:preference:1.1.0-alpha04'
