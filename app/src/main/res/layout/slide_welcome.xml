@@ -71,10 +71,10 @@
 
         <TextureView
             android:id="@id/mi_image"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
             android:layout_marginTop="@dimen/mi_baseline"
+            android:layout_marginBottom="16dp"
             android:adjustViewBounds="true"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
