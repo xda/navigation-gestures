@@ -18,7 +18,7 @@ class WriteSecureFragment : WelcomeFragment() {
     }
 
     override fun viewCreated() {
-        mi_title.text = resources.getText(R.string.write_secure_settings)
-        mi_description.text = resources.getText(R.string.write_secure_settings_desc)
+        mi_title?.text = resources.getText(R.string.write_secure_settings)
+        mi_description?.text = resources.getText(R.string.write_secure_settings_desc)
     }
 }

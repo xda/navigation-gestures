@@ -22,7 +22,7 @@ open class WelcomeFragment : SlideFragment(), TextureView.SurfaceTextureListener
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mi_image.surfaceTextureListener = this
+        mi_image?.surfaceTextureListener = this
         viewCreated()
     }
 
@@ -32,7 +32,7 @@ open class WelcomeFragment : SlideFragment(), TextureView.SurfaceTextureListener
         mediaPlayer.setSurface(s)
         mediaPlayer.start()
         mediaPlayer.setOnErrorListener { _, _, _ ->
-            mi_image.visibility = View.GONE
+            mi_image?.visibility = View.GONE
             true
         }
     }
@@ -45,7 +45,7 @@ open class WelcomeFragment : SlideFragment(), TextureView.SurfaceTextureListener
     override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {}
 
     internal open fun viewCreated() {
-        mi_title.text = resources.getText(R.string.welcome)
-        mi_description.text = resources.getText(R.string.app_purpose)
+        mi_title?.text = resources.getText(R.string.welcome)
+        mi_description?.text = resources.getText(R.string.app_purpose)
     }
 }
