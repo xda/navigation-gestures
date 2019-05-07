@@ -74,16 +74,23 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
                             val position = (listView.adapter as PreferenceGroup.PreferencePositionCallback)
                                     .getPreferenceAdapterPosition(it)
 
+                            listView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                                        val view = findPreferenceView(it)
+
+                                        view?.let { v ->
+                                            v.isPressed = true
+                                            v.postDelayed({ if (isCreated) v.isPressed = false }, 500)
+                                        }
+                                    }
+                                }
+
+                                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {}
+                            })
                             listView.smoothScrollToPosition(position)
-
-                            val view = findPreferenceView(it)
-
-                            view?.let { v ->
-                                v.isPressed = true
-                                v.postDelayed({ if (isCreated) v.isPressed = false }, 500)
-                            }
                         }
-                    }, 500)
+                    }, 200)
                 }
             }
         }, 200)
