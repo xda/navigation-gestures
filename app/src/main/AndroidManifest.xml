@@ -59,6 +59,7 @@
             android:name=".activities.MainActivity"
             android:configChanges="orientation|keyboard|screenSize|density|keyboardHidden"
             android:launchMode="singleInstance"
+            android:excludeFromRecents="false"
             android:theme="@style/AppTheme.NoBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -76,7 +77,9 @@
         </activity>
         <activity
             android:name=".activities.ui.SettingsActivity"
-            android:configChanges="screenSize|orientation|screenLayout" />
+            android:configChanges="screenSize|orientation|screenLayout"
+            android:excludeFromRecents="false"
+            />
         <activity android:name=".activities.ui.HelpAboutActivity"
             android:label="@string/help_about"
             />
