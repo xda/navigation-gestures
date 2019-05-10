@@ -356,13 +356,6 @@ fun Context.runSystemSettingsAction(action: () -> Unit): Boolean {
     return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(this)
 }
 
-/* FragmentManager */
-
-fun FragmentManager.beginAnimatedTransaction() =
-        beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
-                        android.R.anim.fade_in, android.R.anim.fade_out)
-
 /* Drawable */
 
 /**
