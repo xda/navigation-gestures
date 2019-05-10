@@ -671,10 +671,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         isInOtherWindowApp = true
                     }
                 } else if (isInOtherWindowApp) isInOtherWindowApp = false
+
+                updateBlacklists()
             }
         }
 
-        fun updateKeyboardFlagState() {
+        private fun updateKeyboardFlagState() {
             val kbHeight = imm.inputMethodWindowVisibleHeight
             keyboardShown = kbHeight > 0
 
