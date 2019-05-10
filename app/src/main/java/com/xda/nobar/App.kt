@@ -606,9 +606,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
             logicScope.launch {
-                try {
-                    handleNewEvent(info ?: return@launch)
-                } catch (e: NullPointerException) {}
+                synchronized(this) {
+                    try {
+                        handleNewEvent(info ?: return@launch)
+                    } catch (e: NullPointerException) {}
+                }
             }
         }
 
@@ -747,51 +749,53 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             handleRot()
 
             logicScope.launch {
-                if (!bar.isCarryingOutTouchAction) {
-                    updateKeyboardFlagState()
+                synchronized(this) {
+                    if (!bar.isCarryingOutTouchAction) {
+                        updateKeyboardFlagState()
 
-                    if (isTouchWiz) {
-                        try {
-                            val semCocktailBarManagerClass = Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
+                        if (isTouchWiz) {
+                            try {
+                                val semCocktailBarManagerClass = Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
 
-                            val manager = getSystemService("CocktailBarService")
+                                val manager = getSystemService("CocktailBarService")
 
-                            val getCocktailBarWindowType = semCocktailBarManagerClass.getMethod("getCocktailBarWindowType")
+                                val getCocktailBarWindowType = semCocktailBarManagerClass.getMethod("getCocktailBarWindowType")
 
-                            val edgeType = getCocktailBarWindowType.invoke(manager).toString().toInt()
+                                val edgeType = getCocktailBarWindowType.invoke(manager).toString().toInt()
 
-                            if (edgeType == EDGE_TYPE_ACTIVE) {
-                                disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
+                                if (edgeType == EDGE_TYPE_ACTIVE) {
+                                    disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
+                                } else {
+                                    disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+
+                        if (prefManager.origBarInFullscreen) {
+                            if (immersiveHelperManager.isFullImmersive()) {
+                                showNav(callListeners = false, removeImmersive = false)
                             } else {
-                                disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
+                                hideNav(false)
                             }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
                         }
-                    }
 
-                    if (prefManager.origBarInFullscreen) {
-                        if (immersiveHelperManager.isFullImmersive()) {
-                            showNav(callListeners = false, removeImmersive = false)
-                        } else {
-                            hideNav(false)
+                        if (isPillShown()) {
+                            try {
+                                if (!prefManager.useImmersiveWhenNavHidden) immersiveHelperManager.exitNavImmersive()
+
+                                bar.immersiveNav = immersiveHelperManager.isNavImmersive() && !keyboardShown
+
+                                if (prefManager.hidePillWhenKeyboardShown) {
+                                    if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
+                                    else bar.showPill(HiddenPillReasonManager.KEYBOARD)
+                                }
+                            } catch (e: NullPointerException) {}
                         }
+
+                        updateBlacklists()
                     }
-
-                    if (isPillShown()) {
-                        try {
-                            if (!prefManager.useImmersiveWhenNavHidden) immersiveHelperManager.exitNavImmersive()
-
-                            bar.immersiveNav = immersiveHelperManager.isNavImmersive() && !keyboardShown
-
-                            if (prefManager.hidePillWhenKeyboardShown) {
-                                if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
-                                else bar.showPill(HiddenPillReasonManager.KEYBOARD)
-                            }
-                        } catch (e: NullPointerException) {}
-                    }
-
-                    updateBlacklists()
                 }
             }
         }
