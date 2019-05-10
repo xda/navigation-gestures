@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
+import android.util.Log
 import android.view.Display
 import android.view.Surface
 import android.view.ViewTreeObserver
@@ -711,20 +712,18 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         fun updateBlacklists() {
-            if (isPillShown()) {
-                if (disabledImmReasonManager.isEmpty()) {
-                    if (prefManager.shouldUseOverscanMethod
-                            && prefManager.useImmersiveWhenNavHidden) immersiveHelperManager.enterNavImmersive()
-                } else {
-                    immersiveHelperManager.exitNavImmersive()
-                }
+            if (disabledImmReasonManager.isEmpty()) {
+                if (prefManager.shouldUseOverscanMethod
+                        && prefManager.useImmersiveWhenNavHidden) immersiveHelperManager.enterNavImmersive()
+            } else {
+                immersiveHelperManager.exitNavImmersive()
+            }
 
-                if (disabledBarReasonManager.isEmpty()) {
-                    if (prefManager.isActive
-                            && !pillShown) addBar(false)
-                } else {
-                    removeBar(false)
-                }
+            if (disabledBarReasonManager.isEmpty()) {
+                if (prefManager.isActive
+                        && !pillShown) addBar(false)
+            } else {
+                removeBar(  false)
             }
 
             if (prefManager.shouldUseOverscanMethod) {
