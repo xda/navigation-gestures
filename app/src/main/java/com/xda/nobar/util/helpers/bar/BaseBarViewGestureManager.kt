@@ -12,7 +12,6 @@ import com.xda.nobar.util.app
 import com.xda.nobar.util.helpers.HiddenPillReasonManager
 import com.xda.nobar.util.prefManager
 import com.xda.nobar.views.BarView
-import kotlinx.android.synthetic.main.pill.view.*
 import java.util.*
 
 abstract class BaseBarViewGestureManager(internal val bar: BarView) {

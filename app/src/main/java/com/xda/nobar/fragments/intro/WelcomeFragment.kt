@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.slide_welcome.*
 open class WelcomeFragment : SlideFragment(), TextureView.SurfaceTextureListener {
     internal open val videoRes = R.raw.nav_gesture
 
-    internal val mediaPlayer by lazy { MediaPlayer.create(context, videoRes) }
+    private val mediaPlayer by lazy { MediaPlayer.create(context, videoRes) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.slide_welcome, container, false)
@@ -29,9 +29,9 @@ open class WelcomeFragment : SlideFragment(), TextureView.SurfaceTextureListener
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
         val s = Surface(surface)
 
-        mediaPlayer.setSurface(s)
-        mediaPlayer.start()
-        mediaPlayer.setOnErrorListener { _, _, _ ->
+        mediaPlayer?.setSurface(s)
+        mediaPlayer?.start()
+        mediaPlayer?.setOnErrorListener { _, _, _ ->
             mi_image?.visibility = View.GONE
             true
         }
