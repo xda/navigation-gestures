@@ -251,7 +251,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         val color = if (splitPill) dividerColor else Color.TRANSPARENT
 
-        pill_tap_flash.visibility = if (splitPill) View.GONE else View.VISIBLE
+//        pill_tap_flash.visibility = if (splitPill) View.GONE else View.VISIBLE
 
         divider_1.setBackgroundColor(color)
         divider_2.setBackgroundColor(color)
