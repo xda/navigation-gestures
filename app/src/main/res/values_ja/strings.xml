@@ -35,6 +35,7 @@
     <string name="missing_perms">権限がありません!</string>
     <string name="premium_required">プレミアムの機能です!</string>
     <string name="nougat_required">Android 7以上が必要です</string>
+    <string name="pie_required">Requires Pie</string>
     <string name="hold_time">スワイプやホールドの判定時間</string>
     <string name="vibration_duration">振動の長さ</string>
     <string name="buy_premium">プレミアムを購入</string>
@@ -242,6 +243,7 @@
     <string name="missing_perms_desc">いくつかの権限が取得できていないようです。権限を再取得してください。</string>
     <string name="premium_required_desc">このアクションにはプレミアムアドオンが必要です。購入しますか?</string>
     <string name="nougat_required_desc">このアクションにはandroid 7+が必要です。</string>
+    <string name="pie_required_desc">This action requires a device running Android Pie or later. Sorry about that.</string>
     <string name="nougat_qs_reminder">Android 7ではクイック設定のカスタマイズができ、ナビゲーションジェスチャーのタイルを追加することができます。ステータスバーを2回下にスワイプして編集ボタンを押してナビゲーションジェスチャーのタイルをドラッグしてください。</string>
     <string name="accessibility_screen_text">アクセシビリティを使用してホーム、戻る、
 マルチタスクボタンなどの動作を行います。個人情報を収集したり、ユーザーの意思に反して勝手に動作するようなことはありません。</string>
