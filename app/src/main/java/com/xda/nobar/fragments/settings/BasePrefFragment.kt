@@ -114,6 +114,8 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
 
     @SuppressLint("RestrictedApi")
     fun findPreferenceView(key: String): View? {
+        if (listView == null) return null
+
         for (i in 0 until listView.adapter!!.itemCount) {
             val item = (listView.adapter as PreferenceGroupAdapter).getItem(i)
 

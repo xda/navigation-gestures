@@ -13,7 +13,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
-import android.util.Log
 import android.view.Display
 import android.view.Surface
 import android.view.ViewTreeObserver
@@ -678,7 +677,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         private fun updateKeyboardFlagState() {
-            val kbHeight = imm.inputMethodWindowVisibleHeight
+            val kbHeight = try {
+                imm.inputMethodWindowVisibleHeight
+            } catch (e: Exception) {
+                0
+            }
             keyboardShown = kbHeight > 0
 
             if (prefManager.showNavWithKeyboard) {
