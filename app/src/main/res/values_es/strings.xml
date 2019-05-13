@@ -35,6 +35,7 @@
     <string name="missing_perms">¡Hacen falta permisos!</string>
     <string name="premium_required">¡Acciones premium!</string>
     <string name="nougat_required">Requiere versión de Android Nougat</string>
+    <string name="pie_required">Requires Pie</string>
     <string name="hold_time">Tiempo para deslizar y mantener</string>
     <string name="vibration_duration">Duración de la vibración</string>
     <string name="buy_premium">Comprar Premium</string>
@@ -242,6 +243,7 @@
     <string name="missing_perms_desc">Parece que uno o más permisos fueron revocados de alguna manera. No te preocupes, aunque, vamos a ayudarte para que vuelva a funcionar.</string>
     <string name="premium_required_desc">Esta acción requiere el complemento premium. ¿Te gustaría comprarlo?</string>
     <string name="nougat_required_desc">Esta acción requiere un dispositivo que ejecute Android Nougat o posterior. Perdón por eso.</string>
+    <string name="pie_required_desc">This action requires a device running Android Pie or later. Sorry about that.</string>
     <string name="nougat_qs_reminder">Android Nougat permite mosaicos personalizados de configuración rápida, y hemos incluido uno para activar o desactivar Navigation Gestures. Puedes agregarlo deslizando dos veces desde la barra de estado, tocando el icono del lápiz o \"EDITAR\" y arrastrando el mosaico de Navigation Gestures al área activa.</string>
     <string name="accessibility_screen_text">Esta aplicación utiliza el servicio de accesibilidad para simular la pulsación de los botones de navegación, como los de Inicio, atrás y multitarea. No la utilizamos para recoger información personal, y no se realiza ninguna acción no requerida por el usuario.</string>
     <string name="sorry_desc">Debido a que tu dispositivo ejecuta Android P, esta aplicación no funcionará por ahora.</string>
