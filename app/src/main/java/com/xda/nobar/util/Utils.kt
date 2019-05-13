@@ -285,8 +285,9 @@ fun Context.requestBatteryExemption() {
  * Otherwise show a warning dialog
  */
 fun Context.runNougatAction(action: () -> Unit): Boolean {
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+    return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
         action.invoke()
+        true
     } else {
         DialogActivity.Builder(this).apply {
             title = R.string.nougat_required
@@ -294,9 +295,23 @@ fun Context.runNougatAction(action: () -> Unit): Boolean {
             yesRes = android.R.string.ok
             start()
         }
+        false
     }
+}
 
-    return Build.VERSION.SDK_INT > Build.VERSION_CODES.M
+fun Context.runPieAction(action: () -> Unit): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        action.invoke()
+        true
+    } else {
+        DialogActivity.Builder(this).apply {
+            title = R.string.pie_required
+            message = R.string.pie_required_desc
+            yesRes = android.R.string.ok
+            start()
+        }
+        false
+    }
 }
 
 /**
@@ -383,15 +398,26 @@ fun Drawable.toBitmapDrawable(resources: Resources): BitmapDrawable? {
 
 /* BarView */
 
+private var accessibilityActions = ArrayList<Int>()
+
 fun BarView.isAccessibilityAction(action: Int): Boolean {
-    return arrayListOf(
-            actionHolder.typeHome,
-            actionHolder.typeRecents,
-            actionHolder.typeBack,
-            actionHolder.typeSwitch,
-            actionHolder.typeSplit,
-            actionHolder.premTypePower
-    ).contains(action)
+    if (accessibilityActions.isEmpty()) {
+        accessibilityActions.addAll(arrayListOf(
+                actionHolder.typeHome,
+                actionHolder.typeRecents,
+                actionHolder.typeBack,
+                actionHolder.typeSwitch,
+                actionHolder.typeSplit,
+                actionHolder.premTypePower
+        ))
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
+            accessibilityActions.add(actionHolder.premTypeScreenshot)
+            accessibilityActions.add(actionHolder.premTypeLockScreen)
+        }
+    }
+
+    return accessibilityActions.contains(action)
 }
 
 /* Other */

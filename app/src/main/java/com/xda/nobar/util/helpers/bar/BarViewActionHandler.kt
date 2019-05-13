@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.joaomgcd.taskerpluginlibrary.extensions.requestQuery
+import com.xda.nobar.BuildConfig
 import com.xda.nobar.R
 import com.xda.nobar.activities.helpers.RequestPermissionsActivity
 import com.xda.nobar.activities.helpers.ScreenshotActivity
@@ -363,6 +364,9 @@ class BarViewActionHandler(private val bar: BarView) {
                     }
                 }
             } catch (e: Exception) {
+                if (BuildConfig.DEBUG) {
+                    e.logStack()
+                }
                 mainScope.launch {
                     Toast.makeText(context, R.string.unable_to_execute_action, Toast.LENGTH_SHORT).show()
                 }
