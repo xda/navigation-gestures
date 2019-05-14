@@ -76,6 +76,25 @@ class ScreenshotActivity : AppCompatActivity() {
 
     private var count = 0
 
+    private val params = WindowManager.LayoutParams().apply {
+        type = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_PHONE
+        else WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+
+        width = WindowManager.LayoutParams.MATCH_PARENT
+        height = WindowManager.LayoutParams.MATCH_PARENT
+
+        flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_OVERSCAN or
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+    }
+
+    private val flasher by lazy {
+        LinearLayout(this@ScreenshotActivity).apply {
+            setBackgroundColor(Color.WHITE)
+        }
+    }
+
     private val handlerThread = HandlerThread("NavGestScreenshot").apply {
         start()
     }
@@ -149,30 +168,12 @@ class ScreenshotActivity : AppCompatActivity() {
             try {
                 if (count < 1) {
                     runOnUiThread {
-                        val flasher = LinearLayout(this@ScreenshotActivity).apply {
-                            setBackgroundColor(Color.WHITE)
-                        }
-
-                        val params = WindowManager.LayoutParams().apply {
-                            type = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_PHONE
-                            else WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-
-                            width = WindowManager.LayoutParams.MATCH_PARENT
-                            height = WindowManager.LayoutParams.MATCH_PARENT
-
-                            flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
-                                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_OVERSCAN or
-                                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-
-                            alpha = 0f
-                        }
-
-                        windowManager.addView(flasher, params)
+                        try {
+                            windowManager.addView(flasher, params)
+                        } catch (e: Exception) {}
 
                         val listener = ValueAnimator.AnimatorUpdateListener {
-                            params.alpha = it.animatedValue.toString().toFloat()
-                            runOnUiThread { windowManager.updateViewLayout(flasher, params) }
+                            flasher.alpha = it.animatedValue.toString().toFloat()
                         }
 
                         val exit = ValueAnimator.ofFloat(1f, 0f)
@@ -184,7 +185,10 @@ class ScreenshotActivity : AppCompatActivity() {
                             }
 
                             override fun onAnimationEnd(animation: Animator?) {
-                                runOnUiThread { windowManager.removeView(flasher) }
+                                try {
+                                    windowManager.removeView(flasher)
+                                } catch (e: Exception) {}
+                                stop()
                             }
                         })
                         exit.addUpdateListener(listener)
@@ -253,8 +257,6 @@ class ScreenshotActivity : AppCompatActivity() {
                 bitmap?.recycle()
 
                 image?.close()
-
-                stop()
             }
         }
     }
