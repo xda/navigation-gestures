@@ -13,10 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
-import android.view.Display
-import android.view.Surface
-import android.view.ViewTreeObserver
-import android.view.WindowManager
+import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.NotificationCompat
@@ -33,6 +30,7 @@ import com.xda.nobar.providers.BaseProvider
 import com.xda.nobar.root.RootWrapper
 import com.xda.nobar.services.Actions
 import com.xda.nobar.util.*
+import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.util.helpers.*
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.NavBlackout
@@ -192,6 +190,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             premiumInstallListener.register()
             permissionListener.register()
             dm.registerDisplayListener(displayChangeListener, logicHandler)
+            IWindowManager.watchRotation(displayChangeListener, Display.DEFAULT_DISPLAY)
             miniViewListener.register()
             cachedRotation = rotation
 
@@ -1065,22 +1064,24 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
     }
 
-    inner class DisplayChangeListener : DisplayManager.DisplayListener {
+    inner class DisplayChangeListener : IRotationWatcher.Stub(), DisplayManager.DisplayListener {
         override fun onDisplayChanged(displayId: Int) {
             if (displayId == wm.defaultDisplay.displayId) {
-                val oldRot = cachedRotation
-                val newRot = rotation
-
                 val oldSize = realScreenSize
                 val newSize = refreshScreenSize()
 
                 if (oldSize != newSize && pillShown) {
                     bar.updatePositionAndDimens()
                 }
+            }
+        }
 
-                if (oldRot != newRot) {
-                    uiHandler.handleRot()
-                }
+        override fun onRotationChanged(rotation: Int) {
+            val oldRot = cachedRotation
+            cachedRotation = rotation
+
+            if (oldRot != cachedRotation) {
+                uiHandler.handleRot()
             }
         }
 

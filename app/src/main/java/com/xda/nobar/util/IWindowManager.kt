@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.IBinder
 import android.view.Display
+import android.view.IRotationWatcher
 import eu.chainfire.libsuperuser.Shell
 import kotlinx.coroutines.launch
 
@@ -25,7 +26,7 @@ object IWindowManager {
     var rightOverscan = 0
     var bottomOverscan = 0
 
-    private val queuedOverscanActions = ArrayList<OverscanInfo>()
+    private val queuedOverscanActions = Any()
 
     private val iWindowManagerClass: Class<*> = Class.forName("android.view.IWindowManager")
     private val iWindowManager: Any = run {
@@ -119,6 +120,24 @@ object IWindowManager {
         }
     }
 
+    fun watchRotation(watcher: IRotationWatcher, displayId: Int): Int {
+        return try {
+            iWindowManagerClass
+                    .getMethod("watchRotation", IRotationWatcher::class.java, Int::class.java)
+                    .invoke(iWindowManager) as Int
+        } catch (e: Exception) {
+            0
+        }
+    }
+
+    fun removeRotationWatcher(watcher: IRotationWatcher) {
+        try {
+            iWindowManagerClass
+                    .getMethod("removeRotationWatcher", IRotationWatcher::class.java)
+                    .invoke(iWindowManager)
+        } catch (e: Exception) {}
+    }
+
     @TargetApi(Build.VERSION_CODES.P)
     fun getNavBarPosition(): Int {
         return try {
@@ -135,12 +154,4 @@ object IWindowManager {
             }
         }
     }
-
-    private class OverscanInfo(
-            val left: Int,
-            val top: Int,
-            val right: Int,
-            val bottom: Int,
-            val listener: ((Boolean) -> Unit)?
-    )
 }
