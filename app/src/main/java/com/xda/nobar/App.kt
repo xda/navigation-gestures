@@ -160,9 +160,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             Thread.setDefaultUncaughtExceptionHandler(crashHandler)
                         }
 
-                        override fun failure(p0: java.lang.Exception?) {
-
-                        }
+                        override fun failure(p0: Exception?) {}
                     }).build()
             )
 
