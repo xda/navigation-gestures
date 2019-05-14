@@ -194,6 +194,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             IWindowManager.watchRotation(displayChangeListener, Display.DEFAULT_DISPLAY)
             miniViewListener.register()
             cachedRotation = rotation
+            refreshScreenSize()
 
             isValidPremium = prefManager.validPrem
 
@@ -887,11 +888,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
-        fun handleRot(rot: Int? = null) {
+        fun handleRot(rot: Int = cachedRotation) {
             logicScope.launch {
                 synchronized(rotLock) {
-                    val newRot = rot ?: rotation
-
                     if (pillShown) {
                         bar.handleRotationOrAnchorUpdate()
                         bar.forceActionUp()
@@ -900,9 +899,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (prefManager.shouldUseOverscanMethod) {
                         when {
                             prefManager.useRot270Fix ||
-                                    prefManager.useRot180Fix -> handle180Or270(newRot)
-                            prefManager.useTabletMode -> handleTablet(newRot)
-                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie(newRot)
+                                    prefManager.useRot180Fix -> handle180Or270(rot)
+                            prefManager.useTabletMode -> handleTablet(rot)
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie(rot)
                             else -> handle0()
                         }
 

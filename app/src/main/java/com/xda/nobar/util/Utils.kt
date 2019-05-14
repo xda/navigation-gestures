@@ -206,7 +206,7 @@ fun Context.refreshScreenSize(): Point {
 
     val temp = Point().apply { display.getRealSize(this) }
 
-    cachedScreenSize = rotation.run {
+    cachedScreenSize = cachedRotation.run {
         if (prefManager.anchorPill
                 && (this == Surface.ROTATION_90 || this == Surface.ROTATION_270))
             Point(temp.y, temp.x) else temp
