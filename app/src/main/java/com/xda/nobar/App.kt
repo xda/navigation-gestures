@@ -101,6 +101,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
     private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()
     private val licenseCheckListeners = ArrayList<OnLicenseCheckResultListener>()
+    private val rotationWatchers = ArrayList<IRotationWatcher>()
 
     val uiHandler = UIHandler()
 
@@ -313,6 +314,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     fun unregisterOnSharedPreferenceChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
         prefChangeListeners.remove(listener)
+    }
+
+    fun addRotationWatcher(watcher: IRotationWatcher) {
+        rotationWatchers.add(watcher)
+    }
+
+    fun removeRotationWatcher(watcher: IRotationWatcher) {
+        rotationWatchers.remove(watcher)
     }
 
     /**
@@ -1081,6 +1090,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (oldRot != cachedRotation) {
                 uiHandler.handleRot()
             }
+
+            rotationWatchers.forEach { it.onRotationChanged(rotation) }
         }
 
         override fun onDisplayAdded(displayId: Int) {}
