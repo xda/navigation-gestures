@@ -35,6 +35,7 @@
     <string name="missing_perms">Mancano dei permessi!</string>
     <string name="premium_required">Richiesta versione premium!</string>
     <string name="nougat_required">Richiesto Android Nougat</string>
+    <string name="pie_required">Requires Pie</string>
     <string name="hold_time">Scorri e Mantieni (tempo)</string>
     <string name="vibration_duration">Durata vibrazione</string>
     <string name="buy_premium">Acquista Versione Premium</string>
@@ -242,6 +243,7 @@
     <string name="missing_perms_desc">Sembra che uno o più permessi siano stati revocati. Non preoccuparti, ti aiuteremo a riconcederli.</string>
     <string name="premium_required_desc">Quest\'azione richiede l\'add-on premium. Vuoi procedere all\'acquisto?</string>
     <string name="nougat_required_desc">Quest\'azione richiede un dispositivo con Android Nougat o superiori. Mi dispiace.</string>
+    <string name="pie_required_desc">This action requires a device running Android Pie or later. Sorry about that.</string>
     <string name="nougat_qs_reminder">Android Nougat permette di creare Pannelli personalizzati di impostazioni rapide, ne abbiamo incluso uno per attivare e disattivare Navigation Gestures. Puoi aggiungerlo scorrendo 2 volte verso il basso partendo dalla barra di stato, toccare la l\'icona della matita o \"Modifica\" e trascina il pannello di Navigation Gestures nell\'area attiva.</string>
     <string name="accessibility_screen_text">Quest\'applicazione utilizza un servizio di accessibilità per simulare i pulsanti come indietro, home e multitasking. Non li usiamo per collezionare alcun dato personale e nessuna azione verrà effettuata eccetto che dall\'utente.</string>
     <string name="sorry_desc">Dato che il tuo dispositivo ha Android Pie, quest\'applicazione non funzionerà.</string>
