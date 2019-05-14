@@ -210,7 +210,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     || prefManager.useRot180Fix
                     || prefManager.useTabletMode
                     || Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-                uiHandler.handleRot(true)
+                uiHandler.handleRot()
 
             if (!IntroActivity.needsToRun(this)) {
                 addImmersiveHelper()
@@ -234,13 +234,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 navbarListeners.forEach { it.onNavStateChange(prefManager.shouldUseOverscanMethod) }
             }
             PrefManager.ROT270_FIX -> {
-                uiHandler.handleRot(true)
+                uiHandler.handleRot()
             }
             PrefManager.ROT180_FIX -> {
-                uiHandler.handleRot(true)
+                uiHandler.handleRot()
             }
             PrefManager.TABLET_MODE -> {
-                uiHandler.handleRot(true)
+                uiHandler.handleRot()
             }
             PrefManager.ENABLE_IN_CAR_MODE -> {
                 val enabled = prefManager.enableInCarMode
@@ -414,7 +414,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 && hasWss) {
             addImmersiveHelper()
 
-            uiHandler.handleRot(true)
+            uiHandler.handleRot()
 
             val fullOverscan = prefManager.useFullOverscan
             if (fullOverscan == blackNav) blackNav = !fullOverscan
@@ -623,7 +623,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      * //TODO: More work may be needed on immersive detection
      */
     inner class UIHandler : ContentObserver(logicHandler), ViewTreeObserver.OnGlobalLayoutListener, (Boolean) -> Unit {
-        private var oldRot = Surface.ROTATION_0
         private var asDidContainApp: Boolean = false
 
         private var rotLock = Any()
@@ -888,30 +887,26 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
-        fun handleRot(overrideChange: Boolean = false) {
+        fun handleRot(rot: Int? = null) {
             logicScope.launch {
                 synchronized(rotLock) {
-                    val rot = rotation
+                    val newRot = rot ?: rotation
 
-                    if (oldRot != rot || overrideChange) {
-                        if (pillShown) {
-                            bar.handleRotationOrAnchorUpdate()
-                            bar.forceActionUp()
+                    if (pillShown) {
+                        bar.handleRotationOrAnchorUpdate()
+                        bar.forceActionUp()
+                    }
+
+                    if (prefManager.shouldUseOverscanMethod) {
+                        when {
+                            prefManager.useRot270Fix ||
+                                    prefManager.useRot180Fix -> handle180Or270(newRot)
+                            prefManager.useTabletMode -> handleTablet(newRot)
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie(newRot)
+                            else -> handle0()
                         }
 
-                        if (prefManager.shouldUseOverscanMethod) {
-                            when {
-                                prefManager.useRot270Fix ||
-                                        prefManager.useRot180Fix -> handle180Or270(rot)
-                                prefManager.useTabletMode -> handleTablet(rot)
-                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie(rot)
-                                else -> handle0()
-                            }
-
-                            if (blackNav) blackout.add()
-                        }
-
-                        oldRot = rot
+                        if (blackNav) blackout.add()
                     }
                 }
             }
@@ -1084,14 +1079,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         override fun onRotationChanged(rotation: Int) {
-            val oldRot = cachedRotation
             cachedRotation = rotation
 
-            if (oldRot != cachedRotation) {
-                uiHandler.handleRot()
-            }
-
             rotationWatchers.forEach { it.onRotationChanged(rotation) }
+
+            uiHandler.handleRot(rotation)
         }
 
         override fun onDisplayAdded(displayId: Int) {}

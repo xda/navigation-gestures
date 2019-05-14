@@ -124,8 +124,9 @@ object IWindowManager {
         return try {
             iWindowManagerClass
                     .getMethod("watchRotation", IRotationWatcher::class.java, Int::class.java)
-                    .invoke(iWindowManager) as Int
+                    .invoke(iWindowManager, watcher, displayId) as Int
         } catch (e: Exception) {
+            e.logStack()
             0
         }
     }
@@ -134,7 +135,7 @@ object IWindowManager {
         try {
             iWindowManagerClass
                     .getMethod("removeRotationWatcher", IRotationWatcher::class.java)
-                    .invoke(iWindowManager)
+                    .invoke(iWindowManager, watcher)
         } catch (e: Exception) {}
     }
 
