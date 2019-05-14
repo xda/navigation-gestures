@@ -35,6 +35,7 @@
     <string name="missing_perms">Thiếu quyền truy cập!</string>
     <string name="premium_required">Tác vụ cao cấp!</string>
     <string name="nougat_required">Yêu cầu Nougat</string>
+    <string name="pie_required">Requires Pie</string>
     <string name="hold_time">Thời gian vuốt và giữ</string>
     <string name="vibration_duration">Cường độ rung</string>
     <string name="buy_premium">Mua gói cao cấp</string>
@@ -245,6 +246,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="missing_perms_desc">Có vẻ như một hoặc nhiều giấy phép đã bị thu hồi bằng cách nào đó. Đừng lo lắng. Chúng tôi sẽ giúp ứng dụng hoạt động trở lại.</string>
     <string name="premium_required_desc">Hành động này đòi hỏi gói tiện ích cao cấp. Bạn có muốn mua nó?</string>
     <string name="nougat_required_desc">Hành động này đòi hỏi một thiết bị chạy Android Nougat hoặc mới. Xin lỗi về điều đó.</string>
+    <string name="pie_required_desc">This action requires a device running Android Pie or later. Sorry about that.</string>
     <string name="nougat_qs_reminder">Android Nougat cho phép nút tuỳ chỉnh nhanh, và chúng tôi đã thêm nút để bật tắt Navigation Gesture. Bạn có thể thêm vào bằng cách kéo thanh trạng thái xuống hai lần, bấm vào biểu tượng bút chì, hoặc \"EDIT\" rồi kéo nút Navigation Gesture vào khu vực được kích hoạt.</string>
     <string name="accessibility_screen_text">This app uses an Accessibility Service to simulate navigation button presses like the back, home, and multitasking buttons. We do not use it to collect any personal information, and no action will be performed except by the user.</string>
     <string name="sorry_desc">Thiết bị đang chạy Android P, vì vậy ứng dụng này hiện tại không hoạt động được.</string>
