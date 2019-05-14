@@ -160,6 +160,7 @@
     <string name="hide_text">Hide</string>
     <string name="help_about">Help &amp; About</string>
     <string name="fixed">Fixed!</string>
+    <string name="enable_analytics">Enable Firebase Analytics</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -232,6 +233,7 @@
     <string name="hide_beta_prompt_desc">Hide the beta sign-up button from the main screen.</string>
     <string name="pill_not_showing">The pill isn\'t showing on the lock screen, app permissions page, etc.</string>
     <string name="auto_hiding_navbar">The native navigation bar keeps hiding itself after I toggle off \"Hide Navigation Bar\".</string>
+    <string name="enable_analytics_desc">We use Firebase Analytics to help track crashes and other issues. We do not collect or share any personal data.</string>
 
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>

@@ -21,6 +21,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.github.anrwatchdog.ANRWatchDog
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.xda.nobar.activities.helpers.RequestPermissionsActivity
 import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
@@ -164,6 +165,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         }
                     }).build()
             )
+
+            FirebaseAnalytics.getInstance(this)
+                    .setAnalyticsCollectionEnabled(prefManager.enableAnalytics)
 
             if (prefManager.crashlyticsIdEnabled)
                 Crashlytics.setUserIdentifier(prefManager.crashlyticsId)

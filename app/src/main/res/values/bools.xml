@@ -24,4 +24,5 @@
     <bool name="fade_after_delay_default">false</bool>
     <bool name="fade_in_fullscreen_default">false</bool>
     <bool name="hide_beta_prompt_default">false</bool>
+    <bool name="enable_analytics_default">true</bool>
 </resources>

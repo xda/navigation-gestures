@@ -59,6 +59,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val FADE_AFTER_SPECIFIED_DELAY = "fade_after_specified_delay"
         const val FADE_IN_FULLSCREEN_APPS = "fade_in_fullscreen_apps"
         const val HIDE_BETA_PROMPT = "hide_beta_prompt"
+        const val ENABLE_ANALYTICS = "enable_analytics"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
@@ -223,6 +224,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         set(value) {
             putBoolean(HIDE_BETA_PROMPT, value)
         }
+    val enableAnalytics: Boolean
+        get() = getBoolean(ENABLE_ANALYTICS, resources.getBoolean(R.bool.enable_analytics_default))
 
     /**
      * Get the user-defined or default pill color

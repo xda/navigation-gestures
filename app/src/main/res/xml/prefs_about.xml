@@ -54,6 +54,13 @@
         <!--android:key="current_overscan" />-->
 
     <SwitchPreference
+        android:title="@string/enable_analytics"
+        android:summary="@string/enable_analytics_desc"
+        android:key="enable_analytics"
+        android:defaultValue="@bool/enable_analytics_default"
+        />
+
+    <SwitchPreference
         android:title="@string/enable_crashlytics_id"
         android:summary="@string/crashlytics_id_switch_desc"
         android:key="enable_crashlytics_id"
