@@ -73,6 +73,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             licenseCheckListeners.forEach { it.onResult(valid, reason) }
         })
     }
+    private val analytics by lazy {
+        FirebaseAnalytics.getInstance(this)
+    }
 
     private val premiumInstallListener = PremiumInstallListener()
     private val permissionListener = PermissionReceiver()
@@ -164,8 +167,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     }).build()
             )
 
-            FirebaseAnalytics.getInstance(this)
-                    .setAnalyticsCollectionEnabled(prefManager.enableAnalytics)
+            analytics.setAnalyticsCollectionEnabled(prefManager.enableAnalytics)
 
             if (prefManager.crashlyticsIdEnabled)
                 Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
@@ -267,6 +269,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
             PrefManager.FULL_OVERSCAN -> {
                 if (prefManager.shouldUseOverscanMethod) hideNav(false)
+            }
+            PrefManager.ENABLE_ANALYTICS -> {
+                analytics.setAnalyticsCollectionEnabled(prefManager.enableAnalytics)
             }
         }
 
