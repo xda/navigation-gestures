@@ -50,31 +50,41 @@ class BarViewActionHandler(private val bar: BarView) {
 
     private val orientationEventListener by lazy {
         object : OrientationEventListener(context) {
+            private var enabled = false
+
             override fun onOrientationChanged(orientation: Int) {
-                currentDegree = orientation
+                synchronized(this) {
+                    if (enabled) {
+                        disable()
+
+                        logicHandler.postDelayed({
+                            val currentAcc = Settings.System.getInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
+                            if (currentAcc == 0) {
+                                val rotation = when (orientation) {
+                                    in 45..134 -> Surface.ROTATION_270
+                                    in 135..224 -> Surface.ROTATION_180
+                                    in 225..314 -> Surface.ROTATION_90
+                                    else -> Surface.ROTATION_0
+                                }
+
+                                Settings.System.putInt(context.contentResolver, Settings.System.USER_ROTATION, rotation)
+                            }
+                        }, 20)
+                    }
+                }
+            }
+
+            override fun enable() {
+                enabled = true
+                super.enable()
+            }
+
+            override fun disable() {
+                enabled = false
+                super.disable()
             }
         }
     }
-
-    private var currentDegree = 0
-        set(value) {
-            field = value
-            orientationEventListener.disable()
-
-            logicHandler.postDelayed({
-                val currentAcc = Settings.System.getInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
-                if (currentAcc == 0) {
-                    val rotation = when (currentDegree) {
-                        in 45..134 -> Surface.ROTATION_270
-                        in 135..224 -> Surface.ROTATION_180
-                        in 225..314 -> Surface.ROTATION_90
-                        else -> Surface.ROTATION_0
-                    }
-
-                    Settings.System.putInt(context.contentResolver, Settings.System.USER_ROTATION, rotation)
-                }
-            }, 20)
-        }
 
     fun sendActionInternal(key: String, map: Map<String, Int>) {
         mainScope.launch {
