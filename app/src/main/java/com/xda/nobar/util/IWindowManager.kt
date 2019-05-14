@@ -123,8 +123,15 @@ object IWindowManager {
     fun watchRotation(watcher: IRotationWatcher, displayId: Int): Int {
         return try {
             iWindowManagerClass
-                    .getMethod("watchRotation", IRotationWatcher::class.java, Int::class.java)
-                    .invoke(iWindowManager, watcher, displayId) as Int
+                    .run {
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                            getMethod("watchRotation", IRotationWatcher::class.java)
+                                    .invoke(iWindowManager, watcher) as Int
+                        } else {
+                            getMethod("watchRotation", IRotationWatcher::class.java, Int::class.java)
+                                    .invoke(iWindowManager, watcher, displayId) as Int
+                        }
+                    }
         } catch (e: Exception) {
             e.logStack()
             0
