@@ -1,8 +1,10 @@
 package com.xda.nobar.activities.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.xda.nobar.R
+import com.xda.nobar.receivers.StartupReceiver
 import com.xda.nobar.util.relaunch
 import kotlinx.android.synthetic.main.activity_crash.*
 
@@ -19,6 +21,11 @@ class CrashActivity : AppCompatActivity() {
         }
 
         relaunch.setOnClickListener {
+            val relaunchIntent = Intent(this, StartupReceiver::class.java)
+            relaunchIntent.action = StartupReceiver.ACTION_RELAUNCH
+
+            sendBroadcast(relaunchIntent)
+
             finish()
         }
     }

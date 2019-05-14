@@ -151,6 +151,7 @@
         <activity android:name=".activities.ui.CrashActivity"
             android:theme="@style/AppTheme"
             android:excludeFromRecents="true"
+            android:process=":crash"
             />
 
         <service

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.DeadObjectException
 import android.os.Process
+import android.os.SystemClock
 import com.crashlytics.android.Crashlytics
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.activities.ui.CrashActivity
@@ -27,7 +28,7 @@ class CrashHandler(private val prevHandler: Thread.UncaughtExceptionHandler?, pr
             )
 
             val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 100, crashIntent)
+            am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 100, crashIntent)
 
             if (needsToLog) {
                 prevHandler?.uncaughtException(t, e)

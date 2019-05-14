@@ -59,6 +59,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val nm by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
     val imm by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
     val dm by lazy { getSystemService(Context.DISPLAY_SERVICE) as DisplayManager }
+    val am by lazy { getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager }
 
     val rootWrapper by lazy { RootWrapper(this) }
     val blackout by lazy { NavBlackout(this) }
@@ -111,6 +112,17 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val disabledBarReasonManager = DisabledReasonManager()
     val disabledImmReasonManager = DisabledReasonManager()
 
+    private val isMainProcess: Boolean
+        get() {
+            val myPid = Process.myPid()
+
+            return am.runningAppProcesses
+                    ?.filter { it.pid == myPid }
+                    ?.map { it.processName }
+                    ?.filter { it == packageName }
+                    ?.isNotEmpty() == true
+        }
+
     override fun onCreate() {
         super.onCreate()
 
@@ -127,87 +139,89 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             setHiddenApiExemptions.invoke(vmRuntime, arrayOf("L"))
         }
 
-        if (BuildConfig.DEBUG) {
-            val crashHandler = CrashHandler(Thread.getDefaultUncaughtExceptionHandler(), this@App)
-            Thread.setDefaultUncaughtExceptionHandler(crashHandler)
-        }
-
-        val core = CrashlyticsCore.Builder()
-                .disabled(BuildConfig.DEBUG)
-                .build()
-
-        Fabric.with(
-                Fabric.Builder(this).kits(
-                        Crashlytics.Builder()
-                                .core(core)
-                                .build()
-                ).initializationCallback(object : InitializationCallback<Fabric> {
-                    override fun success(p0: Fabric?) {
-                        val crashHandler = CrashHandler(Thread.getDefaultUncaughtExceptionHandler(), this@App)
-                        Thread.setDefaultUncaughtExceptionHandler(crashHandler)
-                    }
-
-                    override fun failure(p0: java.lang.Exception?) {
-
-                    }
-                }).build()
-        )
-
-        if (prefManager.crashlyticsIdEnabled)
-            Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
-
-        if (!prefManager.firstRun) {
-            isSuAsync(mainHandler) {
-                if (it) rootWrapper.onCreate()
+        if (isMainProcess) {
+            if (BuildConfig.DEBUG) {
+                val crashHandler = CrashHandler(null, this@App)
+                Thread.setDefaultUncaughtExceptionHandler(crashHandler)
             }
-        }
 
-        val watchDog = ANRWatchDog()
-        watchDog.setReportMainThreadOnly()
-        watchDog.start()
-        watchDog.setANRListener {
-            Crashlytics.logException(it)
-        }
+            val core = CrashlyticsCore.Builder()
+                    .disabled(BuildConfig.DEBUG)
+                    .build()
 
-        if (IntroActivity.needsToRun(this)) {
-            IntroActivity.start(this)
-        }
+            Fabric.with(
+                    Fabric.Builder(this).kits(
+                            Crashlytics.Builder()
+                                    .core(core)
+                                    .build()
+                    ).initializationCallback(object : InitializationCallback<Fabric> {
+                        override fun success(p0: Fabric?) {
+                            val crashHandler = CrashHandler(Thread.getDefaultUncaughtExceptionHandler(), this@App)
+                            Thread.setDefaultUncaughtExceptionHandler(crashHandler)
+                        }
 
-        stateHandler.register()
-        uiHandler.register()
-        carModeHandler.register()
-        premiumInstallListener.register()
-        permissionListener.register()
-        dm.registerDisplayListener(displayChangeListener, logicHandler)
-        miniViewListener.register()
-        cachedRotation = rotation
+                        override fun failure(p0: java.lang.Exception?) {
 
-        isValidPremium = prefManager.validPrem
+                        }
+                    }).build()
+            )
 
-        prefManager.registerOnSharedPreferenceChangeListener(this)
+            if (prefManager.crashlyticsIdEnabled)
+                Crashlytics.setUserIdentifier(prefManager.crashlyticsId)
 
-        refreshPremium()
+            if (!prefManager.firstRun) {
+                isSuAsync(mainHandler) {
+                    if (it) rootWrapper.onCreate()
+                }
+            }
 
-        if (prefManager.isActive
-                && !IntroActivity.needsToRun(this)) {
-            addBar()
-        }
+            val watchDog = ANRWatchDog()
+            watchDog.setReportMainThreadOnly()
+            watchDog.start()
+            watchDog.setANRListener {
+                Crashlytics.logException(it)
+            }
 
-        if (prefManager.useRot270Fix
-                || prefManager.useRot180Fix
-                || prefManager.useTabletMode
-                || Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-            uiHandler.handleRot(true)
+            if (IntroActivity.needsToRun(this)) {
+                IntroActivity.start(this)
+            }
 
-        if (!IntroActivity.needsToRun(this)) {
-            addImmersiveHelper()
-            uiHandler.onGlobalLayout()
-            immersiveHelperManager.addOnGlobalLayoutListener(uiHandler)
-            immersiveHelperManager.immersiveListener = uiHandler
-        }
+            stateHandler.register()
+            uiHandler.register()
+            carModeHandler.register()
+            premiumInstallListener.register()
+            permissionListener.register()
+            dm.registerDisplayListener(displayChangeListener, logicHandler)
+            miniViewListener.register()
+            cachedRotation = rotation
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            appOps.startWatchingMode(AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW, packageName, this)
+            isValidPremium = prefManager.validPrem
+
+            prefManager.registerOnSharedPreferenceChangeListener(this)
+
+            refreshPremium()
+
+            if (prefManager.isActive
+                    && !IntroActivity.needsToRun(this)) {
+                addBar()
+            }
+
+            if (prefManager.useRot270Fix
+                    || prefManager.useRot180Fix
+                    || prefManager.useTabletMode
+                    || Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+                uiHandler.handleRot(true)
+
+            if (!IntroActivity.needsToRun(this)) {
+                addImmersiveHelper()
+                uiHandler.onGlobalLayout()
+                immersiveHelperManager.addOnGlobalLayoutListener(uiHandler)
+                immersiveHelperManager.immersiveListener = uiHandler
+            }
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                appOps.startWatchingMode(AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW, packageName, this)
+            }
         }
     }
 
