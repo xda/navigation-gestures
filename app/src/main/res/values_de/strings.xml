@@ -35,6 +35,7 @@
     <string name="missing_perms">Berechtigungen fehlen!</string>
     <string name="premium_required">Premium Aktionen!</string>
     <string name="nougat_required">Benötigt Nougat</string>
+    <string name="pie_required">Requires Pie</string>
     <string name="hold_time">Wisch- und Haltezeit</string>
     <string name="vibration_duration">Vibrationsdauer</string>
     <string name="buy_premium">Premium kaufen</string>
@@ -242,6 +243,7 @@
     <string name="missing_perms_desc">Sieht so aus, als wäre eine Genehmigung entzogen worden. Keine Sorge, wir werden dir helfen dies wieder zum Laufen zu bekommen.</string>
     <string name="premium_required_desc">Diese Aktion erfordert das premium Add-On. Möchtest du es erwerben?</string>
     <string name="nougat_required_desc">Diese Aktion erforder, dass das Gerät mit Android Nougat oder neuer läuft. Bitte entschuldige dies.</string>
+    <string name="pie_required_desc">This action requires a device running Android Pie or later. Sorry about that.</string>
     <string name="nougat_qs_reminder">Android Nougat erlaubt Quick Settings Kacheln und wir fügen eine hinzu um Navigation Gestures an und aus zu machen. Du kannst die Kachel hinzufügen, indem du von der Statusleiste zwei Mal nach unten wischt, das Stift Symbol oder \"EDIT\" antippst und die Navigation Gesture Kachel in die Active Area verschiebst.</string>
     <string name="accessibility_screen_text">Diese App nutzt den Eingabehilfe Service, um die Navigationstasten wie Zurück, Home und Multitasking zu simulieren. Wir nutzen es nicht um persönliche Informationen zu sammeln und keine Aktion wird durchgeführt, außer von dem Nutzer.</string>
     <string name="sorry_desc">Diese App funktioniert nicht mit Android P.</string>
