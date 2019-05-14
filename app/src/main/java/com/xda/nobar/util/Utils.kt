@@ -111,7 +111,7 @@ val Context.isAccessibilityEnabled: Boolean
     }
 
 val Context.isLandscape: Boolean
-    get() = rotation.run { this == Surface.ROTATION_90 || this == Surface.ROTATION_270 }
+    get() = cachedRotation.run { this == Surface.ROTATION_90 || this == Surface.ROTATION_270 }
 
 /**
  * Check if the navbar is currently hidden
@@ -222,9 +222,11 @@ fun Context.refreshScreenSize(): Point {
 val Context.realScreenSize: Point
     get() = Point(cachedScreenSize ?: refreshScreenSize())
 
+var cachedRotation = Integer.MIN_VALUE
+
 val Context.rotation: Int
     get() {
-        return app.wm.defaultDisplay.rotation
+        return app.wm.defaultDisplay.rotation.also { cachedRotation = it }
     }
 
 var Context.touchWizNavEnabled: Boolean

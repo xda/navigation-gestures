@@ -147,7 +147,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 if (context.prefManager.run { shouldUseOverscanMethod || useTabletMode }) {
                     val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
 
-                    val rotation = context.rotation
+                    val rotation = cachedRotation
 
                     if (rotation == Surface.ROTATION_270) {
                         if (!context.prefManager.useRot270Fix)
@@ -173,11 +173,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     val isVertical: Boolean
         get() = context.prefManager.anchorPill
-                && context.rotation.run { this == Surface.ROTATION_270 || this == Surface.ROTATION_90 }
+                && cachedRotation.run { this == Surface.ROTATION_270 || this == Surface.ROTATION_90 }
 
     val is270Vertical: Boolean
         get() = isVertical
-                && context.rotation == Surface.ROTATION_270
+                && cachedRotation == Surface.ROTATION_270
 
     private val horizontalGestureManager = BarViewGestureManagerHorizontal(this)
     private val verticalGestureManager = BarViewGestureManagerVertical(this)
@@ -352,9 +352,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * Perform setup
      */
     override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-
         context.app.pillShown = true
+
+        super.onAttachedToWindow()
 
         show(null)
 
@@ -495,9 +495,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     fun forceActionUp() {
         mainScope.launch {
-//            val uptime = SystemClock.uptimeMillis()
-//            currentGestureDetector.onTouchEvent(MotionEvent.obtain(uptime, uptime, MotionEvent.ACTION_UP, 0f, 0f, 0))
-
             currentGestureDetector.handleActionUp(true)
         }
     }
@@ -682,13 +679,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun changePillMargins(margins: Rect) {
-        (pill.layoutParams as LinearLayout.LayoutParams).apply {
-            bottomMargin = margins.bottom
-            topMargin = margins.top
-            leftMargin = margins.left
-            rightMargin = margins.right
+        mainScope.launch {
+            (pill.layoutParams as LinearLayout.LayoutParams).apply {
+                bottomMargin = margins.bottom
+                topMargin = margins.top
+                leftMargin = margins.left
+                rightMargin = margins.right
 
-            pill.layoutParams = pill.layoutParams
+                pill.layoutParams = pill.layoutParams
+            }
         }
     }
 
@@ -752,9 +751,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 //    }
 
     private fun adjustPillShadow() {
-        try {
-            //apparently setElevation() doesn't exist on some devices?
-            pill.elevation = context.dpAsPx(if (context.prefManager.shouldShowShadow) 2 else 0).toFloat()
+        logicScope.launch {
             (pill.layoutParams as LinearLayout.LayoutParams).apply {
                 val shadow = context.prefManager.shouldShowShadow
 
@@ -778,9 +775,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     bottomMargin = b
                 }
 
-                pill.layoutParams = this
+                mainScope.launch {
+                    pill.elevation = context.dpAsPx(if (context.prefManager.shouldShowShadow) 2 else 0).toFloat()
+                    pill.layoutParams = this@apply
+                }
             }
-        } catch (e: NoSuchMethodError) {}
+        }
     }
 
     fun setMoveForKeyboard(move: Boolean) {
@@ -830,12 +830,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun handleRotationOrAnchorUpdate() {
-        mainScope.launch {
+        logicScope.launch {
             verticalMode(isVertical)
-
             adjustPillShadow()
             updateLargerHitbox()
-            updateDividers()
+
+            mainScope.launch {
+                updateDividers()
+            }
         }
     }
 

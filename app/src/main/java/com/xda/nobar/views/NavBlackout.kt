@@ -52,7 +52,7 @@ class NavBlackout : LinearLayout {
 
     fun add() {
         val params = if (context.prefManager.useTabletMode) bottomParams
-        else when (context.rotation) {
+        else when (cachedRotation) {
             Surface.ROTATION_0 -> bottomParams
             Surface.ROTATION_180 -> bottomParams
             Surface.ROTATION_90 -> rightParams

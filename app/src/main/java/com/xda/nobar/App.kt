@@ -88,10 +88,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     var navHidden = false
     var pillShown = false
+        set(value) {
+            field = value
+            if (field) addedPillButNotYetShown = false
+        }
     var helperAdded = false
     var keyboardShown = false
     var isValidPremium = false
         get() = field || BuildConfig.DEBUG
+
+    private var addedPillButNotYetShown = false
 
     private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
     private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()
@@ -174,6 +180,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         permissionListener.register()
         dm.registerDisplayListener(displayChangeListener, logicHandler)
         miniViewListener.register()
+        cachedRotation = rotation
 
         isValidPremium = prefManager.validPrem
 
@@ -303,7 +310,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (disabledBarReasonManager.isEmpty() && !pillShown) {
                 if (callListeners) gestureListeners.forEach { it.onGestureStateChange(bar, true) }
 
-                addBarInternal()
+                addBarInternal(false)
             }
         }
     }
@@ -469,9 +476,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     private fun addBarInternalUnconditionally() {
-        try {
-            wm.addView(bar, bar.params)
-        } catch (e: Exception) {
+        if (!addedPillButNotYetShown) {
+            addedPillButNotYetShown = true
+
+            try {
+                wm.addView(bar, bar.params)
+            } catch (e: Exception) {}
         }
     }
 
@@ -593,6 +603,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     inner class UIHandler : ContentObserver(logicHandler), ViewTreeObserver.OnGlobalLayoutListener, (Boolean) -> Unit {
         private var oldRot = Surface.ROTATION_0
         private var asDidContainApp: Boolean = false
+
+        private var rotLock = Any()
 
         fun register() {
             contentResolver.registerContentObserver(Settings.Global.getUriFor(POLICY_CONTROL), true, this)
@@ -750,8 +762,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 bar.updatePositionAndDimens()
             }
 
-            handleRot()
-
             logicScope.launch {
                 synchronized(this) {
                     if (!bar.isCarryingOutTouchAction) {
@@ -857,27 +867,31 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         fun handleRot(overrideChange: Boolean = false) {
-            val rot = wm.defaultDisplay.rotation
+            logicScope.launch {
+                synchronized(rotLock) {
+                    val rot = rotation
 
-            if (oldRot != rot || overrideChange) {
-                if (pillShown) {
-                    bar.handleRotationOrAnchorUpdate()
-                    bar.forceActionUp()
-                }
+                    if (oldRot != rot || overrideChange) {
+                        if (pillShown) {
+                            bar.handleRotationOrAnchorUpdate()
+                            bar.forceActionUp()
+                        }
 
-                if (prefManager.shouldUseOverscanMethod) {
-                    when {
-                        prefManager.useRot270Fix ||
-                                prefManager.useRot180Fix -> handle180Or270()
-                        prefManager.useTabletMode -> handleTablet()
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie()
-                        else -> handle0()
+                        if (prefManager.shouldUseOverscanMethod) {
+                            when {
+                                prefManager.useRot270Fix ||
+                                        prefManager.useRot180Fix -> handle180Or270(rot)
+                                prefManager.useTabletMode -> handleTablet(rot)
+                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie(rot)
+                                else -> handle0()
+                            }
+
+                            if (blackNav) blackout.add()
+                        }
+
+                        oldRot = rot
                     }
-
-                    if (blackNav) blackout.add()
                 }
-
-                oldRot = rot
             }
         }
 
@@ -885,17 +899,17 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
         }
 
-        private fun handle180Or270() {
-            if (wm.defaultDisplay.rotation == Surface.ROTATION_270) {
+        private fun handle180Or270(rotation: Int) {
+            if (rotation == Surface.ROTATION_270) {
                 IWindowManager.setOverscanAsync(0, -adjustedNavBarHeight, 0, 0)
             } else {
                 IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
             }
         }
 
-        private fun handleTablet() {
+        private fun handleTablet(rotation: Int) {
             if (prefManager.shouldUseOverscanMethod) {
-                when (wm.defaultDisplay.rotation) {
+                when (rotation) {
                     Surface.ROTATION_0 -> {
                         IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
                     }
@@ -915,10 +929,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
-        private fun handlePie() {
+        private fun handlePie(rotation: Int) {
             if (prefManager.shouldUseOverscanMethod) {
                 val navSide = IWindowManager.getNavBarPosition()
-                val rotation = wm.defaultDisplay.rotation
 
                 when (navSide) {
                     IWindowManager.NAV_BAR_LEFT -> {
@@ -1041,11 +1054,18 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     inner class DisplayChangeListener : DisplayManager.DisplayListener {
         override fun onDisplayChanged(displayId: Int) {
             if (displayId == wm.defaultDisplay.displayId) {
+                val oldRot = cachedRotation
+                val newRot = rotation
+
                 val oldSize = realScreenSize
                 val newSize = refreshScreenSize()
 
-                if (oldSize != newSize) {
+                if (oldSize != newSize && pillShown) {
                     bar.updatePositionAndDimens()
+                }
+
+                if (oldRot != newRot) {
+                    uiHandler.handleRot()
                 }
             }
         }
