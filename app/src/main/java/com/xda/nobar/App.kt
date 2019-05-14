@@ -944,9 +944,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         private fun handlePie(rotation: Int) {
             if (prefManager.shouldUseOverscanMethod) {
-                val navSide = IWindowManager.getNavBarPosition()
-
-                when (navSide) {
+                when (IWindowManager.getNavBarPosition()) {
                     IWindowManager.NAV_BAR_LEFT -> {
                         when (rotation) {
                             Surface.ROTATION_0 -> {
