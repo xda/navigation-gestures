@@ -1068,12 +1068,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     inner class DisplayChangeListener : IRotationWatcher.Stub(), DisplayManager.DisplayListener {
         override fun onDisplayChanged(displayId: Int) {
             if (displayId == wm.defaultDisplay.displayId) {
-                val oldSize = realScreenSize
-                val newSize = refreshScreenSize()
-
-                if (oldSize != newSize && pillShown) {
-                    bar.updatePositionAndDimens()
-                }
+                handleDisplayChange()
             }
         }
 
@@ -1081,13 +1076,22 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             cachedRotation = rotation
 
             rotationWatchers.forEach { it.onRotationChanged(rotation) }
-
             uiHandler.handleRot(rotation)
+            handleDisplayChange()
         }
 
         override fun onDisplayAdded(displayId: Int) {}
 
         override fun onDisplayRemoved(displayId: Int) {}
+
+        private fun handleDisplayChange() {
+            val oldSize = realScreenSize
+            val newSize = refreshScreenSize()
+
+            if (oldSize != newSize && pillShown) {
+                bar.updatePositionAndDimens()
+            }
+        }
     }
 
     inner class MiniViewListener : BroadcastReceiver() {

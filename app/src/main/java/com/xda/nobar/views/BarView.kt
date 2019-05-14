@@ -406,6 +406,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
 
             PrefManager.ANCHOR_PILL -> {
+                context.refreshScreenSize()
                 handleRotationOrAnchorUpdate()
                 updateDividers()
             }
