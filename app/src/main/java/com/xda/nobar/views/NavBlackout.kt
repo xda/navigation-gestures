@@ -20,6 +20,8 @@ class NavBlackout : LinearLayout {
         setBackgroundColor(Color.BLACK)
     }
 
+    var isAdded = false
+
     private val baseParams = WindowManager.LayoutParams().apply {
         type = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY else WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
         flags = WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS or
@@ -50,6 +52,16 @@ class NavBlackout : LinearLayout {
         x = -context.adjustedNavBarHeight
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        isAdded = true
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        isAdded = false
+    }
+
     fun add() {
         val params = if (context.prefManager.useTabletMode) bottomParams
         else when (cachedRotation) {
@@ -60,11 +72,10 @@ class NavBlackout : LinearLayout {
             else -> return
         }
 
-        remove()
-
         mainScope.launch {
             try {
-                context.app.wm.addView(this@NavBlackout, params)
+                if (isAdded) context.app.wm.updateViewLayout(this@NavBlackout, params)
+                else context.app.wm.addView(this@NavBlackout, params)
             } catch (e: Exception) {}
         }
     }
