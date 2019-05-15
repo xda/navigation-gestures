@@ -162,6 +162,7 @@
     <string name="help_about">Help &amp; About</string>
     <string name="fixed">Fixed!</string>
     <string name="enable_analytics">Enable Firebase Analytics</string>
+    <string name="brightness_adjustment_step_size">Brightness Adjustment Step Size</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizza gesture</string>
     <string name="appearance_desc">Personalizza l\'aspetto della pillola</string>
