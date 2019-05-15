@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.hardware.display.BrightnessConfiguration
 import android.media.AudioManager
 import android.net.wifi.WifiManager
 import android.os.Build
@@ -401,7 +402,7 @@ class BarViewActionHandler(private val bar: BarView) {
                             }
                         }
                     }
-                    bar.actionHolder.premTypeMute -> {
+                    bar.actionHolder.premTypeMute -> context.runPremiumAction {
                         //isStreamMute exists as a hidden method in Lollipop
                         val isMuted = audio.isStreamMute(AudioManager.STREAM_MUSIC)
 
@@ -412,6 +413,35 @@ class BarViewActionHandler(private val bar: BarView) {
                             audio.setStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
                         }
                     }
+                    bar.actionHolder.premTypeToggleAutoBrightness -> context.runPremiumAction { context.runSystemSettingsAction {
+                        val isAuto = Settings.System.getInt(
+                                context.contentResolver,
+                                Settings.System.SCREEN_BRIGHTNESS_MODE,
+                                Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC
+
+                        Settings.System.putInt(
+                                context.contentResolver,
+                                Settings.System.SCREEN_BRIGHTNESS_MODE,
+                                if (isAuto) Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
+                                else Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC
+                        )
+                    } }
+                    bar.actionHolder.premTypeBrightnessDown -> context.runPremiumAction { context.runSystemSettingsAction {
+                        val currentBrightness = Settings.System.getInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, 0)
+                        var newBrightness = currentBrightness - 2
+
+                        if (newBrightness < 0) newBrightness = 0
+
+                        Settings.System.putInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, newBrightness)
+                    } }
+                    bar.actionHolder.premTypeBrightnessUp -> context.runPremiumAction { context.runSystemSettingsAction {
+                        val currentBrightness = Settings.System.getInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, 0)
+                        var newBrightness = currentBrightness + 2
+
+                        if (newBrightness > 255) newBrightness = 255
+
+                        Settings.System.putInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, newBrightness)
+                    } }
                 }
             } catch (e: Exception) {
                 if (BuildConfig.DEBUG) {

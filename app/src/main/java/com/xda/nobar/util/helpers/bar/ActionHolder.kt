@@ -159,6 +159,7 @@ class ActionHolder private constructor(private val context: Context) {
     val premTypePower by lazy { context.resources.getString(R.string.prem_type_power).toInt() }
     val typeSplit by lazy { context.resources.getString(R.string.type_split).toInt() }
     val premTypeCycleRinger by lazy { context.resources.getString(R.string.prem_type_cycle_ringer).toInt() }
+    val premTypeToggleAutoBrightness by lazy { context.resources.getString(R.string.prem_type_toggle_auto_brightness).toInt() }
     val premTypeMute by lazy { context.resources.getString(R.string.prem_type_mute).toInt() }
     val premTypePlayPause by lazy { context.resources.getString(R.string.prem_type_play_pause).toInt() }
     val premTypePrev by lazy { context.resources.getString(R.string.prem_type_prev).toInt() }
@@ -182,6 +183,8 @@ class ActionHolder private constructor(private val context: Context) {
     val premTypeKillBackground by lazy { context.resources.getString(R.string.prem_type_kill_background).toInt() }
     val premTypeVolumeDown by lazy { context.resources.getString(R.string.prem_type_vol_down).toInt() }
     val premTypeVolumeUp by lazy { context.resources.getString(R.string.prem_type_vol_up).toInt() }
+    val premTypeBrightnessDown by lazy { context.resources.getString(R.string.prem_type_brightness_down).toInt() }
+    val premTypeBrightnessUp by lazy { context.resources.getString(R.string.prem_type_brightness_up).toInt() }
 
     val typeRootHoldBack by lazy { context.resources.getString(R.string.type_hold_back).toInt() }
     val typeRootForward by lazy { context.resources.getString(R.string.type_forward).toInt() }

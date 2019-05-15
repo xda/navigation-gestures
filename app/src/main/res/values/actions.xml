@@ -44,6 +44,9 @@
     <string name="prem_kill_background">Kill All Background Apps (Premium)</string>
     <string name="prem_cycle_ringer">Cycle Ringer Mode (Premium)</string>
     <string name="prem_toggle_mute">Toggle Media Mute (Premium)</string>
+    <string name="prem_toggle_auto_brightness">Toggle Auto Brightness (Premium)</string>
+    <string name="prem_brightness_down">Brightness Down (Premium)</string>
+    <string name="prem_brightness_up">Brightness Up (Premium)</string>
 
     <!--Action Values-->
     <string name="type_no_action">-1</string>
@@ -59,6 +62,7 @@
     <string name="prem_type_power">9</string>
     <string name="type_split">10</string>
     <string name="prem_type_cycle_ringer">11</string>
+    <string name="prem_type_toggle_auto_brightness">12</string>
     <string name="prem_type_mute">13</string>
     <string name="prem_type_play_pause">14</string>
     <string name="prem_type_prev">15</string>
@@ -86,6 +90,8 @@
     <string name="prem_type_screen_timeout">37</string>
     <string name="prem_type_launch_shortcut">38</string>
     <string name="prem_type_kill_background">39</string>
+    <string name="prem_type_brightness_down">40</string>
+    <string name="prem_type_brightness_up">41</string>
 
     <!--Main Action Keys-->
     <string name="action_left">left</string>

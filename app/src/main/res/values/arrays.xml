@@ -53,6 +53,9 @@
         <item>@string/prem_wifi</item>
         <item>@string/prem_toggle_battery_saver</item>
         <item>@string/prem_toggle_screen_timeout</item>
+        <item>@string/prem_toggle_auto_brightness</item>
+        <item>@string/prem_brightness_down</item>
+        <item>@string/prem_brightness_up</item>
     </string-array>
 
     <string-array name="system_action_values">
@@ -70,6 +73,9 @@
         <item>@string/prem_type_wifi</item>
         <item>@string/prem_type_battery_saver</item>
         <item>@string/prem_type_screen_timeout</item>
+        <item>@string/prem_type_toggle_auto_brightness</item>
+        <item>@string/prem_type_brightness_down</item>
+        <item>@string/prem_type_brightness_up</item>
     </string-array>
 
     <string-array name="media_action_names">
