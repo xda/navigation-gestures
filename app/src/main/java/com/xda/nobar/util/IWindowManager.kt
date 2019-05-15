@@ -133,7 +133,6 @@ object IWindowManager {
                         }
                     }
         } catch (e: Exception) {
-            e.logStack()
             0
         }
     }

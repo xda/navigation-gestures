@@ -10,8 +10,6 @@
         <item>@string/type_forward</item>
         <item>@string/type_menu</item>
         <item>@string/type_sleep</item>
-        <item>@string/type_vol_up</item>
-        <item>@string/type_vol_down</item>
     </string-array>
 
     <string-array name="no_action_names">
@@ -79,6 +77,10 @@
         <item>@string/prem_play_pause</item>
         <item>@string/prem_next</item>
         <item>@string/prem_volume_panel</item>
+        <item>@string/prem_vol_down</item>
+        <item>@string/prem_vol_up</item>
+        <item>@string/prem_cycle_ringer</item>
+        <item>@string/prem_toggle_mute</item>
     </string-array>
 
     <string-array name="media_action_values">
@@ -86,6 +88,10 @@
         <item>@string/prem_type_play_pause</item>
         <item>@string/prem_type_next</item>
         <item>@string/prem_type_volume_panel</item>
+        <item>@string/prem_type_vol_down</item>
+        <item>@string/prem_type_vol_up</item>
+        <item>@string/prem_type_cycle_ringer</item>
+        <item>@string/prem_type_mute</item>
     </string-array>
 
     <string-array name="apps_action_names">

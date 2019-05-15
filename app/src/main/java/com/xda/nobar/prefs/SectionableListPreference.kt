@@ -186,6 +186,12 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         dialog = builder.show()
     }
 
+    override fun onDetached() {
+        super.onDetached()
+
+        dialog?.dismiss()
+    }
+
     private fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
         var whichButton = DialogInterface.BUTTON_NEGATIVE
 

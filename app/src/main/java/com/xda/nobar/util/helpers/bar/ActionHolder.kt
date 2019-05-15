@@ -158,8 +158,7 @@ class ActionHolder private constructor(private val context: Context) {
     val premTypeQs by lazy { context.resources.getString(R.string.prem_type_qs).toInt() }
     val premTypePower by lazy { context.resources.getString(R.string.prem_type_power).toInt() }
     val typeSplit by lazy { context.resources.getString(R.string.type_split).toInt() }
-    val premTypeVibe by lazy { context.resources.getString(R.string.prem_type_vibe).toInt() }
-    val premTypeSilent by lazy { context.resources.getString(R.string.prem_type_silent).toInt() }
+    val premTypeCycleRinger by lazy { context.resources.getString(R.string.prem_type_cycle_ringer).toInt() }
     val premTypeMute by lazy { context.resources.getString(R.string.prem_type_mute).toInt() }
     val premTypePlayPause by lazy { context.resources.getString(R.string.prem_type_play_pause).toInt() }
     val premTypePrev by lazy { context.resources.getString(R.string.prem_type_prev).toInt() }
@@ -181,12 +180,11 @@ class ActionHolder private constructor(private val context: Context) {
     val premTypeScreenTimeout by lazy { context.resources.getString(R.string.prem_type_screen_timeout).toInt() }
     val premTypeLaunchShortcut by lazy { context.resources.getString(R.string.prem_type_launch_shortcut).toInt() }
     val premTypeKillBackground by lazy { context.resources.getString(R.string.prem_type_kill_background).toInt() }
+    val premTypeVolumeDown by lazy { context.resources.getString(R.string.prem_type_vol_down).toInt() }
+    val premTypeVolumeUp by lazy { context.resources.getString(R.string.prem_type_vol_up).toInt() }
 
     val typeRootHoldBack by lazy { context.resources.getString(R.string.type_hold_back).toInt() }
     val typeRootForward by lazy { context.resources.getString(R.string.type_forward).toInt() }
     val typeRootMenu by lazy { context.resources.getString(R.string.type_menu).toInt() }
     val typeRootSleep by lazy { context.resources.getString(R.string.type_sleep).toInt() }
-    val typeRootVolUp by lazy { context.resources.getString(R.string.type_vol_up).toInt() }
-    val typeRootVolDown by lazy { context.resources.getString(R.string.type_vol_down).toInt() }
-
 }

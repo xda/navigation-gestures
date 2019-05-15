@@ -251,7 +251,8 @@ class BarViewActionHandler(private val bar: BarView) {
                         try {
                             val shortcut = context.prefManager.getShortcut(key)
                                     ?: return@runPremiumAction
-                            val intent = (shortcut.intent ?: return@runPremiumAction).clone() as Intent
+                            val intent = (shortcut.intent
+                                    ?: return@runPremiumAction).clone() as Intent
 
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
@@ -363,14 +364,53 @@ class BarViewActionHandler(private val bar: BarView) {
                     bar.actionHolder.premTypeKillBackground -> context.runPremiumAction {
                         killAllBackgroundProcesses()
                     }
-                    bar.actionHolder.premTypeVibe -> {
-                        //TODO: Implement
+                    bar.actionHolder.premTypeVolumeDown -> context.runPremiumAction {
+                        audio.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
+                        audio.adjustVolume(
+                                AudioManager.ADJUST_LOWER,
+                                AudioManager.FLAG_SHOW_UI or
+                                        AudioManager.FLAG_VIBRATE
+                        )
                     }
-                    bar.actionHolder.premTypeSilent -> {
-                        //TODO: Implement
+                    bar.actionHolder.premTypeVolumeUp -> context.runPremiumAction {
+                        audio.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
+                        audio.adjustVolume(
+                                AudioManager.ADJUST_RAISE,
+                                AudioManager.FLAG_SHOW_UI or
+                                        AudioManager.FLAG_VIBRATE
+                        )
+                    }
+                    bar.actionHolder.premTypeCycleRinger -> context.runPremiumAction {
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || context.app.nm.isNotificationPolicyAccessGranted) {
+                            val newMode = when (audio.ringerMode) {
+                                AudioManager.RINGER_MODE_SILENT -> AudioManager.RINGER_MODE_VIBRATE
+                                AudioManager.RINGER_MODE_VIBRATE -> AudioManager.RINGER_MODE_NORMAL
+                                else -> AudioManager.RINGER_MODE_SILENT
+                            }
+
+                            audio.ringerMode = newMode
+
+                            audio.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
+                        } else {
+                            mainScope.launch {
+                                Toast.makeText(context, R.string.grant_notification_policy, Toast.LENGTH_SHORT).show()
+                                context.startActivity(
+                                        Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+                                                .apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
+                                )
+                            }
+                        }
                     }
                     bar.actionHolder.premTypeMute -> {
-                        //TODO: Implement
+                        //isStreamMute exists as a hidden method in Lollipop
+                        val isMuted = audio.isStreamMute(AudioManager.STREAM_MUSIC)
+
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                            audio.setStreamVolume(AudioManager.STREAM_MUSIC, if (isMuted) AudioManager.ADJUST_UNMUTE else AudioManager.ADJUST_MUTE, AudioManager.FLAG_SHOW_UI)
+                        } else {
+                            audio.setStreamMute(AudioManager.STREAM_MUSIC, !isMuted)
+                            audio.setStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
+                        }
                     }
                 }
             } catch (e: Exception) {
