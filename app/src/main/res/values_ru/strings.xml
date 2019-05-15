@@ -280,6 +280,7 @@
     <string name="screen_timeout_msg">Navigation Gestures is currently keeping your screen awake.</string>
     <string name="unable_to_execute_action">Unable to execute action.</string>
     <string name="invalid_backup">Invalid backup file.</string>
+    <string name="grant_notification_policy">Please grant Navigation Gestures notification policy access.</string>
     <!--Libraries-->
     <string name="material_intro">Интро (Fork)</string>
     <string name="slider_pref">SeekBarPreference</string>
