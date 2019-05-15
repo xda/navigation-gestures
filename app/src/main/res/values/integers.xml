@@ -14,6 +14,7 @@
     <integer name="default_pill_height_dp">22</integer>
     <integer name="default_pill_radius_dp">8</integer>
     <integer name="default_vibe_strength">100</integer>
+    <integer name="default_brightness_step_size">5</integer>
     <integer name="default_fade_time">1000</integer>
     <integer name="default_fade_opacity_percent">100</integer>
     <integer name="default_fade_duration">@integer/default_anim_duration</integer>
@@ -33,6 +34,7 @@
     <integer name="min_pill_height_dp">5</integer>
     <integer name="min_pill_y_dp">0</integer>
     <integer name="min_vibe_strength">1</integer>
+    <integer name="min_brightness_step_size">1</integer>
     <integer name="min_fade_time">100</integer>
     <integer name="min_fade_opacity_percent">0</integer>
     <integer name="min_fade_duration">@integer/min_anim_duration</integer>
@@ -50,6 +52,7 @@
     <integer name="max_auto_hide_time">10000</integer>
     <integer name="max_pill_height_dp">50</integer>
     <integer name="max_vibe_strength">255</integer>
+    <integer name="max_brightness_step_size">255</integer>
     <integer name="max_fade_time">10000</integer>
     <integer name="max_fade_opacity_percent">1000</integer>
     <integer name="max_fade_duration">@integer/max_anim_duration</integer>

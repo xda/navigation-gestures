@@ -428,7 +428,7 @@ class BarViewActionHandler(private val bar: BarView) {
                     } }
                     bar.actionHolder.premTypeBrightnessDown -> context.runPremiumAction { context.runSystemSettingsAction {
                         val currentBrightness = Settings.System.getInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, 0)
-                        var newBrightness = currentBrightness - 2
+                        var newBrightness = currentBrightness - context.prefManager.brightnessStepSize
 
                         if (newBrightness < 0) newBrightness = 0
 
@@ -436,7 +436,7 @@ class BarViewActionHandler(private val bar: BarView) {
                     } }
                     bar.actionHolder.premTypeBrightnessUp -> context.runPremiumAction { context.runSystemSettingsAction {
                         val currentBrightness = Settings.System.getInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, 0)
-                        var newBrightness = currentBrightness + 2
+                        var newBrightness = currentBrightness + context.prefManager.brightnessStepSize
 
                         if (newBrightness > 255) newBrightness = 255
 

@@ -88,6 +88,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val FADE_IN_FULSCREEN_APPS_PROGRESS = "fade_in_fullscreen_apps_progress"
         const val FADE_OPACITY = "fade_opacity"
         const val FADE_DURATION = "fade_duration"
+        const val BRIGHTNESS_STEP_SIZE = "brightness_step_size"
 
         /* Strings */
         const val CRASHLYTICS_ID = "crashlytics_id"
@@ -339,6 +340,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
                 else VibrationEffect.DEFAULT_AMPLITUDE
     val fadeDuration: Long
         get() = getInt(FADE_DURATION, resources.getInteger(R.integer.default_fade_duration)).toLong()
+    val brightnessStepSize: Int
+        get() = getInt(BRIGHTNESS_STEP_SIZE, resources.getInteger(R.integer.default_brightness_step_size))
 
     val crashlyticsId: String?
         get() {

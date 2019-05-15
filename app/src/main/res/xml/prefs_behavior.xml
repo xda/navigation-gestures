@@ -46,6 +46,14 @@
             app:isPreferenceVisible="false"
             />
 
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            android:title="@string/brightness_adjustment_step_size"
+            android:key="brightness_step_size"
+            android:defaultValue="@integer/default_brightness_step_size"
+            app:minValue="@integer/min_brightness_step_size"
+            app:maxValue="@integer/max_brightness_step_size"
+            />
+
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
