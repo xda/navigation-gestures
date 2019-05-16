@@ -72,11 +72,19 @@ class ImmersiveHelperManager(private val context: Context) {
         val wm = context.app.wm
 
         try {
-            wm.addView(horizontal, horizontal.params)
+            if (!horizontalHelperAdded) {
+                wm.addView(horizontal, horizontal.params)
+            } else {
+                wm.updateViewLayout(horizontal, horizontal.params)
+            }
         } catch (e: Exception) {}
 
         try {
-            wm.addView(vertical, vertical.params)
+            if (!verticalHelperAdded) {
+                wm.addView(vertical, vertical.params)
+            } else {
+                wm.updateViewLayout(vertical, vertical.params)
+            }
         } catch (e: Exception) {}
     }
 

@@ -33,7 +33,7 @@ class BarAnimator(private val bar: BarView) {
     }
 
     fun hide(listener: DynamicAnimation.OnAnimationEndListener) {
-        if (bar.isVertical) animateHorizontally(listener, bar.zeroY)
+        if (bar.isVertical) animateHorizontally(listener, bar.zeroX)
         else animateVertically(listener, bar.zeroY)
     }
 

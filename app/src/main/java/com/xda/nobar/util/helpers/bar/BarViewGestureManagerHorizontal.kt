@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import android.os.Looper
 import android.view.MotionEvent
 import androidx.dynamicanimation.animation.DynamicAnimation
-import com.xda.nobar.util.*
+import com.xda.nobar.util.actionHolder
+import com.xda.nobar.util.app
 import com.xda.nobar.util.helpers.HiddenPillReasonManager
+import com.xda.nobar.util.prefManager
+import com.xda.nobar.util.realScreenSize
 import com.xda.nobar.views.BarView
 import kotlinx.android.synthetic.main.pill.view.*
 import kotlin.math.absoluteValue
@@ -19,7 +22,7 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
     override val gestureHandler by lazy { GestureHandler(gestureThread.looper) }
 
     override fun handleTouchEvent(ev: MotionEvent?): Boolean {
-        super.handleTouchEvent(ev)
+        if (!super.handleTouchEvent(ev)) return false
 
         var ultimateReturn = false
 

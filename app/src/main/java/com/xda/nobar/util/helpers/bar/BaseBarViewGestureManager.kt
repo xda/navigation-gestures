@@ -127,6 +127,8 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
 
     @CallSuper
     internal open fun handleTouchEvent(ev: MotionEvent?): Boolean {
+        if (bar.isPillHidingOrShowing) return false
+
         when (ev?.action) {
             MotionEvent.ACTION_DOWN -> {
                 lastTouchTime = System.currentTimeMillis()
@@ -150,7 +152,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
             }
         }
 
-        return false
+        return true
     }
 
     private fun displayProperFlash(pressed: Boolean) {

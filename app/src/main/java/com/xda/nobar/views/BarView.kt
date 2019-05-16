@@ -110,6 +110,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     val zeroY: Int
         get() = if (isVertical) 0 else context.realScreenSize.y - context.prefManager.customHeight
 
+    val zeroX: Int
+        get() = if (!isVertical) 0 else (if (is270Vertical) 1 else -1) * (context.realScreenSize.y / 2f - context.prefManager.customHeight).toInt()
+
     val adjustedHomeX: Int
         get() = if (isVertical) anchoredHomeY else actualHomeX
 
@@ -550,28 +553,32 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
+    val hideLock = Any()
+
     /**
      * "Hide" the pill by moving it partially offscreen
      */
     fun hidePill(auto: Boolean, autoReason: String?, overrideBeingTouched: Boolean = false) {
         mainScope.launch {
-            if (auto && autoReason == null) throw IllegalArgumentException("autoReason must not be null when auto is true")
-            if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
+            synchronized(hideLock) {
+                if (auto && autoReason == null) throw IllegalArgumentException("autoReason must not be null when auto is true")
+                if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
 
-            if (!auto) hiddenPillReasons.add(HiddenPillReasonManager.MANUAL)
+                if (!auto) hiddenPillReasons.add(HiddenPillReasonManager.MANUAL)
 
-            if ((!beingTouched && !isCarryingOutTouchAction) || overrideBeingTouched) {
-                if (context.app.isPillShown()) {
-                    isPillHidingOrShowing = true
+                if (((!beingTouched && !isCarryingOutTouchAction) || overrideBeingTouched) && !isPillHidingOrShowing) {
+                    if (context.app.isPillShown()) {
+                        isPillHidingOrShowing = true
 
-                    animator.hide(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
-                        animateHide()
-                    })
+                        animator.hide(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                            animateHide()
+                        })
 
-                    showHiddenToast()
+                        showHiddenToast()
+                    }
+                } else {
+                    scheduleHide(autoReason ?: return@launch)
                 }
-            } else {
-                scheduleHide(autoReason ?: return@launch)
             }
         }
     }
@@ -617,35 +624,43 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         hideHandler.show(reason, forceShow)
     }
 
+    private val showLock = Any()
+
     /**
      * "Show" the pill by moving it back to its normal position
      */
     private fun showPillInternal(autoReasonToRemove: String?, forceShow: Boolean = false) {
         mainScope.launch {
-            if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
+            synchronized(showLock) {
+                if (isPillHidingOrShowing) {
+//                    showPill(autoReasonToRemove, forceShow)
+                } else {
+                    if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
 
-            if (context.app.isPillShown()) {
-                isPillHidingOrShowing = true
-                val reallyForceNotAuto = hiddenPillReasons.isEmpty()
+                    if (context.app.isPillShown()) {
+                        isPillHidingOrShowing = true
+                        val reallyForceNotAuto = hiddenPillReasons.isEmpty()
 
-                if (reallyForceNotAuto) {
-                    hideHandler.removeMessages(MSG_HIDE)
+                        if (reallyForceNotAuto) {
+                            hideHandler.removeMessages(MSG_HIDE)
+                        }
+
+                        if (reallyForceNotAuto || forceShow) {
+                            pill.animate()
+                                    .alpha(ALPHA_ACTIVE)
+                                    .setInterpolator(EXIT_INTERPOLATOR)
+                                    .setDuration(animationDurationMs)
+                                    .withEndAction {
+                                        animateShow(!reallyForceNotAuto, autoReasonToRemove)
+                                    }
+                                    .apply {
+                                        if (isVertical) translationX(0f)
+                                        else translationY(0f)
+                                    }
+                                    .start()
+                        } else isPillHidingOrShowing = false
+                    }
                 }
-
-                if (reallyForceNotAuto || forceShow) {
-                    pill.animate()
-                            .alpha(ALPHA_ACTIVE)
-                            .setInterpolator(EXIT_INTERPOLATOR)
-                            .setDuration(animationDurationMs)
-                            .withEndAction {
-                                animateShow(!reallyForceNotAuto, autoReasonToRemove)
-                            }
-                            .apply {
-                                if (isVertical) translationX(0f)
-                                else translationY(0f)
-                            }
-                            .start()
-                } else isPillHidingOrShowing = false
             }
         }
     }
@@ -949,8 +964,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     fun updatePositionAndDimens() {
         synchronized(positionLock) {
-            val newX = adjustedHomeX
-            val newY = adjustedHomeY
+            val newX = if (isVertical && isHidden) zeroX else adjustedHomeX
+            val newY = if (!isVertical && isHidden) zeroY else adjustedHomeY
             val newW = adjustedWidth
             val newH = adjustedHeight
 

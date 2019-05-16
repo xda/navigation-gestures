@@ -22,7 +22,7 @@ class BarViewGestureManagerVertical270(bar: BarView) : BaseBarViewGestureManager
     override val gestureHandler by lazy { GestureHandler(gestureThread.looper) }
 
     override fun handleTouchEvent(ev: MotionEvent?): Boolean {
-        super.handleTouchEvent(ev)
+        if (!super.handleTouchEvent(ev)) return false
 
         var ultimateReturn = false
 

@@ -195,7 +195,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             carModeHandler.register()
             premiumInstallListener.register()
             permissionListener.register()
-            dm.registerDisplayListener(displayChangeListener, logicHandler)
             IWindowManager.watchRotation(displayChangeListener, Display.DEFAULT_DISPLAY)
             miniViewListener.register()
             refreshScreenSize()
@@ -1072,14 +1071,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
     }
 
-    inner class DisplayChangeListener : IRotationWatcher.Stub(), DisplayManager.DisplayListener {
-        override fun onDisplayChanged(displayId: Int) {
-            if (displayId == wm.defaultDisplay.displayId) {
-//                Log.e("NoBar", "display")
-//                handleDisplayChange()
-            }
-        }
-
+    inner class DisplayChangeListener : IRotationWatcher.Stub() {
         override fun onRotationChanged(rotation: Int) {
             cachedRotation = rotation
 
@@ -1087,10 +1079,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             uiHandler.handleRot(rotation)
             handleDisplayChange()
         }
-
-        override fun onDisplayAdded(displayId: Int) {}
-
-        override fun onDisplayRemoved(displayId: Int) {}
 
         private fun handleDisplayChange() {
             val oldSize = realScreenSize
