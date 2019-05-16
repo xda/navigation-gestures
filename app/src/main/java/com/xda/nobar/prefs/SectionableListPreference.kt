@@ -190,11 +190,11 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         dialog = builder.show()
     }
 
-    override fun onDetached() {
-        super.onDetached()
-
+    override fun onPrepareForRemoval() {
         if (dialog?.isShowing == true)
             dialog?.dismiss()
+
+        super.onPrepareForRemoval()
     }
 
     private fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
