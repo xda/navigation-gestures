@@ -119,13 +119,15 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     fun removeSection(index: Int) {
-        dialog?.dismiss()
+        if (dialog?.isShowing == true)
+            dialog?.dismiss()
 
         sections.removeAt(index)
     }
 
     fun removeItemByValue(value: String) {
-        dialog?.dismiss()
+        if (dialog?.isShowing == true)
+            dialog?.dismiss()
 
         sections.forEach {
             val index = it.entryValues.indexOf(value)
@@ -141,7 +143,8 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     fun removeItemByName(name: String) {
-        dialog?.dismiss()
+        if (dialog?.isShowing == true)
+            dialog?.dismiss()
 
         sections.forEach {
             val index = it.entryNames.indexOf(name)
@@ -175,7 +178,8 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
 
     override fun onItemChosen(value: String?) {
         tempValue = value
-        dialog?.dismiss()
+        if (dialog?.isShowing == true)
+            dialog?.dismiss()
         saveValue(tempValue)
     }
 
@@ -189,7 +193,8 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     override fun onDetached() {
         super.onDetached()
 
-        dialog?.dismiss()
+        if (dialog?.isShowing == true)
+            dialog?.dismiss()
     }
 
     private fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
