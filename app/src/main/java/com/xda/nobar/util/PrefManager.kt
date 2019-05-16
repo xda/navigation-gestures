@@ -89,6 +89,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val FADE_OPACITY = "fade_opacity"
         const val FADE_DURATION = "fade_duration"
         const val BRIGHTNESS_STEP_SIZE = "brightness_step_size"
+        const val SAVED_MEDIA_VOLUME = "saved_media_volume"
 
         /* Strings */
         const val CRASHLYTICS_ID = "crashlytics_id"
@@ -342,6 +343,11 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getInt(FADE_DURATION, resources.getInteger(R.integer.default_fade_duration)).toLong()
     val brightnessStepSize: Int
         get() = getInt(BRIGHTNESS_STEP_SIZE, resources.getInteger(R.integer.default_brightness_step_size))
+    var savedMediaVolume: Int
+        get() = getInt(SAVED_MEDIA_VOLUME, 0)
+        set(value) {
+            putInt(SAVED_MEDIA_VOLUME, value)
+        }
 
     val crashlyticsId: String?
         get() {

@@ -405,12 +405,15 @@ class BarViewActionHandler(private val bar: BarView) {
                     bar.actionHolder.premTypeMute -> context.runPremiumAction {
                         //isStreamMute exists as a hidden method in Lollipop
                         val isMuted = audio.isStreamMute(AudioManager.STREAM_MUSIC)
-
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-                            audio.setStreamVolume(AudioManager.STREAM_MUSIC, if (isMuted) AudioManager.ADJUST_UNMUTE else AudioManager.ADJUST_MUTE, AudioManager.FLAG_SHOW_UI)
+                        if (!isMuted) {
+                            context.prefManager.savedMediaVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
+                            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                                audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE, AudioManager.FLAG_SHOW_UI)
+                            } else {
+                                audio.setStreamMute(AudioManager.STREAM_MUSIC, true)
+                            }
                         } else {
-                            audio.setStreamMute(AudioManager.STREAM_MUSIC, !isMuted)
-                            audio.setStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
+                            audio.setStreamVolume(AudioManager.STREAM_MUSIC, context.prefManager.savedMediaVolume, AudioManager.FLAG_SHOW_UI)
                         }
                     }
                     bar.actionHolder.premTypeToggleAutoBrightness -> context.runPremiumAction { context.runSystemSettingsAction {
