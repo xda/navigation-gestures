@@ -830,14 +830,18 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
+    private val anchorLock = Any()
+
     fun handleRotationOrAnchorUpdate() {
         logicScope.launch {
-            verticalMode(isVertical)
-            adjustPillShadow()
-            updateLargerHitbox()
+            synchronized(anchorLock) {
+                verticalMode(isVertical)
+                adjustPillShadow()
+                updateLargerHitbox()
 
-            mainScope.launch {
-                updateDividers()
+                mainScope.launch {
+                    updateDividers()
+                }
             }
         }
     }
@@ -941,23 +945,27 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         updatePositionAndDimens()
     }
 
-    fun updatePositionAndDimens() {
-        val newX = adjustedHomeX
-        val newY = adjustedHomeY
-        val newW = adjustedWidth
-        val newH = adjustedHeight
+    private val positionLock = Any()
 
-        if ((newX != params.x
-                        || newY != params.y
-                        || newW != params.width
-                        || newH != params.height)
-                && !beingTouched
-                && !isCarryingOutTouchAction) {
-            params.x = newX
-            params.y = newY
-            params.width = newW
-            params.height = newH
-            updateLayout()
+    fun updatePositionAndDimens() {
+        synchronized(positionLock) {
+            val newX = adjustedHomeX
+            val newY = adjustedHomeY
+            val newW = adjustedWidth
+            val newH = adjustedHeight
+
+            if ((newX != params.x
+                            || newY != params.y
+                            || newW != params.width
+                            || newH != params.height)
+                    && !beingTouched
+                    && !isCarryingOutTouchAction) {
+                params.x = newX
+                params.y = newY
+                params.width = newW
+                params.height = newH
+                updateLayout()
+            }
         }
     }
 

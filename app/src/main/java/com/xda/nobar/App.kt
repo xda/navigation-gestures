@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
+import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
@@ -189,6 +190,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 IntroActivity.start(this)
             }
 
+            cachedRotation = rotation
             stateHandler.register()
             uiHandler.register()
             carModeHandler.register()
@@ -197,7 +199,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             dm.registerDisplayListener(displayChangeListener, logicHandler)
             IWindowManager.watchRotation(displayChangeListener, Display.DEFAULT_DISPLAY)
             miniViewListener.register()
-            cachedRotation = rotation
             refreshScreenSize()
 
             isValidPremium = prefManager.validPrem
@@ -1075,7 +1076,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     inner class DisplayChangeListener : IRotationWatcher.Stub(), DisplayManager.DisplayListener {
         override fun onDisplayChanged(displayId: Int) {
             if (displayId == wm.defaultDisplay.displayId) {
-                handleDisplayChange()
+//                Log.e("NoBar", "display")
+//                handleDisplayChange()
             }
         }
 
