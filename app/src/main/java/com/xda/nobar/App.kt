@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
+import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
@@ -670,11 +671,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         private var oldPName: String? = null
 
+        private val installers = arrayOf(
+                "com.google.android.packageInstaller",
+                "com.android.packageinstaller"
+        )
+        private fun isPackageInstaller(pName: String?) = installers.contains(pName)
+
         @SuppressLint("WrongConstant")
         private fun handleNewEvent(info: AccessibilityEvent) {
             val pName = info.packageName.toString()
 
             if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+                Log.e("NoBar", "$pName, ${info.className}")
+
                 if (prefManager.shouldUseOverscanMethod
                         && prefManager.useImmersiveWhenNavHidden) {
                     if (pName == "com.android.systemui" && info.className?.contains("RecentsActivity") == true) {
@@ -685,14 +694,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
 
                 if (prefManager.hideOnPermissions
-                        && pName == "com.google.android.packageinstaller" && info.className?.contains("ManagePermissionsActivity") == true) {
+                        && isPackageInstaller(pName) && info.className?.contains("ManagePermissionsActivity") == true) {
                     disabledBarReasonManager.add(DisabledReasonManager.PillReasons.PERMISSIONS)
                 } else {
                     disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
                 }
 
                 if (prefManager.hideOnInstaller
-                        && pName == "com.google.android.packageinstaller" && info.className?.contains("PackageInstallerActivity") == true) {
+                        && isPackageInstaller(pName) && info.className?.contains("PackageInstallerActivity") == true) {
                     disabledBarReasonManager.add(DisabledReasonManager.PillReasons.INSTALLER)
                 } else {
                     disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.INSTALLER)
