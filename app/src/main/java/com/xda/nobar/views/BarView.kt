@@ -382,8 +382,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-        super.onInterceptTouchEvent(ev)
-        return onTouchEvent(ev)
+        return true
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -780,14 +779,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             if (isVertical) {
                 if (is270Vertical) {
-                    if (margins.right != hitboxM) {
+                    if (margins.right != hitboxM
+                            || margins.left != b) {
                         margins.right = hitboxM
                         margins.left = b
 
                         hitboxChanged = true
                     }
                 } else {
-                    if (margins.left != hitboxM) {
+                    if (margins.left != hitboxM
+                            || margins.right != b) {
                         margins.left = hitboxM
                         margins.right = b
 
@@ -795,17 +796,22 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     }
                 }
 
-                if (margins.top != r || margins.bottom != l) {
+                if (margins.top != r
+                        || margins.bottom != l) {
                     margins.top = r
                     margins.bottom = l
 
                     hitboxChanged = true
                 }
             } else {
-                if (margins.top != hitboxM || margins.left != l || margins.bottom != b) {
+                if (margins.top != hitboxM
+                        || margins.left != l
+                        || margins.bottom != b
+                        || margins.right != r) {
                     margins.left = l
                     margins.bottom = b
                     margins.top = hitboxM
+                    margins.right = r
 
                     hitboxChanged = true
                 }
