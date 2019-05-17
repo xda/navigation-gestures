@@ -12,7 +12,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
@@ -682,8 +681,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             val pName = info.packageName.toString()
 
             if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-                Log.e("NoBar", "$pName, ${info.className}")
-
                 if (prefManager.shouldUseOverscanMethod
                         && prefManager.useImmersiveWhenNavHidden) {
                     if (pName == "com.android.systemui" && info.className?.contains("RecentsActivity") == true) {
