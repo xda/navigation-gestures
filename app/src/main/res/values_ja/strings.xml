@@ -163,6 +163,9 @@
     <string name="fixed">Fixed!</string>
     <string name="enable_analytics">Enable Firebase Analytics</string>
     <string name="brightness_adjustment_step_size">Brightness Adjustment Step Size</string>
+    <string name="hide_on_lockscreen">Don\'t Show on Lock Screen</string>
+    <string name="hide_on_permissions">Don\'t Show on App Permissions Page</string>
+    <string name="hide_on_installer">Don\'t Show on Package Installer</string>
     <!--Descriptions-->
     <string name="gestures_desc">ジェスチャーアクションのカスタマイズ</string>
     <string name="appearance_desc">ピルの外観をカスタマイズする</string>
@@ -248,8 +251,8 @@
     <string name="nougat_required_desc">このアクションにはandroid 7+が必要です。</string>
     <string name="pie_required_desc">This action requires a device running Android Pie or later. Sorry about that.</string>
     <string name="nougat_qs_reminder">Android 7ではクイック設定のカスタマイズができ、ナビゲーションジェスチャーのタイルを追加することができます。ステータスバーを2回下にスワイプして編集ボタンを押してナビゲーションジェスチャーのタイルをドラッグしてください。</string>
-    <string name="accessibility_screen_text">アクセシビリティを使用してホーム、戻る、
-マルチタスクボタンなどの動作を行います。個人情報を収集したり、ユーザーの意思に反して勝手に動作するようなことはありません。</string>
+    <string name="accessibility_screen_text">"アクセシビリティを使用してホーム、戻る、
+マルチタスクボタンなどの動作を行います。個人情報を収集したり、ユーザーの意思に反して勝手に動作するようなことはありません。"</string>
     <string name="sorry_desc">Android Pではこのアプリは現在使えません。</string>
     <string name="warning_desc">ナビゲーションジェスチャーをアンインストールする前に、ナビゲーションバーが表示されているかを確認してください! アプリを使用してナビゲーションバーを非表示にした場合に必要があります。</string>
     <string name="white_bar_desc">このアプリを使用するとディスプレイの一番下に小さく白いバーがあることに気付くかもしれません。これはバグではなく、重大な問題を防ぐためです。TouchWizデバイスでは起こりません。</string>
