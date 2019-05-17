@@ -17,6 +17,7 @@ open class DisabledReasonManager : HashSet<String>() {
         const val LOCK_SCREEN = "lock_screen"
         const val PERMISSIONS = "permissions"
         const val INSTALLER = "installer"
+        const val SCREEN_OFF = "screen_off"
     }
 
     object ImmReasons {

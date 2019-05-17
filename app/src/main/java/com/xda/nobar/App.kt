@@ -217,6 +217,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (prefManager.isActive
                     && !IntroActivity.needsToRun(this)) {
                 addBar()
+
+                if (display.state != Display.STATE_ON) {
+                    disabledBarReasonManager.add(DisabledReasonManager.PillReasons.SCREEN_OFF)
+                    uiHandler.updateBlacklists()
+                }
             }
 
             if (prefManager.useRot270Fix
@@ -552,6 +557,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         Intent.ACTION_SHUTDOWN,
                         Intent.ACTION_SCREEN_OFF -> {
                             if (prefManager.shouldntKeepOverscanOnLock) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
+                            disabledBarReasonManager.add(DisabledReasonManager.PillReasons.SCREEN_OFF)
                             bar.forceActionUp()
 
                             uiHandler.updateBlacklists()
@@ -559,6 +565,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         Intent.ACTION_SCREEN_ON,
                         Intent.ACTION_BOOT_COMPLETED,
                         Intent.ACTION_LOCKED_BOOT_COMPLETED -> {
+                            disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.SCREEN_OFF)
                             if (isOnKeyguard) {
                                 if (prefManager.shouldntKeepOverscanOnLock) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
                                 if (prefManager.hideOnLockscreen) disabledBarReasonManager.add(DisabledReasonManager.PillReasons.LOCK_SCREEN)
