@@ -160,6 +160,24 @@
             android:icon="@drawable/border_clear"
             />
 
+        <SwitchPreference
+            android:title="@string/hide_on_lockscreen"
+            android:key="hide_on_lockscreen"
+            android:icon="@drawable/visibility_off"
+            />
+
+        <SwitchPreference
+            android:title="@string/hide_on_permissions"
+            android:key="hide_on_permissions"
+            android:icon="@drawable/visibility_off"
+            />
+
+        <SwitchPreference
+            android:title="@string/hide_on_installer"
+            android:key="hide_on_installer"
+            android:icon="@drawable/visibility_off"
+            />
+
         <Preference
             android:title="@string/nav_blacklist"
             android:summary="@string/nav_blacklist_desc"

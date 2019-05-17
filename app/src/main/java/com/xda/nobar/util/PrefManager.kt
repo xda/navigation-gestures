@@ -60,6 +60,9 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val FADE_IN_FULLSCREEN_APPS = "fade_in_fullscreen_apps"
         const val HIDE_BETA_PROMPT = "hide_beta_prompt"
         const val ENABLE_ANALYTICS = "enable_analytics"
+        const val HIDE_ON_LOCKSCREEN = "hide_on_lockscreen"
+        const val HIDE_ON_PERMISSIONS = "hide_on_permissions"
+        const val HIDE_ON_INSTALLER = "hide_on_installer"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
@@ -228,6 +231,12 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         }
     val enableAnalytics: Boolean
         get() = getBoolean(ENABLE_ANALYTICS, resources.getBoolean(R.bool.enable_analytics_default))
+    val hideOnLockscreen: Boolean
+        get() = getBoolean(HIDE_ON_LOCKSCREEN, resources.getBoolean(R.bool.hide_on_lockscreen_default))
+    val hideOnPermissions: Boolean
+        get() = getBoolean(HIDE_ON_PERMISSIONS, resources.getBoolean(R.bool.hide_on_permissions_default))
+    val hideOnInstaller: Boolean
+        get() = getBoolean(HIDE_ON_INSTALLER, resources.getBoolean(R.bool.hide_on_installer_default))
 
     /**
      * Get the user-defined or default pill color

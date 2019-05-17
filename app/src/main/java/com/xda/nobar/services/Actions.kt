@@ -11,7 +11,6 @@ import android.view.accessibility.AccessibilityEvent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.xda.nobar.interfaces.ReceiverCallback
 import com.xda.nobar.util.*
-import kotlinx.coroutines.launch
 
 
 class Actions : AccessibilityService(), ReceiverCallback {
@@ -53,9 +52,7 @@ class Actions : AccessibilityService(), ReceiverCallback {
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         val newEvent = AccessibilityEvent.obtain(event)
 
-        mainScope.launch {
-            app.uiHandler.setNodeInfoAndUpdate(newEvent)
-        }
+        app.uiHandler.setNodeInfoAndUpdate(newEvent)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

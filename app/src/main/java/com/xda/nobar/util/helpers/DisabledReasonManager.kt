@@ -13,6 +13,10 @@ open class DisabledReasonManager : HashSet<String>() {
 
     object PillReasons {
         const val BLACKLIST = "bar_blacklist"
+        const val CAR_MODE = "bar_car_mode"
+        const val LOCK_SCREEN = "lock_screen"
+        const val PERMISSIONS = "permissions"
+        const val INSTALLER = "installer"
     }
 
     object ImmReasons {

@@ -261,12 +261,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (enabled) {
                         disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         disabledImmReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                        if (prefManager.isActive && !pillShown) addBar(false)
+                        disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.CAR_MODE)
                     } else {
                         disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         disabledImmReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                        if (prefManager.isActive && !pillShown) removeBar(false)
+                        disabledBarReasonManager.add(DisabledReasonManager.PillReasons.CAR_MODE)
                     }
+                    uiHandler.updateBlacklists()
                 }
             }
             PrefManager.USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN -> {
@@ -560,17 +561,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         Intent.ACTION_LOCKED_BOOT_COMPLETED -> {
                             if (isOnKeyguard) {
                                 if (prefManager.shouldntKeepOverscanOnLock) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
+                                if (prefManager.hideOnLockscreen) disabledBarReasonManager.add(DisabledReasonManager.PillReasons.LOCK_SCREEN)
                             } else {
                                 disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
+                                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.LOCK_SCREEN)
                             }
-
-                            if (prefManager.isActive) addBar(false)
 
                             uiHandler.updateBlacklists()
                         }
                         Intent.ACTION_USER_PRESENT -> {
                             disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
-                            if (prefManager.isActive) addBar(false)
 
                             uiHandler.updateBlacklists()
                         }
@@ -602,9 +602,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             bar.updateLayout()
                         }
                     } else {
-                        if (pillShown) removeBar()
+                        disabledBarReasonManager.add(DisabledReasonManager.PillReasons.CAR_MODE)
                         disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         disabledImmReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
+
+                        uiHandler.updateBlacklists()
                     }
                 }
 
@@ -615,9 +617,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             bar.updateLayout()
                         }
                     } else {
-                        if (prefManager.isActive) addBar()
+                        disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.CAR_MODE)
                         disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
                         disabledImmReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
+
+                        uiHandler.updateBlacklists()
                     }
                 }
             }
@@ -670,21 +674,43 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private fun handleNewEvent(info: AccessibilityEvent) {
             val pName = info.packageName.toString()
 
-            if (pName != oldPName && pName != packageName) {
-                oldPName = pName
-
-                if (pName == "com.android.systemui" && info.className?.contains("TextView") == false) {
-                    if (prefManager.shouldUseOverscanMethod
-                            && prefManager.useImmersiveWhenNavHidden) {
+            if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+                if (prefManager.shouldUseOverscanMethod
+                        && prefManager.useImmersiveWhenNavHidden) {
+                    if (pName == "com.android.systemui" && info.className?.contains("RecentsActivity") == true) {
                         immersiveHelperManager.tempForcePolicyControlForRecents()
-                    }
-                } else {
-                    if (prefManager.shouldUseOverscanMethod
-                            && prefManager.useImmersiveWhenNavHidden) {
+                    } else {
                         immersiveHelperManager.putBackOldImmersive()
                     }
                 }
+
+                if (prefManager.hideOnPermissions
+                        && pName == "com.google.android.packageinstaller" && info.className?.contains("ManagePermissionsActivity") == true) {
+                    disabledBarReasonManager.add(DisabledReasonManager.PillReasons.PERMISSIONS)
+                } else {
+                    disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
+                }
+
+                if (prefManager.hideOnInstaller
+                        && pName == "com.google.android.packageinstaller" && info.className?.contains("PackageInstallerActivity") == true) {
+                    disabledBarReasonManager.add(DisabledReasonManager.PillReasons.INSTALLER)
+                } else {
+                    disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.INSTALLER)
+                }
+            }
+
+            if (prefManager.hideOnLockscreen && isOnKeyguard) {
+                disabledBarReasonManager.add(DisabledReasonManager.PillReasons.LOCK_SCREEN)
+            } else {
+                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.LOCK_SCREEN)
+            }
+
+            if (pName != oldPName) {
+                oldPName = pName
+
                 runNewNodeInfo(pName)
+            } else {
+                updateBlacklists()
             }
 
             updateKeyboardFlagState()
@@ -776,7 +802,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 if (prefManager.isActive
                         && !pillShown) addBar(false)
             } else {
-                removeBar(  false)
+                removeBar(false)
             }
 
             if (prefManager.shouldUseOverscanMethod) {
