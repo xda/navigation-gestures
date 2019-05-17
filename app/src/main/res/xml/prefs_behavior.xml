@@ -162,18 +162,21 @@
 
         <SwitchPreference
             android:title="@string/hide_on_lockscreen"
+            android:summary="@string/hide_on_lockscreen_desc"
             android:key="hide_on_lockscreen"
             android:icon="@drawable/visibility_off"
             />
 
         <SwitchPreference
             android:title="@string/hide_on_permissions"
+            android:summary="@string/hide_on_permissions_desc"
             android:key="hide_on_permissions"
             android:icon="@drawable/visibility_off"
             />
 
         <SwitchPreference
             android:title="@string/hide_on_installer"
+            android:summary="@string/hide_on_installer_desc"
             android:key="hide_on_installer"
             android:icon="@drawable/visibility_off"
             />
