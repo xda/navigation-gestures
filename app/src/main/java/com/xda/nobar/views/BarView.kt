@@ -62,6 +62,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     internal val actionHolder = context.actionHolder
+    private val positionLock = Any()
 
     var shouldReAddOnDetach = false
 
@@ -476,6 +477,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * Perform cleanup
      */
     override fun onDetachedFromWindow() {
+        context.app.pillShown = false
+
         super.onDetachedFromWindow()
 
         if (shouldReAddOnDetach) {
@@ -483,17 +486,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             shouldReAddOnDetach = false
         }
 
-        context.app.pillShown = false
-
         forceActionUp()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return other is BarView
-    }
-
-    override fun hashCode(): Int {
-        return 1
     }
 
     fun forceActionUp() {
@@ -944,8 +937,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             currentGestureDetector.singleton.loadActionMap()
         }
     }
-
-    private val positionLock = Any()
 
     fun updatePositionAndDimens() {
         synchronized(positionLock) {

@@ -23,7 +23,7 @@ class IntroActivity : IntroActivity() {
 
         fun needsToRun(context: Context): Boolean {
             val overlaysGranted = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) Settings.canDrawOverlays(context) else true
-            val accessibilityGranted = context.isAccessibilityEnabled
+            val accessibilityGranted = context.app.accessibilityConnected
 
             return !overlaysGranted || !accessibilityGranted || context.prefManager.firstRun
         }
@@ -55,6 +55,8 @@ class IntroActivity : IntroActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        app.introRunning = true
 
         if (!needsToRun(this) && hasWss) {
             didntNeedToRun = true
@@ -141,5 +143,7 @@ class IntroActivity : IntroActivity() {
         if (!didntNeedToRun && !needsToRun(this)) MainActivity.start(this)
 
         super.onDestroy()
+
+        app.introRunning = false
     }
 }

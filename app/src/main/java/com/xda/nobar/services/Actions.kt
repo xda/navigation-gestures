@@ -11,6 +11,7 @@ import android.view.accessibility.AccessibilityEvent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.xda.nobar.interfaces.ReceiverCallback
 import com.xda.nobar.util.*
+import com.xda.nobar.views.BarView
 
 
 class Actions : AccessibilityService(), ReceiverCallback {
@@ -31,18 +32,23 @@ class Actions : AccessibilityService(), ReceiverCallback {
         }
 
         fun addBar(context: Context) {
-            val intent = Intent(ADD_BAR)
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+            val intent = Intent(context, Actions::class.java)
+            intent.action = ADD_BAR
+
+            context.startService(intent)
         }
 
         fun remBar(context: Context) {
-            val intent = Intent(REM_BAR)
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+            val intent = Intent(context, Actions::class.java)
+            intent.action = REM_BAR
+
+            context.startService(intent)
         }
     }
 
     private val receiver = ActionHandler(this)
-    private val accWm by lazy { getSystemService(Context.WINDOW_SERVICE) as WindowManager }
+    private val accWm: WindowManager
+        get() = getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
     override fun onServiceConnected() {
         receiver.register(this)
@@ -83,17 +89,10 @@ class Actions : AccessibilityService(), ReceiverCallback {
                 }
             }
             ADD_BAR -> {
-                try {
-                    accWm.addView(app.bar, app.bar.params)
-                } catch (e: Exception) {
-                    app.addedPillButNotYetShown = false
-                    e.logStack()
-                }
+                addBar()
             }
             REM_BAR -> {
-                try {
-                    accWm.removeView(app.bar)
-                } catch (e: Exception) {}
+                removeBar()
             }
         }
     }
@@ -101,8 +100,43 @@ class Actions : AccessibilityService(), ReceiverCallback {
     override fun onInterrupt() {}
 
     override fun onDestroy() {
+        handleDestroy()
+
+        super.onDestroy()
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        handleDestroy()
+
+        return super.onUnbind(intent)
+    }
+
+    private fun handleDestroy() {
         receiver.destroy(this)
         app.accessibilityConnected = false
+
+        removeBar()
+
+        if (!prefManager.isActive) {
+            IWindowManager.setOverscan(0, 0, 0, 0)
+        }
+        relaunch()
+    }
+
+    private fun addBar() {
+        try {
+            accWm.addView(app.bar, app.bar.params)
+        } catch (e: Exception) {
+            app.addedPillButNotYetShown = false
+        }
+    }
+
+    private fun removeBar(bar: BarView = app.bar) {
+        if (app.pillShown) {
+            try {
+                accWm.removeView(bar)
+            } catch (e: Exception) {}
+        }
     }
 
     /**
@@ -115,7 +149,7 @@ class Actions : AccessibilityService(), ReceiverCallback {
             filter.addAction(ADD_BAR)
             filter.addAction(REM_BAR)
 
-            LocalBroadcastManager.getInstance(context).registerReceiver(this, filter)
+            LocalBroadcastManager.getInstance(context.applicationContext).registerReceiver(this, filter)
         }
 
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -123,7 +157,7 @@ class Actions : AccessibilityService(), ReceiverCallback {
         }
 
         fun destroy(context: Context) {
-            LocalBroadcastManager.getInstance(context).unregisterReceiver(this)
+            LocalBroadcastManager.getInstance(context.applicationContext).unregisterReceiver(this)
         }
     }
 }

@@ -61,17 +61,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val rootWrapper by lazy { RootWrapper(this) }
     val blackout by lazy { NavBlackout(this) }
 
+    var introRunning = false
     var accessibilityConnected = false
         set(value) {
             field = value
-
-            if (value && requestedAddTooSoon) {
-                addedPillButNotYetShown = false
-                addBarInternalUnconditionally()
-            }
+            if (value) addedPillButNotYetShown = false
+            uiHandler.accessibilityChanged(field)
         }
-    private var requestedAddTooSoon = false
-
     private val stateHandler = ScreenStateHandler()
     private val carModeHandler = CarModeHandler()
     private val premiumHelper by lazy {
@@ -102,7 +98,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     var pillShown = false
         set(value) {
             field = value
-            if (field) addedPillButNotYetShown = false
+            addedPillButNotYetShown = false
         }
     var helperAdded = false
     var keyboardShown = false
@@ -194,10 +190,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 Crashlytics.logException(it)
             }
 
-            if (IntroActivity.needsToRun(this)) {
-                IntroActivity.start(this)
-            }
-
             cachedRotation = rotation
             stateHandler.register()
             uiHandler.register()
@@ -239,6 +231,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
                 appOps.startWatchingMode(AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW, packageName, this)
+            }
+
+            mainHandler.post {
+                if (prefManager.isActive && IntroActivity.needsToRun(this)) {
+                    IntroActivity.start(this)
+                }
             }
         }
     }
@@ -522,9 +520,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         if (!addedPillButNotYetShown) {
             addedPillButNotYetShown = true
 
-            if (!accessibilityConnected) {
-                requestedAddTooSoon = true
-            } else {
+            if (accessibilityConnected) {
                 Actions.addBar(this)
             }
         }
@@ -651,8 +647,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      * //TODO: More work may be needed on immersive detection
      */
     inner class UIHandler : ContentObserver(logicHandler), ViewTreeObserver.OnGlobalLayoutListener, (Boolean) -> Unit {
-        private var asDidContainApp: Boolean = false
-
         private var rotLock = Any()
 
         fun register() {
@@ -661,8 +655,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             contentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, this)
 
             bar.immersiveNav = immersiveHelperManager.isNavImmersive()
-
-            asDidContainApp = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
         }
 
         fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
@@ -904,25 +896,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             touchWizNavEnabled = !immersiveHelperManager.isNavImmersive()
                         }
                     }
-
-                    Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) -> {
-                        val contains = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)?.contains(packageName) == true
-                        val changed = asDidContainApp != contains
-
-                        if (changed) {
-                            asDidContainApp = contains
-                            if (wm.defaultDisplay.state == Display.STATE_ON) {
-                                mainHandler.postDelayed({
-                                    if (contains && prefManager.isActive) {
-                                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
-                                                || Settings.canDrawOverlays(this@App)) addBar(false)
-                                    }
-
-                                    if (contains) IntroActivity.start(this@App)
-                                }, 100)
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -964,6 +937,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         if (blackNav) blackout.add()
                     }
                 }
+            }
+        }
+
+        fun accessibilityChanged(enabled: Boolean) {
+            mainHandler.post {
+                if (enabled && prefManager.isActive) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                            || Settings.canDrawOverlays(this@App)) {
+                        addBar(false)
+                    }
+                }
+
+                if (enabled && introRunning) IntroActivity.start(this@App)
             }
         }
 
