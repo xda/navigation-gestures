@@ -241,6 +241,9 @@ Bong bóng chát Facebook Messenger, Drupe, vv."</string>
     <string name="pill_not_showing">The pill isn\'t showing on the lock screen, app permissions page, etc.</string>
     <string name="auto_hiding_navbar">The native navigation bar keeps hiding itself after I toggle off \"Hide Navigation Bar\".</string>
     <string name="enable_analytics_desc">We use Firebase Analytics to help track crashes and other issues. We do not collect or share any personal data.</string>
+    <string name="hide_on_lockscreen_desc">Disable the pill altogether when your device is on the lock screen.</string>
+    <string name="hide_on_permissions_desc">Disable the pill altogether when you\'re adjusting an app\'s permissions.</string>
+    <string name="hide_on_installer_desc">Disable the pill altogether when you\'re sideloading an APK.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Ứng dụng mang đến cử chỉ điều hướng tuyệt vời đến bất kì thiết bị Android. Tốt hơn cả, nó không cần có root! Trước khi bạn có thể sử dụng cử chỉ, có vài thứ cần làm để thiết lập ứng dụng.</string>
     <string name="draw_over_apps_desc">Để Navigation Gesture có thể hiểu thị lên viên điều hướng, bạn phải cho phép vẽ đè lên các ứng dụng khác. Ấn nút bên dưới để thực hiện điều này. Nếu ứng dụng được tải từ Play Store, quyền này sẽ được cho cấp sẵn.</string>
