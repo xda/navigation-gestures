@@ -28,7 +28,7 @@ class BarAnimator(private val bar: BarView) {
     }
 
     fun show(listener: DynamicAnimation.OnAnimationEndListener) {
-        if (bar.isVertical) animateHorizontally(listener, bar.adjustedHomeY)
+        if (bar.isVertical) verticalHomeY(listener)
         else horizontalHomeY(listener)
     }
 

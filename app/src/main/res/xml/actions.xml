@@ -7,5 +7,6 @@
     android:accessibilityFlags="flagDefault"
     android:description="@string/accessibility_screen_text"
     android:settingsActivity="com.xda.nobar.activities.MainActivity"
+    android:canRequestTouchExplorationMode="false"
     xmlns:android="http://schemas.android.com/apk/res/android"
     />

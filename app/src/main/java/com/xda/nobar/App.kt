@@ -8,7 +8,6 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.ContentObserver
-import android.hardware.display.DisplayManager
 import android.net.Uri
 import android.os.Build
 import android.os.Process
@@ -57,11 +56,21 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val appOps by lazy { getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager }
     val nm by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
     val imm by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
-    val dm by lazy { getSystemService(Context.DISPLAY_SERVICE) as DisplayManager }
     val am by lazy { getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager }
 
     val rootWrapper by lazy { RootWrapper(this) }
     val blackout by lazy { NavBlackout(this) }
+
+    var accessibilityConnected = false
+        set(value) {
+            field = value
+
+            if (value && requestedAddTooSoon) {
+                addedPillButNotYetShown = false
+                addBarInternalUnconditionally()
+            }
+        }
+    private var requestedAddTooSoon = false
 
     private val stateHandler = ScreenStateHandler()
     private val carModeHandler = CarModeHandler()
@@ -100,7 +109,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     var isValidPremium = false
         get() = field || BuildConfig.DEBUG
 
-    private var addedPillButNotYetShown = false
+    var addedPillButNotYetShown = false
 
     private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
     private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()
@@ -367,9 +376,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 override fun onAnimationEnd(animation: Animator?) {
                     try {
                         bar.shouldReAddOnDetach = false
-                        wm.removeView(bar)
-                    } catch (e: Exception) {
-                    }
+                        Actions.remBar(this@App)
+                    } catch (e: Exception) {}
 
                     if (!navHidden) removeImmersiveHelper()
                 }
@@ -472,7 +480,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     fun addBarInternal(isRefresh: Boolean = true) {
         try {
             bar.shouldReAddOnDetach = isRefresh
-            if (isRefresh) wm.removeView(bar)
+            if (isRefresh) Actions.remBar(this)
             else addBarInternalUnconditionally()
         } catch (e: Exception) {
             addBarInternalUnconditionally()
@@ -508,9 +516,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         if (!addedPillButNotYetShown) {
             addedPillButNotYetShown = true
 
-            try {
-                wm.addView(bar, bar.params)
-            } catch (e: Exception) {}
+            if (!accessibilityConnected) {
+                requestedAddTooSoon = true
+            } else {
+                Actions.addBar(this)
+            }
         }
     }
 

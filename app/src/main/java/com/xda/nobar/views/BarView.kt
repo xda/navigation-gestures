@@ -72,11 +72,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         width = adjustedWidth
         height = adjustedHeight
         gravity = Gravity.CENTER or Gravity.TOP
-        type =
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
-                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                else
-                    WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
+        type = run {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
+                WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
+            else WindowManager.LayoutParams.PRIVATE_FLAG_WILL_NOT_REPLACE_ON_RELAUNCH
+        }
         flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
@@ -111,7 +111,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         get() = if (isVertical) 0 else context.realScreenSize.y - context.prefManager.customHeight
 
     val zeroX: Int
-        get() = if (!isVertical) 0 else (if (is270Vertical) 1 else -1) * (context.realScreenSize.y / 2f - context.prefManager.customHeight).toInt()
+        get() = 0
 
     val adjustedHomeX: Int
         get() = if (isVertical) anchoredHomeY else actualHomeX
@@ -632,9 +632,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private fun showPillInternal(autoReasonToRemove: String?, forceShow: Boolean = false) {
         mainScope.launch {
             synchronized(showLock) {
-                if (isPillHidingOrShowing) {
-//                    showPill(autoReasonToRemove, forceShow)
-                } else {
+                if (!isPillHidingOrShowing) {
                     if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
 
                     if (context.app.isPillShown()) {
