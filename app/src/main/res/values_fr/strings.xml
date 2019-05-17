@@ -238,6 +238,9 @@
     <string name="pill_not_showing">The pill isn\'t showing on the lock screen, app permissions page, etc.</string>
     <string name="auto_hiding_navbar">The native navigation bar keeps hiding itself after I toggle off \"Hide Navigation Bar\".</string>
     <string name="enable_analytics_desc">We use Firebase Analytics to help track crashes and other issues. We do not collect or share any personal data.</string>
+    <string name="hide_on_lockscreen_desc">Disable the pill altogether when your device is on the lock screen.</string>
+    <string name="hide_on_permissions_desc">Disable the pill altogether when you\'re adjusting an app\'s permissions.</string>
+    <string name="hide_on_installer_desc">Disable the pill altogether when you\'re sideloading an APK.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Cette appli offre de somptueux gestes de navigation pour n\'importe quel appareil Android. Le mieux, elle n\'a pas besoin de root ! Avant de pouvoir utiliser les gestes, quelques paramétrages sont nécessaires.</string>
     <string name="draw_over_apps_desc">Afin d\'afficher la pilule de Navigation Gestures, vous devrez accorder la permission \"Superposer aux autres applis\". Appuyez sur le bouton ci-dessous pour le faire. Si vous avez installé depuis le Play Store, cette permission est déjà accordée.</string>
