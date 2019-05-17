@@ -678,7 +678,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private var oldPName: String? = null
 
         private val installers = arrayOf(
-                "com.google.android.packageInstaller",
+                "com.google.android.packageinstaller",
                 "com.android.packageinstaller"
         )
         private fun isPackageInstaller(pName: String?) = installers.contains(pName)
@@ -687,7 +687,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private fun handleNewEvent(info: AccessibilityEvent) {
             val pName = info.packageName.toString()
 
-            if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                    || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
                 if (prefManager.shouldUseOverscanMethod
                         && prefManager.useImmersiveWhenNavHidden) {
                     if (pName == "com.android.systemui" && info.className?.contains("RecentsActivity") == true) {
