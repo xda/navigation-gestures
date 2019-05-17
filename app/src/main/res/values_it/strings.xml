@@ -238,6 +238,9 @@
     <string name="pill_not_showing">The pill isn\'t showing on the lock screen, app permissions page, etc.</string>
     <string name="auto_hiding_navbar">The native navigation bar keeps hiding itself after I toggle off \"Hide Navigation Bar\".</string>
     <string name="enable_analytics_desc">We use Firebase Analytics to help track crashes and other issues. We do not collect or share any personal data.</string>
+    <string name="hide_on_lockscreen_desc">Disable the pill altogether when your device is on the lock screen.</string>
+    <string name="hide_on_permissions_desc">Disable the pill altogether when you\'re adjusting an app\'s permissions.</string>
+    <string name="hide_on_installer_desc">Disable the pill altogether when you\'re sideloading an APK.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Quest\'applicazione rende disponibili I gesti di navigazione per tutti i dispositivi Android. E non è tutto, non richiede il Root! Prima che tu possa usare i gesti, ci sono alcune cose da impostare per farla funzionare.</string>
     <string name="draw_over_apps_desc">Per rendere visibile della barra, avrai bisogno di consentire il permesso per essere mostrata sopra altre applicazioni. Tocca il pulsante sotto per farlo. Se l\'hai installata dal Play Store, questo permesso sarà già stato concesso.</string>
