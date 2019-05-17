@@ -216,7 +216,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         updatePillColorsAndRadii()
         updateDividers()
 
-        adjustPillShadow()
+        adjustPillShadowAndHitbox()
     }
 
     private fun updatePillColorsAndRadii() {
@@ -433,7 +433,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
 
             PrefManager.SHOW_SHADOW -> {
-                adjustPillShadow()
+                adjustPillShadowAndHitbox()
             }
 
             PrefManager.STATIC_PILL -> {
@@ -446,7 +446,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
 
             PrefManager.LARGER_HITBOX -> {
-                updateLargerHitbox()
+                adjustPillShadowAndHitbox()
             }
 
             PrefManager.AUTO_HIDE_PILL -> {
@@ -764,36 +764,61 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 //        }
 //    }
 
-    private fun adjustPillShadow() {
+    private fun adjustPillShadowAndHitbox() {
         logicScope.launch {
-            (pill.layoutParams as LinearLayout.LayoutParams).apply {
-                val shadow = context.prefManager.shouldShowShadow
+            val largerHitbox = context.prefManager.largerHitbox
+            val shadow = context.prefManager.shouldShowShadow
 
-                val r = if (shadow) context.dpAsPx(DEF_MARGIN_RIGHT_DP) else 0
-                val l = if (shadow) context.dpAsPx(DEF_MARGIN_LEFT_DP) else 0
-                val b = if (shadow) context.dpAsPx(DEF_MARGIN_BOTTOM_DP) else 0
+            val margins = getPillMargins()
 
-                if (isVertical) {
-                    topMargin = r
-                    bottomMargin = l
-                    if (is270Vertical) {
-                        leftMargin = b
-                        rightMargin = 0
-                    } else {
-                        rightMargin = b
-                        leftMargin = 0
+            val hitboxM = resources.getDimensionPixelSize((if (largerHitbox) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
+            val r = if (shadow) context.dpAsPx(DEF_MARGIN_RIGHT_DP) else 0
+            val l = if (shadow) context.dpAsPx(DEF_MARGIN_LEFT_DP) else 0
+            val b = if (shadow) context.dpAsPx(DEF_MARGIN_BOTTOM_DP) else 0
+
+            var hitboxChanged = false
+
+            if (isVertical) {
+                if (is270Vertical) {
+                    if (margins.right != hitboxM) {
+                        margins.right = hitboxM
+                        margins.left = b
+
+                        hitboxChanged = true
                     }
                 } else {
-                    rightMargin = r
-                    leftMargin = l
-                    bottomMargin = b
+                    if (margins.left != hitboxM) {
+                        margins.left = hitboxM
+                        margins.right = b
+
+                        hitboxChanged = true
+                    }
                 }
 
-                mainScope.launch {
-                    pill.elevation = context.dpAsPx(if (context.prefManager.shouldShowShadow) 2 else 0).toFloat()
-                    pill.layoutParams = this@apply
+                if (margins.top != r || margins.bottom != l) {
+                    margins.top = r
+                    margins.bottom = l
+
+                    hitboxChanged = true
+                }
+            } else {
+                if (margins.top != hitboxM || margins.left != l || margins.bottom != b) {
+                    margins.left = l
+                    margins.bottom = b
+                    margins.top = hitboxM
+
+                    hitboxChanged = true
                 }
             }
+
+            if (hitboxChanged) {
+                mainScope.launch {
+                    pill.elevation = context.dpAsPx(if (context.prefManager.shouldShowShadow) 2 else 0).toFloat()
+                    changePillMargins(margins)
+                }
+            }
+
+            updatePositionAndDimens()
         }
     }
 
@@ -849,8 +874,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         logicScope.launch {
             synchronized(anchorLock) {
                 verticalMode(isVertical)
-                adjustPillShadow()
-                updateLargerHitbox()
+                adjustPillShadowAndHitbox()
 
                 mainScope.launch {
                     updateDividers()
@@ -913,49 +937,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             currentGestureDetector.singleton.loadActionMap()
         }
-    }
-
-    fun updateLargerHitbox() {
-        val enabled = context.prefManager.largerHitbox
-        val margins = getPillMargins()
-        val m = resources.getDimensionPixelSize((if (enabled) R.dimen.pill_margin_top_large_hitbox else R.dimen.pill_margin_top_normal))
-
-        var changed = false
-
-        if (isVertical) {
-            if (is270Vertical) {
-                if (margins.right != m) {
-                    margins.right = m
-                    margins.left = 0
-
-                    changed = true
-                }
-            } else {
-                if (margins.left != m) {
-                    margins.left = m
-                    margins.right = 0
-
-                    changed = true
-                }
-            }
-
-            if (margins.top != 0) {
-                margins.top = 0
-
-                changed = true
-            }
-        } else {
-            if (margins.top != m) {
-                margins.left = 0
-                margins.top = m
-
-                changed = true
-            }
-        }
-
-        if (changed) changePillMargins(margins)
-
-        updatePositionAndDimens()
     }
 
     private val positionLock = Any()
