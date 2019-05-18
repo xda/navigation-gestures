@@ -22,7 +22,7 @@ class TroubleshootingFragment : BasePrefFragment() {
         const val WHITE_LINE = "white_line"
         const val PILL_OVERLAPS = "pill_overlaps"
         const val SOMETHING_ELSE = "something_else"
-        const val REPORT_TO_GITHUB = "report_to_github"
+        const val REPORT_ISSUE = "report_issue"
         const val PIXEL_AMBIENT_CUT_OFF = "pixel_ambient_cut_off"
         const val BETA_SIGN_UP = "beta_sign_up"
         const val PILL_NOT_SHOWING = "pill_not_showing"
@@ -105,8 +105,8 @@ class TroubleshootingFragment : BasePrefFragment() {
                 )
                 true
             }
-            REPORT_TO_GITHUB -> {
-                context?.launchUrl("https://github.com/zacharee/nobar-issues")
+            REPORT_ISSUE -> {
+                context?.launchUrl("https://support.xda-developers.com")
                 true
             }
             BETA_SIGN_UP -> {

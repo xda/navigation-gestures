@@ -80,7 +80,7 @@ class HelpFragment : PreferenceFragmentCompat() {
         val pref = findPreference<Preference>(FEEDBACK)!!
 
         pref.setOnPreferenceClickListener {
-            context?.launchUrl("https://github.com/zacharee/nobar-issues")
+            context?.launchUrl("https://support.xda-developers.com")
             true
         }
     }

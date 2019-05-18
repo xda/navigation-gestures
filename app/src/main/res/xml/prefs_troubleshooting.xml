@@ -88,8 +88,8 @@
             />
 
         <Preference
-            android:summary="@string/report_to_github"
-            android:key="report_to_github"
+            android:summary="@string/report_issue"
+            android:key="report_issue"
             android:icon="@drawable/circle_small"
             />
 
