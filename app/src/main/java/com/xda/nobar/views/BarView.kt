@@ -76,7 +76,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         type = run {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
                 WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-            else WindowManager.LayoutParams.PRIVATE_FLAG_WILL_NOT_REPLACE_ON_RELAUNCH
+            else WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
         }
         flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
