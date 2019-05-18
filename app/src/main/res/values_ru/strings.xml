@@ -224,7 +224,7 @@
     <string name="pill_overlaps_content">The pill overlaps with my screen content.</string>
     <string name="unable_to_request_battery_exemption">Navigation Gestures was unable to request a battery exemption on your device. We recommend disabling it manually.</string>
     <string name="lockscreen_shortcuts_cut_off">My lock screen shortcuts are cut off.</string>
-    <string name="report_to_github">If you can\'t find your solution in the Settings, raise an issue on the GitHub project.</string>
+    <string name="report_issue">If you can\'t find your solution in the Settings, open a new ticket on our support site.</string>
     <string name="pixel_ambient_battery_cut_off">The battery icon on my Pixel\'s Ambient Display is cut off.</string>
     <string name="back_up_gestures_desc">Back up your current gesture settings to a file.</string>
     <string name="restore_gestures_desc">Restore gesture settings from a backup file.</string>
