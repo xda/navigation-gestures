@@ -25,6 +25,7 @@ import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import com.xda.nobar.R
 import com.xda.nobar.util.*
+import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.util.helpers.HiddenPillReasonManager
 import com.xda.nobar.util.helpers.bar.BarViewGestureManagerHorizontal
 import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical
@@ -32,7 +33,6 @@ import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical270
 import com.xda.nobar.util.helpers.bar.BaseBarViewGestureManager
 import kotlinx.android.synthetic.main.pill.view.*
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
 
 /**
  * The Pill™©® (not really copyrighted)
@@ -121,52 +121,35 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private val actualHomeX: Int
         get() {
-            val diff = try {
-                val screenSize = context.realScreenSize
-                val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
-                (frame.left + frame.right) - screenSize.x
-            } catch (e: Exception) {
-                0
-            }
-
-            return context.prefManager.homeX - if (immersiveNav && !context.prefManager.useTabletMode) (diff / 2f).toInt() else 0
+            return context.prefManager.homeX - if (immersiveNav && !context.prefManager.useTabletMode) {
+                (when (cachedRotation) {
+                    Surface.ROTATION_90 -> -IWindowManager.bottomOverscan
+                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) -IWindowManager.topOverscan else IWindowManager.bottomOverscan
+                    else -> 0
+                } / 2f).toInt()
+            } else 0
         }
 
     private val anchoredHomeX: Int
         get() {
-            val diff = try {
-                val screenSize = context.realScreenSize
-                val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
-                (frame.top + frame.bottom) - screenSize.y
-            } catch (e: Exception) {
-                0
-            }
-
-            return context.prefManager.homeX - if (immersiveNav && !context.prefManager.useTabletMode) (diff / 2f).toInt() else 0
+            return context.prefManager.homeX - if (immersiveNav && context.prefManager.useTabletMode) {
+                (when (cachedRotation) {
+                    Surface.ROTATION_90,
+                    Surface.ROTATION_270 -> -IWindowManager.bottomOverscan
+                    else -> 0
+                } / 2f).toInt()
+            } else 0
         }
 
     private val anchoredHomeY: Int
         get() {
-            val diff = try {
-                if (context.prefManager.run { shouldUseOverscanMethod || useTabletMode }) {
-                    val frame = Rect().apply { getWindowVisibleDisplayFrame(this) }
-
-                    val rotation = cachedRotation
-
-                    if (rotation == Surface.ROTATION_270) {
-                        if (!context.prefManager.useRot270Fix)
-                            frame.left.absoluteValue
-                        else
-                            frame.right - context.realScreenSize.y
-                    } else {
-                        frame.right - context.realScreenSize.y
-                    }
-                } else 0
-            } catch (e: Exception) {
-                0
-            }
-
-            return (context.prefManager.homeY + diff.absoluteValue)
+            return context.prefManager.homeY + if (immersiveNav && !context.prefManager.useTabletMode) {
+                when (cachedRotation) {
+                    Surface.ROTATION_90 -> -IWindowManager.bottomOverscan
+                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) IWindowManager.topOverscan else -IWindowManager.bottomOverscan
+                    else -> 0
+                }
+            } else 0
         }
 
     val adjustedWidth: Int

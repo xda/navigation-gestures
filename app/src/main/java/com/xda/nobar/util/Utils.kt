@@ -205,12 +205,7 @@ fun Context.refreshScreenSize(): Point {
     val display = app.wm.defaultDisplay
 
     val temp = Point().apply { display.getRealSize(this) }
-
-    cachedScreenSize = cachedRotation.run {
-        if (prefManager.anchorPill
-                && (this == Surface.ROTATION_90 || this == Surface.ROTATION_270))
-            Point(temp.y, temp.x) else temp
-    }
+    cachedScreenSize = temp
 
     return cachedScreenSize!!
 }
@@ -220,6 +215,17 @@ fun Context.refreshScreenSize(): Point {
  * @return device's resolution (in px) as a Point
  */
 val Context.realScreenSize: Point
+    get() {
+        val temp = unadjustedRealScreenSize
+
+        return cachedRotation.run {
+            if (prefManager.anchorPill
+                    && (this == Surface.ROTATION_90 || this == Surface.ROTATION_270))
+                Point(temp.y, temp.x) else temp
+        }
+    }
+
+val Context.unadjustedRealScreenSize: Point
     get() = Point(cachedScreenSize ?: refreshScreenSize())
 
 var cachedRotation = Integer.MIN_VALUE

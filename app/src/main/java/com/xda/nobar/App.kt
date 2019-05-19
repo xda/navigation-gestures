@@ -903,6 +903,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private fun handleImmersiveChange(isImmersive: Boolean) {
             if (!IntroActivity.needsToRun(this@App)) {
                 bar.isImmersive = isImmersive
+                bar.immersiveNav = immersiveHelperManager.isNavImmersive()
 
                 val hideInFullScreen = prefManager.hideInFullscreen
                 val fadeInFullScreen = prefManager.fullscreenFade
@@ -914,6 +915,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     bar.showPill(HiddenPillReasonManager.FULLSCREEN)
                     bar.scheduleUnfade()
                 }
+
+                bar.updatePositionAndDimens()
             }
         }
 
