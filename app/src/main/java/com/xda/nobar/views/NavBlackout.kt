@@ -62,21 +62,25 @@ class NavBlackout : LinearLayout {
         isAdded = false
     }
 
-    fun add() {
-        val params = if (context.prefManager.useTabletMode) bottomParams
-        else when (cachedRotation) {
-            Surface.ROTATION_0 -> bottomParams
-            Surface.ROTATION_180 -> bottomParams
-            Surface.ROTATION_90 -> rightParams
-            Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) rightParams else leftParams
-            else -> return
-        }
+    private val addLock = Any()
 
-        mainScope.launch {
-            try {
-                if (isAdded) context.app.wm.updateViewLayout(this@NavBlackout, params)
-                else context.app.wm.addView(this@NavBlackout, params)
-            } catch (e: Exception) {}
+    fun add() {
+        synchronized(addLock) {
+            val params = if (context.prefManager.useTabletMode) bottomParams
+            else when (cachedRotation) {
+                Surface.ROTATION_0 -> bottomParams
+                Surface.ROTATION_180 -> bottomParams
+                Surface.ROTATION_90 -> rightParams
+                Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) rightParams else leftParams
+                else -> return
+            }
+
+            mainScope.launch {
+                try {
+                    if (isAdded) context.app.wm.updateViewLayout(this@NavBlackout, params)
+                    else context.app.wm.addView(this@NavBlackout, params)
+                } catch (e: Exception) {}
+            }
         }
     }
 
