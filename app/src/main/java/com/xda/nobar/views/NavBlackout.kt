@@ -21,6 +21,12 @@ class NavBlackout : LinearLayout {
     }
 
     var isAdded = false
+        set(value) {
+            field = value
+            waitingToAdd = false
+        }
+
+    private var waitingToAdd = false
 
     private val baseParams = WindowManager.LayoutParams().apply {
         type = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY else WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
@@ -66,20 +72,23 @@ class NavBlackout : LinearLayout {
 
     fun add() {
         synchronized(addLock) {
-            val params = if (context.prefManager.useTabletMode) bottomParams
-            else when (cachedRotation) {
-                Surface.ROTATION_0 -> bottomParams
-                Surface.ROTATION_180 -> bottomParams
-                Surface.ROTATION_90 -> rightParams
-                Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) rightParams else leftParams
-                else -> return
-            }
+            if (!waitingToAdd) {
+                waitingToAdd = true
+                val params = if (context.prefManager.useTabletMode) bottomParams
+                else when (cachedRotation) {
+                    Surface.ROTATION_0 -> bottomParams
+                    Surface.ROTATION_180 -> bottomParams
+                    Surface.ROTATION_90 -> rightParams
+                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) rightParams else leftParams
+                    else -> return
+                }
 
-            mainScope.launch {
-                try {
-                    if (isAdded) context.app.wm.updateViewLayout(this@NavBlackout, params)
-                    else context.app.wm.addView(this@NavBlackout, params)
-                } catch (e: Exception) {}
+                mainScope.launch {
+                    try {
+                        if (isAdded) context.app.wm.updateViewLayout(this@NavBlackout, params)
+                        else context.app.wm.addView(this@NavBlackout, params)
+                    } catch (e: Exception) {}
+                }
             }
         }
     }
