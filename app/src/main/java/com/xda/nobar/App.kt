@@ -217,7 +217,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     && !IntroActivity.needsToRun(this)) {
                 addBar()
 
-                if (display.state != Display.STATE_ON) {
+                if (wm.defaultDisplay.state != Display.STATE_ON) {
                     disabledBarReasonManager.add(DisabledReasonManager.PillReasons.SCREEN_OFF)
                     uiHandler.updateBlacklists()
                 }
