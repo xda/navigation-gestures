@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Binder
 import android.os.Bundle
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -22,8 +23,13 @@ class Actions : AccessibilityService(), ReceiverCallback {
         const val ADD_BAR = "$BASE.ADD_BAR"
         const val REM_BAR = "$BASE.REM_BAR"
 
+        const val ACTIONS_STARTED = "$BASE.STARTED"
+        const val ACTIONS_STOPPED = "$BASE.STOPPED"
+
         const val EXTRA_ACTION = "action"
         const val EXTRA_GESTURE = "gesture"
+        const val EXTRA_BINDER = "actions_binder"
+        const val EXTRA_BUNDLE = "bundle"
 
         fun sendAction(context: Context, action: String, options: Bundle) {
             val intent = Intent(action)
@@ -49,10 +55,11 @@ class Actions : AccessibilityService(), ReceiverCallback {
     private val receiver = ActionHandler(this)
     private val accWm: WindowManager
         get() = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    private val binder by lazy { IActionsBinderImpl() }
 
     override fun onServiceConnected() {
         receiver.register(this)
-        app.accessibilityConnected = true
+        sendBound()
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -70,23 +77,7 @@ class Actions : AccessibilityService(), ReceiverCallback {
     override fun onActionReceived(intent: Intent?) {
         when(intent?.action) {
             ACTION -> {
-                when (intent.getIntExtra(EXTRA_ACTION, actionHolder.typeNoAction)) {
-                    actionHolder.typeHome -> {
-                        performGlobalAction(GLOBAL_ACTION_HOME)
-                    }
-                    actionHolder.typeRecents -> {
-                        performGlobalAction(GLOBAL_ACTION_RECENTS)
-                    }
-                    actionHolder.typeBack -> performGlobalAction(GLOBAL_ACTION_BACK)
-                    actionHolder.typeSwitch -> runNougatAction {
-                        performGlobalAction(GLOBAL_ACTION_RECENTS)
-                        mainHandler.postDelayed({ performGlobalAction(GLOBAL_ACTION_RECENTS) }, 100)
-                    }
-                    actionHolder.typeSplit -> runNougatAction { performGlobalAction(GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN) }
-                    actionHolder.premTypePower -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }
-                    actionHolder.premTypeScreenshot -> runPremiumAction { runPieAction { performGlobalAction(GLOBAL_ACTION_TAKE_SCREENSHOT) } }
-                    actionHolder.premTypeLockScreen -> runPremiumAction { runPieAction { performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN) } }
-                }
+                sendAction(intent.getIntExtra(EXTRA_ACTION, actionHolder.typeNoAction))
             }
             ADD_BAR -> {
                 addBar()
@@ -100,9 +91,8 @@ class Actions : AccessibilityService(), ReceiverCallback {
     override fun onInterrupt() {}
 
     override fun onDestroy() {
-        handleDestroy()
-
         super.onDestroy()
+        handleDestroy()
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
@@ -112,8 +102,8 @@ class Actions : AccessibilityService(), ReceiverCallback {
     }
 
     private fun handleDestroy() {
+        sendUnbound()
         receiver.destroy(this)
-        app.accessibilityConnected = false
 
         removeBar()
 
@@ -121,6 +111,46 @@ class Actions : AccessibilityService(), ReceiverCallback {
             IWindowManager.setOverscan(0, 0, 0, 0)
         }
         relaunch()
+    }
+
+    private fun sendBound() {
+        val boundIntent = Intent(ACTIONS_STARTED)
+        val bundle = Bundle()
+
+        bundle.putBinder(EXTRA_BINDER, binder)
+        boundIntent.putExtra(EXTRA_BUNDLE, bundle)
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(boundIntent)
+    }
+
+    private fun sendUnbound() {
+        val unboundIntent = Intent(ACTIONS_STOPPED)
+        val bundle = Bundle()
+
+        bundle.putBinder(EXTRA_BINDER, binder)
+        unboundIntent.putExtra(EXTRA_BUNDLE, bundle)
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(unboundIntent)
+    }
+
+    private fun sendAction(action: Int) {
+        when (action) {
+            actionHolder.typeHome -> {
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
+            actionHolder.typeRecents -> {
+                performGlobalAction(GLOBAL_ACTION_RECENTS)
+            }
+            actionHolder.typeBack -> performGlobalAction(GLOBAL_ACTION_BACK)
+            actionHolder.typeSwitch -> runNougatAction {
+                performGlobalAction(GLOBAL_ACTION_RECENTS)
+                mainHandler.postDelayed({ performGlobalAction(GLOBAL_ACTION_RECENTS) }, 100)
+            }
+            actionHolder.typeSplit -> runNougatAction { performGlobalAction(GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN) }
+            actionHolder.premTypePower -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }
+            actionHolder.premTypeScreenshot -> runPremiumAction { runPieAction { performGlobalAction(GLOBAL_ACTION_TAKE_SCREENSHOT) } }
+            actionHolder.premTypeLockScreen -> runPremiumAction { runPieAction { performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN) } }
+        }
     }
 
     private fun addBar() {
@@ -158,6 +188,20 @@ class Actions : AccessibilityService(), ReceiverCallback {
 
         fun destroy(context: Context) {
             LocalBroadcastManager.getInstance(context.applicationContext).unregisterReceiver(this)
+        }
+    }
+
+    inner class IActionsBinderImpl : Binder() {
+        fun addBar() {
+            this@Actions.addBar()
+        }
+
+        fun remBar() {
+            this@Actions.removeBar()
+        }
+
+        fun sendAction(action: Int) {
+            this@Actions.sendAction(action)
         }
     }
 }

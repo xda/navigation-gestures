@@ -60,7 +60,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     val rootWrapper by lazy { RootWrapper(this) }
     val blackout by lazy { NavBlackout(this) }
+    val actionsBinder by lazy { ActionsInterface() }
 
+    val accessibilityEnabled: Boolean
+        get() = run {
+            val services = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: ""
+            services.contains(packageName)
+        }
     var introRunning = false
     var accessibilityConnected = false
         set(value) {
@@ -191,6 +197,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
 
             cachedRotation = rotation
+            actionsBinder.register()
             stateHandler.register()
             uiHandler.register()
             carModeHandler.register()
@@ -380,7 +387,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 override fun onAnimationEnd(animation: Animator?) {
                     try {
                         bar.shouldReAddOnDetach = false
-                        Actions.remBar(this@App)
+                        postAction { it.remBar() }
                     } catch (e: Exception) {}
 
                     if (!navHidden) removeImmersiveHelper()
@@ -436,7 +443,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             uiHandler.handleRot()
 
             val fullOverscan = prefManager.useFullOverscan
-            if (fullOverscan == blackNav) blackNav = !fullOverscan
+            if (!fullOverscan) blackout.add()
+            else blackout.remove()
 
             if (isTouchWiz && !prefManager.useImmersiveWhenNavHidden) {
                 touchWizNavEnabled = true
@@ -460,7 +468,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             IWindowManager.setOverscanAsync(0, 0, 0, 0)
 
-            if (blackNav) blackNav = false
+            blackout.remove()
 
             if (isTouchWiz) {
                 touchWizNavEnabled = false
@@ -484,7 +492,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     fun addBarInternal(isRefresh: Boolean = true) {
         try {
             bar.shouldReAddOnDetach = isRefresh
-            if (isRefresh) Actions.remBar(this)
+            if (isRefresh) postAction { it.remBar() }
             else addBarInternalUnconditionally()
         } catch (e: Exception) {
             addBarInternalUnconditionally()
@@ -516,13 +524,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
     }
 
+    fun postAction(action: (Actions.IActionsBinderImpl) -> Unit) {
+        actionsBinder.post(action)
+    }
+
     private fun addBarInternalUnconditionally() {
         if (!addedPillButNotYetShown) {
             addedPillButNotYetShown = true
 
-            if (accessibilityConnected) {
-                Actions.addBar(this)
-            }
+            postAction { it.addBar() }
         }
     }
 
@@ -937,7 +947,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             else -> handle0()
                         }
 
-                        if (blackNav) blackout.add()
+                        if (!prefManager.useFullOverscan) blackout.add()
                     }
                 }
             }
@@ -1142,6 +1152,63 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 ACTION_MINIVIEW_SETTINGS_CHANGED -> {
                     bar.forceActionUp()
                 }
+            }
+        }
+    }
+
+    inner class ActionsInterface : BroadcastReceiver() {
+        private val queuedPosts = ArrayList<(Actions.IActionsBinderImpl) -> Unit>()
+
+        private var binder: Actions.IActionsBinderImpl? = null
+
+        fun register() {
+            val filter = IntentFilter()
+            filter.addAction(Actions.ACTIONS_STARTED)
+            filter.addAction(Actions.ACTIONS_STOPPED)
+
+            LocalBroadcastManager.getInstance(this@App).registerReceiver(this, filter)
+        }
+
+        fun post(action: (Actions.IActionsBinderImpl) -> Unit) {
+            synchronized(queuedPosts) {
+                if (binder != null && binder!!.isBinderAlive) {
+                    action.invoke(binder!!)
+                } else {
+                    queuedPosts.add(action)
+                }
+            }
+        }
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action) {
+                Actions.ACTIONS_STARTED -> {
+                    val bundle = intent.getBundleExtra(Actions.EXTRA_BUNDLE)
+                    val binder = bundle.getBinder(Actions.EXTRA_BINDER) as Actions.IActionsBinderImpl
+                    onBound(binder)
+                }
+                Actions.ACTIONS_STOPPED -> {
+                    val bundle = intent.getBundleExtra(Actions.EXTRA_BUNDLE)
+                    val binder = bundle.getBinder(Actions.EXTRA_BINDER) as Actions.IActionsBinderImpl
+                    onUnbound(binder)
+                }
+            }
+        }
+
+        private fun onBound(binder: Actions.IActionsBinderImpl) {
+            synchronized(queuedPosts) {
+                if (binder.isBinderAlive) {
+                    this.binder = binder
+                    accessibilityConnected = true
+
+                    queuedPosts.forEach { it.invoke(binder) }
+                }
+            }
+        }
+
+        private fun onUnbound(binder: Actions.IActionsBinderImpl) {
+            synchronized(queuedPosts) {
+                this.binder = null
+                accessibilityConnected = false
             }
         }
     }

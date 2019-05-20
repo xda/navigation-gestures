@@ -67,12 +67,6 @@ val Context.adjustedNavBarHeight
 val Context.app: App
     get() = applicationContext as App
 
-var Context.blackNav: Boolean
-    get() = app.blackout.isAdded
-    set(value) {
-        app.blackout.apply { if (value) add() else remove() }
-    }
-
 val Context.defaultPillBGColor: Int
     get() = ContextCompat.getColor(this, R.color.pill_color)
 

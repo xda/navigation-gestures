@@ -23,7 +23,7 @@ class IntroActivity : IntroActivity() {
 
         fun needsToRun(context: Context): Boolean {
             val overlaysGranted = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) Settings.canDrawOverlays(context) else true
-            val accessibilityGranted = context.app.accessibilityConnected
+            val accessibilityGranted = context.app.accessibilityEnabled
 
             return !overlaysGranted || !accessibilityGranted || context.prefManager.firstRun
         }

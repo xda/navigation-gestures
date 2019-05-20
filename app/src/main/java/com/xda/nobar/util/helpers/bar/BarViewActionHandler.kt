@@ -7,7 +7,6 @@ import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.hardware.display.BrightnessConfiguration
 import android.media.AudioManager
 import android.net.wifi.WifiManager
 import android.os.Build
@@ -124,13 +123,13 @@ class BarViewActionHandler(private val bar: BarView) {
 
             if (bar.isAccessibilityAction(which)) {
                 if (context.app.prefManager.useRoot && isSu) {
-                    sendRootAction(which, key)
+                    sendRootAction(which)
                 } else {
                     if (which == bar.actionHolder.typeHome
                             && context.prefManager.useAlternateHome) {
                         handleAction(which, key)
                     } else {
-                        sendAccessibilityAction(which, key)
+                        sendAccessibilityAction(which)
                     }
                 }
             } else {
@@ -457,15 +456,11 @@ class BarViewActionHandler(private val bar: BarView) {
         }
     }
 
-    fun sendAccessibilityAction(which: Int, key: String) {
-        val options = Bundle()
-        options.putInt(Actions.EXTRA_ACTION, which)
-        options.putString(Actions.EXTRA_GESTURE, key)
-
-        Actions.sendAction(context, Actions.ACTION, options)
+    private fun sendAccessibilityAction(which: Int) {
+        context.app.postAction { it.sendAction(which) }
     }
 
-    fun sendRootAction(which: Int, key: String) {
+    private fun sendRootAction(which: Int) {
         when (which) {
             bar.actionHolder.typeHome -> context.app.rootWrapper.actions?.goHome()
             bar.actionHolder.typeRecents -> context.app.rootWrapper.actions?.openRecents()
