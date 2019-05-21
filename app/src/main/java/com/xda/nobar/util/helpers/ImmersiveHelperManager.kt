@@ -3,6 +3,7 @@ package com.xda.nobar.util.helpers
 import android.content.Context
 import android.graphics.Rect
 import android.provider.Settings
+import android.view.Surface
 import android.view.ViewTreeObserver
 import com.xda.nobar.util.*
 import com.xda.nobar.views.ImmersiveHelperViewHorizontal
@@ -130,11 +131,15 @@ class ImmersiveHelperManager(private val context: Context) {
     }
 
     fun isNavImmersiveSync(): Boolean {
-        val screenSize = context.realScreenSize
+        val screenSize = context.unadjustedRealScreenSize
         val overscan = Rect().apply { context.app.wm.defaultDisplay.getOverscanInsets(this) }
 
         return if (isLandscape && !context.prefManager.useTabletMode) {
-            horizontalLayout.left <= 0 && horizontalLayout.right >= screenSize.x + if (overscan.right < 0) overscan.bottom else 0
+            when {
+                cachedRotation == Surface.ROTATION_90 -> horizontalLayout.right > screenSize.x
+                context.prefManager.useRot270Fix -> horizontalLayout.right > screenSize.x
+                else -> horizontalLayout.left <= 0
+            }
         } else {
             verticalLayout.bottom >= screenSize.y + if (overscan.bottom < 0) overscan.bottom else 0
         }
