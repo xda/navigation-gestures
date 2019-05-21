@@ -4,24 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.WindowManager
 import com.xda.nobar.util.helpers.ImmersiveHelperManager
-import kotlin.math.absoluteValue
 
 @SuppressLint("ViewConstructor")
 @Suppress("DEPRECATION")
 class ImmersiveHelperViewHorizontal(context: Context, manager: ImmersiveHelperManager) : BaseImmersiveHelperView(context, manager) {
     init {
         alpha = 0f
-    }
-
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        immersiveListener?.invoke(
-                w.absoluteValue >= getProperScreenWidthForRotation().absoluteValue)
-    }
-
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        immersiveListener?.invoke(
-                left.absoluteValue + right.absoluteValue
-                        >= getProperScreenWidthForRotation().absoluteValue)
     }
 
     override fun onAttachedToWindow() {

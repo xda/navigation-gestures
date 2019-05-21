@@ -664,7 +664,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
             contentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, this)
 
-            bar.immersiveNav = immersiveHelperManager.isNavImmersive()
+            immersiveHelperManager.isNavImmersive { bar.immersiveNav = it }
         }
 
         fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
@@ -833,7 +833,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         override fun invoke(isImmersive: Boolean) {
-            handleImmersiveChange(isImmersive)
+            logicScope.launch {
+                handleImmersiveChange(isImmersive)
+            }
         }
 
         @SuppressLint("WrongConstant")
@@ -868,7 +870,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         }
 
                         if (prefManager.origBarInFullscreen) {
-                            if (immersiveHelperManager.isFullImmersive()) {
+                            if (immersiveHelperManager.isFullImmersiveSync()) {
                                 showNav(callListeners = false, removeImmersive = false)
                             } else {
                                 hideNav(false)
@@ -879,7 +881,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             try {
                                 if (!prefManager.useImmersiveWhenNavHidden) immersiveHelperManager.exitNavImmersive()
 
-                                bar.immersiveNav = immersiveHelperManager.isNavImmersive() && !keyboardShown
+                                bar.immersiveNav = immersiveHelperManager.isNavImmersiveSync() && !keyboardShown
 
                                 if (prefManager.hidePillWhenKeyboardShown) {
                                     if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
@@ -898,12 +900,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             logicScope.launch {
                 when (uri) {
                     Settings.Global.getUriFor(POLICY_CONTROL) -> {
-                        handleImmersiveChange(immersiveHelperManager.isFullImmersive())
+                        handleImmersiveChange(immersiveHelperManager.isFullImmersiveSync())
                     }
 
                     Settings.Global.getUriFor("navigationbar_hide_bar_enabled") -> {
                         if (prefManager.isActive) {
-                            touchWizNavEnabled = !immersiveHelperManager.isNavImmersive()
+                            touchWizNavEnabled = !immersiveHelperManager.isNavImmersiveSync()
                         }
                     }
                 }
@@ -913,7 +915,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private fun handleImmersiveChange(isImmersive: Boolean) {
             if (!IntroActivity.needsToRun(this@App)) {
                 bar.isImmersive = isImmersive
-                bar.immersiveNav = immersiveHelperManager.isNavImmersive()
+                bar.immersiveNav = immersiveHelperManager.isNavImmersiveSync()
 
                 val hideInFullScreen = prefManager.hideInFullscreen
                 val fadeInFullScreen = prefManager.fullscreenFade

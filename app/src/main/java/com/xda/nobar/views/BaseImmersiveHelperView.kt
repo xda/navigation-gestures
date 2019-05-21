@@ -3,8 +3,8 @@ package com.xda.nobar.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.os.Build
-import android.provider.Settings
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -26,10 +26,23 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
         gravity = Gravity.LEFT or Gravity.BOTTOM
     }
 
-    var immersiveListener: ((isImmersive: Boolean) -> Unit)? = null
+    var immersiveListener: ((left: Int, top: Int, right: Int, bottom: Int) -> Unit)? = null
 
     init {
         alpha = 0f
+        fitsSystemWindows = true
+    }
+
+    private val rect = Rect()
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        mainHandler.post {
+            rect.apply { getBoundsOnScreen(this) }
+
+            immersiveListener?.invoke(rect.left, rect.top, rect.right, rect.bottom)
+        }
+
+        super.onLayout(changed, left, top, right, bottom)
     }
 
     override fun onAttachedToWindow() {
@@ -42,7 +55,7 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
         val width = 1
         val height = WindowManager.LayoutParams.MATCH_PARENT
 
-        val landscape = context.isLandscape
+        val landscape = isLandscape
         val tablet = context.prefManager.useTabletMode
 
         val newW = if (landscape && !tablet) height else width
@@ -68,8 +81,7 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
     fun updateLayout() {
         mainScope.launch {
             try {
-                context.getSystemServiceCast<WindowManager>(Context.WINDOW_SERVICE)
-                        ?.updateViewLayout(this@BaseImmersiveHelperView, params)
+                context.app.wm.updateViewLayout(this@BaseImmersiveHelperView, params)
             } catch (e: Exception) {
             }
         }
@@ -78,8 +90,8 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
     fun enterNavImmersive() {
         mainScope.launch {
             systemUiVisibility = systemUiVisibility or
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                    SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 
             if (context.isTouchWiz) context.touchWizNavEnabled = false
         }
@@ -88,31 +100,10 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
     fun exitNavImmersive() {
         mainScope.launch {
             systemUiVisibility = systemUiVisibility and
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv() and
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
+                    SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv() and
+                    SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
 
             if (context.isTouchWiz) context.touchWizNavEnabled = true
         }
-    }
-
-    fun isNavImmersive(): Boolean {
-        val imm = Settings.Global.getString(context.contentResolver, POLICY_CONTROL)
-        return imm?.contains("navigation") == true
-                || imm?.contains("immersive.full") == true
-                || systemUiVisibility and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION != 0
-    }
-
-    fun isFullImmersive(): Boolean {
-        val imm = Settings.Global.getString(context.contentResolver, POLICY_CONTROL)
-        return imm?.contains("immersive.full") == true
-                || systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
-    }
-
-    fun getProperScreenHeightForRotation(): Int {
-        return context.unadjustedRealScreenSize.y
-    }
-
-    fun getProperScreenWidthForRotation(): Int {
-        return context.unadjustedRealScreenSize.x
     }
 }

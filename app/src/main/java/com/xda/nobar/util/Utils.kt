@@ -104,7 +104,7 @@ val Context.isAccessibilityEnabled: Boolean
         return services != null && services.contains(packageName)
     }
 
-val Context.isLandscape: Boolean
+val isLandscape: Boolean
     get() = cachedRotation.run { this == Surface.ROTATION_90 || this == Surface.ROTATION_270 }
 
 /**

@@ -1,28 +1,31 @@
 package com.xda.nobar.util.helpers
 
 import android.content.Context
+import android.graphics.Rect
 import android.provider.Settings
 import android.view.ViewTreeObserver
 import com.xda.nobar.util.*
 import com.xda.nobar.views.ImmersiveHelperViewHorizontal
 import com.xda.nobar.views.ImmersiveHelperViewVertical
+import kotlinx.coroutines.launch
 
 class ImmersiveHelperManager(private val context: Context) {
     val horizontal = ImmersiveHelperViewHorizontal(context, this)
     val vertical = ImmersiveHelperViewVertical(context, this)
 
-    var isHorizontalImmersive = false
+    var horizontalLayout = Rect()
         set(value) {
             if (field != value) {
-                field = value
+                field.set(value)
 
                 updateImmersiveListener()
             }
         }
-    var isVerticalImmersive = false
+
+    var verticalLayout = Rect()
         set(value) {
             if (field != value) {
-                field = value
+                field.set(value)
 
                 updateImmersiveListener()
             }
@@ -48,20 +51,16 @@ class ImmersiveHelperManager(private val context: Context) {
     private var hasRunForcedImm = false
 
     init {
-        horizontal.immersiveListener = { imm ->
-            isHorizontalImmersive = imm
+        horizontal.immersiveListener = { left, top, right, bottom ->
+            horizontalLayout = Rect(left, top, right, bottom)
         }
-        vertical.immersiveListener = { imm ->
-            isVerticalImmersive = imm
+        vertical.immersiveListener = { left, top, right, bottom ->
+            verticalLayout = Rect(left, top, right, bottom)
         }
     }
 
     private fun updateImmersiveListener() {
-        if (context.isLandscape && !context.prefManager.useTabletMode) {
-            immersiveListener?.invoke(isVerticalImmersive)
-        } else {
-            immersiveListener?.invoke(isHorizontalImmersive && isVerticalImmersive)
-        }
+        isFullImmersive { immersiveListener?.invoke(it) }
     }
 
     private fun updateHelperState() {
@@ -115,11 +114,43 @@ class ImmersiveHelperManager(private val context: Context) {
         vertical.exitNavImmersive()
     }
 
-    fun isNavImmersive() =
-            horizontal.isNavImmersive() || vertical.isNavImmersive()
+    fun isStatusImmersive() = run {
+        val top = verticalLayout.top
+        top <= 0 || isFullPolicyControl() || isStatusPolicyControl()
+    }
 
-    fun isFullImmersive() =
-            horizontal.isFullImmersive() || vertical.isFullImmersive()
+    fun isNavImmersive(callback: (Boolean) -> Unit) {
+        logicScope.launch {
+            val isNav = isNavImmersiveSync()
+
+            mainScope.launch {
+                callback.invoke(isNav || isFullPolicyControl() || isNavPolicyControl())
+            }
+        }
+    }
+
+    fun isNavImmersiveSync(): Boolean {
+        val screenSize = context.realScreenSize
+        val overscan = Rect().apply { context.app.wm.defaultDisplay.getOverscanInsets(this) }
+
+        return if (isLandscape && !context.prefManager.useTabletMode) {
+            horizontalLayout.left <= 0 && horizontalLayout.right >= screenSize.x + if (overscan.right < 0) overscan.bottom else 0
+        } else {
+            verticalLayout.bottom >= screenSize.y + if (overscan.bottom < 0) overscan.bottom else 0
+        }
+    }
+
+    fun isFullImmersive(callback: (Boolean) -> Unit) {
+        isNavImmersive {
+            callback.invoke(it && isStatusImmersive())
+        }
+    }
+
+    fun isFullImmersiveSync() = isNavImmersiveSync() && isStatusImmersive()
+
+    fun isFullPolicyControl() = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)?.contains("immersive.full") == true
+    fun isNavPolicyControl() = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)?.contains("immersive.nav") == true
+    fun isStatusPolicyControl() = Settings.Global.getString(context.contentResolver, Settings.Global.POLICY_CONTROL)?.contains("immersive.status") == true
 
     fun tempForcePolicyControlForRecents() {
         oldImm = Settings.Global.getString(context.contentResolver, POLICY_CONTROL)
