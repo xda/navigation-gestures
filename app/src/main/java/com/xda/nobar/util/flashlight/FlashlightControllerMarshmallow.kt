@@ -6,7 +6,7 @@ import android.hardware.camera2.CameraAccessException
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.os.Build
-import android.os.Handler
+import com.xda.nobar.util.mainHandler
 
 @TargetApi(Build.VERSION_CODES.M)
 class FlashlightControllerMarshmallow(override val context: Context) : FlashlightControllerBase(context) {
@@ -52,7 +52,7 @@ class FlashlightControllerMarshmallow(override val context: Context) : Flashligh
     }
 
     override fun onCreate(callback: (() -> Unit)?) {
-        manager.registerTorchCallback(this.callback, Handler())
+        manager.registerTorchCallback(this.callback, mainHandler)
         isCreated = true
         callback?.invoke()
     }
