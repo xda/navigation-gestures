@@ -21,6 +21,8 @@ import kotlinx.coroutines.launch
 open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelperManager,
                                    private val immersiveListener: (left: Int, top: Int, right: Int, bottom: Int) -> Unit) : View(context), ViewTreeObserver.OnGlobalLayoutListener {
     val params = WindowManager.LayoutParams().apply {
+        width = WindowManager.LayoutParams.MATCH_PARENT
+        height = WindowManager.LayoutParams.MATCH_PARENT
         type = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_PHONE
         else WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
         flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
@@ -41,7 +43,6 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        updateDimensions()
         viewTreeObserver.addOnGlobalLayoutListener(this)
     }
 
@@ -57,11 +58,6 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
 
             immersiveListener.invoke(rect.left, rect.top, rect.right, rect.bottom)
         }
-    }
-
-    open fun updateDimensions() {
-        params.width = WindowManager.LayoutParams.MATCH_PARENT
-        params.height = WindowManager.LayoutParams.MATCH_PARENT
     }
 
     fun updateLayout() {

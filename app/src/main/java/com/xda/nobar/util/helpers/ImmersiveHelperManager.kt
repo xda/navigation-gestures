@@ -9,17 +9,6 @@ import com.xda.nobar.util.*
 import com.xda.nobar.views.BaseImmersiveHelperView
 
 class ImmersiveHelperManager(private val context: Context, private val immersiveListener: (Boolean) -> Unit) {
-//    val horizontal = ImmersiveHelperViewHorizontal(context, this) { left, top, right, bottom ->
-//        synchronized(horizontalLayout) {
-//            horizontalLayout = Rect(left, top, right, bottom)
-//        }
-//    }
-//    val vertical = ImmersiveHelperViewVertical(context, this) { left, top, right, bottom ->
-//        synchronized(verticalLayout) {
-//            verticalLayout = Rect(left, top, right, bottom)
-//        }
-//    }
-
     val base = BaseImmersiveHelperView(context, this) { left, top, right, bottom ->
         layout = Rect(left, top, right, bottom)
     }
@@ -31,32 +20,6 @@ class ImmersiveHelperManager(private val context: Context, private val immersive
             updateImmersiveListener()
         }
 
-//    var horizontalLayout = Rect()
-//        set(value) {
-//            field.set(value)
-//
-//            updateImmersiveListener()
-//        }
-//
-//    var verticalLayout = Rect()
-//        set(value) {
-//            field.set(value)
-//
-//            updateImmersiveListener()
-//        }
-
-//    var horizontalHelperAdded = false
-//        set(value) {
-//            field = value
-//
-//            updateHelperState()
-//        }
-//    var verticalHelperAdded = false
-//        set(value) {
-//            field = value
-//
-//            updateHelperState()
-//        }
     var helperAdded = false
         set(value) {
             field = value
@@ -79,22 +42,6 @@ class ImmersiveHelperManager(private val context: Context, private val immersive
     fun add() {
         val wm = context.app.wm
 
-//        try {
-//            if (!horizontalHelperAdded) {
-//                wm.addView(horizontal, horizontal.params)
-//            } else {
-//                wm.updateViewLayout(horizontal, horizontal.params)
-//            }
-//        } catch (e: Exception) {}
-//
-//        try {
-//            if (!verticalHelperAdded) {
-//                wm.addView(vertical, vertical.params)
-//            } else {
-//                wm.updateViewLayout(vertical, vertical.params)
-//            }
-//        } catch (e: Exception) {}
-
         try {
             if (!helperAdded) {
                 wm.addView(base, base.params)
@@ -107,34 +54,20 @@ class ImmersiveHelperManager(private val context: Context, private val immersive
     fun remove() {
         val wm = context.app.wm
 
-//        try {
-//            wm.removeView(horizontal)
-//        } catch (e: Exception) {}
-//
-//        try {
-//            wm.removeView(vertical)
-//        } catch (e: Exception) {}
-
         try {
             wm.removeView(base)
         } catch (e: Exception) {}
     }
 
     fun addOnGlobalLayoutListener(listener: ViewTreeObserver.OnGlobalLayoutListener) {
-//        horizontal.viewTreeObserver.addOnGlobalLayoutListener(listener)
-//        vertical.viewTreeObserver.addOnGlobalLayoutListener(listener)
         base.viewTreeObserver.addOnGlobalLayoutListener(listener)
     }
 
     fun enterNavImmersive() {
-//        horizontal.enterNavImmersive()
-//        vertical.enterNavImmersive()
         base.enterNavImmersive()
     }
 
     fun exitNavImmersive() {
-//        horizontal.exitNavImmersive()
-//        vertical.exitNavImmersive()
         base.exitNavImmersive()
     }
 
