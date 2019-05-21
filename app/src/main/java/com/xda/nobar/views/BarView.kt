@@ -112,7 +112,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         get() = if (isVertical) 0 else context.realScreenSize.y - context.prefManager.customHeight
 
     val zeroX: Int
-        get() = 0
+        get() = if (isVertical && isLandscape) {
+            if (immersiveNav && !context.prefManager.useTabletMode) {
+                when (cachedRotation) {
+                    Surface.ROTATION_90 -> -IWindowManager.bottomOverscan
+                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) IWindowManager.topOverscan else -IWindowManager.bottomOverscan
+                    else -> 0
+                }
+            } else 0
+        } else 0
 
     val adjustedHomeX: Int
         get() = if (isVertical) anchoredHomeY else actualHomeX
@@ -146,7 +154,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             return context.prefManager.homeY + if (immersiveNav && !context.prefManager.useTabletMode) {
                 when (cachedRotation) {
                     Surface.ROTATION_90 -> -IWindowManager.bottomOverscan
-                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) IWindowManager.topOverscan else -IWindowManager.bottomOverscan
+                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) -IWindowManager.topOverscan else IWindowManager.bottomOverscan
                     else -> 0
                 }
             } else 0
@@ -182,8 +190,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var beingTouched = false
     var isCarryingOutTouchAction = false
     var isPillHidingOrShowing = false
-    var isImmersive = false
-    var immersiveNav = false
+    val isImmersive: Boolean
+        get() = context.app.immersiveHelperManager.isFullImmersiveSync()
+    val immersiveNav: Boolean
+        get() = context.app.immersiveHelperManager.isNavImmersiveSync()
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet?) : super(context, attributeSet)
@@ -607,9 +617,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private fun showPillInternal(autoReasonToRemove: String?, forceShow: Boolean = false) {
         mainScope.launch {
             synchronized(showLock) {
+                if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
                 if (!isPillHidingOrShowing) {
-                    if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
-
                     if (context.app.isPillShown()) {
                         isPillHidingOrShowing = true
                         val reallyForceNotAuto = hiddenPillReasons.isEmpty()

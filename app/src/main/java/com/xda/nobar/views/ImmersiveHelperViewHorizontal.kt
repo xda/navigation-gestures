@@ -7,7 +7,8 @@ import com.xda.nobar.util.helpers.ImmersiveHelperManager
 
 @SuppressLint("ViewConstructor")
 @Suppress("DEPRECATION")
-class ImmersiveHelperViewHorizontal(context: Context, manager: ImmersiveHelperManager) : BaseImmersiveHelperView(context, manager) {
+class ImmersiveHelperViewHorizontal(context: Context, manager: ImmersiveHelperManager,
+                                    immersiveListener: (left: Int, top: Int, right: Int, bottom: Int) -> Unit) : BaseImmersiveHelperView(context, manager, immersiveListener) {
     init {
         alpha = 0f
     }
@@ -15,7 +16,7 @@ class ImmersiveHelperViewHorizontal(context: Context, manager: ImmersiveHelperMa
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        manager.horizontalHelperAdded = true
+//        manager.horizontalHelperAdded = true
 
         WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN
     }
@@ -23,7 +24,7 @@ class ImmersiveHelperViewHorizontal(context: Context, manager: ImmersiveHelperMa
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
-        manager.horizontalHelperAdded = false
+//        manager.horizontalHelperAdded = false
     }
 
     override fun updateDimensions() {

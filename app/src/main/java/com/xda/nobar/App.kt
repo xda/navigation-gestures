@@ -8,6 +8,7 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.ContentObserver
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Process
@@ -95,7 +96,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     private val prefChangeListeners = ArrayList<SharedPreferences.OnSharedPreferenceChangeListener>()
 
-    val immersiveHelperManager by lazy { ImmersiveHelperManager(this) }
+    val immersiveHelperManager by lazy { ImmersiveHelperManager(this, uiHandler) }
     val screenOffHelper by lazy { ScreenOffHelper(this) }
 
     private var isInOtherWindowApp = false
@@ -189,6 +190,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
             }
 
+            logicScope.launch {
+                val overscan = Rect().apply { wm.defaultDisplay.getOverscanInsets(this) }
+                IWindowManager.leftOverscan = overscan.left
+                IWindowManager.topOverscan = overscan.top
+                IWindowManager.rightOverscan = overscan.right
+                IWindowManager.bottomOverscan = overscan.bottom
+            }
+
             val watchDog = ANRWatchDog()
             watchDog.setReportMainThreadOnly()
             watchDog.start()
@@ -233,7 +242,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 addImmersiveHelper()
                 uiHandler.onGlobalLayout()
                 immersiveHelperManager.addOnGlobalLayoutListener(uiHandler)
-                immersiveHelperManager.immersiveListener = uiHandler
             }
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -663,8 +671,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             contentResolver.registerContentObserver(Settings.Global.getUriFor(POLICY_CONTROL), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
             contentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, this)
-
-            immersiveHelperManager.isNavImmersive { bar.immersiveNav = it }
         }
 
         fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
@@ -833,9 +839,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         override fun invoke(isImmersive: Boolean) {
-            logicScope.launch {
-                handleImmersiveChange(isImmersive)
-            }
+            handleImmersiveChange(isImmersive)
         }
 
         @SuppressLint("WrongConstant")
@@ -881,8 +885,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             try {
                                 if (!prefManager.useImmersiveWhenNavHidden) immersiveHelperManager.exitNavImmersive()
 
-                                bar.immersiveNav = immersiveHelperManager.isNavImmersiveSync() && !keyboardShown
-
                                 if (prefManager.hidePillWhenKeyboardShown) {
                                     if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
                                     else bar.showPill(HiddenPillReasonManager.KEYBOARD)
@@ -912,34 +914,32 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
+        private val immersiveLock = Any()
+
         private fun handleImmersiveChange(isImmersive: Boolean) {
-            if (!IntroActivity.needsToRun(this@App)) {
-                bar.isImmersive = isImmersive
-                bar.immersiveNav = immersiveHelperManager.isNavImmersiveSync()
+            logicScope.launch {
+                synchronized(immersiveLock) {
+                    if (!IntroActivity.needsToRun(this@App)) {
+                        bar.updatePositionAndDimens()
 
-                val hideInFullScreen = prefManager.hideInFullscreen
-                val fadeInFullScreen = prefManager.fullscreenFade
+                        val hideInFullScreen = prefManager.hideInFullscreen
+                        val fadeInFullScreen = prefManager.fullscreenFade
 
-                if (isImmersive) {
-                    if (hideInFullScreen && !fadeInFullScreen) bar.scheduleHide(HiddenPillReasonManager.FULLSCREEN)
-                    if (fadeInFullScreen && !hideInFullScreen) bar.scheduleFade(prefManager.fullscreenFadeTime)
-                } else {
-                    bar.showPill(HiddenPillReasonManager.FULLSCREEN)
-                    bar.scheduleUnfade()
+                        if (isImmersive) {
+                            if (hideInFullScreen && !fadeInFullScreen) bar.scheduleHide(HiddenPillReasonManager.FULLSCREEN)
+                            if (fadeInFullScreen && !hideInFullScreen) bar.scheduleFade(prefManager.fullscreenFadeTime)
+                        } else {
+                            bar.showPill(HiddenPillReasonManager.FULLSCREEN)
+                            bar.scheduleUnfade()
+                        }
+                    }
                 }
-
-                bar.updatePositionAndDimens()
             }
         }
 
         fun handleRot(rot: Int = cachedRotation) {
             logicScope.launch {
                 synchronized(rotLock) {
-                    if (pillShown) {
-                        bar.handleRotationOrAnchorUpdate()
-                        bar.forceActionUp()
-                    }
-
                     if (prefManager.shouldUseOverscanMethod) {
                         when {
                             prefManager.useRot270Fix ||
@@ -950,6 +950,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         }
 
                         if (!prefManager.useFullOverscan) blackout.add()
+                    }
+
+                    if (pillShown) {
+                        bar.handleRotationOrAnchorUpdate()
+                        bar.forceActionUp()
                     }
                 }
             }
@@ -969,14 +974,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         private fun handle0() {
-            IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
+            IWindowManager.setOverscan(0, 0, 0, -adjustedNavBarHeight)
         }
 
         private fun handle180Or270(rotation: Int) {
             if (rotation == Surface.ROTATION_270) {
-                IWindowManager.setOverscanAsync(0, -adjustedNavBarHeight, 0, 0)
+                IWindowManager.setOverscan(0, -adjustedNavBarHeight, 0, 0)
             } else {
-                IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
+                IWindowManager.setOverscan(0, 0, 0, -adjustedNavBarHeight)
             }
         }
 
@@ -984,19 +989,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (prefManager.shouldUseOverscanMethod) {
                 when (rotation) {
                     Surface.ROTATION_0 -> {
-                        IWindowManager.setOverscanAsync(0, 0, 0, -adjustedNavBarHeight)
+                        IWindowManager.setOverscan(0, 0, 0, -adjustedNavBarHeight)
                     }
 
                     Surface.ROTATION_90 -> {
-                        IWindowManager.setOverscanAsync(-adjustedNavBarHeight, 0, 0, 0)
+                        IWindowManager.setOverscan(-adjustedNavBarHeight, 0, 0, 0)
                     }
 
                     Surface.ROTATION_180 -> {
-                        IWindowManager.setOverscanAsync(0, -adjustedNavBarHeight, 0, 0)
+                        IWindowManager.setOverscan(0, -adjustedNavBarHeight, 0, 0)
                     }
 
                     Surface.ROTATION_270 -> {
-                        IWindowManager.setOverscanAsync(0, 0, -adjustedNavBarHeight, 0)
+                        IWindowManager.setOverscan(0, 0, -adjustedNavBarHeight, 0)
                     }
                 }
             }

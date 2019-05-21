@@ -6,84 +6,100 @@ import android.provider.Settings
 import android.view.Surface
 import android.view.ViewTreeObserver
 import com.xda.nobar.util.*
-import com.xda.nobar.views.ImmersiveHelperViewHorizontal
-import com.xda.nobar.views.ImmersiveHelperViewVertical
-import kotlinx.coroutines.launch
+import com.xda.nobar.views.BaseImmersiveHelperView
 
-class ImmersiveHelperManager(private val context: Context) {
-    val horizontal = ImmersiveHelperViewHorizontal(context, this)
-    val vertical = ImmersiveHelperViewVertical(context, this)
+class ImmersiveHelperManager(private val context: Context, private val immersiveListener: (Boolean) -> Unit) {
+//    val horizontal = ImmersiveHelperViewHorizontal(context, this) { left, top, right, bottom ->
+//        synchronized(horizontalLayout) {
+//            horizontalLayout = Rect(left, top, right, bottom)
+//        }
+//    }
+//    val vertical = ImmersiveHelperViewVertical(context, this) { left, top, right, bottom ->
+//        synchronized(verticalLayout) {
+//            verticalLayout = Rect(left, top, right, bottom)
+//        }
+//    }
 
-    var horizontalLayout = Rect()
+    val base = BaseImmersiveHelperView(context, this) { left, top, right, bottom ->
+        layout = Rect(left, top, right, bottom)
+    }
+
+    var layout = Rect()
         set(value) {
-            if (field != value) {
-                field.set(value)
+            field.set(value)
 
-                updateImmersiveListener()
-            }
+            updateImmersiveListener()
         }
 
-    var verticalLayout = Rect()
-        set(value) {
-            if (field != value) {
-                field.set(value)
+//    var horizontalLayout = Rect()
+//        set(value) {
+//            field.set(value)
+//
+//            updateImmersiveListener()
+//        }
+//
+//    var verticalLayout = Rect()
+//        set(value) {
+//            field.set(value)
+//
+//            updateImmersiveListener()
+//        }
 
-                updateImmersiveListener()
-            }
-        }
-
-    var horizontalHelperAdded = false
+//    var horizontalHelperAdded = false
+//        set(value) {
+//            field = value
+//
+//            updateHelperState()
+//        }
+//    var verticalHelperAdded = false
+//        set(value) {
+//            field = value
+//
+//            updateHelperState()
+//        }
+    var helperAdded = false
         set(value) {
             field = value
 
             updateHelperState()
         }
-    var verticalHelperAdded = false
-        set(value) {
-            field = value
 
-            updateHelperState()
-        }
-
-
-    var immersiveListener: ((Boolean) -> Unit)? = null
 
     private var oldImm: String? = null
     private var hasRunForcedImm = false
 
-    init {
-        horizontal.immersiveListener = { left, top, right, bottom ->
-            horizontalLayout = Rect(left, top, right, bottom)
-        }
-        vertical.immersiveListener = { left, top, right, bottom ->
-            verticalLayout = Rect(left, top, right, bottom)
-        }
-    }
-
     private fun updateImmersiveListener() {
-        isFullImmersive { immersiveListener?.invoke(it) }
+        immersiveListener.invoke(isFullImmersiveSync())
     }
 
     private fun updateHelperState() {
-        context.app.helperAdded = horizontalHelperAdded && verticalHelperAdded
+        context.app.helperAdded = helperAdded
     }
 
     fun add() {
         val wm = context.app.wm
 
-        try {
-            if (!horizontalHelperAdded) {
-                wm.addView(horizontal, horizontal.params)
-            } else {
-                wm.updateViewLayout(horizontal, horizontal.params)
-            }
-        } catch (e: Exception) {}
+//        try {
+//            if (!horizontalHelperAdded) {
+//                wm.addView(horizontal, horizontal.params)
+//            } else {
+//                wm.updateViewLayout(horizontal, horizontal.params)
+//            }
+//        } catch (e: Exception) {}
+//
+//        try {
+//            if (!verticalHelperAdded) {
+//                wm.addView(vertical, vertical.params)
+//            } else {
+//                wm.updateViewLayout(vertical, vertical.params)
+//            }
+//        } catch (e: Exception) {}
 
         try {
-            if (!verticalHelperAdded) {
-                wm.addView(vertical, vertical.params)
+            if (!helperAdded) {
+                wm.addView(base, base.params)
             } else {
-                wm.updateViewLayout(vertical, vertical.params)
+                wm.updateViewLayout(base, base.params)
             }
         } catch (e: Exception) {}
     }
@@ -91,64 +107,55 @@ class ImmersiveHelperManager(private val context: Context) {
     fun remove() {
         val wm = context.app.wm
 
-        try {
-            wm.removeView(horizontal)
-        } catch (e: Exception) {}
+//        try {
+//            wm.removeView(horizontal)
+//        } catch (e: Exception) {}
+//
+//        try {
+//            wm.removeView(vertical)
+//        } catch (e: Exception) {}
 
         try {
-            wm.removeView(vertical)
+            wm.removeView(base)
         } catch (e: Exception) {}
     }
 
     fun addOnGlobalLayoutListener(listener: ViewTreeObserver.OnGlobalLayoutListener) {
-        horizontal.viewTreeObserver.addOnGlobalLayoutListener(listener)
-        vertical.viewTreeObserver.addOnGlobalLayoutListener(listener)
+//        horizontal.viewTreeObserver.addOnGlobalLayoutListener(listener)
+//        vertical.viewTreeObserver.addOnGlobalLayoutListener(listener)
+        base.viewTreeObserver.addOnGlobalLayoutListener(listener)
     }
 
     fun enterNavImmersive() {
-        horizontal.enterNavImmersive()
-        vertical.enterNavImmersive()
+//        horizontal.enterNavImmersive()
+//        vertical.enterNavImmersive()
+        base.enterNavImmersive()
     }
 
     fun exitNavImmersive() {
-        horizontal.exitNavImmersive()
-        vertical.exitNavImmersive()
+//        horizontal.exitNavImmersive()
+//        vertical.exitNavImmersive()
+        base.exitNavImmersive()
     }
 
     fun isStatusImmersive() = run {
-        val top = verticalLayout.top
+        val top = layout.top
         top <= 0 || isFullPolicyControl() || isStatusPolicyControl()
-    }
-
-    fun isNavImmersive(callback: (Boolean) -> Unit) {
-        logicScope.launch {
-            val isNav = isNavImmersiveSync()
-
-            mainScope.launch {
-                callback.invoke(isNav || isFullPolicyControl() || isNavPolicyControl())
-            }
-        }
     }
 
     fun isNavImmersiveSync(): Boolean {
         val screenSize = context.unadjustedRealScreenSize
-        val overscan = Rect().apply { context.app.wm.defaultDisplay.getOverscanInsets(this) }
+        val overscan = Rect(IWindowManager.leftOverscan, IWindowManager.topOverscan, IWindowManager.rightOverscan, IWindowManager.bottomOverscan)
 
         return if (isLandscape && !context.prefManager.useTabletMode) {
             when {
-                cachedRotation == Surface.ROTATION_90 -> horizontalLayout.right > screenSize.x
-                context.prefManager.useRot270Fix -> horizontalLayout.right > screenSize.x
-                else -> horizontalLayout.left <= 0
+                cachedRotation == Surface.ROTATION_90 -> layout.right >= screenSize.x - overscan.bottom
+                context.prefManager.useRot270Fix -> layout.right >= screenSize.x - overscan.top
+                else -> layout.left <= 0
             }
         } else {
-            verticalLayout.bottom >= screenSize.y + if (overscan.bottom < 0) overscan.bottom else 0
-        }
-    }
-
-    fun isFullImmersive(callback: (Boolean) -> Unit) {
-        isNavImmersive {
-            callback.invoke(it && isStatusImmersive())
-        }
+            layout.bottom >= screenSize.y - overscan.bottom
+        } || isNavPolicyControl() || isFullPolicyControl()
     }
 
     fun isFullImmersiveSync() = isNavImmersiveSync() && isStatusImmersive()
