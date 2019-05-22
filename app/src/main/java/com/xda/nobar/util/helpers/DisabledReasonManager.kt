@@ -24,4 +24,34 @@ open class DisabledReasonManager : HashSet<String>() {
         const val BLACKLIST = "imm_blacklist"
         const val EDGE_SCREEN = "edge"
     }
+
+    override fun add(element: String): Boolean {
+        synchronized(this) {
+            return super.add(element)
+        }
+    }
+
+    override fun remove(element: String): Boolean {
+        synchronized(this) {
+            return super.remove(element)
+        }
+    }
+
+    override fun addAll(elements: Collection<String>): Boolean {
+        synchronized(this) {
+            return super.addAll(elements)
+        }
+    }
+
+    override fun removeAll(elements: Collection<String>): Boolean {
+        synchronized(this) {
+            return super.removeAll(elements)
+        }
+    }
+
+    override fun clear() {
+        synchronized(this) {
+            super.clear()
+        }
+    }
 }
