@@ -9,13 +9,13 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputEditText
 import com.xda.nobar.R
 import com.xda.nobar.adapters.ActionSelectAdapter
 import com.xda.nobar.adapters.info.ActionInfo
 import com.xda.nobar.prefs.SectionableListPreference
 import com.xda.nobar.util.actionHolder
 import com.xda.nobar.util.prefManager
+import kotlinx.android.synthetic.main.text_input.view.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -48,13 +48,13 @@ class ActionSelectorActivity : BaseAppSelectActivity<ActionInfo, ActionInfo>() {
                 actionHolder.typeRootKeycode.toString(),
                 actionHolder.typeRootDoubleKeycode.toString(),
                 actionHolder.typeRootLongKeycode.toString() -> {
-                    val input = View.inflate(this, R.layout.text_input, null) as TextInputEditText
+                    val input = View.inflate(this, R.layout.text_input, null)
 
                     AlertDialog.Builder(this)
                             .setTitle(R.string.root_send_keycode_no_format)
                             .setView(input)
                             .setPositiveButton(android.R.string.ok) { _, _ ->
-                                val keyCode = input.text
+                                val keyCode = input.input.text
                                 if (keyCode != null) {
                                     val text = keyCode.toString().toInt()
                                     prefManager.putKeycode(gesture!!, text)

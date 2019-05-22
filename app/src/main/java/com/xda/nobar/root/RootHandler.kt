@@ -2,7 +2,6 @@ package com.xda.nobar.root
 
 import android.annotation.SuppressLint
 import android.hardware.input.InputManager
-import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.view.InputDevice
@@ -16,12 +15,13 @@ import eu.chainfire.librootjava.RootJava
 
 @SuppressLint("PrivateApi")
 object RootHandler {
-    private val handler by lazy { Handler(Looper.getMainLooper()) }
     private val im by lazy { inputManager }
 
     @JvmStatic
     fun main(args: Array<String>) {
         RootJava.restoreOriginalLdLibraryPath()
+
+        if (Looper.myLooper() == null) Looper.prepare()
 
         val actions = RootActionsImpl()
 
@@ -53,16 +53,15 @@ object RootHandler {
 
         override fun sendDoubleKeyEvent(code: Int) {
             sendKeyEvent(code)
-
-            handler.postDelayed({ sendKeyEvent(code) }, 10)
+            sendKeyEvent(code)
         }
 
         override fun sendLongKeyEvent(code: Int) {
             val now = SystemClock.uptimeMillis()
 
             injectKeyEvent(createKeyEvent(now, KeyEvent.ACTION_DOWN, code, 0, 0))
-            injectKeyEvent(createKeyEvent(now, KeyEvent.ACTION_DOWN, code, 1, KeyEvent.FLAG_LONG_PRESS))
-            injectKeyEvent(createKeyEvent(now, KeyEvent.ACTION_UP, code, 0, 0))
+            injectKeyEvent(createKeyEvent(now, KeyEvent.ACTION_DOWN, code, 1, 0))
+//            injectKeyEvent(createKeyEvent(now, KeyEvent.ACTION_UP, code, 0, 0))
         }
 
         override fun lockScreen() {
