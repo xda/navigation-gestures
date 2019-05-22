@@ -25,7 +25,6 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         /* Booleans */
         const val IS_ACTIVE = "is_active"
         const val HIDE_NAV = "hide_nav"
-        const val USE_ROOT = "use_root"
         const val ROT270_FIX = "rot270_fix"
         const val ROT180_FIX = "rot180_fix"
         const val TABLET_MODE = "tablet_mode"
@@ -157,8 +156,6 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         set(value) {
             putBoolean(FIRST_RUN, value)
         }
-    val useRoot: Boolean
-        get() = getBoolean(USE_ROOT, false) && false //TODO: implement at some point
     val hideInFullscreen: Boolean
         get() = getBoolean(HIDE_IN_FULLSCREEN, resources.getBoolean(R.bool.hide_in_fullscreen_default))
     val autoFade: Boolean

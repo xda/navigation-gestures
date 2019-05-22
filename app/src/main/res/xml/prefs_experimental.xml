@@ -27,9 +27,4 @@
         android:defaultValue="@bool/anchor_pill_default"
         />
 
-    <!--<SwitchPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="use_root"-->
-        <!--android:title="@string/use_root" />-->
-
 </PreferenceScreen>
