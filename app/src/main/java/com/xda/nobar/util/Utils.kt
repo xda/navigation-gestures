@@ -483,10 +483,16 @@ fun isSuAsync(resultHandler: Handler, listener: ((Boolean) -> Unit)? = null) {
 
 fun isSuAsync(listener: ((Boolean) -> Unit)? = null) {
     logicScope.launch {
-        cachedSu = Shell.SU.available()
+        refreshSu()
 
         listener?.invoke(cachedSu)
     }
+}
+
+fun refreshSu(): Boolean {
+    cachedSu = Shell.SU.available()
+
+    return cachedSu
 }
 
 fun Throwable.logStack() {

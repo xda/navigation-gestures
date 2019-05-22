@@ -57,6 +57,8 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         setContentView(R.layout.activity_main)
         setUpActionBar()
 
+        if (!app.rootWrapper.isConnected) app.rootWrapper.onCreate()
+
         root.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
         app.addLicenseCheckListener(this)

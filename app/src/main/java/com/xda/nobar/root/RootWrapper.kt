@@ -23,6 +23,7 @@ class RootWrapper(private val context: Context) {
         override fun onDisconnect(ipc: RootActions?) {
             synchronized(queuedActions) {
                 actions = null
+                isCreated = false
             }
         }
     }
@@ -31,6 +32,9 @@ class RootWrapper(private val context: Context) {
     var actions: RootActions? = null
 
     private val queuedActions = ArrayList<(ipc: RootActions) -> Unit>()
+
+    val isConnected: Boolean
+        get() = actions != null
 
     fun onCreate() {
         if (!isCreated) {
