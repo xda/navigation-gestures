@@ -11,9 +11,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.SortedList
 import com.rey.material.widget.CheckedImageView
 import com.xda.nobar.R
-import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.adapters.info.AppInfo
 import com.xda.nobar.adapters.info.AppInfoSorterCallback
+import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.util.toBitmapDrawable
 
 /**
@@ -26,16 +26,16 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
                        val showSummary: Boolean,
                        val checkListener: OnAppSelectedListener,
                        val activity: Boolean = false,
-                       val isRemote: Boolean = true) : BaseSelectAdapter<AppInfo>() {
+                       val isRemote: Boolean = true) : BaseSelectAdapter<AppInfo, BaseSelectAdapter.VH>() {
 
-    override val apps = SortedList<AppInfo>(AppInfo::class.java, AppInfoSorterCallback(this, activity))
+    override val sortedApps = SortedList(AppInfo::class.java, AppInfoSorterCallback(this, activity))
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            VH(LayoutInflater.from(parent.context)
+            BaseSelectAdapter.VH(LayoutInflater.from(parent.context)
                     .inflate(if (isSingleSelect) R.layout.app_info_single else R.layout.app_info_multi, parent, false))
 
-    override fun onBindViewHolder(holder: VH, position: Int) {
-        val app = apps[position]
+    override fun onBindViewHolder(holder: BaseSelectAdapter.VH, position: Int) {
+        val app = sortedApps[position]
         val view = holder.view
 
         val title = view.findViewById<TextView>(R.id.title)
@@ -68,13 +68,13 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
             app.isChecked = check.isChecked
 
             if (isSingleSelect) {
-                (0 until apps.size())
-                        .map { int -> apps[int] }
+                (0 until sortedApps.size())
+                        .map { int -> sortedApps[int] }
                         .filterNot { info -> info == app }
                         .filter { info -> info.isChecked }
                         .forEach { info ->
                             info.isChecked = false
-                            notifyItemChanged(apps.indexOf(info))
+                            notifyItemChanged(sortedApps.indexOf(info))
                         }
             }
 
@@ -85,12 +85,12 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
     }
 
     fun setSelectedByPackage(packageName: String) {
-        (0 until apps.size())
-                .map { apps[it] }
+        (0 until sortedApps.size())
+                .map { sortedApps[it] }
                 .filter { it.packageName == packageName }
                 .forEach {
                     it.isChecked = true
-                    notifyItemChanged(apps.indexOf(it))
+                    notifyItemChanged(sortedApps.indexOf(it))
                 }
     }
 }

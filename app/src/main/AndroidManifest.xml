@@ -115,6 +115,7 @@
             android:name=".activities.helpers.RequestPermissionsActivity"
             android:excludeFromRecents="true"
             android:theme="@style/AppTheme.Null" />
+        <activity android:name=".activities.selectors.ActionSelectorActivity" />
         <activity android:name=".activities.selectors.BlacklistSelectorActivity" />
         <activity android:name=".activities.selectors.ActivityLaunchSelectActivity" />
         <activity android:name=".activities.selectors.IntentSelectorActivity" />

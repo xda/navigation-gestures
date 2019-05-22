@@ -31,7 +31,7 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
         const val EXTRA_KEY = "key"
     }
 
-    internal abstract val adapter: BaseSelectAdapter<Info>
+    internal abstract val adapter: BaseSelectAdapter<Info, out BaseSelectAdapter.VH>
 
     internal var isCreated = false
 
@@ -190,5 +190,5 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
      * Filter logic for the search function
      * Matches both display names and package names
      */
-    internal abstract fun filter(query: String): ArrayList<Info>
+    internal abstract fun filter(query: String): List<Info>
 }

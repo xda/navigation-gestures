@@ -335,7 +335,7 @@ fun Context.runPremiumAction(action: () -> Unit): Boolean {
             title = R.string.premium_required
             message = R.string.premium_required_desc
             yesAction = OnDialogChoiceMadeListener {
-                launchUrl("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
+                launchUrl("https://play.google.com/store/sortedApps/details?id=com.xda.nobar.premium")
             }
             start()
         }

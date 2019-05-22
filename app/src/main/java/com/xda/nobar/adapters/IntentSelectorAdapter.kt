@@ -14,13 +14,13 @@ import com.xda.nobar.adapters.info.IntentInfo
 import com.xda.nobar.adapters.info.IntentInfoSorterCallback
 import com.xda.nobar.interfaces.OnIntentSelectedListener
 
-class IntentSelectorAdapter(private val callback: OnIntentSelectedListener, private val context: Context) : BaseSelectAdapter<IntentInfo>() {
-    override val apps = SortedList<IntentInfo>(IntentInfo::class.java, IntentInfoSorterCallback(this, context))
+class IntentSelectorAdapter(private val callback: OnIntentSelectedListener, private val context: Context) : BaseSelectAdapter<IntentInfo, BaseSelectAdapter.VH>() {
+    override val sortedApps = SortedList<IntentInfo>(IntentInfo::class.java, IntentInfoSorterCallback(this, context))
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = VH(LayoutInflater.from(parent.context).inflate(R.layout.app_info_single, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = BaseSelectAdapter.VH(LayoutInflater.from(parent.context).inflate(R.layout.app_info_single, parent, false))
 
-    override fun onBindViewHolder(holder: VH, position: Int) {
-        val info = apps[position]
+    override fun onBindViewHolder(holder: BaseSelectAdapter.VH, position: Int) {
+        val info = sortedApps[position]
         val view = holder.view
 
         val title = view.findViewById<TextView>(R.id.title)
@@ -37,13 +37,13 @@ class IntentSelectorAdapter(private val callback: OnIntentSelectedListener, priv
             check.isChecked = true
             info.isChecked = check.isChecked
 
-            (0 until apps.size())
-                    .map { index -> apps[index] }
+            (0 until sortedApps.size())
+                    .map { index -> sortedApps[index] }
                     .filterNot { app -> app == info }
                     .filter { app -> app.isChecked }
                     .forEach { app ->
                         app.isChecked = false
-                        notifyItemChanged(apps.indexOf(app))
+                        notifyItemChanged(sortedApps.indexOf(app))
                     }
 
             callback.onIntentSelected(info)

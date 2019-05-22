@@ -3,9 +3,12 @@ package com.xda.nobar.prefs
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Bundle
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -17,10 +20,13 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.preference.Preference
 import com.xda.nobar.R
+import com.xda.nobar.activities.selectors.ActionSelectorActivity
+import com.xda.nobar.adapters.info.ActionInfo
 import com.xda.nobar.interfaces.OnItemChosenListener
 import com.xda.nobar.util.dpAsPx
 import com.xda.nobar.util.helpers.bar.ActionHolder
 import com.xda.nobar.views.ItemView
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Android's built-in ListPreference has no option to make sections for the items
@@ -184,10 +190,25 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     override fun onClick() {
-        val builder = AlertDialog.Builder(context)
-        onPrepareDialogBuilder(builder)
+//        val builder = AlertDialog.Builder(context)
+//        onPrepareDialogBuilder(builder)
+//
+//        dialog = builder.show()
 
-        dialog = builder.show()
+        val callback = object : ActionSelectorActivity.IActionSelectedCallback() {
+            override fun onActionInfoSelected(info: ActionInfo) {
+                saveValue(info.res?.toString())
+            }
+        }
+
+        val selectorIntent = Intent(context, ActionSelectorActivity::class.java)
+        val bundle = Bundle()
+
+        bundle.putParcelableArrayList(ActionSelectorActivity.EXTRA_SECTIONS, sections)
+        bundle.putBinder(ActionSelectorActivity.EXTRA_CALLBACK, callback)
+        selectorIntent.putExtra(ActionSelectorActivity.EXTRA_BUNDLE, bundle)
+
+        context.startActivity(selectorIntent)
     }
 
     override fun onPrepareForRemoval() {
@@ -253,7 +274,8 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         if (positiveResult) saveValue(tempValue)
     }
 
-    inner class Section(val title: String?, val entryNames: ArrayList<String>, val entryValues: ArrayList<String>) {
+    @Parcelize
+    class Section(val title: String, val entryNames: ArrayList<String>, val entryValues: ArrayList<String>) : Parcelable {
         override fun toString(): String {
             return "Title: $title\nEntry Names: $entryNames\nEntry Values: $entryValues"
         }
@@ -292,7 +314,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
             sections.forEach {
                 val sectionView = SectionTitleView(context)
                 sectionView.name = it.title
-                if (it.title != null && it.title.isNotBlank()) addView(sectionView)
+                if (it.title.isNotBlank()) addView(sectionView)
 
                 for (i in 0 until it.entryNames.size) {
                     val itemView = View.inflate(context, R.layout.item_view, null) as ItemView

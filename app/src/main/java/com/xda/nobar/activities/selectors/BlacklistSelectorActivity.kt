@@ -14,7 +14,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 /**
- * Activity to manage which apps should be blacklisted for a certain function
+ * Activity to manage which sortedApps should be blacklisted for a certain function
  * Use the constants in the companion object to specify the function
  */
 class BlacklistSelectorActivity : BaseAppSelectActivity<ApplicationInfo, AppInfo>() {

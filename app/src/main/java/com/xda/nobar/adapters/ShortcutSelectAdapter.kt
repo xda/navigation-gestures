@@ -15,17 +15,17 @@ import kotlinx.android.synthetic.main.app_info_single.view.*
 
 class ShortcutSelectAdapter(
         val checkListener: OnShortcutSelectedListener
-) : BaseSelectAdapter<ShortcutInfo>() {
-    override val apps = SortedList(ShortcutInfo::class.java,
+) : BaseSelectAdapter<ShortcutInfo, BaseSelectAdapter.VH>() {
+    override val sortedApps = SortedList(ShortcutInfo::class.java,
             ShortcutInfoSorterCallback(this))
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        VH(LayoutInflater.from(parent.context)
-                .inflate(R.layout.app_info_single, parent, false))
+            BaseSelectAdapter.VH(LayoutInflater.from(parent.context)
+                    .inflate(R.layout.app_info_single, parent, false))
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: VH, position: Int) {
-        val item = apps[position]
+    override fun onBindViewHolder(holder: BaseSelectAdapter.VH, position: Int) {
+        val item = sortedApps[position]
         val view = holder.view
 
         view.title.text = item.label
@@ -43,13 +43,13 @@ class ShortcutSelectAdapter(
             view.checkmark.isChecked = true
             item.isChecked = true
 
-            (0 until apps.size())
-                    .map { int -> apps[int] }
+            (0 until sortedApps.size())
+                    .map { int -> sortedApps[int] }
                     .filterNot { info -> info == item }
                     .filter { info -> info.isChecked }
                     .forEach { info ->
                         info.isChecked = false
-                        notifyItemChanged(apps.indexOf(info))
+                        notifyItemChanged(sortedApps.indexOf(info))
                     }
 
             checkListener.onShortcutSelected(item)

@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
                 AlertDialog.Builder(this)
                         .setTitle(R.string.sign_up_for_beta)
                         .setMessage(R.string.sign_up_for_beta_desc)
-                        .setPositiveButton(android.R.string.ok) { _, _ -> launchUrl("https://play.google.com/apps/testing/com.xda.nobar") }
+                        .setPositiveButton(android.R.string.ok) { _, _ -> launchUrl("https://play.google.com/sortedApps/testing/com.xda.nobar") }
                         .setNegativeButton(android.R.string.cancel, null)
                         .setNeutralButton(R.string.hide_text) { _,_ ->
                             startActivity(Intent(this, HelpAboutActivity::class.java))

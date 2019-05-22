@@ -25,7 +25,7 @@ class IntentSelectorActivity : BaseAppSelectActivity<IntentSelectorActivity.Type
                         0
                 ),
                 1 to TypeIntent(
-                        "com.google.android.apps.gsa.velour.DynamicActivityTrampoline",
+                        "com.google.android.sortedApps.gsa.velour.DynamicActivityTrampoline",
                         ACTIVITY,
                         R.string.google_weather,
                         1
@@ -34,7 +34,7 @@ class IntentSelectorActivity : BaseAppSelectActivity<IntentSelectorActivity.Type
                     `package` = "com.google.android.googlequicksearchbox"
                     component = ComponentName(
                             `package`!!,
-                            "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"
+                            "com.google.android.sortedApps.gsa.velour.DynamicActivityTrampoline"
                     )
                 },
                 2 to TypeIntent(

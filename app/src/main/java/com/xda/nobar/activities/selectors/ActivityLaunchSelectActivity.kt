@@ -9,6 +9,8 @@ import com.xda.nobar.adapters.AppSelectAdapter
 import com.xda.nobar.adapters.info.AppInfo
 import com.xda.nobar.interfaces.OnAppSelectedListener
 import com.xda.nobar.util.prefManager
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ActivityLaunchSelectActivity : BaseAppSelectActivity<ActivityInfo, AppInfo>() {
     override val adapter = AppSelectAdapter(true, true, OnAppSelectedListener { info ->
@@ -64,12 +66,12 @@ class ActivityLaunchSelectActivity : BaseAppSelectActivity<ActivityInfo, AppInfo
     }
 
     override fun filter(query: String): ArrayList<AppInfo> {
-        val lowercase = query.toLowerCase()
+        val lowercase = query.toLowerCase(Locale.getDefault())
 
         val filteredList = ArrayList<AppInfo>()
 
         ArrayList(origAppSet).forEach {
-            val title = it.displayName.toLowerCase()
+            val title = it.displayName.toLowerCase(Locale.getDefault())
             val summary = if (adapter.activity) it.activity else it.packageName
             if (title.contains(lowercase) || summary.contains(lowercase)) {
                 filteredList.add(it)

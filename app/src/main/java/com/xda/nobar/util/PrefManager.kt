@@ -459,19 +459,19 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
     }
 
     /**
-     * Load the list of apps that should keep the navbar shown
+     * Load the list of sortedApps that should keep the navbar shown
      */
     fun loadBlacklistedNavPackages(packages: ArrayList<String>) =
             packages.addAll(getStringSet(BLACKLISTED_NAV_APPS, HashSet()))
 
     /**
-     * Load the list of apps where the pill shouldn't be shown
+     * Load the list of sortedApps where the pill shouldn't be shown
      */
     fun loadBlacklistedBarPackages(packages: ArrayList<String>) =
             packages.addAll(getStringSet(BLACKLISTED_BAR_APPS, HashSet()))
 
     /**
-     * Load the list of apps where immersive navigation should be disabled
+     * Load the list of sortedApps where immersive navigation should be disabled
      */
     fun loadBlacklistedImmPackages(packages: ArrayList<String>) =
             packages.addAll(getStringSet(BLACKLISTED_IMM_APPS, HashSet()))
@@ -480,19 +480,19 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
             packages.addAll(getStringSet(OTHER_WINDOW_APPS, HashSet()))
 
     /**
-     * Save the list of apps that should keep the navbar shown
+     * Save the list of sortedApps that should keep the navbar shown
      */
     fun saveBlacklistedNavPackageList(packages: ArrayList<String>) =
             putStringSet(BLACKLISTED_NAV_APPS, HashSet<String>(packages))
 
     /**
-     * Save the list of apps where the pill shouldn't be shown
+     * Save the list of sortedApps where the pill shouldn't be shown
      */
     fun saveBlacklistedBarPackages(packages: ArrayList<String>) =
             putStringSet(BLACKLISTED_BAR_APPS, HashSet<String>(packages))
 
     /**
-     * Save the list of apps where immersive navigation should be disabled
+     * Save the list of sortedApps where immersive navigation should be disabled
      */
     fun saveBlacklistedImmPackages(packages: ArrayList<String>) =
             putStringSet(BLACKLISTED_IMM_APPS, HashSet<String>(packages))
