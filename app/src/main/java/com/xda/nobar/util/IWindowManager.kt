@@ -62,40 +62,20 @@ object IWindowManager {
      * @param bottom overscan bottom
      */
     fun setOverscan(left: Int, top: Int, right: Int, bottom: Int): Boolean {
-        return if (leftOverscan != left
-                || topOverscan != top
-                || rightOverscan != right
-                || bottomOverscan != bottom) {
+        return try {
+            iWindowManagerClass
+                    .getMethod("setOverscan", Int::class.java, Int::class.java, Int::class.java, Int::class.java, Int::class.java)
+                    .invoke(iWindowManager, Display.DEFAULT_DISPLAY, left, top, right, bottom)
+
             leftOverscan = left
             topOverscan = top
             rightOverscan = right
             bottomOverscan = bottom
 
-            try {
-                iWindowManagerClass
-                        .getMethod("setOverscan", Int::class.java, Int::class.java, Int::class.java, Int::class.java, Int::class.java)
-                        .invoke(iWindowManager, Display.DEFAULT_DISPLAY, left, top, right, bottom)
-                canRunCommands()
-            } catch (e: Throwable) {
-                val res = Shell.run("sh", arrayOf("wm overscan $left,$top,$right,$bottom"), null, true)
-                res.joinToString("").isBlank()
-            }
-        } else {
-            false
-        }
-    }
-
-    /**
-     * Check if the device is able to execute WindowManager commands
-     * @return true if the above condition is met
-     */
-    fun canRunCommands(): Boolean {
-        return try {
-            Class.forName("android.view.IWindowManager")
             true
         } catch (e: Throwable) {
-            e.printStackTrace()
-            false
+            val res = Shell.run("sh", arrayOf("wm overscan $left,$top,$right,$bottom"), null, true)
+            res.joinToString("").isBlank()
         }
     }
 
