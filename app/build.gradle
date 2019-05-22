@@ -10,8 +10,8 @@ apply plugin: 'io.fabric'
 
 apply plugin: 'base'
 
-project.version = 108
-def name = "1.13.8"
+project.version = 109
+def name = "1.13.9"
 
 preBuild {
     delete "${rootDir}/app/release/"
