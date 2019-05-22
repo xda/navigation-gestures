@@ -48,6 +48,8 @@ class BarViewActionHandler(private val bar: BarView) {
         else FlashlightControllerLollipop(context)
     }
 
+    private val rootWrapper by lazy { context.app.rootWrapper }
+
     private val orientationEventListener by lazy {
         object : OrientationEventListener(context) {
             private var enabled = false
@@ -122,16 +124,14 @@ class BarViewActionHandler(private val bar: BarView) {
             }
 
             if (bar.isAccessibilityAction(which)) {
-                if (context.app.prefManager.useRoot && isSu) {
-                    sendRootAction(which)
+                if (which == bar.actionHolder.typeHome
+                        && context.prefManager.useAlternateHome) {
+                    handleAction(which, key)
                 } else {
-                    if (which == bar.actionHolder.typeHome
-                            && context.prefManager.useAlternateHome) {
-                        handleAction(which, key)
-                    } else {
-                        sendAccessibilityAction(which)
-                    }
+                    sendAccessibilityAction(which)
                 }
+            } else if (isSu && bar.isRootAction(which)) {
+                sendRootAction(which)
             } else {
                 handleAction(which, key)
             }
@@ -263,12 +263,7 @@ class BarViewActionHandler(private val bar: BarView) {
                     }
                     bar.actionHolder.premTypeLockScreen -> context.runPremiumAction {
                         context.runSystemSettingsAction {
-                            if (context.app.prefManager.useRoot
-                                    && isSu) {
-                                context.app.rootWrapper.actions?.lockScreen()
-                            } else {
-                                ActionReceiver.turnScreenOff(context)
-                            }
+                            ActionReceiver.turnScreenOff(context)
                         }
                     }
                     bar.actionHolder.premTypeScreenshot -> context.runPremiumAction {
@@ -461,23 +456,13 @@ class BarViewActionHandler(private val bar: BarView) {
     }
 
     private fun sendRootAction(which: Int) {
-        when (which) {
-            bar.actionHolder.typeHome -> context.app.rootWrapper.actions?.goHome()
-            bar.actionHolder.typeRecents -> context.app.rootWrapper.actions?.openRecents()
-            bar.actionHolder.typeBack -> context.app.rootWrapper.actions?.goBack()
-
-            bar.actionHolder.typeSwitch -> context.runNougatAction {
-                context.app.rootWrapper.actions?.switchApps()
-            }
-            bar.actionHolder.typeSplit -> context.runNougatAction {
-                context.app.rootWrapper.actions?.splitScreen()
-            }
-
-            bar.actionHolder.premTypePower -> context.runPremiumAction {
-                context.app.rootWrapper.actions?.openPowerMenu()
-            }
-            bar.actionHolder.premTypeLockScreen -> context.runPremiumAction {
-                context.app.rootWrapper.actions?.lockScreen()
+        rootWrapper.postAction {
+            when (which) {
+                bar.actionHolder.typeRootForward -> it.sendKeyEvent(KeyEvent.KEYCODE_FORWARD)
+                bar.actionHolder.typeRootHoldBack -> it.sendLongKeyEvent(KeyEvent.KEYCODE_BACK)
+                bar.actionHolder.typeRootMenu -> it.sendKeyEvent(KeyEvent.KEYCODE_MENU)
+                bar.actionHolder.premTypeLockScreen -> it.lockScreen()
+                bar.actionHolder.premTypeScreenshot -> it.screenshot()
             }
         }
     }

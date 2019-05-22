@@ -9,7 +9,6 @@
         <item>@string/type_hold_back</item>
         <item>@string/type_forward</item>
         <item>@string/type_menu</item>
-        <item>@string/type_sleep</item>
     </string-array>
 
     <string-array name="no_action_names">

@@ -12,17 +12,25 @@ import kotlinx.coroutines.launch
 
 class RootWrapper(private val context: Context) {
     private val receiver = object : RootIPCReceiver<RootActions>(context, 200, RootActions::class.java) {
-        override fun onConnect(ipc: RootActions?) {
-            actions = ipc
+        override fun onConnect(ipc: RootActions) {
+            synchronized(queuedActions) {
+                actions = ipc
+
+                queuedActions.forEach { it.invoke(ipc) }
+            }
         }
 
         override fun onDisconnect(ipc: RootActions?) {
-            actions = null
+            synchronized(queuedActions) {
+                actions = null
+            }
         }
     }
     private var isCreated = false
 
     var actions: RootActions? = null
+
+    private val queuedActions = ArrayList<(ipc: RootActions) -> Unit>()
 
     fun onCreate() {
         if (!isCreated) {
@@ -33,7 +41,11 @@ class RootWrapper(private val context: Context) {
                             null, null, BuildConfig.APPLICATION_ID + ":root")
 
             isSuAsync {
-                Shell.SU.run(script.toTypedArray())
+                if (it) {
+                    logicScope.launch {
+                        Shell.SU.run(script.toTypedArray())
+                    }
+                }
             }
         }
     }
@@ -46,4 +58,12 @@ class RootWrapper(private val context: Context) {
             RootJava.cleanupCache(context)
         }
     }
+
+    fun postAction(action: (ipc: RootActions) -> Unit) {
+        synchronized(queuedActions) {
+            if (actions == null) queuedActions.add(action)
+            else action.invoke(actions!!)
+        }
+    }
+
 }

@@ -189,5 +189,4 @@ class ActionHolder private constructor(private val context: Context) {
     val typeRootHoldBack by lazy { context.resources.getString(R.string.type_hold_back).toInt() }
     val typeRootForward by lazy { context.resources.getString(R.string.type_forward).toInt() }
     val typeRootMenu by lazy { context.resources.getString(R.string.type_menu).toInt() }
-    val typeRootSleep by lazy { context.resources.getString(R.string.type_sleep).toInt() }
 }

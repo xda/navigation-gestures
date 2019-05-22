@@ -70,7 +70,6 @@
     <string name="type_hold_back">17</string>
     <string name="type_forward">18</string>
     <string name="type_menu">19</string>
-    <string name="type_sleep">20</string>
     <string name="prem_type_vol_up">21</string>
     <string name="prem_type_vol_down">22</string>
     <string name="prem_type_screenshot">23</string>

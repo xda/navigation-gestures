@@ -422,6 +422,22 @@ fun BarView.isAccessibilityAction(action: Int): Boolean {
     return accessibilityActions.contains(action)
 }
 
+private var rootActions = ArrayList<Int>()
+
+fun BarView.isRootAction(action: Int): Boolean {
+    if (rootActions.isEmpty()) {
+        rootActions.addAll(arrayListOf(
+                actionHolder.typeRootForward,
+                actionHolder.typeRootHoldBack,
+                actionHolder.typeRootMenu,
+                actionHolder.premTypeScreenshot,
+                actionHolder.premTypeLockScreen
+        ))
+    }
+
+    return rootActions.contains(action)
+}
+
 /* Other */
 
 val navOptions: NavOptions
