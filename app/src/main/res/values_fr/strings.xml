@@ -166,6 +166,7 @@
     <string name="hide_on_lockscreen">Don\'t Show on Lock Screen</string>
     <string name="hide_on_permissions">Don\'t Show on App Permissions Page</string>
     <string name="hide_on_installer">Don\'t Show on Package Installer</string>
+    <string name="root">Root</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personnaliser les actions de geste</string>
     <string name="appearance_desc">Personnaliser l’apparence de la pilule de navigation</string>
