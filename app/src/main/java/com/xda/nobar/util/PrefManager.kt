@@ -108,6 +108,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val SUFFIX_PACKAGE = "_package"
         const val SUFFIX_DISPLAYNAME = "_displayname"
         const val SUFFIX_SHORTCUT = "shortcut"
+        const val SUFFIX_KEYCODE = "_keycode"
 
         @SuppressLint("StaticFieldLeak")
         private var instance: PrefManager? = null
@@ -386,6 +387,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
                         object : TypeToken<ShortcutInfo>() {}.type
                 )
     }
+    fun getKeycode(baseKey: String?) = getInt(baseKey + SUFFIX_KEYCODE, -1)
 
     fun putPackage(baseKey: String, value: String) =
             putString(baseKey + SUFFIX_PACKAGE, value)
@@ -408,6 +410,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
                         null
                     }
             )
+    fun putKeycode(baseKey: String, value: Int) = putInt(baseKey + SUFFIX_KEYCODE, value)
 
     /**
      * Load the actions corresponding to each gesture

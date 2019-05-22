@@ -42,12 +42,12 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp">
 
-        <androidx.preference.internal.PreferenceImageView
-            android:id="@android:id/icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:maxWidth="48dp"
-            app:maxHeight="48dp"/>
+        <com.rey.material.widget.CheckedImageView
+            android:id="@+id/checkbox"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="?android:attr/listChoiceIndicatorSingle"
+            />
 
     </LinearLayout>
 

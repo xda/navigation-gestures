@@ -8,8 +8,9 @@ import android.widget.TextView
 import com.xda.nobar.R
 import com.xda.nobar.adapters.info.ActionInfo
 import com.xda.nobar.adapters.info.ActionInfoSorterCallback
+import kotlinx.android.synthetic.main.action_pref.view.*
 
-class ActionSelectAdapter(private val onItemSelectedListener: (info: ActionInfo) -> Unit) : BaseSelectAdapter<ActionInfo, ActionSelectAdapter.BaseVH>() {
+class ActionSelectAdapter(private val currentValue: String?, private val onItemSelectedListener: (info: ActionInfo) -> Unit) : BaseSelectAdapter<ActionInfo, ActionSelectAdapter.BaseVH>() {
     companion object {
         const val TYPE_HEADER = 0
         const val TYPE_ITEM = 1
@@ -41,7 +42,7 @@ class ActionSelectAdapter(private val onItemSelectedListener: (info: ActionInfo)
             }
             TYPE_ITEM -> {
                 ActionViewHolder(
-                        inflater.inflate(R.layout.pref, parent, false)
+                        inflater.inflate(R.layout.action_pref, parent, false)
                 )
             }
             else -> throw IllegalArgumentException("$viewType is not a valid viewType")
@@ -57,6 +58,9 @@ class ActionSelectAdapter(private val onItemSelectedListener: (info: ActionInfo)
                     onItemSelectedListener.invoke(sortedApps[holder.adapterPosition])
                 }
         )
+        if (!info.isHeader) {
+            holder.itemView.checkbox?.isChecked = info.res.toString() == currentValue
+        }
     }
 
     class HeaderViewHolder(view: View) : BaseVH(view)

@@ -167,6 +167,8 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
 
         bundle.putParcelableArrayList(ActionSelectorActivity.EXTRA_SECTIONS, sections)
         bundle.putBinder(ActionSelectorActivity.EXTRA_CALLBACK, callback)
+        bundle.putString(ActionSelectorActivity.EXTRA_GESTURE, key)
+        bundle.putString(ActionSelectorActivity.EXTRA_VALUE, getSavedValue())
         selectorIntent.putExtra(ActionSelectorActivity.EXTRA_BUNDLE, bundle)
 
         context.startActivity(selectorIntent)

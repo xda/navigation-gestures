@@ -131,7 +131,7 @@ class BarViewActionHandler(private val bar: BarView) {
                     sendAccessibilityAction(which)
                 }
             } else if (rootWrapper.isConnected && bar.isRootAction(which)) {
-                sendRootAction(which)
+                sendRootAction(which, key)
             } else {
                 handleAction(which, key)
             }
@@ -455,7 +455,7 @@ class BarViewActionHandler(private val bar: BarView) {
         context.app.postAction { it.sendAction(which) }
     }
 
-    private fun sendRootAction(which: Int) {
+    private fun sendRootAction(which: Int, key: String) {
         rootWrapper.postAction {
             when (which) {
                 bar.actionHolder.typeRootForward -> it.sendKeyEvent(KeyEvent.KEYCODE_FORWARD)
@@ -463,6 +463,24 @@ class BarViewActionHandler(private val bar: BarView) {
                 bar.actionHolder.typeRootMenu -> it.sendKeyEvent(KeyEvent.KEYCODE_MENU)
                 bar.actionHolder.premTypeLockScreen -> it.lockScreen()
                 bar.actionHolder.premTypeScreenshot -> it.screenshot()
+                bar.actionHolder.typeRootKeycode -> {
+                    val code = context.prefManager.getKeycode(key)
+                    if (code != -1) {
+                        it.sendKeyEvent(code)
+                    }
+                }
+                bar.actionHolder.typeRootDoubleKeycode -> {
+                    val code = context.prefManager.getKeycode(key)
+                    if (code != -1) {
+                        it.sendDoubleKeyEvent(code)
+                    }
+                }
+                bar.actionHolder.typeRootLongKeycode -> {
+                    val code = context.prefManager.getKeycode(key)
+                    if (code != -1) {
+                        it.sendLongKeyEvent(code)
+                    }
+                }
             }
         }
     }

@@ -250,21 +250,13 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
 
     private fun updateActivityLaunchSummary(key: String, activityName: String) {
         findPreference<Preference?>(key)?.apply {
-            summary = String.format(
-                    Locale.getDefault(),
-                    resources.getString(R.string.prem_launch_activity),
-                    activityName
-            )
+            summary = resources.getString(R.string.prem_launch_activity, activityName)
         }
     }
 
     private fun updateAppLaunchSummary(key: String, appName: String) {
         findPreference<Preference?>(key)?.apply {
-            summary = String.format(
-                    Locale.getDefault(),
-                    resources.getString(R.string.prem_launch_app),
-                    appName
-            )
+            summary = resources.getString(R.string.prem_launch_app, appName)
         }
     }
 
@@ -273,11 +265,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
 
         findPreference<Preference?>(key)?.apply {
             summary = try {
-                String.format(
-                        Locale.getDefault(),
-                        resources.getString(R.string.prem_intent),
-                        resources.getString(res)
-                )
+                resources.getString(R.string.prem_intent, resources.getString(res))
             } catch (e: Exception) {
                 resources.getString(R.string.prem_intent_no_format)
             }
@@ -286,11 +274,25 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
 
     private fun updateShortcutSummary(key: String, shortcut: ShortcutInfo) {
         findPreference<Preference?>(key)?.apply {
-            summary = String.format(
-                    Locale.getDefault(),
-                    resources.getString(R.string.prem_launch_shortcut),
-                    shortcut.label
-            )
+            summary = resources.getString(R.string.prem_launch_shortcut, shortcut.label)
+        }
+    }
+
+    private fun updateKeycodeSummary(key: String, code: Int) {
+        findPreference<Preference?>(key)?.apply {
+            summary = resources.getString(R.string.root_send_keycode, code.toString())
+        }
+    }
+
+    private fun updateDoubleKeycodeSummary(key: String, code: Int) {
+        findPreference<Preference?>(key)?.apply {
+            summary = resources.getString(R.string.root_send_double_keycode, code.toString())
+        }
+    }
+
+    private fun updateLongKeycodeSummary(key: String, code: Int) {
+        findPreference<Preference?>(key)?.apply {
+            summary = resources.getString(R.string.root_send_long_keycode, code.toString())
         }
     }
 
@@ -298,22 +300,39 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
         listPrefs.forEach {
             it.updateSummary(it.getSavedValue())
 
-            if (it.getSavedValue() == actionHolder.premTypeLaunchApp.toString() || it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()) {
-                val forActivity = it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()
-                val packageInfo = (if (forActivity) prefManager.getActivity(it.key) else prefManager.getPackage(it.key)) ?: return@forEach
-                val disp = prefManager.getDisplayName(it.key) ?: packageInfo.split("/")[0]
+            when (it.getSavedValue()) {
+                actionHolder.premTypeLaunchApp.toString(),
+                actionHolder.premTypeLaunchActivity.toString() -> {
+                    val forActivity = it.getSavedValue() == actionHolder.premTypeLaunchActivity.toString()
+                    val packageInfo = (if (forActivity) prefManager.getActivity(it.key) else prefManager.getPackage(it.key)) ?: return@forEach
+                    val disp = prefManager.getDisplayName(it.key) ?: packageInfo.split("/")[0]
 
-                if (forActivity) {
-                    updateActivityLaunchSummary(it.key, disp)
-                } else {
-                    updateAppLaunchSummary(it.key, disp)
+                    if (forActivity) {
+                        updateActivityLaunchSummary(it.key, disp)
+                    } else {
+                        updateAppLaunchSummary(it.key, disp)
+                    }
                 }
-            } else if (it.getSavedValue() == actionHolder.premTypeIntent.toString()) {
-                val res = prefManager.getIntentKey(it.key)
-                updateIntentSummary(it.key, IntentSelectorActivity.INTENTS[res]?.res)
-            } else if (it.getSavedValue() == actionHolder.premTypeLaunchShortcut.toString()) {
-                val shortcut = prefManager.getShortcut(it.key) ?: return
-                updateShortcutSummary(it.key, shortcut)
+                actionHolder.premTypeIntent.toString() -> {
+                    val res = prefManager.getIntentKey(it.key)
+                    updateIntentSummary(it.key, IntentSelectorActivity.INTENTS[res]?.res)
+                }
+                actionHolder.premTypeLaunchShortcut.toString() -> {
+                    val shortcut = prefManager.getShortcut(it.key) ?: return
+                    updateShortcutSummary(it.key, shortcut)
+                }
+                actionHolder.typeRootKeycode.toString() -> {
+                    val keycode = prefManager.getKeycode(it.key)
+                    updateKeycodeSummary(it.key, keycode)
+                }
+                actionHolder.typeRootDoubleKeycode.toString() -> {
+                    val keycode = prefManager.getKeycode(it.key)
+                    updateDoubleKeycodeSummary(it.key, keycode)
+                }
+                actionHolder.typeRootLongKeycode.toString() -> {
+                    val keycode = prefManager.getKeycode(it.key)
+                    updateLongKeycodeSummary(it.key, keycode)
+                }
             }
         }
     }

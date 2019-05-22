@@ -5,11 +5,17 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.os.Binder
 import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
+import com.xda.nobar.R
 import com.xda.nobar.adapters.ActionSelectAdapter
 import com.xda.nobar.adapters.info.ActionInfo
 import com.xda.nobar.prefs.SectionableListPreference
+import com.xda.nobar.util.actionHolder
+import com.xda.nobar.util.prefManager
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -18,6 +24,8 @@ class ActionSelectorActivity : BaseAppSelectActivity<ActionInfo, ActionInfo>() {
         const val EXTRA_SECTIONS = "sections"
         const val EXTRA_BUNDLE = "bundle"
         const val EXTRA_CALLBACK = "callback"
+        const val EXTRA_GESTURE = "gesture"
+        const val EXTRA_VALUE = "value"
     }
 
     private val bundle by lazy { intent.getBundleExtra(EXTRA_BUNDLE) }
@@ -27,8 +35,40 @@ class ActionSelectorActivity : BaseAppSelectActivity<ActionInfo, ActionInfo>() {
     private val callback by lazy {
         bundle?.getBinder(EXTRA_CALLBACK) as IActionSelectedCallback?
     }
+    private val gesture by lazy {
+        bundle?.getString(EXTRA_GESTURE)
+    }
+    private val value by lazy {
+        bundle?.getString(EXTRA_VALUE)
+    }
 
-    override val adapter = ActionSelectAdapter {
+    override val adapter by lazy {
+        ActionSelectAdapter(value) {
+            when (it.res.toString()) {
+                actionHolder.typeRootKeycode.toString(),
+                actionHolder.typeRootDoubleKeycode.toString(),
+                actionHolder.typeRootLongKeycode.toString() -> {
+                    val input = View.inflate(this, R.layout.text_input, null) as TextInputEditText
+
+                    AlertDialog.Builder(this)
+                            .setTitle(R.string.root_send_keycode_no_format)
+                            .setView(input)
+                            .setPositiveButton(android.R.string.ok) { _, _ ->
+                                val keyCode = input.text
+                                if (keyCode != null) {
+                                    val text = keyCode.toString().toInt()
+                                    prefManager.putKeycode(gesture!!, text)
+                                    handleFinish(it)
+                                }
+                            }
+                            .show()
+                }
+                else -> handleFinish(it)
+            }
+        }
+    }
+
+    private fun handleFinish(it: ActionInfo) {
         callback?.onActionInfoSelected(it)
         finish()
     }
