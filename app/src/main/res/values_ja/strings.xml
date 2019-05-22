@@ -31,6 +31,7 @@
     <string name="write_secure_settings">Secure Settlingsへの書き込み</string>
     <string name="ready">準備完了</string>
     <string name="root_found">ルート権限が見つかりました!</string>
+    <string name="use_root">Use Root</string>
     <string name="missing_perms">権限がありません!</string>
     <string name="premium_required">プレミアムの機能です!</string>
     <string name="nougat_required">Android 7以上が必要です</string>
