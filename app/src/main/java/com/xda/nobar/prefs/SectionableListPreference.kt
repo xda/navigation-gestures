@@ -1,31 +1,16 @@
 package com.xda.nobar.prefs
 
-import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.TypedArray
-import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.TypedValue
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.ScrollView
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.content.ContextCompat
 import androidx.preference.Preference
 import com.xda.nobar.R
 import com.xda.nobar.activities.selectors.ActionSelectorActivity
 import com.xda.nobar.adapters.info.ActionInfo
-import com.xda.nobar.interfaces.OnItemChosenListener
-import com.xda.nobar.util.dpAsPx
 import com.xda.nobar.util.helpers.bar.ActionHolder
-import com.xda.nobar.views.ItemView
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -42,13 +27,10 @@ import kotlinx.android.parcel.Parcelize
  *     - section_data_values
  *         - Similar to above, just with the values/keys of each item
  */
-class SectionableListPreference(context: Context, attributeSet: AttributeSet) : Preference(context, attributeSet), OnItemChosenListener {
+class SectionableListPreference(context: Context, attributeSet: AttributeSet) : Preference(context, attributeSet) {
     var defaultValue: String? = null
 
     private val sections = ArrayList<Section>()
-    private var dialog: AlertDialog? = null
-
-    private var tempValue: String? = null
 
     init {
         val array = context.theme.obtainStyledAttributes(attributeSet, R.styleable.SectionableListPreference, 0, 0)
@@ -58,9 +40,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         val sectionDataValues = ArrayList<ArrayList<String>>()
 
         for (i in 0 until array.indexCount) {
-            val attr = array.getIndex(i)
-
-            when (attr) {
+            when (val attr = array.getIndex(i)) {
                 R.styleable.SectionableListPreference_section_names -> {
                     array.getTextArray(attr).forEach {
                         sectionNames.add(it.toString())
@@ -125,16 +105,10 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     fun removeSection(index: Int) {
-        if (dialog?.isShowing == true)
-            dialog?.dismiss()
-
         sections.removeAt(index)
     }
 
     fun removeItemByValue(value: String) {
-        if (dialog?.isShowing == true)
-            dialog?.dismiss()
-
         sections.forEach {
             val index = it.entryValues.indexOf(value)
             if (index != -1) {
@@ -149,9 +123,6 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     fun removeItemByName(name: String) {
-        if (dialog?.isShowing == true)
-            dialog?.dismiss()
-
         sections.forEach {
             val index = it.entryNames.indexOf(name)
             if (index != -1) {
@@ -182,19 +153,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         )
     }
 
-    override fun onItemChosen(value: String?) {
-        tempValue = value
-        if (dialog?.isShowing == true)
-            dialog?.dismiss()
-        saveValue(tempValue)
-    }
-
     override fun onClick() {
-//        val builder = AlertDialog.Builder(context)
-//        onPrepareDialogBuilder(builder)
-//
-//        dialog = builder.show()
-
         val callback = object : ActionSelectorActivity.IActionSelectedCallback() {
             override fun onActionInfoSelected(info: ActionInfo) {
                 saveValue(info.res?.toString())
@@ -211,152 +170,10 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         context.startActivity(selectorIntent)
     }
 
-    override fun onPrepareForRemoval() {
-        if (dialog?.isShowing == true)
-            dialog?.dismiss()
-
-        super.onPrepareForRemoval()
-    }
-
-    private fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
-        var whichButton = DialogInterface.BUTTON_NEGATIVE
-
-        builder.setTitle(R.string.actions)
-        builder.setPositiveButton(android.R.string.ok) { _, _ ->
-            whichButton = DialogInterface.BUTTON_POSITIVE
-            tempValue = getPersistedString(tempValue)
-        }
-
-        builder.setView(onCreateDialogView())
-        builder.setOnDismissListener { onDialogClosed(whichButton == DialogInterface.BUTTON_POSITIVE) }
-    }
-
-    private fun onCreateDialogView(): View {
-        val topContainer = LinearLayout(context)
-        topContainer.orientation = LinearLayout.VERTICAL
-        topContainer.setPaddingRelative(0, context.dpAsPx(8), 0, 0)
-
-        val topView = View(context)
-        val bottomView = View(context)
-        val viewParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, context.dpAsPx(1))
-        topView.layoutParams = viewParams
-        bottomView.layoutParams = viewParams
-
-        val color = Color.argb(0x30, 0xcc, 0xcc, 0xcc)
-        topView.setBackgroundColor(color)
-        bottomView.setBackgroundColor(color)
-
-        topContainer.addView(topView)
-
-        val scroller = ScrollView(context)
-        scroller.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply { weight = 1f }
-        scroller.isFillViewport = true
-        topContainer.addView(scroller)
-
-        topView.visibility = if (scroller.canScrollVertically(-1)) View.VISIBLE else View.INVISIBLE
-        bottomView.visibility = if (scroller.canScrollVertically(1)) View.VISIBLE else View.INVISIBLE
-
-        topContainer.addView(bottomView)
-
-        scroller.viewTreeObserver.addOnScrollChangedListener {
-            topView.visibility = if (scroller.canScrollVertically(-1)) View.VISIBLE else View.INVISIBLE
-            bottomView.visibility = if (scroller.canScrollVertically(1)) View.VISIBLE else View.INVISIBLE
-        }
-
-        val holder = Holder(context)
-        scroller.addView(holder)
-        holder.setup(this, sections, scroller)
-
-        return topContainer
-    }
-
-    private fun onDialogClosed(positiveResult: Boolean) {
-        if (positiveResult) saveValue(tempValue)
-    }
-
     @Parcelize
     class Section(val title: String, val entryNames: ArrayList<String>, val entryValues: ArrayList<String>) : Parcelable {
         override fun toString(): String {
             return "Title: $title\nEntry Names: $entryNames\nEntry Values: $entryValues"
-        }
-    }
-
-    inner class SectionTitleView(context: Context) : AppCompatTextView(context) {
-        var name: String?
-            get() = text?.toString()
-            set(value) {
-                text = value
-            }
-
-        init {
-            isClickable = false
-            setTypeface(typeface, Typeface.BOLD)
-
-            gravity = Gravity.CENTER_VERTICAL
-
-            height = context.dpAsPx(48)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-
-            setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
-            setPaddingRelative(context.dpAsPx(16), 0, 0, 0)
-        }
-    }
-
-    inner class Holder(context: Context) : LinearLayout(context) {
-        init {
-            val params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-
-            layoutParams = params
-            orientation = LinearLayout.VERTICAL
-        }
-
-        fun setup(listener: OnItemChosenListener, sections: ArrayList<SectionableListPreference.Section>, scrollView: ScrollView) {
-            sections.forEach {
-                val sectionView = SectionTitleView(context)
-                sectionView.name = it.title
-                if (it.title.isNotBlank()) addView(sectionView)
-
-                for (i in 0 until it.entryNames.size) {
-                    val itemView = View.inflate(context, R.layout.item_view, null) as ItemView
-                    itemView.name = it.entryNames[i]
-                    itemView.value = it.entryValues[i]
-                    addView(itemView)
-
-                    if (getSavedValue() == itemView.value) {
-                        itemView.isChecked = true
-
-                        itemView.viewTreeObserver.addOnGlobalLayoutListener {
-                            scrollView.scrollTo(0, itemView.top)
-                        }
-                    }
-
-                    itemView.setOnClickListener {v ->
-                        if (v is ItemView) {
-                            v.isChecked = true
-                            setAllOthersUnchecked(v.value)
-                            listener.onItemChosen(v.value)
-                        }
-                    }
-                }
-            }
-        }
-
-        fun getSelectedValue(): String? {
-            for (i in 0 until childCount) {
-                val child = getChildAt(i)
-
-                if (child is ItemView && child.isChecked) return child.value
-            }
-
-            return null
-        }
-
-        private fun setAllOthersUnchecked(toKeep: String?) {
-            for (i in 0 until childCount) {
-                val child = getChildAt(i)
-
-                if (child is ItemView && child.value != toKeep && child.isChecked) child.isChecked = false
-            }
         }
     }
 }
