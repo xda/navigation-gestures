@@ -31,7 +31,6 @@
     <string name="write_secure_settings">Escribir configuraciones de seguridad</string>
     <string name="ready">Todo listo</string>
     <string name="root_found">¡Tienes permisos root!</string>
-    <string name="use_root">Utilizar permisos root</string>
     <string name="missing_perms">¡Hacen falta permisos!</string>
     <string name="premium_required">¡Acciones premium!</string>
     <string name="nougat_required">Requiere versión de Android Nougat</string>
