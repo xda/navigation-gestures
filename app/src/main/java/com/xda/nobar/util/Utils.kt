@@ -175,14 +175,22 @@ val Context.minPillYDp: Int
 val Context.minPillYPx: Int
     get() = dpAsPx(minPillYDp)
 
+var uiMode = Configuration.UI_MODE_TYPE_NORMAL
+
+//fun Context.refreshUiMode(): Int {
+//    uiMode = (getSystemService(Context.UI_MODE_SERVICE) as UiModeManager)
+//            .currentModeType
+//
+//    return uiMode
+//}
+
 /**
  * Get the height of the navigation bar
  * @return the height of the navigation bar
  */
 val Context.navBarHeight: Int
     get() {
-        val uim = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        return if (uim.currentModeType == Configuration.UI_MODE_TYPE_CAR && prefManager.enableInCarMode) {
+        return if (uiMode == Configuration.UI_MODE_TYPE_CAR && prefManager.enableInCarMode) {
             resources.getDimensionPixelSize(resources.getIdentifier("navigation_bar_height_car_mode", "dimen", "android"))
         } else resources.getDimensionPixelSize(resources.getIdentifier("navigation_bar_height", "dimen", "android"))
     }

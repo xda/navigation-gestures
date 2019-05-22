@@ -617,6 +617,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 UiModeManager.ACTION_ENTER_CAR_MODE -> {
+                    uiMode = Configuration.UI_MODE_TYPE_CAR
+
                     if (prefManager.enableInCarMode) {
                         if (pillShown) {
                             bar.params.height = prefManager.customHeight * 2
@@ -632,6 +634,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
 
                 UiModeManager.ACTION_EXIT_CAR_MODE -> {
+                    uiMode = Configuration.UI_MODE_TYPE_NORMAL
+
                     if (prefManager.enableInCarMode) {
                         if (pillShown) {
                             bar.params.height = prefManager.customHeight
