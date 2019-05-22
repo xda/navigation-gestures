@@ -31,7 +31,7 @@
     <string name="write_secure_settings">Beveiligde Instellingen Schrijven</string>
     <string name="ready">Alles Ingesteld</string>
     <string name="root_found">Je hebt root!</string>
-    <string name="use_root">Root Gebruiken</string>
+    <string name="use_root">Use Root</string>
     <string name="missing_perms">Ontbrekende machtigingen!</string>
     <string name="premium_required">Premium actie!</string>
     <string name="nougat_required">Nougat vereist</string>
