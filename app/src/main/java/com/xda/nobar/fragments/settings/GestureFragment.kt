@@ -18,10 +18,7 @@ import com.xda.nobar.activities.selectors.IntentSelectorActivity
 import com.xda.nobar.activities.selectors.ShortcutSelectActivity
 import com.xda.nobar.adapters.info.ShortcutInfo
 import com.xda.nobar.prefs.SectionableListPreference
-import com.xda.nobar.util.PrefManager
-import com.xda.nobar.util.actionHolder
-import com.xda.nobar.util.dpAsPx
-import com.xda.nobar.util.minPillHeightPx
+import com.xda.nobar.util.*
 import java.util.*
 
 /**
@@ -331,7 +328,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
     }
 
     private fun removeRootActionsIfNeeded() {
-        if (!prefManager.useRoot) {
+        if (!isSu) {
             listPrefs.forEach {
                 val actions = resources.getStringArray(R.array.root_action_values)
                 it.removeItemsByValue(actions)

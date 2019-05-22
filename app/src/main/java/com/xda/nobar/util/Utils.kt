@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.KeyguardManager
 import android.app.PendingIntent
-import android.app.UiModeManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -22,8 +21,9 @@ import android.os.*
 import android.provider.Settings
 import android.util.Log
 import android.util.TypedValue
+import android.view.Display
+import android.view.DisplayInfo
 import android.view.Surface
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -115,7 +115,7 @@ val Context.isNavBarHidden: Boolean
     get() {
         val overscan = Rect(0, 0, 0, 0)
 
-        (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getOverscanInsets(overscan)
+        app.wm.defaultDisplay.getOverscanInsets(overscan)
 
         return overscan.bottom < 0 || overscan.top < 0 || overscan.left < 0 || overscan.right < 0
     }
@@ -535,3 +535,10 @@ fun Context.relaunch(isForCrashlytics: Boolean = false, isForMainActivity: Boole
 
     Process.killProcess(Process.myPid())
 }
+
+val Display.cachedDisplayInfo: DisplayInfo
+    get() = run {
+        Display::class.java.getDeclaredField("mDisplayInfo")
+                .apply { isAccessible = true }
+                .get(this) as DisplayInfo
+    }
