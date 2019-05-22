@@ -5,6 +5,12 @@
         <item>@string/type_split</item>
     </string-array>
 
+    <string-array name="root_action_names">
+        <item>@string/hold_back</item>
+        <item>@string/forward</item>
+        <item>@string/menu</item>
+    </string-array>
+
     <string-array name="root_action_values">
         <item>@string/type_hold_back</item>
         <item>@string/type_forward</item>
