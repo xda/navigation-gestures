@@ -130,7 +130,7 @@ class BarViewActionHandler(private val bar: BarView) {
                 } else {
                     sendAccessibilityAction(which)
                 }
-            } else if (isSu && bar.isRootAction(which)) {
+            } else if (isSu && bar.isRootAction(which) && false) {
                 sendRootAction(which)
             } else {
                 handleAction(which, key)
