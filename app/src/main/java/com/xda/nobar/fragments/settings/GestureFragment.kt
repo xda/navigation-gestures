@@ -328,7 +328,7 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
     }
 
     private fun removeRootActionsIfNeeded() {
-        if (!isSu) {
+        if (!isSu || true) {
             listPrefs.forEach {
                 val actions = resources.getStringArray(R.array.root_action_values)
                 it.removeItemsByValue(actions)
