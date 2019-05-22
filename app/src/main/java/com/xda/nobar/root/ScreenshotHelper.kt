@@ -1,18 +1,17 @@
 package com.xda.nobar.root
 
+import android.app.ActivityManager
+import android.app.ActivityThread
+import android.app.IServiceConnection
+import android.app.LoadedApk
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Handler
-import android.os.IBinder
-import android.os.Message
-import android.os.Messenger
-import android.os.RemoteException
-import android.os.UserHandle
+import android.os.*
 import android.util.Log
 
-class ScreenshotHelper(private val context: Context) {
+class ScreenshotHelper(private val context: Context, private val activityThread: ActivityThread, private val handler: Handler) {
     private val mScreenshotLock = Any()
     private var mScreenshotConnection: ServiceConnection? = null
 
@@ -114,12 +113,54 @@ class ScreenshotHelper(private val context: Context) {
         context.sendBroadcastAsUser(errorIntent, UserHandle.CURRENT)
     }
 
-    companion object {
-        private val TAG = "ScreenshotHelper"
+//    private fun bindService(intent: Intent, conn: ServiceConnection, flags: Int, userHandle: UserHandle): Boolean {
+//        var mutableFlags = flags
+//
+//        // Keep this in sync with DevicePolicyManager.bindDeviceAdminServiceAsUser.
+//        val sd: IServiceConnection
+//
+//        val mPackageInfo = Class.forName("android.app.ContextImpl")
+//                .getDeclaredField("mPackageInfo")
+//                .apply { isAccessible = true }
+//                .get(context) as LoadedApk?
+//
+//        val activityToken = Class.forName("android.app.ContextImpl")
+//                .getDeclaredField("mActivityToken")
+//                .apply { isAccessible = true }
+//                .get(context) as IBinder?
+//
+//        if (mPackageInfo != null) {
+//            sd = (mPackageInfo).getServiceDispatcher(conn, context, handler, flags)
+//        } else {
+//            throw RuntimeException("Not supported in system context")
+//        }
+////        validateServiceIntent(service)
+//        try {
+//            if (activityToken == null && mutableFlags and Context.BIND_AUTO_CREATE == 0
+//                    && mPackageInfo.applicationInfo.targetSdkVersion < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+//                mutableFlags = mutableFlags or Context.BIND_WAIVE_PRIORITY
+//            }
+//            intent.prepareToLeaveProcess(context)
+//            val res = ActivityManager.getService().bindService(
+//                    null, activityToken, intent,
+//                    intent.resolveTypeIfNeeded(context.contentResolver),
+//                    sd, mutableFlags, context.opPackageName, context.user.identifier)
+//            if (res < 0) {
+//                throw SecurityException(
+//                        "Not allowed to bind to service $intent")
+//            }
+//            return res != 0
+//        } catch (e: RemoteException) {
+//            throw e.rethrowFromSystemServer()
+//        }
+//    }
 
-        private val SYSUI_PACKAGE = "com.android.systemui"
-        private val SYSUI_SCREENSHOT_SERVICE = "com.android.systemui.screenshot.TakeScreenshotService"
-        private const val SYSUI_SCREENSHOT_ERROR_RECEIVER = "com.android.systemui.screenshot.ScreenshotServiceErrorReceiver"
+    companion object {
+        private const val TAG = "ScreenshotHelper"
+
+        const val SYSUI_PACKAGE = "com.android.systemui"
+        const val SYSUI_SCREENSHOT_SERVICE = "com.android.systemui.screenshot.TakeScreenshotService"
+        const val SYSUI_SCREENSHOT_ERROR_RECEIVER = "com.android.systemui.screenshot.ScreenshotServiceErrorReceiver"
 
         // Time until we give up on the screenshot & show an error instead.
         private const val SCREENSHOT_TIMEOUT_MS = 10000

@@ -1,26 +1,26 @@
 package com.xda.nobar.root
 
+import android.annotation.SuppressLint
+import android.hardware.input.InputManager
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.view.InputDevice
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
-import android.view.WindowManager
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.RootActions
 import com.xda.nobar.util.inputManager
 import eu.chainfire.librootjava.RootIPC
 import eu.chainfire.librootjava.RootJava
 
+@SuppressLint("PrivateApi")
 object RootHandler {
-    private val handler by lazy { Handler() }
-    private val screenshotHelper by lazy { ScreenshotHelper(RootJava.getSystemContext()) }
+    private val handler by lazy { Handler(Looper.getMainLooper()) }
+    private val im by lazy { inputManager }
 
     @JvmStatic
     fun main(args: Array<String>) {
-        Looper.prepare()
-
         RootJava.restoreOriginalLdLibraryPath()
 
         val actions = RootActionsImpl()
@@ -60,9 +60,8 @@ object RootHandler {
         override fun sendLongKeyEvent(code: Int) {
             val now = SystemClock.uptimeMillis()
 
-            val event = createKeyEvent(now, KeyEvent.ACTION_DOWN, code, 0, KeyEvent.FLAG_LONG_PRESS)
-            injectKeyEvent(event)
-
+            injectKeyEvent(createKeyEvent(now, KeyEvent.ACTION_DOWN, code, 0, 0))
+            injectKeyEvent(createKeyEvent(now, KeyEvent.ACTION_DOWN, code, 1, KeyEvent.FLAG_LONG_PRESS))
             injectKeyEvent(createKeyEvent(now, KeyEvent.ACTION_UP, code, 0, 0))
         }
 
@@ -71,13 +70,13 @@ object RootHandler {
         }
 
         override fun screenshot() {
-            screenshotHelper.takeScreenshot(WindowManager.TAKE_SCREENSHOT_FULLSCREEN, true, true, handler)
+            sendKeyEvent(KeyEvent.KEYCODE_SYSRQ)
         }
 
         private fun injectKeyEvent(event: KeyEvent) {
-            inputManager.injectInputEvent(
+            im.injectInputEvent(
                     event,
-                    0)
+                    InputManager.INJECT_INPUT_EVENT_MODE_WAIT_FOR_FINISH)
         }
 
         private fun createKeyEvent(now: Long, action: Int, code: Int, repeat: Int, flags: Int): KeyEvent {
