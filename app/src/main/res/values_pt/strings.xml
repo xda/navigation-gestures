@@ -31,7 +31,6 @@
     <string name="write_secure_settings">Gravar configurações seguras</string>
     <string name="ready">Tudo pronto</string>
     <string name="root_found">Você tem acesso root!</string>
-    <string name="use_root">Use Root</string>
     <string name="missing_perms">Falta de permissões!</string>
     <string name="premium_required">Ação Premium!</string>
     <string name="nougat_required">Requer o Nougat</string>
