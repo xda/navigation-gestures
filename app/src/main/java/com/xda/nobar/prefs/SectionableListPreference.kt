@@ -12,6 +12,8 @@ import com.xda.nobar.activities.selectors.ActionSelectorActivity
 import com.xda.nobar.adapters.info.ActionInfo
 import com.xda.nobar.util.helpers.bar.ActionHolder
 import kotlinx.android.parcel.Parcelize
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Android's built-in ListPreference has no option to make sections for the items
@@ -76,7 +78,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
             val entryNames = sectionDataNames[i]
             val entryValues = sectionDataValues[i]
 
-            sections.add(Section(name, entryNames, entryValues))
+            sections.add(Section(name, name.toLowerCase(Locale.getDefault()), entryNames, entryValues))
         }
     }
 
@@ -171,9 +173,14 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     @Parcelize
-    class Section(val title: String, val entryNames: ArrayList<String>, val entryValues: ArrayList<String>) : Parcelable {
+    class Section(
+            val title: String,
+            val key: String?,
+            val entryNames: ArrayList<String>,
+            val entryValues: ArrayList<String>
+    ) : Parcelable {
         override fun toString(): String {
-            return "Title: $title\nEntry Names: $entryNames\nEntry Values: $entryValues"
+            return "Title: $title\nKey: $key\nEntry Names: $entryNames\nEntry Values: $entryValues"
         }
     }
 }

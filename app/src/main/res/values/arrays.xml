@@ -129,6 +129,7 @@
         <item>@string/system</item>
         <item>@string/media</item>
         <item>@string/apps</item>
+        <item>@string/root</item>
     </string-array>
     
     <array name="action_section_data_names">
@@ -137,6 +138,7 @@
         <item>@array/system_action_names</item>
         <item>@array/media_action_names</item>
         <item>@array/apps_action_names</item>
+        <item>@array/root_action_names</item>
     </array>
 
     <array name="action_section_data_values">
@@ -145,5 +147,6 @@
         <item>@array/system_action_values</item>
         <item>@array/media_action_values</item>
         <item>@array/apps_action_values</item>
+        <item>@array/root_action_values</item>
     </array>
 </resources>

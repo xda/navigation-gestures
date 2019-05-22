@@ -5,12 +5,13 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.os.Binder
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.xda.nobar.R
 import com.xda.nobar.adapters.ActionSelectAdapter
 import com.xda.nobar.adapters.info.ActionInfo
 import com.xda.nobar.prefs.SectionableListPreference
+import com.xda.nobar.util.isSu
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -49,11 +50,13 @@ class ActionSelectorActivity : BaseAppSelectActivity<ActionInfo, ActionInfo>() {
         val ret = ArrayList<ActionInfo>()
 
         sectionData?.forEach {
-            Log.e("NoBar", "title: ${it.title}")
-            ret.add(ActionInfo(it.title, null, true))
+            val rootKey = resources.getString(R.string.root).toLowerCase(Locale.getDefault())
+            if (it.key != rootKey || isSu) {
+                ret.add(ActionInfo(it.title, null, true))
 
-            it.entryNames.forEachIndexed { index, s ->
-                ret.add(ActionInfo(s, it.entryValues[index], false))
+                it.entryNames.forEachIndexed { index, s ->
+                    ret.add(ActionInfo(s, it.entryValues[index], false))
+                }
             }
         }
 
