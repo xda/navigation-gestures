@@ -58,6 +58,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val nm by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
     val imm by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
     val am by lazy { getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager }
+    val immersiveHelperManager by lazy { ImmersiveHelperManager(this, uiHandler) }
 
     val rootWrapper by lazy { RootWrapper(this) }
     val blackout by lazy { NavBlackout(this) }
@@ -96,7 +97,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     private val prefChangeListeners = ArrayList<SharedPreferences.OnSharedPreferenceChangeListener>()
 
-    val immersiveHelperManager by lazy { ImmersiveHelperManager(this, uiHandler) }
     val screenOffHelper by lazy { ScreenOffHelper(this) }
 
     private var isInOtherWindowApp = false
@@ -241,7 +241,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (!IntroActivity.needsToRun(this)) {
                 addImmersiveHelper()
                 uiHandler.onGlobalLayout()
-                immersiveHelperManager.addOnGlobalLayoutListener(uiHandler)
             }
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -373,9 +372,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     fun addImmersiveHelper() {
-        mainScope.launch {
-            if (!helperAdded) immersiveHelperManager.add()
-        }
+        postAction { it.addImmersiveHelper() }
     }
 
     /**
@@ -405,9 +402,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     fun removeImmersiveHelper() {
-        mainScope.launch {
-            immersiveHelperManager.remove()
-        }
+        postAction { it.removeImmersiveHelper() }
     }
 
     fun toggleGestureBar() {
@@ -819,7 +814,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         fun updateBlacklists() {
             if (disabledImmReasonManager.isEmpty()) {
                 if (prefManager.shouldUseOverscanMethod
-                        && prefManager.useImmersiveWhenNavHidden) immersiveHelperManager.enterNavImmersive()
+                        && prefManager.useImmersiveWhenNavHidden)
+                    immersiveHelperManager.enterNavImmersive()
             } else {
                 immersiveHelperManager.exitNavImmersive()
             }
@@ -878,7 +874,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         }
 
                         if (prefManager.origBarInFullscreen) {
-                            if (immersiveHelperManager.isFullImmersiveSync()) {
+                            if (immersiveHelperManager.isFullImmersive()) {
                                 showNav(callListeners = false, removeImmersive = false)
                             } else {
                                 hideNav(false)
@@ -887,7 +883,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                         if (isPillShown()) {
                             try {
-                                if (!prefManager.useImmersiveWhenNavHidden) immersiveHelperManager.exitNavImmersive()
+                                if (!prefManager.useImmersiveWhenNavHidden)
+                                    immersiveHelperManager.exitNavImmersive()
 
                                 if (prefManager.hidePillWhenKeyboardShown) {
                                     if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
@@ -906,12 +903,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             logicScope.launch {
                 when (uri) {
                     Settings.Global.getUriFor(POLICY_CONTROL) -> {
-                        handleImmersiveChange(immersiveHelperManager.isFullImmersiveSync())
+                        handleImmersiveChange(immersiveHelperManager.isFullImmersive())
                     }
 
                     Settings.Global.getUriFor("navigationbar_hide_bar_enabled") -> {
                         if (prefManager.isActive) {
-                            touchWizNavEnabled = !immersiveHelperManager.isNavImmersiveSync()
+                            touchWizNavEnabled = !immersiveHelperManager.isNavImmersive()
                         }
                     }
                 }

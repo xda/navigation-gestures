@@ -191,9 +191,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var isCarryingOutTouchAction = false
     var isPillHidingOrShowing = false
     val isImmersive: Boolean
-        get() = context.app.immersiveHelperManager.isFullImmersiveSync()
+        get() = context.app.immersiveHelperManager.isFullImmersive()
     val immersiveNav: Boolean
-        get() = context.app.immersiveHelperManager.isNavImmersiveSync()
+        get() = context.app.immersiveHelperManager.isNavImmersive()
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet?) : super(context, attributeSet)

@@ -12,7 +12,6 @@ import android.view.accessibility.AccessibilityEvent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.xda.nobar.interfaces.ReceiverCallback
 import com.xda.nobar.util.*
-import com.xda.nobar.views.BarView
 
 
 class Actions : AccessibilityService(), ReceiverCallback {
@@ -161,12 +160,20 @@ class Actions : AccessibilityService(), ReceiverCallback {
         }
     }
 
-    private fun removeBar(bar: BarView = app.bar) {
+    private fun removeBar() {
         if (app.pillShown) {
             try {
-                accWm.removeView(bar)
+                accWm.removeView(app.bar)
             } catch (e: Exception) {}
         }
+    }
+
+    private fun addImmersiveHelper() {
+        app.immersiveHelperManager.add(accWm)
+    }
+
+    private fun removeImmersiveHelper() {
+        app.immersiveHelperManager.remove(accWm)
     }
 
     /**
@@ -198,6 +205,14 @@ class Actions : AccessibilityService(), ReceiverCallback {
 
         fun remBar() {
             this@Actions.removeBar()
+        }
+
+        fun addImmersiveHelper() {
+            this@Actions.addImmersiveHelper()
+        }
+
+        fun removeImmersiveHelper() {
+            this@Actions.removeImmersiveHelper()
         }
 
         fun sendAction(action: Int) {

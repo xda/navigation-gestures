@@ -23,8 +23,8 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
     val params = WindowManager.LayoutParams().apply {
         width = WindowManager.LayoutParams.MATCH_PARENT
         height = WindowManager.LayoutParams.MATCH_PARENT
-        type = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_PHONE
-        else WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        type = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
+        else WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
         flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
         format = PixelFormat.TRANSPARENT
@@ -58,14 +58,8 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
 
             immersiveListener.invoke(rect.left, rect.top, rect.right, rect.bottom)
         }
-    }
 
-    fun updateLayout() {
-        mainScope.launch {
-            try {
-                context.app.wm.updateViewLayout(this@BaseImmersiveHelperView, params)
-            } catch (e: Exception) {}
-        }
+        context.app.uiHandler.onGlobalLayout()
     }
 
     fun enterNavImmersive() {
