@@ -168,6 +168,7 @@ or
     <string name="hide_on_lockscreen">Don\'t Show on Lock Screen</string>
     <string name="hide_on_permissions">Don\'t Show on App Permissions Page</string>
     <string name="hide_on_installer">Don\'t Show on Package Installer</string>
+    <string name="root">Root</string>
     <!--Descriptions-->
     <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
     <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
