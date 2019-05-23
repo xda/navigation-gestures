@@ -67,9 +67,9 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
             systemUiVisibility = systemUiVisibility or
                     SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                     SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-
-            if (context.isTouchWiz) context.touchWizNavEnabled = false
         }
+
+        if (context.isTouchWiz) context.touchWizNavEnabled = false
     }
 
     fun exitNavImmersive() {
@@ -77,8 +77,8 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
             systemUiVisibility = systemUiVisibility and
                     SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv() and
                     SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
-
-            if (context.isTouchWiz) context.touchWizNavEnabled = true
         }
+
+        if (context.isTouchWiz) context.touchWizNavEnabled = true
     }
 }
