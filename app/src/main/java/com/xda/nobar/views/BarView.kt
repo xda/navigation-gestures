@@ -512,30 +512,28 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      * @param alpha desired alpha level (0-1)
      */
     fun animate(listener: Animator.AnimatorListener?, alpha: Float) {
-        mainScope.launch {
-            animate().alpha(alpha).setDuration(animationDurationMs)
-                    .setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationCancel(animation: Animator?) {
-                            listener?.onAnimationCancel(animation)
-                        }
-
-                        override fun onAnimationEnd(animation: Animator?) {
-                            listener?.onAnimationEnd(animation)
-                        }
-
-                        override fun onAnimationRepeat(animation: Animator?) {
-                            listener?.onAnimationRepeat(animation)
-                        }
-
-                        override fun onAnimationStart(animation: Animator?) {
-                            listener?.onAnimationStart(animation)
-                        }
-                    })
-                    .withEndAction {
-                        this@BarView.alpha = alpha
+        animate().alpha(alpha).setDuration(animationDurationMs)
+                .setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationCancel(animation: Animator?) {
+                        listener?.onAnimationCancel(animation)
                     }
-                    .start()
-        }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        listener?.onAnimationEnd(animation)
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator?) {
+                        listener?.onAnimationRepeat(animation)
+                    }
+
+                    override fun onAnimationStart(animation: Animator?) {
+                        listener?.onAnimationStart(animation)
+                    }
+                })
+                .withEndAction {
+                    this@BarView.alpha = alpha
+                }
+                .start()
     }
 
     val hideLock = Any()
