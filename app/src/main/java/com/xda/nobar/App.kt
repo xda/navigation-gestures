@@ -875,9 +875,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                         if (prefManager.origBarInFullscreen) {
                             if (immersiveHelperManager.isFullImmersive()) {
-                                showNav(callListeners = false, removeImmersive = false)
+                                disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.FULLSCREEN)
                             } else {
-                                hideNav(false)
+                                disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.FULLSCREEN)
                             }
                         }
 
