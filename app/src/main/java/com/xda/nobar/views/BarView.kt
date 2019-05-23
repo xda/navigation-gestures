@@ -132,7 +132,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             return context.prefManager.homeX - if (immersiveNav && !context.prefManager.useTabletMode) {
                 (when (cachedRotation) {
                     Surface.ROTATION_90 -> -IWindowManager.bottomOverscan
-                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) IWindowManager.topOverscan else IWindowManager.bottomOverscan
+                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) -IWindowManager.topOverscan else IWindowManager.bottomOverscan
                     else -> 0
                 } / 2f).toInt()
             } else 0
@@ -154,7 +154,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             return context.prefManager.homeY + if (immersiveNav && !context.prefManager.useTabletMode) {
                 when (cachedRotation) {
                     Surface.ROTATION_90 -> -IWindowManager.bottomOverscan
-                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) -IWindowManager.topOverscan else IWindowManager.bottomOverscan
+                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) IWindowManager.topOverscan else -IWindowManager.bottomOverscan
                     else -> 0
                 }
             } else 0
@@ -864,6 +864,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             synchronized(anchorLock) {
                 verticalMode(isVertical)
                 adjustPillShadowAndHitbox()
+                updatePositionAndDimens()
 
                 mainScope.launch {
                     updateDividers()

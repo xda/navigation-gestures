@@ -13,7 +13,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
@@ -1142,12 +1141,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         private fun handleDisplayChange() {
-            val oldSize = realScreenSize
-            val newSize = refreshScreenSize()
-
-            if (oldSize != newSize && pillShown) {
-                bar.updatePositionAndDimens()
-            }
+            refreshScreenSize()
         }
     }
 
