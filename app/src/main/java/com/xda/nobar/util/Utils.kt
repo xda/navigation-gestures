@@ -442,7 +442,8 @@ fun BarView.isRootAction(action: Int): Boolean {
                 actionHolder.premTypeLockScreen,
                 actionHolder.typeRootKeycode,
                 actionHolder.typeRootDoubleKeycode,
-                actionHolder.typeRootLongKeycode
+                actionHolder.typeRootLongKeycode,
+                actionHolder.typeRootKillCurrentApp
         ))
     }
 

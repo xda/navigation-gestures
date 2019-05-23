@@ -481,6 +481,9 @@ class BarViewActionHandler(private val bar: BarView) {
                         it.sendLongKeyEvent(code)
                     }
                 }
+                bar.actionHolder.typeRootKillCurrentApp -> {
+                    it.killCurrentApp()
+                }
             }
         }
     }

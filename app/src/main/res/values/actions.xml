@@ -53,6 +53,7 @@
     <string name="root_send_long_keycode">Send Long-Press Keycode (Root) (%s)</string>
     <string name="root_send_double_keycode_no_format">Send Double-Press Keycode (Root)</string>
     <string name="root_send_double_keycode">Send Double-Press Keycode (Root) (%s)</string>
+    <string name="root_kill_current_app">Kill Current App (Root)</string>
 
     <!--Action Values-->
     <string name="type_no_action">-1</string>
@@ -100,6 +101,7 @@
     <string name="root_type_send_keycode">42</string>
     <string name="root_type_send_long_keycode">43</string>
     <string name="root_type_send_double_keycode">44</string>
+    <string name="root_type_kill_current_app">45</string>
 
     <!--Main Action Keys-->
     <string name="action_left">left</string>

@@ -8,4 +8,5 @@ interface RootActions {
     void sendDoubleKeyEvent(int code);
     void lockScreen();
     void screenshot();
+    void killCurrentApp();
 }

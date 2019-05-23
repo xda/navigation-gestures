@@ -1,6 +1,8 @@
 package com.xda.nobar.root
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.content.Context
 import android.hardware.input.InputManager
 import android.os.Looper
 import android.os.SystemClock
@@ -16,6 +18,7 @@ import eu.chainfire.librootjava.RootJava
 @SuppressLint("PrivateApi")
 object RootHandler {
     private val im by lazy { inputManager }
+    private val am by lazy { RootJava.getSystemContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager }
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -70,6 +73,15 @@ object RootHandler {
 
         override fun screenshot() {
             sendKeyEvent(KeyEvent.KEYCODE_SYSRQ)
+        }
+
+        override fun killCurrentApp() {
+            val info = am.getRunningTasks(1)[0]
+            am.forceStopPackage(info.topActivity.packageName)
+
+            //this can be used to launch split screen (wrap in try-catch)
+//            am.setTaskWindowingModeSplitScreenPrimary(info.id, ActivityManager.SPLIT_SCREEN_CREATE_MODE_TOP_OR_LEFT, true,
+//                    true, null, true)
         }
 
         private fun injectKeyEvent(event: KeyEvent) {
