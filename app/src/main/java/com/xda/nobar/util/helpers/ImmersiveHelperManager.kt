@@ -78,7 +78,7 @@ class ImmersiveHelperManager(private val context: Context,
             when {
                 cachedRotation == Surface.ROTATION_90 -> layout.right >= screenSize.x - overscan.bottom
                 context.prefManager.useRot270Fix -> layout.right >= screenSize.x - overscan.top
-                else -> layout.left <= 0
+                else -> layout.left <= overscan.bottom
             }
         } else {
             layout.bottom >= screenSize.y - overscan.bottom
