@@ -649,10 +649,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (pillShown) {
                 bar.updateLayout()
             }
-
-            if (prefManager.shouldUseOverscanMethod) {
-                if (prefManager.enableInCarMode) hideNav()
-            }
         }
     }
 
@@ -726,6 +722,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.LOCK_SCREEN)
             }
 
+            updateKeyboardFlagState()
+
             if (pName != oldPName) {
                 oldPName = pName
 
@@ -733,8 +731,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             } else {
                 updateBlacklists()
             }
-
-            updateKeyboardFlagState()
         }
 
         private fun runNewNodeInfo(pName: String?) {
@@ -783,7 +779,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             if (prefManager.showNavWithKeyboard) {
                 if (keyboardShown) {
-                    showNav(false)
                     disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYBOARD)
                 } else if (prefManager.shouldUseOverscanMethod) {
                     disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYBOARD)
