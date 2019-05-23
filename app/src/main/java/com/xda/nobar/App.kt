@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
+import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
@@ -939,7 +940,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (prefManager.shouldUseOverscanMethod) {
                         when {
                             prefManager.useRot270Fix ||
-                                    prefManager.useRot180Fix -> handle180Or270(rot)
+                                    prefManager.useRot180Fix -> handle180AndOr270(rot)
                             prefManager.useTabletMode -> handleTablet(rot)
                             Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie(rot)
                             else -> handle0()
@@ -973,12 +974,20 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             IWindowManager.setOverscan(0, 0, 0, -adjustedNavBarHeight)
         }
 
-        private fun handle180Or270(rotation: Int) {
-            if (rotation == Surface.ROTATION_270) {
-                IWindowManager.setOverscan(0, -adjustedNavBarHeight, 0, 0)
-            } else {
-                IWindowManager.setOverscan(0, 0, 0, -adjustedNavBarHeight)
+        private fun handle180AndOr270(rotation: Int) {
+            when (rotation) {
+                Surface.ROTATION_180 -> if (prefManager.useRot180Fix) handle180() else handle0()
+                Surface.ROTATION_270 -> if (prefManager.useRot270Fix) handle270() else handle0()
+                else -> handle0()
             }
+        }
+
+        private fun handle270() {
+            IWindowManager.setOverscan(0, -adjustedNavBarHeight, 0, 0)
+        }
+
+        private fun handle180() {
+            IWindowManager.setOverscan(0, -adjustedNavBarHeight, 0, 0)
         }
 
         private fun handleTablet(rotation: Int) {
