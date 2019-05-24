@@ -158,6 +158,7 @@
         <activity android:name=".activities.ui.AppDrawerActivity"
             android:excludeFromRecents="true"
             android:exported="false"
+            android:launchMode="singleTop"
             />
 
         <service
