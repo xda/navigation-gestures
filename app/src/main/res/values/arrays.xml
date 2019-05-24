@@ -69,6 +69,7 @@
         <item>@string/prem_toggle_auto_brightness</item>
         <item>@string/prem_brightness_down</item>
         <item>@string/prem_brightness_up</item>
+        <item>@string/prem_app_drawer</item>
     </string-array>
 
     <string-array name="system_action_values">
@@ -89,6 +90,7 @@
         <item>@string/prem_type_toggle_auto_brightness</item>
         <item>@string/prem_type_brightness_down</item>
         <item>@string/prem_type_brightness_up</item>
+        <item>@string/prem_type_app_drawer</item>
     </string-array>
 
     <string-array name="media_action_names">

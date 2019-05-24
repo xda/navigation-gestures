@@ -1,6 +1,7 @@
 package com.xda.nobar.util.helpers.bar
 
 import android.Manifest
+import android.app.LauncherActivity
 import android.app.SearchManager
 import android.bluetooth.BluetoothAdapter
 import android.content.ActivityNotFoundException
@@ -26,6 +27,7 @@ import com.xda.nobar.R
 import com.xda.nobar.activities.helpers.RequestPermissionsActivity
 import com.xda.nobar.activities.helpers.ScreenshotActivity
 import com.xda.nobar.activities.selectors.IntentSelectorActivity
+import com.xda.nobar.activities.ui.AppDrawerActivity
 import com.xda.nobar.receivers.ActionReceiver
 import com.xda.nobar.services.Actions
 import com.xda.nobar.tasker.activities.EventConfigureActivity
@@ -439,6 +441,12 @@ class BarViewActionHandler(private val bar: BarView) {
 
                         Settings.System.putInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, newBrightness)
                     } }
+                    bar.actionHolder.premTypeAppDrawer -> context.runPremiumAction {
+                        val appDrawer = Intent(context, AppDrawerActivity::class.java)
+                        appDrawer.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                        context.startActivity(appDrawer)
+                    }
                 }
             } catch (e: Exception) {
                 if (BuildConfig.DEBUG) {

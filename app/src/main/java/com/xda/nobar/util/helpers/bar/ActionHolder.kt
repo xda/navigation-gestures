@@ -185,6 +185,7 @@ class ActionHolder private constructor(private val context: Context) {
     val premTypeVolumeUp by lazy { context.resources.getString(R.string.prem_type_vol_up).toInt() }
     val premTypeBrightnessDown by lazy { context.resources.getString(R.string.prem_type_brightness_down).toInt() }
     val premTypeBrightnessUp by lazy { context.resources.getString(R.string.prem_type_brightness_up).toInt() }
+    val premTypeAppDrawer by lazy { context.resources.getString(R.string.prem_type_app_drawer).toInt() }
 
     val typeRootHoldBack by lazy { context.resources.getString(R.string.type_hold_back).toInt() }
     val typeRootForward by lazy { context.resources.getString(R.string.type_forward).toInt() }

@@ -155,6 +155,10 @@
             android:excludeFromRecents="true"
             android:process=":crash"
             />
+        <activity android:name=".activities.ui.AppDrawerActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            />
 
         <service
             android:name=".tiles.GestureToggle"

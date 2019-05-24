@@ -26,7 +26,8 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
                        val showSummary: Boolean,
                        val checkListener: OnAppSelectedListener,
                        val activity: Boolean = false,
-                       val isRemote: Boolean = true) : BaseSelectAdapter<AppInfo, BaseSelectAdapter.VH>() {
+                       val isRemote: Boolean = true,
+                       val showCheck: Boolean = true) : BaseSelectAdapter<AppInfo, BaseSelectAdapter.VH>() {
 
     override val sortedApps = SortedList(AppInfo::class.java, AppInfoSorterCallback(this, activity))
 
@@ -42,6 +43,8 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
         val summary = view.findViewById<TextView>(R.id.summary)
         val icon = view.findViewById<ImageView>(R.id.icon)
         val check = view.findViewById<CheckedImageView>(R.id.checkmark)
+
+        if (!showCheck) check.visibility = View.GONE
 
         title.text = app.displayName
         if (showSummary) summary.text = if (activity) app.activity else app.packageName
