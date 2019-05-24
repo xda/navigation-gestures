@@ -965,9 +965,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                 MSG_FADE -> {
                     if (!isHidden) {
-                        animate()
-                                .alpha(context.prefManager.fadeOpacity / 100f)
-                                .duration = context.prefManager.fadeDuration
+                        synchronized(this) {
+                            animate()
+                                    .alpha(context.prefManager.fadeOpacity / 100f)
+                                    .duration = context.prefManager.fadeDuration
+                        }
                     }
                 }
 
@@ -978,12 +980,14 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             else -1
 
                     if (!isHidden) {
-                        animate()
-                                .alpha(ALPHA_ACTIVE)
-                                .setDuration(context.prefManager.fadeDuration)
-                                .withEndAction {
-                                    if (fadeDelay != -1L) scheduleFade(fadeDelay)
-                                }
+                        synchronized(this) {
+                            animate()
+                                    .alpha(ALPHA_ACTIVE)
+                                    .setDuration(context.prefManager.fadeDuration)
+                                    .withEndAction {
+                                        if (fadeDelay != -1L) scheduleFade(fadeDelay)
+                                    }
+                        }
                     }
                 }
             }
