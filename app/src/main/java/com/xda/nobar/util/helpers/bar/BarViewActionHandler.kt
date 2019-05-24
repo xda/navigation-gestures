@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.RecognizerIntent
+import android.util.Log
 import android.view.KeyEvent
 import android.view.OrientationEventListener
 import android.view.Surface
@@ -447,6 +448,12 @@ class BarViewActionHandler(private val bar: BarView) {
 
                         context.startActivity(appDrawer)
                     }
+                    bar.actionHolder.premTypeToggleRotationLock -> context.runPremiumAction { context.runSystemSettingsAction {
+                        val currentSetting = Settings.System.getInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
+                        val newSetting = if (currentSetting == 0) 1 else 0
+
+                        Settings.System.putInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, newSetting)
+                    } }
                 }
             } catch (e: Exception) {
                 if (BuildConfig.DEBUG) {

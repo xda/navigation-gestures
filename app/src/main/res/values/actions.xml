@@ -55,6 +55,7 @@
     <string name="root_send_double_keycode">Send Double-Press Keycode (Root) (%s)</string>
     <string name="root_kill_current_app">Kill Current App (Root)</string>
     <string name="prem_app_drawer">App Drawer (Premium)</string>
+    <string name="prem_toggle_rotation_lock">Toggle Rotation Lock (Premium)</string>
 
     <!--Action Values-->
     <string name="type_no_action">-1</string>
@@ -104,6 +105,7 @@
     <string name="root_type_send_double_keycode">44</string>
     <string name="root_type_kill_current_app">45</string>
     <string name="prem_type_app_drawer">46</string>
+    <string name="prem_type_toggle_rotation_lock">47</string>
 
     <!--Main Action Keys-->
     <string name="action_left">left</string>

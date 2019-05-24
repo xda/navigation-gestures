@@ -61,6 +61,7 @@
         <item>@string/prem_lock_screen</item>
         <item>@string/prem_screenshot</item>
         <item>@string/prem_rot</item>
+        <item>@string/prem_toggle_rotation_lock</item>
         <item>@string/prem_flashlight</item>
         <item>@string/prem_bluetooth</item>
         <item>@string/prem_wifi</item>
@@ -82,6 +83,7 @@
         <item>@string/prem_type_lock_screen</item>
         <item>@string/prem_type_screenshot</item>
         <item>@string/prem_type_rot</item>
+        <item>@string/prem_type_toggle_rotation_lock</item>
         <item>@string/prem_type_flashlight</item>
         <item>@string/prem_type_bluetooth</item>
         <item>@string/prem_type_wifi</item>
