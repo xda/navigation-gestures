@@ -66,7 +66,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     val accessibilityEnabled: Boolean
         get() = run {
-            val services = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: ""
+            val services = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
+                    ?: ""
             services.contains(packageName)
         }
     var introRunning = false
@@ -393,7 +394,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     try {
                         bar.shouldReAddOnDetach = false
                         postAction { it.remBar() }
-                    } catch (e: Exception) {}
+                    } catch (e: Exception) {
+                    }
 
                     if (!navHidden) removeImmersiveHelper()
                 }
@@ -673,7 +675,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 synchronized(this) {
                     try {
                         handleNewEvent(info ?: return@launch)
-                    } catch (e: NullPointerException) {}
+                    } catch (e: NullPointerException) {
+                    }
                 }
             }
         }
@@ -684,6 +687,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 "com.google.android.packageinstaller",
                 "com.android.packageinstaller"
         )
+
         private fun isPackageInstaller(pName: String?) = installers.contains(pName)
 
         @SuppressLint("WrongConstant")
@@ -818,8 +822,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (disabledBarReasonManager.isEmpty()) {
                 if (prefManager.isActive
                         && !pillShown) addBar(false)
+                if (!immersiveHelperManager.helperAdded) addImmersiveHelper()
             } else {
                 removeBar(false)
+                if (disabledBarReasonManager.run {
+                            contains(DisabledReasonManager.PillReasons.INSTALLER)
+                                    || contains(DisabledReasonManager.PillReasons.PERMISSIONS)}) {
+                    removeImmersiveHelper()
+                } else {
+                    addImmersiveHelper()
+                }
             }
 
             if (prefManager.shouldUseOverscanMethod) {
@@ -885,7 +897,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                     if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
                                     else bar.showPill(HiddenPillReasonManager.KEYBOARD)
                                 }
-                            } catch (e: NullPointerException) {}
+                            } catch (e: NullPointerException) {
+                            }
                         }
 
                         updateBlacklists()
