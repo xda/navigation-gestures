@@ -55,7 +55,7 @@ class ActionSelectorActivity : BaseAppSelectActivity<ActionInfo, ActionInfo>() {
                             .setView(input)
                             .setPositiveButton(android.R.string.ok) { _, _ ->
                                 val keyCode = input.input.text
-                                if (keyCode != null) {
+                                if (keyCode != null && keyCode.isNotBlank()) {
                                     val text = keyCode.toString().toInt()
                                     prefManager.putKeycode(gesture!!, text)
                                     handleFinish(it)
