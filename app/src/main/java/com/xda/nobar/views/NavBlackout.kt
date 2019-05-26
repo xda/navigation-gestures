@@ -91,12 +91,21 @@ class NavBlackout : LinearLayout {
         }
     }
 
+    private var isTryingToRemove = false
+
     fun remove() {
-        synchronized(addLock) {
-            mainScope.launch {
-                try {
-                    context.app.wm.removeView(this@NavBlackout)
-                } catch (e: Exception) {}
+        synchronized(isTryingToRemove) {
+            if (!isTryingToRemove && isAdded) {
+                isTryingToRemove = true
+                mainScope.launch {
+                    try {
+                        context.app.wm.removeView(this@NavBlackout)
+                    } catch (e: Exception) {
+                        isAdded = false
+                    }
+
+                    isTryingToRemove = false
+                }
             }
         }
     }

@@ -9,11 +9,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
-import com.xda.nobar.util.app
+import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.ImmersiveHelperManager
-import com.xda.nobar.util.isTouchWiz
-import com.xda.nobar.util.mainScope
-import com.xda.nobar.util.touchWizNavEnabled
 import kotlinx.coroutines.launch
 
 @SuppressLint("ViewConstructor")
@@ -69,7 +66,9 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
                     SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         }
 
-        if (context.isTouchWiz) context.touchWizNavEnabled = false
+        logicScope.launch {
+            if (context.isTouchWiz) context.touchWizNavEnabled = false
+        }
     }
 
     fun exitNavImmersive() {
@@ -79,6 +78,8 @@ open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelpe
                     SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
         }
 
-        if (context.isTouchWiz) context.touchWizNavEnabled = true
+        logicScope.launch {
+            if (context.isTouchWiz) context.touchWizNavEnabled = true
+        }
     }
 }

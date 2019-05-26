@@ -152,19 +152,29 @@ class Actions : AccessibilityService(), ReceiverCallback {
         }
     }
 
+    private var waitingToAdd = false
+
     private fun addBar() {
-        try {
-            accWm.addView(app.bar, app.bar.params)
-        } catch (e: Exception) {
-            app.addedPillButNotYetShown = false
+        if (!waitingToAdd) {
+            waitingToAdd = true
+            try {
+                accWm.addView(app.bar, app.bar.params)
+            } catch (e: Exception) {
+                app.addedPillButNotYetShown = false
+            }
+            waitingToAdd = false
         }
     }
 
+    private var waitingToRemove = false
+
     private fun removeBar() {
-        if (app.pillShown) {
+        if (app.pillShown && !waitingToRemove) {
+            waitingToRemove = true
             try {
                 accWm.removeView(app.bar)
             } catch (e: Exception) {}
+            waitingToRemove = false
         }
     }
 
