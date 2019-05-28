@@ -1,14 +1,11 @@
 package com.xda.nobar.util
 
 import android.annotation.SuppressLint
-import android.app.SearchManager
 import android.graphics.Rect
 import android.hardware.input.InputManager
-import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.Display
-import android.view.InputEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 
@@ -63,22 +60,6 @@ fun expandSettingsPanel() {
         manager::class.java.getMethod("expandSettingsPanel")
                 .invoke(manager)
     }
-}
-
-fun SearchManager.launchAssist() {
-    this::class.java.getMethod("launchAssist", String::class.java).invoke(this, null)
-}
-
-fun SearchManager.launchLegacyAssist() {
-    try {
-        this::class.java.getMethod("launchLegacyAssist", String::class.java, Int::class.java, Bundle::class.java)
-                .invoke(this, null, -2, null)
-    } catch (e: Exception) {}
-}
-
-fun InputManager.injectInputEvent(event: InputEvent, mode: Int) {
-    this::class.java.getMethod("injectInputEvent", InputEvent::class.java, Int::class.java)
-            .invoke(this, event, mode)
 }
 
 fun checkEMUI() = !getSystemProperty("ro.build.version.emui").isNullOrEmpty()
