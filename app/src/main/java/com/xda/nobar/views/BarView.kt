@@ -965,7 +965,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                 MSG_FADE -> {
                     if (!isHidden) {
-                        synchronized(this) {
+                        synchronized(this@BarView) {
                             animate()
                                     .alpha(context.prefManager.fadeOpacity / 100f)
                                     .duration = context.prefManager.fadeDuration
@@ -980,7 +980,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                             else -1
 
                     if (!isHidden) {
-                        synchronized(this) {
+                        synchronized(this@BarView) {
                             animate()
                                     .alpha(ALPHA_ACTIVE)
                                     .setDuration(context.prefManager.fadeDuration)
