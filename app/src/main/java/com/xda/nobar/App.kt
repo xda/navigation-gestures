@@ -215,7 +215,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             permissionListener.register()
             IWindowManager.watchRotation(displayChangeListener, Display.DEFAULT_DISPLAY)
             miniViewListener.register()
-            refreshScreenSize()
+
+            logicScope.launch {
+                refreshScreenSize()
+                refreshNavHeights()
+            }
 
             isValidPremium = prefManager.validPrem
 
@@ -372,8 +376,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
     }
 
+    private val addHelperAction: (Actions.IActionsBinderImpl) -> Unit = {
+        it.addImmersiveHelper()
+    }
+
     fun addImmersiveHelper() {
-        postAction { it.addImmersiveHelper() }
+        if (!actionsBinder.contains(addHelperAction)) actionsBinder.post(addHelperAction)
     }
 
     /**
@@ -1159,6 +1167,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         private fun handleDisplayChange() {
             refreshScreenSize()
+            refreshNavHeights()
         }
     }
 
@@ -1201,6 +1210,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
             }
         }
+
+        fun contains(action: (Actions.IActionsBinderImpl) -> Unit) = queuedPosts.contains(action)
 
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
