@@ -26,6 +26,6 @@
     <bool name="hide_beta_prompt_default">false</bool>
     <bool name="enable_analytics_default">true</bool>
     <bool name="hide_on_lockscreen_default">false</bool>
-    <bool name="hide_on_permissions_default">false</bool>
-    <bool name="hide_on_installer_default">false</bool>
+    <bool name="hide_on_permissions_default">true</bool>
+    <bool name="hide_on_installer_default">true</bool>
 </resources>
