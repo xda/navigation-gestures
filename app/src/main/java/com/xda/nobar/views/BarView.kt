@@ -183,8 +183,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private val wm: WindowManager = context.app.wm
     val animator = BarAnimator(this)
 
-    private val hideThread = HandlerThread("NoBar-Hide").apply { start() }
-    private val hideHandler = HideHandler(hideThread.looper)
+    private val hideHandler = HideHandler(Looper.getMainLooper())
 
     var isHidden = false
     var beingTouched = false
@@ -567,20 +566,22 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private fun animateHide() {
-        pill.animate()
-                .alpha(ALPHA_HIDDEN)
-                .setInterpolator(ENTER_INTERPOLATOR)
-                .setDuration(animationDurationMs)
-                .withEndAction {
-                    isHidden = true
+        synchronized(this@BarView) {
+            pill.animate()
+                    .alpha(ALPHA_HIDDEN)
+                    .setInterpolator(ENTER_INTERPOLATOR)
+                    .setDuration(animationDurationMs)
+                    .withEndAction {
+                        isHidden = true
 
-                    isPillHidingOrShowing = false
-                }
-                .apply {
-                    if (isVertical) translationX((if (is270Vertical) -1 else 1) * pill.width.toFloat() / 2f)
-                    else translationY(pill.height.toFloat() / 2f)
-                }
-                .start()
+                        isPillHidingOrShowing = false
+                    }
+                    .apply {
+                        if (isVertical) translationX((if (is270Vertical) -1 else 1) * pill.width.toFloat() / 2f)
+                        else translationY(pill.height.toFloat() / 2f)
+                    }
+                    .start()
+        }
     }
 
     fun scheduleHide(reason: String, time: Long = parseHideTime(reason)) {
@@ -626,18 +627,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                         }
 
                         if (reallyForceNotAuto || forceShow) {
-                            pill.animate()
-                                    .alpha(ALPHA_ACTIVE)
-                                    .setInterpolator(EXIT_INTERPOLATOR)
-                                    .setDuration(animationDurationMs)
-                                    .withEndAction {
-                                        animateShow(!reallyForceNotAuto, autoReasonToRemove)
-                                    }
-                                    .apply {
-                                        if (isVertical) translationX(0f)
-                                        else translationY(0f)
-                                    }
-                                    .start()
+                            synchronized(this@BarView) {
+                                pill.animate()
+                                        .alpha(ALPHA_ACTIVE)
+                                        .setInterpolator(EXIT_INTERPOLATOR)
+                                        .setDuration(animationDurationMs)
+                                        .withEndAction {
+                                            animateShow(!reallyForceNotAuto, autoReasonToRemove)
+                                        }
+                                        .apply {
+                                            if (isVertical) translationX(0f)
+                                            else translationY(0f)
+                                        }
+                                        .start()
+                            }
                         } else isPillHidingOrShowing = false
                     }
                 }

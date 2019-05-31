@@ -11,6 +11,7 @@ import com.xda.nobar.R
 import com.xda.nobar.activities.selectors.ActionSelectorActivity
 import com.xda.nobar.adapters.info.ActionInfo
 import com.xda.nobar.util.helpers.bar.ActionHolder
+import com.xda.nobar.util.prefManager
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 import kotlin.collections.ArrayList
@@ -88,7 +89,12 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     fun saveValueWithoutListener(value: String?) {
-        persistString(value)
+        try {
+            persistString(value)
+        } catch (e: ClassCastException) {
+            context.prefManager.remove(key)
+            persistString(value)
+        }
         notifyChanged()
         updateSummary(value)
     }
