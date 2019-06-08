@@ -216,7 +216,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             IWindowManager.watchRotation(displayChangeListener, Display.DEFAULT_DISPLAY)
             miniViewListener.register()
 
-            logicScope.launch {
+            mainHandler.post {
                 refreshScreenSize()
                 refreshNavHeights()
             }
