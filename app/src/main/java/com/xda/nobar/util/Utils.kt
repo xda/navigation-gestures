@@ -184,12 +184,22 @@ var uiMode = Configuration.UI_MODE_TYPE_NORMAL
 //    return uiMode
 //}
 
+private val navLock = Any()
+
+@Volatile
 private var cachedCarModeNavHeight: Int? = null
+@Volatile
 private var cachedNavHeight: Int? = null
 
 fun Context.refreshNavHeights() {
-    cachedCarModeNavHeight = resources.getDimensionPixelSize(resources.getIdentifier("navigation_bar_height_car_mode", "dimen", "android"))
-    cachedNavHeight = resources.getDimensionPixelSize(resources.getIdentifier("navigation_bar_height", "dimen", "android"))
+    synchronized(navLock) {
+        try {
+            cachedCarModeNavHeight = resources.getDimensionPixelSize(resources.getIdentifier("navigation_bar_height_car_mode", "dimen", "android"))
+        } catch (e: Exception) {}
+        try {
+            cachedNavHeight = resources.getDimensionPixelSize(resources.getIdentifier("navigation_bar_height", "dimen", "android"))
+        } catch (e: Exception) {}
+    }
 }
 
 /**
@@ -198,11 +208,13 @@ fun Context.refreshNavHeights() {
  */
 val Context.navBarHeight: Int
     get() {
-        if (cachedCarModeNavHeight == null
-                || cachedNavHeight == null) refreshNavHeights()
+        synchronized(navLock) {
+            if (cachedCarModeNavHeight == null
+                    || cachedNavHeight == null) refreshNavHeights()
 
-        return if (uiMode == Configuration.UI_MODE_TYPE_CAR && prefManager.enableInCarMode) cachedCarModeNavHeight!!
-        else cachedNavHeight!!
+            return if (uiMode == Configuration.UI_MODE_TYPE_CAR && prefManager.enableInCarMode) cachedCarModeNavHeight!!
+            else cachedNavHeight!!
+        }
     }
 
 val Context.prefManager: PrefManager
