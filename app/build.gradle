@@ -67,11 +67,11 @@ dependencies {
 
     //AndroidX
     implementation 'androidx.core:core:1.2.0-alpha01'
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
+    implementation 'androidx.appcompat:appcompat:1.1.0-beta01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha05'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha06'
     implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
-    implementation 'androidx.preference:preference:1.1.0-alpha05'
+    implementation 'androidx.preference:preference:1.1.0-beta01'
 
     //Google
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
