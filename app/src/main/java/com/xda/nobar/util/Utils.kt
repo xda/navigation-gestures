@@ -212,7 +212,7 @@ val Context.navBarHeight: Int
             if (cachedCarModeNavHeight == null
                     || cachedNavHeight == null) refreshNavHeights()
 
-            return if (uiMode == Configuration.UI_MODE_TYPE_CAR && prefManager.enableInCarMode) cachedCarModeNavHeight!!
+            return if (uiMode == Configuration.UI_MODE_TYPE_CAR && prefManager.enableInCarMode) cachedCarModeNavHeight ?: cachedNavHeight!!
             else cachedNavHeight!!
         }
     }
