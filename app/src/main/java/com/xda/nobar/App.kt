@@ -37,7 +37,10 @@ import com.xda.nobar.views.BarView
 import com.xda.nobar.views.NavBlackout
 import io.fabric.sdk.android.Fabric
 import io.fabric.sdk.android.InitializationCallback
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.lang.reflect.Method
 
 
@@ -960,7 +963,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         fun handleRot(rot: Int = cachedRotation) {
             logicScope.launch {
-                synchronized(rotLock) {
+                Mutex().withLock(rotLock) {
+                    delay(100L)
                     if (prefManager.shouldUseOverscanMethod) {
                         when {
                             prefManager.useRot270Fix ||
