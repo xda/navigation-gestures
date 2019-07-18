@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
@@ -83,19 +83,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/switch_wrapper">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/troubleshoot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/problems"
+            android:textColor="?android:textColorPrimary"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/beta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/try_beta"
-            style="@style/Widget.AppCompat.Button.Colored"
+            app:backgroundTint="?colorAccent"
             />
 
     </LinearLayout>

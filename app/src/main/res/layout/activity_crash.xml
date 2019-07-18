@@ -68,19 +68,22 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/enable_c_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/enable_crashlytics_id"
+                android:textColor="?android:textColorPrimary"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/relaunch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/restart_app"
                 android:backgroundTint="@color/colorAccent"
+                style="@style/Widget.MaterialComponents.Button"
                 />
 
         </LinearLayout>
