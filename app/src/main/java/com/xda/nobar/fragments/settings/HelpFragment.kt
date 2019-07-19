@@ -89,7 +89,7 @@ class HelpFragment : PreferenceFragmentCompat() {
         val pref = findPreference<Preference>(XDA_THREAD)!!
 
         pref.setOnPreferenceClickListener {
-            context?.launchUrl("https://forum.xda-developers.com/android/sortedApps-games/official-xda-navigation-gestures-iphone-t3792361")
+            context?.launchUrl("https://forum.xda-developers.com/android/apps-games/official-xda-navigation-gestures-iphone-t3792361")
             true
         }
     }
@@ -98,7 +98,7 @@ class HelpFragment : PreferenceFragmentCompat() {
         val pref = findPreference<Preference>(OTHER_APPS)!!
 
         pref.setOnPreferenceClickListener {
-            context?.launchUrl("https://play.google.com/store/sortedApps/developer?id=XDA")
+            context?.launchUrl("https://play.google.com/store/apps/developer?id=XDA")
             true
         }
     }
@@ -107,7 +107,7 @@ class HelpFragment : PreferenceFragmentCompat() {
         val pref = findPreference<Preference>(BUY_PREMIUM)!!
 
         pref.setOnPreferenceClickListener {
-            context?.launchUrl("https://play.google.com/store/sortedApps/details?id=com.xda.nobar.premium")
+            context?.launchUrl("https://play.google.com/store/apps/details?id=com.xda.nobar.premium")
             true
         }
     }

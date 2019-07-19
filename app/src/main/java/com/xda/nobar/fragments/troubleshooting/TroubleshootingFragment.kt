@@ -110,7 +110,7 @@ class TroubleshootingFragment : BasePrefFragment() {
                 true
             }
             BETA_SIGN_UP -> {
-                context?.launchUrl("https://play.google.com/sortedApps/testing/com.xda.nobar")
+                context?.launchUrl("https://play.google.com/apps/testing/com.xda.nobar")
                 true
             }
             PILL_NOT_SHOWING -> {

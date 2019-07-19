@@ -17,6 +17,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.service.voice.VoiceInteractionSession
 import android.speech.RecognizerIntent
+import android.util.Log
 import android.view.KeyEvent
 import android.view.OrientationEventListener
 import android.view.Surface
@@ -305,6 +306,7 @@ class BarViewActionHandler(private val bar: BarView) {
                                     }
                                 }
                             } catch (e: ActivityNotFoundException) {
+                                Log.e("NoBar", "Unable to launch", e)
                                 mainScope.launch {
                                     Toast.makeText(context, R.string.unable_to_launch, Toast.LENGTH_SHORT).show()
                                 }

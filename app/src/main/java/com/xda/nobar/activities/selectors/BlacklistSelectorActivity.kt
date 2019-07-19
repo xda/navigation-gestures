@@ -14,7 +14,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 /**
- * Activity to manage which sortedApps should be blacklisted for a certain function
+ * Activity to manage which apps should be blacklisted for a certain function
  * Use the constants in the companion object to specify the function
  */
 class BlacklistSelectorActivity : BaseAppSelectActivity<ApplicationInfo, AppInfo>() {
@@ -29,7 +29,7 @@ class BlacklistSelectorActivity : BaseAppSelectActivity<ApplicationInfo, AppInfo
 
     private val currentlyBlacklisted = ArrayList<String>()
 
-    override val adapter = AppSelectAdapter(false, true, OnAppSelectedListener { info ->
+    override val adapter = AppSelectAdapter(isSingleSelect = false, showSummary = true, checkListener = OnAppSelectedListener { info ->
         if (info.isChecked) currentlyBlacklisted.add(info.packageName)
         else currentlyBlacklisted.removeAll(Collections.singleton(info.packageName))
     })
