@@ -2,9 +2,9 @@ package com.xda.nobar.activities.helpers
 
 import android.content.*
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xda.nobar.interfaces.OnDialogChoiceMadeListener
 
 /**
@@ -37,7 +37,7 @@ class DialogActivity : AppCompatActivity() {
             val hasNo = intent.getBooleanExtra(EXTRA_HAS_NO, false)
             val hash = intent.getIntExtra(EXTRA_HASH, -1)
 
-            val builder = AlertDialog.Builder(this)
+            val builder = MaterialAlertDialogBuilder(this)
             builder.setTitle(title)
             builder.setMessage(message)
 

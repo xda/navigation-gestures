@@ -1,13 +1,14 @@
 package com.xda.nobar.prefs
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.Switch
+import androidx.appcompat.app.AlertDialog
 import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreference
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnProgressSetListener
 import com.xda.nobar.util.dpAsPx
@@ -96,7 +97,7 @@ class SeekBarSwitchPreference(context: Context, attributeSet: AttributeSet) : Sw
 
     class Dialog(private val preference: SeekBarSwitchPreference,
                  private val seekBar: SeekBarView,
-                 private val listener: OnProgressSetListener) : AlertDialog.Builder(preference.context), DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
+                 private val listener: OnProgressSetListener) : MaterialAlertDialogBuilder(preference.context), DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
         init {
             setPositiveButton(android.R.string.ok, this)
             setNegativeButton(android.R.string.cancel, null)

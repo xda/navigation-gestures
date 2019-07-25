@@ -6,9 +6,9 @@ import android.graphics.Rect
 import android.os.Binder
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xda.nobar.R
 import com.xda.nobar.adapters.ActionSelectAdapter
 import com.xda.nobar.adapters.info.ActionInfo
@@ -50,7 +50,7 @@ class ActionSelectorActivity : BaseAppSelectActivity<ActionInfo, ActionInfo>() {
                 actionHolder.typeRootLongKeycode.toString() -> {
                     val input = View.inflate(this, R.layout.text_input, null)
 
-                    AlertDialog.Builder(this)
+                    MaterialAlertDialogBuilder(this)
                             .setTitle(R.string.root_send_keycode_no_format)
                             .setView(input)
                             .setPositiveButton(android.R.string.ok) { _, _ ->

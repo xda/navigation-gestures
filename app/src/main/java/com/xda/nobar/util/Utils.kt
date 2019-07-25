@@ -531,13 +531,17 @@ fun Throwable.logStack() {
 }
 
 fun Fragment.navigateTo(action: Int, highlightKey: String? = null) {
-    findNavController().navigate(
-            action,
-            Bundle().apply {
-                putString(BasePrefFragment.PREF_KEY_TO_HIGHLIGHT, highlightKey ?: return@apply)
-            },
-            navOptions
-    )
+    findNavController().run {
+        if (currentDestination?.getAction(action) != null) {
+            navigate(
+                    action,
+                    Bundle().apply {
+                        putString(BasePrefFragment.PREF_KEY_TO_HIGHLIGHT, highlightKey ?: return@apply)
+                    },
+                    navOptions
+            )
+        }
+    }
 }
 
 fun Context.relaunch(isForCrashlytics: Boolean = false, isForMainActivity: Boolean = false) {

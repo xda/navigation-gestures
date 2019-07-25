@@ -1,9 +1,8 @@
 package com.xda.nobar.fragments.troubleshooting
 
 import android.provider.Settings
-import androidx.appcompat.app.AlertDialog
-import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xda.nobar.R
 import com.xda.nobar.fragments.settings.BasePrefFragment
 import com.xda.nobar.fragments.settings.CompatibilityFragment
@@ -100,8 +99,9 @@ class TroubleshootingFragment : BasePrefFragment() {
                 true
             }
             SOMETHING_ELSE -> {
-                findNavController().navigate(
-                        R.id.action_troubleshootingFragment_to_settingsActivity
+                navigateTo(
+                        R.id.action_troubleshootingFragment_to_settingsActivity,
+                        null
                 )
                 true
             }
@@ -131,7 +131,7 @@ class TroubleshootingFragment : BasePrefFragment() {
     }
 
     private fun showExplanation(title: CharSequence, message: Int) {
-        AlertDialog.Builder(activity!!)
+        MaterialAlertDialogBuilder(activity!!)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, null)

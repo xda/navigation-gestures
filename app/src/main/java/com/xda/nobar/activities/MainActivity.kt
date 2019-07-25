@@ -10,8 +10,8 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xda.nobar.R
 import com.xda.nobar.activities.ui.HelpAboutActivity
 import com.xda.nobar.activities.ui.IntroActivity
@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         }
 
         prem_stat_clicker.setOnClickListener {
-            AlertDialog.Builder(this)
+            MaterialAlertDialogBuilder(this)
                     .setMessage(currentPremReason)
                     .show()
         }
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity(), OnGestureStateChangeListener, OnNavBar
         } else {
             beta.visibility = View.VISIBLE
             beta.setOnClickListener {
-                AlertDialog.Builder(this)
+                MaterialAlertDialogBuilder(this)
                         .setTitle(R.string.sign_up_for_beta)
                         .setMessage(R.string.sign_up_for_beta_desc)
                         .setPositiveButton(android.R.string.ok) { _, _ -> launchUrl("https://play.google.com/apps/testing/com.xda.nobar") }

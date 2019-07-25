@@ -1,11 +1,11 @@
 package com.xda.nobar.activities.ui
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.heinrichreimersoftware.materialintro.app.IntroActivity
 import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
@@ -115,7 +115,7 @@ class IntroActivity : IntroActivity() {
 
         addOnNavigationBlockedListener { index, _ ->
             if (index == indexOfSlide(slides.wssSlide)) {
-                AlertDialog.Builder(this)
+                MaterialAlertDialogBuilder(this)
                         .setTitle(R.string.are_you_sure)
                         .setMessage(R.string.skip_wss_message)
                         .setPositiveButton(android.R.string.yes) { _, _ ->

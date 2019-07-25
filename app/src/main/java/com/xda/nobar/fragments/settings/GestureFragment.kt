@@ -1,7 +1,6 @@
 package com.xda.nobar.fragments.settings
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -11,6 +10,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceGroup
 import androidx.preference.SwitchPreference
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xda.nobar.R
 import com.xda.nobar.activities.selectors.AppLaunchSelectActivity
 import com.xda.nobar.activities.selectors.BaseAppSelectActivity
@@ -54,14 +54,14 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
 
             updateSummaries()
 
-            AlertDialog.Builder(activity)
+            MaterialAlertDialogBuilder(activity)
                     .setTitle(R.string.use_recommended_settings)
                     .setView(R.layout.use_recommended_settings_dialog_message_view)
                     .setPositiveButton(android.R.string.yes) { _, _ -> setSectionedSettings() }
                     .setNegativeButton(R.string.no, null)
                     .show()
         } else {
-            AlertDialog.Builder(activity)
+            MaterialAlertDialogBuilder(activity)
                     .setTitle(R.string.back_to_default)
                     .setMessage(R.string.back_to_default_desc)
                     .setPositiveButton(android.R.string.yes) { _, _ -> resetSectionedSettings() }

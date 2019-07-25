@@ -8,7 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
 import com.xda.nobar.R
@@ -97,7 +97,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                             isSuAsync(mainHandler) {
                                 if (it) {
                                     app.rootWrapper.onCreate()
-                                    AlertDialog.Builder(this)
+                                    MaterialAlertDialogBuilder(this)
                                             .setTitle(R.string.root_found)
                                             .setMessage(R.string.root_found_desc)
                                             .setPositiveButton(R.string.use_root) { _, _ ->
@@ -156,7 +156,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                     try {
                         requestBatteryExemption()
                     } catch (e: Exception) {
-                        AlertDialog.Builder(this)
+                        MaterialAlertDialogBuilder(this)
                                 .setTitle(R.string.battery_optimizations)
                                 .setMessage(R.string.unable_to_request_battery_exemption)
                                 .setPositiveButton(R.string.show_me_how) { _, _ ->
@@ -217,7 +217,7 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
 
     private fun nonRootDialog() {
         try {
-            AlertDialog.Builder(this)
+            MaterialAlertDialogBuilder(this)
                     .setTitle(R.string.run_command)
                     .setMessage(R.string.run_command_desc)
                     .setPositiveButton(R.string.got_it, null)
