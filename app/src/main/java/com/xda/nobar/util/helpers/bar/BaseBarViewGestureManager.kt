@@ -241,6 +241,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
 
     @CallSuper
     open fun handleActionUp(isForce: Boolean = false) {
+        gestureHandler.clearLongQueues()
         bar.beingTouched = false
         lastTouchTime = -1L
 
@@ -301,15 +302,15 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
     abstract inner class BaseGestureHandler(looper: Looper) : Handler(looper) {
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
-                MSG_UP_HOLD -> handleLongUp()
-                MSG_DOWN_HOLD -> handleLongDown()
-                MSG_LEFT_HOLD -> handleLongLeft()
-                MSG_RIGHT_HOLD -> handleLongRight()
+                MSG_UP_HOLD -> if (!isRunningLongUp) handleLongUp()
+                MSG_DOWN_HOLD -> if (!isRunningLongDown) handleLongDown()
+                MSG_LEFT_HOLD -> if (!isRunningLongLeft) handleLongLeft()
+                MSG_RIGHT_HOLD -> if (!isRunningLongRight) handleLongRight()
 
-                MSG_UP -> handleUp()
-                MSG_DOWN -> handleDown()
-                MSG_LEFT -> handleLeft()
-                MSG_RIGHT -> handleRight()
+                MSG_UP -> if (!isRunningLongUp) handleUp()
+                MSG_DOWN -> if (!isRunningLongDown) handleDown()
+                MSG_LEFT -> if (!isRunningLongLeft) handleLeft()
+                MSG_RIGHT -> if (!isRunningLongRight) handleRight()
 
                 MSG_TAP -> handleTap()
                 MSG_DOUBLE_TAP -> handleDoubleTap()
@@ -379,27 +380,19 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         }
 
         fun sendUp() {
-            if (!isRunningLongUp) {
-                sendEmptyMessage(MSG_UP)
-            }
+            sendEmptyMessage(MSG_UP)
         }
 
         fun sendDown() {
-            if (!isRunningLongDown) {
-                sendEmptyMessage(MSG_DOWN)
-            }
+            sendEmptyMessage(MSG_DOWN)
         }
 
         fun sendLeft() {
-            if (!isRunningLongLeft) {
-                sendEmptyMessage(MSG_LEFT)
-            }
+            sendEmptyMessage(MSG_LEFT)
         }
 
         fun sendRight() {
-            if (!isRunningLongRight) {
-                sendEmptyMessage(MSG_RIGHT)
-            }
+            sendEmptyMessage(MSG_RIGHT)
         }
 
         fun sendTap() {

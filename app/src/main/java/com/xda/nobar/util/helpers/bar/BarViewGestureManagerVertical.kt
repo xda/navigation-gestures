@@ -109,8 +109,6 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
             isSwipeLeft = false
         }
 
-        gestureHandler.clearLongQueues()
-
         if (!isForce) parseSwipe()
 
         bar.animatePillToHome(
