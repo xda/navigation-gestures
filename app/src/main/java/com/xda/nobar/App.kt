@@ -968,19 +968,20 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 Mutex().withLock(rotLock) {
                     delay(100L)
 
+                    if (prefManager.shouldUseOverscanMethod) {
+                        when {
+                            prefManager.useRot270Fix ||
+                                    prefManager.useRot180Fix -> handle180AndOr270(rot)
+                            prefManager.useTabletMode -> handleTablet(rot)
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie(rot)
+                            else -> handle0()
+                        }
+
+                        if (!prefManager.useFullOverscan) blackout.add()
+                    }
+
                     if (prevRot != rot) {
                         prevRot = rot
-                        if (prefManager.shouldUseOverscanMethod) {
-                            when {
-                                prefManager.useRot270Fix ||
-                                        prefManager.useRot180Fix -> handle180AndOr270(rot)
-                                prefManager.useTabletMode -> handleTablet(rot)
-                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie(rot)
-                                else -> handle0()
-                            }
-
-                            if (!prefManager.useFullOverscan) blackout.add()
-                        }
 
                         if (pillShown) {
                             bar.handleRotationOrAnchorUpdate()
