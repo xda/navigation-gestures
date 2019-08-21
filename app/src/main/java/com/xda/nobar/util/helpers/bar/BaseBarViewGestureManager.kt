@@ -25,6 +25,8 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         internal const val MSG_RIGHT_HOLD = 2
         internal const val MSG_DOWN_HOLD = 3
 
+        internal const val MSG_LONG = 11
+
         internal const val MSG_UP = 4
         internal const val MSG_LEFT = 5
         internal const val MSG_RIGHT = 6
@@ -105,6 +107,8 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
     internal var sentLongRight = false
     internal var sentLongDown = false
 
+    internal var sentLong = false
+
     internal var oldY = 0F
     internal var oldX = 0F
 
@@ -129,6 +133,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
     internal abstract fun getSection(coord: Float): Int
 
     @CallSuper
+    @Synchronized
     internal open fun handleTouchEvent(ev: MotionEvent?): Boolean {
         if (bar.isPillHidingOrShowing) return false
 
@@ -147,9 +152,16 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
                 bar.scheduleUnfade()
 
                 displayProperFlash(true)
+
+                if (!sentLong) {
+                    sentLong = true
+                    gestureHandler.sendEmptyMessageAtTime(MSG_LONG,
+                            SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+                }
             }
 
             MotionEvent.ACTION_UP -> {
+                gestureHandler.removeMessages(MSG_LONG)
                 handleActionUp()
             }
         }
@@ -188,6 +200,8 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         sentLongLeft = false
         sentLongUp = false
         sentLongDown = false
+
+        sentLong = false
 
         isSwipeUp = false
         isSwipeLeft = false
@@ -243,7 +257,7 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
 
     @CallSuper
     open fun handleActionUp(isForce: Boolean = false) {
-        gestureHandler.clearLongQueues()
+//        gestureHandler.clearLongQueues()
         bar.beingTouched = false
 
         displayProperFlash(false)
@@ -304,6 +318,8 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         @Synchronized
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
+                MSG_LONG -> parseLongSwipe()
+
                 MSG_UP_HOLD -> if (!isRunningLongUp) handleLongUp()
                 MSG_DOWN_HOLD -> if (!isRunningLongDown) handleLongDown()
                 MSG_LEFT_HOLD -> if (!isRunningLongLeft) handleLongLeft()
@@ -342,44 +358,90 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
             sendAction(bar.actionHolder.actionHold)
         }
 
-        fun clearLongQueues() {
-            removeMessages(MSG_UP_HOLD)
-            removeMessages(MSG_LEFT_HOLD)
-            removeMessages(MSG_RIGHT_HOLD)
-            removeMessages(MSG_DOWN_HOLD)
+        internal fun parseLongSwipe() {
+            if (isSwipeUp) {
+                gestureHandler.sendLongUp()
+            }
+
+            if (isSwipeLeft) {
+                gestureHandler.sendLongLeft()
+            }
+
+            if (isSwipeRight) {
+                gestureHandler.sendLongRight()
+            }
+
+            if (isSwipeDown) {
+                gestureHandler.sendLongDown()
+            }
         }
 
-        fun queueUpHold() {
+//        fun clearLongQueues() {
+//            removeMessages(MSG_UP_HOLD)
+//            removeMessages(MSG_LEFT_HOLD)
+//            removeMessages(MSG_RIGHT_HOLD)
+//            removeMessages(MSG_DOWN_HOLD)
+//        }
+
+        fun sendLongUp() {
             if (!sentLongUp) {
                 sentLongUp = true
-                sendEmptyMessageAtTime(MSG_UP_HOLD,
-                        SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+                sendEmptyMessage(MSG_UP_HOLD)
             }
         }
 
-        fun queueDownHold() {
+        fun sendLongDown() {
             if (!sentLongDown) {
                 sentLongDown = true
-                sendEmptyMessageAtTime(MSG_DOWN_HOLD,
-                        SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+                sendEmptyMessage(MSG_DOWN_HOLD)
             }
         }
 
-        fun queueLeftHold() {
+        fun sendLongLeft() {
             if (!sentLongLeft) {
                 sentLongLeft = true
-                sendEmptyMessageAtTime(MSG_LEFT_HOLD,
-                        SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+                sendEmptyMessage(MSG_LEFT_HOLD)
             }
         }
 
-        fun queueRightHold() {
+        fun sendLongRight() {
             if (!sentLongRight) {
                 sentLongRight = true
-                sendEmptyMessageAtTime(MSG_RIGHT_HOLD,
-                        SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+                sendEmptyMessage(MSG_RIGHT_HOLD)
             }
         }
+
+//        fun queueUpHold() {
+//            if (!sentLongUp) {
+//                sentLongUp = true
+//                sendEmptyMessageAtTime(MSG_UP_HOLD,
+//                        SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+//            }
+//        }
+//
+//        fun queueDownHold() {
+//            if (!sentLongDown) {
+//                sentLongDown = true
+//                sendEmptyMessageAtTime(MSG_DOWN_HOLD,
+//                        SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+//            }
+//        }
+//
+//        fun queueLeftHold() {
+//            if (!sentLongLeft) {
+//                sentLongLeft = true
+//                sendEmptyMessageAtTime(MSG_LEFT_HOLD,
+//                        SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+//            }
+//        }
+//
+//        fun queueRightHold() {
+//            if (!sentLongRight) {
+//                sentLongRight = true
+//                sendEmptyMessageAtTime(MSG_RIGHT_HOLD,
+//                        SystemClock.uptimeMillis() + context.prefManager.holdTime.toLong())
+//            }
+//        }
 
         fun sendUp() {
             if (!isRunningLongUp) {

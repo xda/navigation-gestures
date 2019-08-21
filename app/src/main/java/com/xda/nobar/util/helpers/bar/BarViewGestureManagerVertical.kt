@@ -45,7 +45,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                             bar.updateLayout()
                         }
 
-                        gestureHandler.queueLeftHold()
+//                        gestureHandler.queueLeftHold()
                     }
 
                     isSwipeRight -> {
@@ -59,7 +59,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                             bar.updateLayout()
                         }
 
-                        gestureHandler.queueRightHold()
+//                        gestureHandler.queueRightHold()
                     }
 
                     isSwipeUp || isSwipeDown -> {
@@ -87,13 +87,13 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                             }
                         }
 
-                        if (isSwipeDown) {
-                            gestureHandler.queueDownHold()
-                        }
-
-                        if (isSwipeUp) {
-                            gestureHandler.queueUpHold()
-                        }
+//                        if (isSwipeDown) {
+//                            gestureHandler.queueDownHold()
+//                        }
+//
+//                        if (isSwipeUp) {
+//                            gestureHandler.queueUpHold()
+//                        }
                     }
                 }
             }
