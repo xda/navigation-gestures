@@ -7,8 +7,12 @@
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorSecondary">@color/colorAccent</item>
-        <item name="alertDialogTheme">@style/AppTheme.AlertDialog.ColoredButtons</item>
-        <item name="materialAlertDialogTheme">@style/AppTheme.AlertDialog.ColoredButtons</item>
+        <item name="buttonBarButtonStyle">@style/AppTheme.Alert.Button</item>
+        <item name="android:buttonBarButtonStyle">@style/AppTheme.Alert.Button</item>
+        <item name="materialAlertDialogTheme">@style/DialogTheme</item>
+        <item name="alertDialogTheme">@style/DialogTheme</item>
+        <item name="alertDialogStyle">@style/DialogTheme</item>
+        <item name="dialogTheme">@style/DialogTheme</item>
     </style>
     
     <style name="AppTheme.NoBar" parent="AppTheme">
@@ -51,8 +55,10 @@
         <item name="cpd_maxSweepAngle">0</item>
     </style>
 
-    <style name="AppTheme.AlertDialog.ColoredButtons" parent="Theme.MaterialComponents.Dialog.Alert">
-        <item name="buttonBarButtonStyle">@style/AppTheme.Alert.Button</item>
+    <style name="DialogTheme" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="buttonBarPositiveButtonStyle">@style/AppTheme.Alert.Button</item>
+        <item name="buttonBarNeutralButtonStyle">@style/AppTheme.Alert.Button</item>
+        <item name="buttonBarNegativeButtonStyle">@style/AppTheme.Alert.Button</item>
     </style>
 
     <style name="AppTheme.Alert.Button" parent="Widget.MaterialComponents.Button.TextButton">

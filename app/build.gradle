@@ -78,13 +78,14 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation "android.arch.navigation:navigation-fragment-ktx:1.0.0"
     implementation "android.arch.navigation:navigation-ui-ktx:1.0.0"
+    implementation 'com.google.android.material:material:1.1.0-alpha09'
 
     //Mine-ish
     implementation 'com.github.zacharee:material-intro:7c39514ec5'
-    implementation 'com.github.zacharee:colorpicker:4b78682602'
+    implementation 'com.github.zacharee:colorpicker:5116fe290a'
     implementation 'com.github.zacharee:material:a2ab4a2d3c'
     implementation 'com.github.zacharee:CollapsiblePreferenceCategory:4883357a52'
-    implementation 'com.github.zacharee:SeekBarPreference:423d4f5781'
+    implementation 'com.github.zacharee:SeekBarPreference:9c3412fe01'
 
     //Other
     implementation 'com.joaomgcd:taskerpluginlibrary:0.1'
