@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
 import android.os.*
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.annotation.CallSuper
