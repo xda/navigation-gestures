@@ -220,29 +220,29 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
     @SuppressLint("HandlerLeak")
     inner class GestureHandler(looper: Looper) : BaseGestureHandler(looper) {
         override fun handleLongUp() {
+            isRunningLongUp = true
             if (actionMap[bar.actionHolder.actionRightHold] != bar.actionHolder.typeNoAction) {
-                isRunningLongUp = true
                 sendAction(bar.actionHolder.actionRightHold)
             }
         }
 
         override fun handleLongDown() {
+            isRunningLongDown = true
             if (actionMap[bar.actionHolder.actionLeftHold] != bar.actionHolder.typeNoAction) {
-                isRunningLongDown = true
                 sendAction(bar.actionHolder.actionLeftHold)
             }
         }
 
         override fun handleLongLeft() {
+            isRunningLongLeft = true
             if (getSectionedUpHoldAction(adjCoord) != bar.actionHolder.typeNoAction) {
-                isRunningLongLeft = true
                 sendAction(bar.actionHolder.actionUpHold)
             }
         }
 
         override fun handleLongRight() {
+            isRunningLongRight = true
             if (actionMap[bar.actionHolder.actionDownHold] != bar.actionHolder.typeNoAction) {
-                isRunningLongRight = true
                 sendAction(bar.actionHolder.actionDownHold)
             }
         }
