@@ -27,4 +27,11 @@
         android:defaultValue="@bool/anchor_pill_default"
         />
 
+    <SwitchPreference
+        android:title="@string/overlay_nav"
+        android:summary="@string/overlay_nav_desc"
+        android:key="overlay_nav"
+        android:defaultValue="@bool/overlay_nav_default"
+        />
+
 </PreferenceScreen>

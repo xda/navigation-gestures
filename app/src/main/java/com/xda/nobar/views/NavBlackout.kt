@@ -31,38 +31,44 @@ class NavBlackout : LinearLayout {
         gravity = Gravity.BOTTOM
         height = context.navBarHeight
         width = WindowManager.LayoutParams.MATCH_PARENT
-        y = -context.adjustedNavBarHeight
+        y = -context.navBarHeight
     }
 
     private val leftParams = BaseParams().apply {
         gravity = Gravity.LEFT
         height = WindowManager.LayoutParams.MATCH_PARENT
         width = context.navBarHeight
-        x = -context.adjustedNavBarHeight
+        x = -context.navBarHeight
     }
 
     private val rightParams = BaseParams().apply {
         gravity = Gravity.RIGHT
         height = WindowManager.LayoutParams.MATCH_PARENT
         width = context.navBarHeight
-        x = -context.adjustedNavBarHeight
+        x = -context.navBarHeight
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         isAdded = true
+
+        if (context.prefManager.overlayNav)
+            context.app.postAction { it.addBar() }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         isAdded = false
+
+        if (context.prefManager.overlayNav)
+            context.app.postAction { it.remBar() }
     }
 
     private val addLock = Any()
 
     private var oldParams: WindowManager.LayoutParams? = null
 
-    fun add() {
+    fun add(wm: WindowManager) {
         synchronized(addLock) {
             val params = if (context.prefManager.useTabletMode) bottomParams
             else when (cachedRotation) {
@@ -78,10 +84,10 @@ class NavBlackout : LinearLayout {
 
                 mainScope.launch {
                     try {
-                        if (isAdded) context.app.wm.updateViewLayout(this@NavBlackout, params)
+                        if (isAdded) wm.updateViewLayout(this@NavBlackout, params)
                         else if (!waitingToAdd) {
                             waitingToAdd = true
-                            context.app.wm.addView(this@NavBlackout, params)
+                            wm.addView(this@NavBlackout, params)
                         }
                     } catch (e: Exception) {
                         e.logStack()
@@ -93,13 +99,13 @@ class NavBlackout : LinearLayout {
 
     private var isTryingToRemove = false
 
-    fun remove() {
+    fun remove(wm: WindowManager) {
         synchronized(isTryingToRemove) {
             if (!isTryingToRemove && isAdded) {
                 isTryingToRemove = true
                 mainScope.launch {
                     try {
-                        context.app.wm.removeView(this@NavBlackout)
+                        wm.removeView(this@NavBlackout)
                     } catch (e: Exception) {
                         isAdded = false
                     }
@@ -123,10 +129,9 @@ class NavBlackout : LinearLayout {
 
     private class BaseParams : WindowManager.LayoutParams() {
         init {
-            type = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) TYPE_APPLICATION_OVERLAY else TYPE_PRIORITY_PHONE
+            type = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) TYPE_ACCESSIBILITY_OVERLAY else TYPE_PRIORITY_PHONE
             flags = FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS or
                     FLAG_NOT_FOCUSABLE or
-                    FLAG_NOT_TOUCHABLE or
                     FLAG_LAYOUT_NO_LIMITS or
                     FLAG_TRANSLUCENT_NAVIGATION
         }

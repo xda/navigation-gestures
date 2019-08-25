@@ -84,7 +84,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         format = PixelFormat.TRANSLUCENT
         softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 
-        if (context.prefManager.dontMoveForKeyboard) {
+        if (context.prefManager.overlayNav) {
+            flags = flags or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        } else if (context.prefManager.dontMoveForKeyboard) {
             flags = flags and
                     WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
             softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
@@ -113,13 +115,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     val zeroX: Int
         get() = if (isVertical && isLandscape) {
-            if (immersiveNav && !context.prefManager.useTabletMode) {
-                when (cachedRotation) {
-                    Surface.ROTATION_90 -> -IWindowManager.bottomOverscan
-                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) IWindowManager.topOverscan else -IWindowManager.bottomOverscan
-                    else -> 0
-                }
-            } else 0
+            context.unadjustedRealScreenSize.x - context.prefManager.customHeight
         } else 0
 
     val adjustedHomeX: Int
@@ -151,13 +147,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private val anchoredHomeY: Int
         get() {
-            return context.prefManager.homeY + if (immersiveNav && !context.prefManager.useTabletMode) {
-                when (cachedRotation) {
-                    Surface.ROTATION_90 -> -IWindowManager.bottomOverscan
-                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) IWindowManager.topOverscan else -IWindowManager.bottomOverscan
-                    else -> 0
-                }
-            } else 0
+            return context.unadjustedRealScreenSize.x - context.prefManager.homeY - context.prefManager.customHeight
         }
 
     val adjustedWidth: Int
@@ -455,6 +445,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 } else {
                     scheduleUnfade()
                 }
+            }
+
+            PrefManager.OVERLAY_NAV,
+            PrefManager.HIDE_NAV -> {
+                setOverlayNav(context.prefManager.overlayNav)
             }
         }
     }
@@ -834,6 +829,30 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
+    fun setOverlayNav(overlay: Boolean) {
+        val old = params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS != 0
+
+        if (overlay != old) {
+            mainScope.launch {
+                if (overlay) {
+                    params.flags = params.flags or
+                            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                    context.app.postAction {
+                        it.remBar()
+                        mainHandler.postDelayed({
+                            it.addBarAndBlackout()
+                        }, 100)
+                    }
+                } else {
+                    params.flags = params.flags and
+                            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS.inv()
+                    context.app.postAction { it.remBlackout() }
+                    updateLayout()
+                }
+            }
+        }
+    }
+
     /**
      * Vibrate for the specified duration
      * @param duration the desired duration
@@ -886,7 +905,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     if (is270) vertical270GestureManager else verticalGestureManager
 
             val newGrav = Gravity.CENTER or
-                    if (is270) Gravity.LEFT else Gravity.RIGHT
+                    if (!is270) Gravity.LEFT else Gravity.RIGHT
 
             if (params.gravity != newGrav) {
                 params.gravity = newGrav

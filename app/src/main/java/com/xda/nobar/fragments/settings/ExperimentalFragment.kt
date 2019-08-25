@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.preference.Preference
 import com.xda.nobar.R
 import com.xda.nobar.activities.selectors.BlacklistSelectorActivity
+import com.xda.nobar.util.PrefManager
 
 /**
  * Experimental, but mostly working settings
@@ -32,5 +33,8 @@ class ExperimentalFragment : BasePrefFragment() {
 
             true
         }
+
+        val overlayNav = findPreference<Preference>(PrefManager.OVERLAY_NAV)!!
+        overlayNav.isEnabled = !prefManager.shouldUseOverscanMethod
     }
 }

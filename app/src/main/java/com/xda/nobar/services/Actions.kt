@@ -159,11 +159,13 @@ class Actions : AccessibilityService(), ReceiverCallback {
             waitingToAdd = true
             try {
                 accWm.addView(app.bar, app.bar.params)
-            } catch (e: Exception) {
-                app.addedPillButNotYetShown = false
-            }
+            } catch (e: Exception) {}
             waitingToAdd = false
         }
+    }
+
+    private fun addBlackout() {
+        app.blackout.add(accWm)
     }
 
     private var waitingToRemove = false
@@ -176,6 +178,10 @@ class Actions : AccessibilityService(), ReceiverCallback {
             } catch (e: Exception) {}
             waitingToRemove = false
         }
+    }
+
+    private fun remBlackout() {
+        app.blackout.remove(accWm)
     }
 
     private fun addImmersiveHelper() {
@@ -213,8 +219,18 @@ class Actions : AccessibilityService(), ReceiverCallback {
             this@Actions.addBar()
         }
 
+        fun addBlackout() {
+            if (prefManager.overlayNav || (prefManager.shouldUseOverscanMethod && !prefManager.useFullOverscan)) {
+                this@Actions.addBlackout()
+            }
+        }
+
         fun remBar() {
             this@Actions.removeBar()
+        }
+
+        fun remBlackout() {
+            this@Actions.remBlackout()
         }
 
         fun addImmersiveHelper() {
@@ -227,6 +243,19 @@ class Actions : AccessibilityService(), ReceiverCallback {
 
         fun sendAction(action: Int) {
             this@Actions.sendAction(action)
+        }
+
+        fun addBarAndBlackout() {
+            remBlackout()
+            addBlackout()
+            if (!prefManager.overlayNav) {
+                addBar()
+            }
+        }
+
+        fun remBarAndBlackout() {
+            remBlackout()
+            remBar()
         }
     }
 }

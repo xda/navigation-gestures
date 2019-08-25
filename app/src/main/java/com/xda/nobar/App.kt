@@ -77,7 +77,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     var accessibilityConnected = false
         set(value) {
             field = value
-            if (value) addedPillButNotYetShown = false
             uiHandler.accessibilityChanged(field)
         }
     private val stateHandler = ScreenStateHandler()
@@ -109,14 +108,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     var pillShown = false
         set(value) {
             field = value
-            addedPillButNotYetShown = false
         }
     var helperAdded = false
     var keyboardShown = false
     var isValidPremium = false
         get() = field || BuildConfig.DEBUG
-
-    var addedPillButNotYetShown = false
 
     private val gestureListeners = ArrayList<OnGestureStateChangeListener>()
     private val navbarListeners = ArrayList<OnNavBarHideStateChangeListener>()
@@ -404,7 +400,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 override fun onAnimationEnd(animation: Animator?) {
                     try {
                         bar.shouldReAddOnDetach = false
-                        postAction { it.remBar() }
+                        postAction { it.remBarAndBlackout() }
                     } catch (e: Exception) {
                     }
 
@@ -459,8 +455,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             uiHandler.handleRot()
 
             val fullOverscan = prefManager.useFullOverscan
-            if (!fullOverscan) blackout.add()
-            else blackout.remove()
+            if (!fullOverscan) postAction {
+                it.addBlackout()
+            }
+            else postAction { it.remBlackout() }
 
             if (isTouchWiz && !prefManager.useImmersiveWhenNavHidden) {
                 touchWizNavEnabled = true
@@ -484,7 +482,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             IWindowManager.setOverscanAsync(0, 0, 0, 0)
 
-            blackout.remove()
+            if (!prefManager.overlayNav) {
+                postAction { it.remBlackout() }
+            }
 
             if (isTouchWiz) {
                 touchWizNavEnabled = false
@@ -545,10 +545,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     private fun addBarInternalUnconditionally() {
-        if (!addedPillButNotYetShown) {
-            addedPillButNotYetShown = true
-
-            postAction { it.addBar() }
+        postAction {
+            it.addBarAndBlackout()
         }
     }
 
@@ -976,9 +974,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie(rot)
                             else -> handle0()
                         }
-
-                        if (!prefManager.useFullOverscan) blackout.add()
                     }
+
+                    postAction { it.addBlackout() }
 
                     if (prevRot != rot) {
                         prevRot = rot
