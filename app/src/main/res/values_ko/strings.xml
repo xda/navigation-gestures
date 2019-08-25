@@ -167,6 +167,7 @@
     <string name="hide_on_permissions">Don\'t Show on App Permissions Page</string>
     <string name="hide_on_installer">Don\'t Show on Package Installer</string>
     <string name="root">Root</string>
+    <string name="overlay_nav">Overlay NavBar</string>
     <!--Descriptions-->
     <string name="gestures_desc">제스처 동작 사용자 지정</string>
     <string name="appearance_desc">Pill의 외관 사용자 지정</string>
@@ -242,6 +243,7 @@
     <string name="hide_on_lockscreen_desc">Disable the pill altogether when your device is on the lock screen.</string>
     <string name="hide_on_permissions_desc">Disable the pill altogether when you\'re adjusting an app\'s permissions.</string>
     <string name="hide_on_installer_desc">Disable the pill altogether when you\'re sideloading an APK.</string>
+    <string name="overlay_nav_desc">Show the pill in the native navigation area. Not compatible with the navigation bar hiding feature, nor devices without software navigation bar.</string>
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
     <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
