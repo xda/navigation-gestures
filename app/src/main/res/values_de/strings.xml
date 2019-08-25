@@ -167,6 +167,7 @@
     <string name="hide_on_permissions">Don\'t Show on App Permissions Page</string>
     <string name="hide_on_installer">Don\'t Show on Package Installer</string>
     <string name="root">Root</string>
+    <string name="overlay_nav">Overlay NavBar</string>
     <!--Descriptions-->
     <string name="gestures_desc">Gestenaktionen anpassen</string>
     <string name="appearance_desc">Aussehen der Navigation-Pille anpassen</string>
@@ -242,6 +243,7 @@
     <string name="hide_on_lockscreen_desc">Disable the pill altogether when your device is on the lock screen.</string>
     <string name="hide_on_permissions_desc">Disable the pill altogether when you\'re adjusting an app\'s permissions.</string>
     <string name="hide_on_installer_desc">Disable the pill altogether when you\'re sideloading an APK.</string>
+    <string name="overlay_nav_desc">Show the pill in the native navigation area. Not compatible with the navigation bar hiding feature, nor devices without software navigation bar.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Diese App bringt großartige Gestennavigation auf jedes Android Gerät. Und das Beste ist, man benötigt hierfür keinen Root-Zugriff. Bevor du die Gestennavigation nutzen kann gibt es ein paar Sachen, die noch eingestellt werden müssen.</string>
     <string name="draw_over_apps_desc">Damit Navigation Gestures den Pill-Nav anzeigen kann, musst du der App Berechtigung geben, damit es über anderen Apps angezeigt werden kann. Tippe den unteren Knopf um dies zu tun. Wenn du die App über den Play Store installiert hat, wurde die berechtigung schon gewährt.</string>
