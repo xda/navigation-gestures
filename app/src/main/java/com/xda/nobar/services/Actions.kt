@@ -220,7 +220,7 @@ class Actions : AccessibilityService(), ReceiverCallback {
         }
 
         fun addBlackout() {
-            if (prefManager.overlayNav || (prefManager.shouldUseOverscanMethod && !prefManager.useFullOverscan)) {
+            if ((prefManager.isActive && prefManager.overlayNav) || (prefManager.shouldUseOverscanMethod && !prefManager.useFullOverscan)) {
                 this@Actions.addBlackout()
             }
         }
