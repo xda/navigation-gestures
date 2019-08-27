@@ -74,6 +74,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val CUSTOM_Y_PERCENT = "custom_y_percent"
         const val CUSTOM_Y = "custom_y"
         const val PILL_BG = "pill_bg"
+        const val AUTO_PILL_BG = "auto_pill_bg"
         const val PILL_DIVIDER_COLOR = "section_divider_color"
         const val PILL_FG = "pill_fg"
         const val PILL_CORNER_RADIUS = "pill_corner_radius"
@@ -243,8 +244,15 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
      * Get the user-defined or default pill color
      * @return the color, as a ColorInt
      */
-    val pillBGColor: Int
+    var pillBGColor: Int
         get() = getInt(PILL_BG, defaultPillBGColor)
+        set(value) = putInt(PILL_BG, value)
+
+    var autoPillBGColor = 0
+        set(value) {
+            field = value
+            putInt(AUTO_PILL_BG, value)
+        }
     /**
      * Get the user-defined or default pill border color
      * @return the color, as a ColorInt

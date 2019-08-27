@@ -210,7 +210,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         val radius = context.prefManager.pillCornerRadiusPx.toFloat()
 
         (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-            setColor(context.prefManager.pillBGColor)
+            val auto = context.prefManager.autoPillBGColor
+            setColor(if (auto != 0) auto else context.prefManager.pillBGColor)
             setStroke(dp, fgColor)
             cornerRadius = radius
         }
@@ -321,7 +322,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     private fun updateFlashColor() {
-        val bgColor = context.prefManager.pillBGColor
+        val auto = context.prefManager.autoPillBGColor
+        val bgColor = if (auto != 0) auto else context.prefManager.pillBGColor
         val hsl = FloatArray(3)
 
         ColorUtils.colorToHSL(bgColor, hsl)
@@ -408,6 +410,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             PrefManager.PILL_FG,
             PrefManager.PILL_DIVIDER_COLOR,
             PrefManager.PILL_CORNER_RADIUS,
+            PrefManager.AUTO_PILL_BG,
             PrefManager.SECTIONED_PILL -> {
                 updatePillColorsAndRadii()
                 updateDividers()

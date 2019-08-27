@@ -8,6 +8,9 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.ContentObserver
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -18,6 +21,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.android.internal.graphics.palette.Palette
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.github.anrwatchdog.ANRWatchDog
@@ -137,6 +141,50 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     ?.filter { it == packageName }
                     ?.isNotEmpty() == true
         }
+
+    private val uncolorable = mapOf(
+            "android" to arrayOf(),
+            "com.google.android.apps.nexuslauncher" to arrayOf("android.widget"),
+            "com.facebook.orca" to arrayOf("android.", "com.facebook.messaging.chatheads", "com.facebook.ui"),
+            "com.android.systemui" to arrayOf(),
+            "com.google.android.googlequicksearchbox" to arrayOf("android.widget.FrameLayout", "android.inputmethodservice.SoftInputWindow"),
+            "com.teslacoilsw.launcher" to arrayOf("android.widget"),
+            "com.actionlauncher.playstore" to arrayOf("android.widget"),
+            "com.android.launcher" to arrayOf("android.widget"),
+            "com.sonymobile.runtimeskinning.effects" to arrayOf(),
+            "pl.damianpiwowarski.navbarapps" to arrayOf("android."),
+            "pl.damianpiwowarski.keyboardetection" to arrayOf("android."),
+            "com.motorola.frameworks.singlehand" to arrayOf(),
+            "com.motorola.motodisplay" to arrayOf(),
+            "com.motorola.aon" to arrayOf(),
+            "com.motorola.actions" to arrayOf(),
+            "com.motorola.audiomonitor" to arrayOf(),
+            "com.google.android.apps.walletnfcrel" to arrayOf("!com.google.commerce.tapandpay.android.cardlist.CardListActivity"),
+            "com.samsung.android.MtpApplication" to arrayOf(),
+            "com.google.android.gms" to arrayOf(),
+            "com.samsung.android.app.aodservice" to arrayOf(),
+            "com.android.systemui.navigationbar" to arrayOf(),
+            "com.sec.android.easyonehand" to arrayOf(),
+            "com.samsung.android.server.iris" to arrayOf(),
+            "com.samsung.android.bio.face.service" to arrayOf(),
+            "com.samsung.android.spay" to arrayOf(),
+            "com.samsung.android.app.spage" to arrayOf(),
+            "com.samsung.android.app.multiwindow" to arrayOf(),
+            "com.samsung.android.app.cocktailbarservice" to arrayOf(),
+            "com.samsung.android.app.smartcapture" to arrayOf(),
+            "com.sec.android.app.clockpackage" to arrayOf("android."),
+            "com.sec.android.inputmethod" to arrayOf(),
+            "com.android.stk" to arrayOf()
+    )
+
+    private val badColors = arrayOf(
+            Color.parseColor("#212121"),
+            Color.parseColor("#222222"),
+            Color.parseColor("#f5f5f5"),
+            -1,
+            0,
+            -16777216
+    )
 
     override fun onCreate() {
         super.onCreate()
@@ -684,8 +732,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 synchronized(this) {
                     try {
                         handleNewEvent(info ?: return@launch)
-                    } catch (e: NullPointerException) {
-                    }
+                    } catch (e: NullPointerException) {}
                 }
             }
         }
@@ -744,13 +791,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (pName != oldPName) {
                 oldPName = pName
 
-                runNewNodeInfo(pName)
+                runNewNodeInfo(pName, className)
             } else {
                 updateBlacklists()
             }
         }
 
-        private fun runNewNodeInfo(pName: String?) {
+        @SuppressLint("ResourceType")
+        private fun runNewNodeInfo(pName: String?, className: String?) {
             if (pName != null) {
                 val navArray = ArrayList<String>().apply { prefManager.loadBlacklistedNavPackages(this) }
                 if (navArray.contains(pName)) {
@@ -782,8 +830,74 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     }
                 } else if (isInOtherWindowApp) isInOtherWindowApp = false
 
+                try {
+                    if (checkGoodPackage(pName, className)) {
+                        val packageRes = packageManager.getResourcesForApplication(pName)
+                        val theme = packageRes.newTheme()
+                        val arr = intArrayOf(packageRes.getIdentifier("colorPrimary", "attr", pName), android.R.attr.colorPrimary)
+
+                        var color = 0
+
+                        try {
+                            theme.applyStyle(
+                                    packageManager.getActivityInfo(
+                                            packageManager.getLaunchIntentForPackage(pName).component,
+                                            0
+                                    ).theme,
+                                    true
+                            )
+
+                            val attrs = theme.obtainStyledAttributes(arr)
+                            color = attrs.getColor(0, attrs.getColor(1, 0))
+
+                            attrs.recycle()
+                        } catch (e: Exception) {}
+
+                        if (badColors.contains(color)) {
+                            val icon = packageManager.getApplicationIcon(pName)
+                            val bmp = Bitmap.createBitmap(icon.intrinsicWidth, icon.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                            val canvas = Canvas(bmp)
+
+                            icon.setBounds(0, 0, canvas.width, canvas.height)
+                            icon.draw(canvas)
+
+                            val palette = Palette.from(bmp).generate()
+                            bmp.recycle()
+
+                            val vibrant = palette.getVibrantColor(0)
+                            val darkVibrant = palette.getDarkVibrantColor(0)
+
+                            prefManager.autoPillBGColor = if (vibrant != 0) vibrant else darkVibrant
+                        } else {
+                            prefManager.autoPillBGColor = color
+                        }
+                    } else {
+                        prefManager.autoPillBGColor = 0
+                    }
+                } catch (e: Exception) {}
+
                 updateBlacklists()
             }
+        }
+
+        private fun checkGoodPackage(pName: String, className: String?): Boolean {
+            uncolorable.forEach { (badPkg, classes) ->
+                if (badPkg == pName) {
+                    if (classes.isEmpty())
+                        return false
+                    classes.forEach {
+                        if (it.startsWith("!")) {
+                            val parsed = it.substring(1)
+
+                            if (className?.startsWith(parsed) == false)
+                                return false
+                        } else if (className?.startsWith(it) == true)
+                            return false
+                    }
+                }
+            }
+
+            return true
         }
 
         private fun updateKeyboardFlagState() {
