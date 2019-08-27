@@ -14,6 +14,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.xda.nobar.R
 import com.xda.nobar.adapters.info.ShortcutInfo
+import com.xda.nobar.data.ColoredAppData
 import com.xda.nobar.util.helpers.GsonIntentHandler
 import com.xda.nobar.util.helpers.GsonUriHandler
 import java.util.*
@@ -103,6 +104,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val BLACKLISTED_BAR_APPS = "blacklisted_bar_apps"
         const val BLACKLISTED_IMM_APPS = "blacklisted_imm_apps"
         const val OTHER_WINDOW_APPS = "other_window_apps"
+        const val COLORED_APPS = "colored_apps"
 
         /* Misc */
         const val SUFFIX_INTENT = "_intent"
@@ -493,6 +495,18 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
     fun loadOtherWindowApps(packages: ArrayList<String>) =
             packages.addAll(getStringSet(OTHER_WINDOW_APPS, HashSet()))
 
+    fun loadColoredApps(packages: ArrayList<ColoredAppData>) {
+        val list = GsonBuilder()
+                .create()
+                .fromJson<ArrayList<ColoredAppData>>(
+                        getString(COLORED_APPS, null)
+                                ?: return,
+                        object : TypeToken<ArrayList<ColoredAppData>>() {}.type
+                )
+
+        packages.addAll(list)
+    }
+
     /**
      * Save the list of apps that should keep the navbar shown
      */
@@ -513,6 +527,12 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
 
     fun saveOtherWindowApps(packages: ArrayList<String>) =
             putStringSet(OTHER_WINDOW_APPS, HashSet<String>(packages))
+
+    fun saveColoredApps(packages: ArrayList<ColoredAppData>) {
+        putString(COLORED_APPS, GsonBuilder()
+                .create()
+                .toJson(packages))
+    }
 
     fun getBoolean(key: String, def: Boolean) = prefs.getBoolean(key, def)
     fun getFloat(key: String, def: Float) = prefs.getFloat(key, def)

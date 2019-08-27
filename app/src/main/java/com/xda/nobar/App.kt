@@ -8,8 +8,6 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.ContentObserver
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
@@ -21,13 +19,13 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.android.internal.graphics.palette.Palette
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.github.anrwatchdog.ANRWatchDog
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.xda.nobar.activities.helpers.RequestPermissionsActivity
 import com.xda.nobar.activities.ui.IntroActivity
+import com.xda.nobar.data.ColoredAppData
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
@@ -791,14 +789,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (pName != oldPName) {
                 oldPName = pName
 
-                runNewNodeInfo(pName, className)
+                runNewNodeInfo(pName)
             } else {
                 updateBlacklists()
             }
         }
 
         @SuppressLint("ResourceType")
-        private fun runNewNodeInfo(pName: String?, className: String?) {
+        private fun runNewNodeInfo(pName: String?) {
             if (pName != null) {
                 val navArray = ArrayList<String>().apply { prefManager.loadBlacklistedNavPackages(this) }
                 if (navArray.contains(pName)) {
@@ -830,51 +828,68 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     }
                 } else if (isInOtherWindowApp) isInOtherWindowApp = false
 
-                try {
-                    if (checkGoodPackage(pName, className)) {
-                        val packageRes = packageManager.getResourcesForApplication(pName)
-                        val theme = packageRes.newTheme()
-                        val arr = intArrayOf(packageRes.getIdentifier("colorPrimary", "attr", pName), android.R.attr.colorPrimary)
-
-                        var color = 0
-
-                        try {
-                            theme.applyStyle(
-                                    packageManager.getActivityInfo(
-                                            packageManager.getLaunchIntentForPackage(pName).component,
-                                            0
-                                    ).theme,
-                                    true
-                            )
-
-                            val attrs = theme.obtainStyledAttributes(arr)
-                            color = attrs.getColor(0, attrs.getColor(1, 0))
-
-                            attrs.recycle()
-                        } catch (e: Exception) {}
-
-                        if (badColors.contains(color)) {
-                            val icon = packageManager.getApplicationIcon(pName)
-                            val bmp = Bitmap.createBitmap(icon.intrinsicWidth, icon.intrinsicHeight, Bitmap.Config.ARGB_8888)
-                            val canvas = Canvas(bmp)
-
-                            icon.setBounds(0, 0, canvas.width, canvas.height)
-                            icon.draw(canvas)
-
-                            val palette = Palette.from(bmp).generate()
-                            bmp.recycle()
-
-                            val vibrant = palette.getVibrantColor(0)
-                            val darkVibrant = palette.getDarkVibrantColor(0)
-
-                            prefManager.autoPillBGColor = if (vibrant != 0) vibrant else darkVibrant
-                        } else {
-                            prefManager.autoPillBGColor = color
+                val coloredArray = ArrayList<ColoredAppData>().apply { prefManager.loadColoredApps(this) }
+                if (coloredArray.map { it.packageName }.contains(pName)) {
+                    coloredArray.forEach {
+                        if (it.packageName == pName) {
+                            prefManager.autoPillBGColor = it.color
                         }
-                    } else {
-                        prefManager.autoPillBGColor = 0
                     }
-                } catch (e: Exception) {}
+                } else {
+                    prefManager.autoPillBGColor = 0
+                }
+
+//                try {
+//                    if (checkGoodPackage(pName, className)) {
+//                        val packageRes = packageManager.getResourcesForApplication(pName)
+//                        val theme = packageRes.newTheme()
+//                        val arr = intArrayOf(packageRes.getIdentifier("colorPrimary", "attr", pName), android.R.attr.colorPrimary)
+//
+//                        var color = 0
+//
+//                        try {
+//                            theme.applyStyle(
+//                                    packageManager.getActivityInfo(
+//                                            ComponentName(pName, className),
+//                                            0
+//                                    ).theme,
+//                                    true
+//                            )
+//
+//                            val attrs = theme.obtainStyledAttributes(arr)
+//                            color = attrs.getColor(0, attrs.getColor(1, 0))
+//
+//                            attrs.recycle()
+//                        } catch (e: Exception) {}
+//
+//                        val luminance = ColorUtils.calculateLuminance(color)
+//
+//                        Log.e("NoBar", "luminance: $luminance")
+//
+//                        prefManager.autoPillBGColor = Color.parseColor(if (luminance < 0.5) "#f5f5f5" else "#212121")
+//
+//                        if (badColors.contains(color)) {
+//                            val icon = packageManager.getApplicationIcon(pName)
+//                            val bmp = Bitmap.createBitmap(icon.intrinsicWidth, icon.intrinsicHeight, Bitmap.Config.ARGB_8888)
+//                            val canvas = Canvas(bmp)
+//
+//                            icon.setBounds(0, 0, canvas.width, canvas.height)
+//                            icon.draw(canvas)
+//
+//                            val palette = Palette.from(bmp).generate()
+//                            bmp.recycle()
+//
+//                            val vibrant = palette.getVibrantColor(0)
+//                            val darkVibrant = palette.getDarkVibrantColor(0)
+//
+//                            prefManager.autoPillBGColor = if (vibrant != 0) vibrant else darkVibrant
+//                        } else {
+//                            prefManager.autoPillBGColor = color
+//                        }
+//                    } else {
+//                        prefManager.autoPillBGColor = 0
+//                    }
+//                } catch (e: Exception) {}
 
                 updateBlacklists()
             }

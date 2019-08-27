@@ -1,6 +1,7 @@
 package com.xda.nobar.views
 
 import android.animation.Animator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
@@ -10,7 +11,6 @@ import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.*
 import android.util.AttributeSet
@@ -20,6 +20,7 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
@@ -202,19 +203,36 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         adjustPillShadowAndHitbox()
     }
 
+    private var colorAnimation: ValueAnimator? = null
+    private var previousColor = ContextCompat.getColor(context, R.color.pill_color)
+
     private fun updatePillColorsAndRadii() {
-        val layers = pill.background as LayerDrawable
         val fgColor = context.prefManager.pillFGColor
 
         val dp = context.resources.getDimensionPixelSize(R.dimen.pill_border_stroke_width)
         val radius = context.prefManager.pillCornerRadiusPx.toFloat()
 
-        (layers.findDrawableByLayerId(R.id.background) as GradientDrawable).apply {
-            val auto = context.prefManager.autoPillBGColor
-            setColor(if (auto != 0) auto else context.prefManager.pillBGColor)
-            setStroke(dp, fgColor)
-            cornerRadius = radius
-        }
+        try {
+            (pill.background as GradientDrawable).apply {
+                val auto = context.prefManager.autoPillBGColor
+                val new = if (auto != 0) auto else context.prefManager.pillBGColor
+
+                if (colorAnimation != null) colorAnimation?.cancel()
+
+                colorAnimation = ValueAnimator.ofArgb(previousColor, new)
+                colorAnimation?.duration = animationDurationMs
+                colorAnimation?.addUpdateListener {
+                    val color = it.animatedValue.toString().toInt()
+
+                    setColor(color)
+                    previousColor = color
+                }
+                colorAnimation?.start()
+
+                setStroke(dp, fgColor)
+                cornerRadius = radius
+            }
+        } catch (e: Exception) {}
 
 //        (pill_tap_flash.background as GradientDrawable).apply {
 //            cornerRadius = radius

@@ -34,4 +34,14 @@
         android:defaultValue="@bool/overlay_nav_default"
         />
 
+    <Preference
+        android:title="@string/per_app_colors"
+        android:key="per_app_colors">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.xda.nobar"
+            android:targetClass="com.xda.nobar.activities.selectors.AppColorSettingsActivity"
+            />
+    </Preference>
+
 </PreferenceScreen>

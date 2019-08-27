@@ -161,6 +161,9 @@
             android:exported="false"
             android:launchMode="singleTop"
             />
+        <activity android:name=".activities.selectors.AppColorSettingsActivity"
+            android:exported="false"
+            />
 
         <service
             android:name=".tiles.GestureToggle"
