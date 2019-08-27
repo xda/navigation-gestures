@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.DeadObjectException
 import android.os.Process
 import android.os.SystemClock
+import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.activities.ui.CrashActivity
@@ -32,6 +33,7 @@ class CrashHandler(private val prevHandler: Thread.UncaughtExceptionHandler?, pr
 
             if (needsToLog) {
                 prevHandler?.uncaughtException(t, e)
+                Log.e("NoBar", "Fatal Error", e)
             } else {
                 if (e !is DeadObjectException) {
                     Crashlytics.logException(e)
