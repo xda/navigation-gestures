@@ -102,9 +102,9 @@
     <string name="blacklisting">Đang loại trừ</string>
     <string name="look_feel">Xem xét &amp; cảm thấy</string>
     <string name="durations">Durations</string>
-    <string name="pill_hiding">"Ẩn Pill 
+    <string name="pill_hiding">Ẩn Pill 
 or
-Ẩn viên điều hướng"</string>
+Ẩn viên điều hướng</string>
     <string name="sensitivity">Độ nhạy</string>
     <string name="back_to_default">Đặt lại các cài đặt mặc định chứ?</string>
     <string name="experimental_prefs">Các cài đặt thử nghiệm</string>
@@ -169,6 +169,7 @@ or
     <string name="hide_on_permissions">Don\'t Show on App Permissions Page</string>
     <string name="hide_on_installer">Don\'t Show on Package Installer</string>
     <string name="root">Root</string>
+    <string name="overlay_nav">Overlay NavBar</string>
     <!--Descriptions-->
     <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
     <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
@@ -202,8 +203,8 @@ or
     <string name="auto_hide_pill_desc_disabled">Khi kích hoạt, viên điều hướng tự động ẩn sau 1 khoảng thời gian.</string>
     <string name="auto_hide_pill_desc_enabled">Sự chậm trễ: %sms. Nhấn để thay đổi.</string>
     <string name="back_to_default_desc">Thanh chia bị vô hiệu hóa! Bạn có muốn chúng tôi thiết lập cài đặt bị ảnh hưởng trở lại mặc định?</string>
-    <string name="fix_for_other_windows_desc">"Chọn các ứng dụng mà thanh điều hướng nên bị buộc phải ở lại trên đầu trang. Hữu ích cho các ứng dụng như 
-Bong bóng chát Facebook Messenger, Drupe, vv."</string>
+    <string name="fix_for_other_windows_desc">Chọn các ứng dụng mà thanh điều hướng nên bị buộc phải ở lại trên đầu trang. Hữu ích cho các ứng dụng như 
+Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="experimental_warning">CÁC TÍNH NĂNG NÀY CHƯA ĐẦY ĐỦ VÀ KHÔNG THỂ LÀM VIỆC TRÊN THIẾT BỊ CỦA BẠN!</string>
     <string name="full_overscan_desc">Theo mặc định, Navigation Gesture sẽ hiển thị 1 pixel của thanh điều hướng gốc. Bật chức năng này để loại bỏ pixel đó. Cảnh báo: một số thiết bị có thể bị hỏng!!!</string>
     <string name="toggle_gestures_desc">Bật/tắt hiển thị viên điều hướng trên màn hình.</string>
@@ -245,6 +246,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv."</string>
     <string name="hide_on_lockscreen_desc">Disable the pill altogether when your device is on the lock screen.</string>
     <string name="hide_on_permissions_desc">Disable the pill altogether when you\'re adjusting an app\'s permissions.</string>
     <string name="hide_on_installer_desc">Disable the pill altogether when you\'re sideloading an APK.</string>
+    <string name="overlay_nav_desc">Show the pill in the native navigation area. Not compatible with the navigation bar hiding feature, nor devices without software navigation bar.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Ứng dụng mang đến cử chỉ điều hướng tuyệt vời đến bất kì thiết bị Android. Tốt hơn cả, nó không cần có root! Trước khi bạn có thể sử dụng cử chỉ, có vài thứ cần làm để thiết lập ứng dụng.</string>
     <string name="draw_over_apps_desc">Để Navigation Gesture có thể hiểu thị lên viên điều hướng, bạn phải cho phép vẽ đè lên các ứng dụng khác. Ấn nút bên dưới để thực hiện điều này. Nếu ứng dụng được tải từ Play Store, quyền này sẽ được cho cấp sẵn.</string>
