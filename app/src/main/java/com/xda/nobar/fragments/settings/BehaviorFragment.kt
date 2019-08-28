@@ -33,6 +33,11 @@ class BehaviorFragment : BasePrefFragment() {
         super.onResume()
 
         activity?.title = resources.getText(R.string.behavior)
+
+        if (prefManager.overlayNav) {
+            val dontMoveWithKb = findPreference<Preference>(PrefManager.STATIC_PILL)!!
+            dontMoveWithKb.isEnabled = false
+        }
     }
 
     private fun setListeners() {

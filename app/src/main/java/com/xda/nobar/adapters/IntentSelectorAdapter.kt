@@ -17,9 +17,9 @@ import com.xda.nobar.interfaces.OnIntentSelectedListener
 class IntentSelectorAdapter(private val callback: OnIntentSelectedListener, private val context: Context) : BaseSelectAdapter<IntentInfo, BaseSelectAdapter.VH>() {
     override val sortedApps = SortedList<IntentInfo>(IntentInfo::class.java, IntentInfoSorterCallback(this, context))
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = BaseSelectAdapter.VH(LayoutInflater.from(parent.context).inflate(R.layout.app_info_single, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = VH(LayoutInflater.from(parent.context).inflate(R.layout.app_info_single, parent, false))
 
-    override fun onBindViewHolder(holder: BaseSelectAdapter.VH, position: Int) {
+    override fun onBindViewHolder(holder: VH, position: Int) {
         val info = sortedApps[position]
         val view = holder.view
 

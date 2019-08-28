@@ -14,21 +14,17 @@ abstract class BaseSelectAdapter<Info : Any, VH : BaseSelectAdapter.VH>(private 
     }
 
     fun remove(info: Info) {
-        val index = sortedApps.indexOf(info)
         sortedApps.remove(info)
-        notifyItemRemoved(index)
     }
 
     fun add(infos: List<Info>) {
         sortedApps.addAll(infos)
-        notifyDataSetChanged()
     }
 
     fun remove(infos: List<Info>) {
         infos.forEach {
             remove(it)
         }
-        notifyDataSetChanged()
     }
 
     fun replaceAll(models: List<Info>) {
@@ -41,7 +37,7 @@ abstract class BaseSelectAdapter<Info : Any, VH : BaseSelectAdapter.VH>(private 
 
     open class VH(val view: View) : RecyclerView.ViewHolder(view)
 
-    open class UnsortedList<Info : Any>(private val clazz: Class<Info>, private val callback: SortedList.Callback<Info>) : SortedList<Info>(clazz, callback) {
+    open class UnsortedList<Info : Any>(clazz: Class<Info>, private val callback: Callback<Info>) : SortedList<Info>(clazz, callback) {
         private val unsortedData = ArrayList<Info>()
 
         override fun add(item: Info): Int {

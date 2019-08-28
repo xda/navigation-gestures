@@ -1,7 +1,6 @@
 package com.xda.nobar.activities.selectors
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.graphics.Canvas
@@ -18,15 +17,22 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import com.jaredrummler.android.colorpicker.ColorPickerDialog
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
 import com.xda.nobar.R
 import com.xda.nobar.data.ColoredAppData
+import com.xda.nobar.util.logicScope
+import com.xda.nobar.util.mainScope
 import com.xda.nobar.util.prefManager
+import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_app_color_settings.*
 import kotlinx.android.synthetic.main.colored_app_item.view.*
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 
 class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener {
@@ -41,15 +47,13 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
 
         setContentView(R.layout.activity_app_color_settings)
 
-        adapter.addItems(ArrayList<ColoredAppData>()
-                .apply { prefManager.loadColoredApps(this) })
-
         val layoutManager = LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false)
         app_list.layoutManager = layoutManager
         app_list.adapter = adapter
+        app_list.itemAnimator = LandingAnimator()
 
-        val touchHelper = ItemTouchHelper(SwipeToDeleteCallback(adapter, this))
+        val touchHelper = ItemTouchHelper(SwipeToDeleteCallback())
         touchHelper.attachToRecyclerView(app_list)
 
         add.setOnClickListener {
@@ -58,6 +62,18 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
                         putExtra(AppLaunchSelectActivity.EXTRA_INCLUDE_ALL_APPS, true)
                     },
                     REQ_COLOR)
+        }
+
+        logicScope.launch {
+            val items = ArrayList<ColoredAppData>()
+                    .apply { prefManager.loadColoredApps(this) }
+
+            mainScope.launch {
+                progress.visibility = View.GONE
+                app_list.visibility = View.VISIBLE
+                add.visibility = View.VISIBLE
+                adapter.addItems(items)
+            }
         }
     }
 
@@ -73,6 +89,7 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
                 )
 
                 adapter.addItem(colorData)
+                adapter.persistItems()
             }
         }
     }
@@ -97,13 +114,24 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
         adapter.persistItems()
     }
 
-    class SwipeToDeleteCallback(private val adapter: Adapter, context: Context) :
+    inner class SwipeToDeleteCallback :
             ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-        private val icon = ContextCompat.getDrawable(context, R.drawable.ic_delete_white_24dp)!!
+        private val icon = ContextCompat.getDrawable(this@AppColorSettingsActivity, R.drawable.ic_delete_white_24dp)!!
         private val background = ColorDrawable(Color.RED)
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            adapter.removeItemAt(viewHolder.adapterPosition)
+            val item = adapter.removeItemAt(viewHolder.adapterPosition)
+
+            val snackBar = Snackbar.make(app_list, R.string.deleted, BaseTransientBottomBar.LENGTH_LONG)
+            snackBar.setAction(R.string.undo) {
+                adapter.addItem(item)
+            }
+            snackBar.addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    if (event == DISMISS_EVENT_TIMEOUT) adapter.persistItems()
+                }
+            })
+            snackBar.show()
         }
 
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -120,10 +148,10 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
 
             when {
                 dX > 0 -> { //Swiping to the right
-                    val iconLeft = itemView.left + iconMargin + icon.intrinsicWidth
-                    val iconRight = itemView.left + iconMargin
-                    icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+                    val iconLeft = itemView.left + iconMargin
+                    val iconRight = itemView.left + iconMargin + icon.intrinsicWidth
 
+                    icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                     background.setBounds(itemView.left, itemView.top,
                             itemView.left + dX.toInt(),
                             itemView.bottom)
@@ -131,8 +159,8 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
                 dX < 0 -> {//Swiping to the left
                     val iconLeft = itemView.right - iconMargin - icon.intrinsicWidth
                     val iconRight = itemView.right - iconMargin
-                    icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
 
+                    icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                     background.setBounds(itemView.right + dX.toInt(),
                             itemView.top, itemView.right, itemView.bottom)
                 }
@@ -147,11 +175,12 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
     }
 
     inner class Adapter : RecyclerView.Adapter<Adapter.VH>() {
+        private val ids = HashSet<String>()
         private val items = SortedList<ListItem>(
                 ListItem::class.java,
                 object : SortedList.Callback<ListItem>() {
                     override fun areItemsTheSame(item1: ListItem, item2: ListItem): Boolean {
-                        return item1 == item2
+                        return item1.packageName == item2.packageName
                     }
 
                     override fun onMoved(fromPosition: Int, toPosition: Int) {
@@ -203,6 +232,8 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
                                 it.packageName,
                                 it.color
                         )
+                    }.filter {
+                        ids.add(it.packageName)
                     }
             )
         }
@@ -210,14 +241,22 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
         fun addItem(item: ColoredAppData) {
             val info = packageManager.getApplicationInfo(item.packageName, 0)
 
-            items.add(
-                    ListItem(
-                            info,
-                            packageManager.getApplicationLabel(info),
-                            item.packageName,
-                            item.color
-                    )
-            )
+            if (ids.add(item.packageName)) {
+                items.add(
+                        ListItem(
+                                info,
+                                packageManager.getApplicationLabel(info),
+                                item.packageName,
+                                item.color
+                        )
+                )
+            }
+        }
+
+        fun addItem(item: ListItem) {
+            if (ids.add(item.packageName)) {
+                items.add(item)
+            }
         }
 
         fun updateItem(index: Int, color: Int) {
@@ -229,10 +268,13 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
 
         fun removeItem(item: ListItem) {
             items.remove(item)
+            ids.remove(item.packageName)
         }
 
-        fun removeItemAt(index: Int) {
-            items.removeItemAt(index)
+        fun removeItemAt(index: Int): ListItem {
+            return items.removeItemAt(index).also {
+                ids.remove(it.packageName)
+            }
         }
 
         fun persistItems() {
@@ -254,7 +296,7 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
 
                 updateColor(data.color)
 
-                itemView.setOnClickListener {
+                itemView.content.setOnClickListener {
                     val colorDialog = ColorPickerDialog.Builder::class.java.declaredConstructors[0]
                             .apply { isAccessible = true }.newInstance() as ColorPickerDialog.Builder
 

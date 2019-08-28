@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -8,6 +8,20 @@
         android:id="@+id/app_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
+        />
+
+    <com.rey.material.widget.ProgressView
+        android:id="@+id/progress"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:pv_progressMode="indeterminate"
+        app:pv_circular="true"
+        app:pv_progressStyle="@style/Material.Drawable.CircularProgress.Determinate.Colored"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -15,9 +29,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_add_black_24dp"
+        android:visibility="gone"
+        app:layout_anchor="@id/app_list"
+        app:layout_anchorGravity="bottom|end"
         app:useCompatPadding="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

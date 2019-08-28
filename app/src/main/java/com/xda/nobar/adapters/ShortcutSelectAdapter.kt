@@ -14,17 +14,17 @@ import com.xda.nobar.util.toBitmapDrawable
 import kotlinx.android.synthetic.main.app_info_single.view.*
 
 class ShortcutSelectAdapter(
-        val checkListener: OnShortcutSelectedListener
+        private val checkListener: OnShortcutSelectedListener
 ) : BaseSelectAdapter<ShortcutInfo, BaseSelectAdapter.VH>() {
     override val sortedApps = SortedList(ShortcutInfo::class.java,
             ShortcutInfoSorterCallback(this))
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            BaseSelectAdapter.VH(LayoutInflater.from(parent.context)
+            VH(LayoutInflater.from(parent.context)
                     .inflate(R.layout.app_info_single, parent, false))
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: BaseSelectAdapter.VH, position: Int) {
+    override fun onBindViewHolder(holder: VH, position: Int) {
         val item = sortedApps[position]
         val view = holder.view
 

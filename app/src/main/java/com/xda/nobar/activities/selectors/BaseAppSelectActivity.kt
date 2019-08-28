@@ -17,8 +17,8 @@ import com.rey.material.widget.ProgressView
 import com.xda.nobar.R
 import com.xda.nobar.adapters.BaseSelectAdapter
 import com.xda.nobar.util.logicScope
+import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.coroutines.launch
-import java.util.*
 
 /**
  * Base activity for all app selection activities
@@ -76,6 +76,8 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
 
         list.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         list.addItemDecoration(DividerItemDecoration(list.context, (list.layoutManager as LinearLayoutManager).orientation))
+        list.itemAnimator = LandingAnimator()
+        list.adapter = adapter
 
         reloadList()
     }
@@ -142,15 +144,15 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
                 adapter.clear()
             }
 
+            val newList = ArrayList<Info>()
+
             val appList = loadAppList()
             appList.forEach { info ->
                 val appInfo = loadAppInfo(info)
 
                 if (appInfo != null) {
                     if (shouldAddInfo(appInfo)) {
-                        runOnUiThread {
-                            adapter.add(appInfo)
-                        }
+                        newList.add(appInfo)
                         origAppSet.add(appInfo)
                     }
                 }
@@ -166,9 +168,9 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
             runOnUiThread {
                 isCreated = true
 
-                list.adapter = adapter
                 loader.visibility = View.GONE
                 list.visibility = View.VISIBLE
+                adapter.add(newList)
 
                 try {
                     searchItem.isVisible = true

@@ -141,7 +141,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
     val shouldShowShadow: Boolean
         get() = getBoolean(SHOW_SHADOW, resources.getBoolean(R.bool.show_shadow_default))
     val dontMoveForKeyboard: Boolean
-        get() = getBoolean(STATIC_PILL, resources.getBoolean(R.bool.static_pill_default))
+        get() = getBoolean(STATIC_PILL, resources.getBoolean(R.bool.static_pill_default)) || overlayNav
     val useRot270Fix: Boolean
         get() = getBoolean(ROT270_FIX, resources.getBoolean(R.bool.rot_fix_default))
                 && Build.VERSION.SDK_INT < Build.VERSION_CODES.P

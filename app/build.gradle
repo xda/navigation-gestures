@@ -92,6 +92,7 @@ dependencies {
     implementation 'com.github.anrwatchdog:anrwatchdog:1.4.0'
     implementation 'eu.chainfire:libsuperuser:1.0.0+'
     implementation 'eu.chainfire:librootjava:1.3.0'
+    implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
 //    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.21"
 }
 
