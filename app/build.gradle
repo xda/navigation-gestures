@@ -82,7 +82,7 @@ dependencies {
 
     //Mine-ish
     implementation 'com.github.zacharee:material-intro:7c39514ec5'
-    implementation 'com.github.zacharee:colorpicker:fbb769da6f'
+    implementation 'com.github.zacharee:colorpicker:9ea5085260'
     implementation 'com.github.zacharee:material:a2ab4a2d3c'
     implementation 'com.github.zacharee:CollapsiblePreferenceCategory:4883357a52'
     implementation 'com.github.zacharee:SeekBarPreference:9c3412fe01'
