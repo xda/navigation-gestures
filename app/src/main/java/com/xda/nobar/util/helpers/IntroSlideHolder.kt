@@ -1,8 +1,8 @@
 package com.xda.nobar.util.helpers
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
@@ -21,7 +21,7 @@ import eu.chainfire.libsuperuser.Shell
 import kotlinx.coroutines.launch
 
 @SuppressLint("InlinedApi")
-class IntroSlideHolder(context: Context) : ContextWrapper(context) {
+class IntroSlideHolder(private val activity: Activity) : ContextWrapper(activity) {
     val welcomeSlide: FragmentSlide by lazy {
         FragmentSlide.Builder()
                 .background(R.color.slide_1)
@@ -97,18 +97,20 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                             isSuAsync(mainHandler) {
                                 if (it) {
                                     app.rootWrapper.onCreate()
-                                    MaterialAlertDialogBuilder(this)
-                                            .setTitle(R.string.root_found)
-                                            .setMessage(R.string.root_found_desc)
-                                            .setPositiveButton(R.string.use_root) { _, _ ->
-                                                logicScope.launch {
-                                                    Shell.SU.run("pm grant $packageName ${android.Manifest.permission.WRITE_SECURE_SETTINGS}")
+                                    if (!activity.isDestroyed) {
+                                        MaterialAlertDialogBuilder(this)
+                                                .setTitle(R.string.root_found)
+                                                .setMessage(R.string.root_found_desc)
+                                                .setPositiveButton(R.string.use_root) { _, _ ->
+                                                    logicScope.launch {
+                                                        Shell.SU.run("pm grant $packageName ${android.Manifest.permission.WRITE_SECURE_SETTINGS}")
+                                                    }
                                                 }
-                                            }
-                                            .setNegativeButton(R.string.non_root) { _, _ ->
-                                                nonRootDialog()
-                                            }
-                                            .show()
+                                                .setNegativeButton(R.string.non_root) { _, _ ->
+                                                    nonRootDialog()
+                                                }
+                                                .show()
+                                    }
                                 } else {
                                     nonRootDialog()
                                 }
@@ -156,14 +158,16 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                     try {
                         requestBatteryExemption()
                     } catch (e: Exception) {
-                        MaterialAlertDialogBuilder(this)
-                                .setTitle(R.string.battery_optimizations)
-                                .setMessage(R.string.unable_to_request_battery_exemption)
-                                .setPositiveButton(R.string.show_me_how) { _, _ ->
-                                    launchUrl("https://dontkillmyapp.com/general")
-                                }
-                                .setNegativeButton(R.string.not_now, null)
-                                .show()
+                        if (!activity.isDestroyed) {
+                            MaterialAlertDialogBuilder(this)
+                                    .setTitle(R.string.battery_optimizations)
+                                    .setMessage(R.string.unable_to_request_battery_exemption)
+                                    .setPositiveButton(R.string.show_me_how) { _, _ ->
+                                        launchUrl("https://dontkillmyapp.com/general")
+                                    }
+                                    .setNegativeButton(R.string.not_now, null)
+                                    .show()
+                        }
                     }
                 }
                 .build()
@@ -225,7 +229,6 @@ class IntroSlideHolder(context: Context) : ContextWrapper(context) {
                         launchUrl("https://youtu.be/Yg44Tu6oxnQ")
                     }
                     .show()
-        } catch (e: Exception) {
-        }
+        } catch (e: Exception) {}
     }
 }
