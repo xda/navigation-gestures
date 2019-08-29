@@ -246,6 +246,8 @@
     <string name="overlay_nav_desc">Show the pill in the native navigation area. Not compatible with the navigation bar hiding feature, nor devices without software navigation bar.</string>
     <string name="select_color">Select Color</string>
     <string name="per_app_colors">Per-App Pill Color</string>
+    <string name="deleted">Deleted</string>
+    <string name="undo">Undo</string>
     <!--Paragraphs-->
     <string name="app_purpose">Cette appli offre de somptueux gestes de navigation pour n\'importe quel appareil Android. Le mieux, elle n\'a pas besoin de root ! Avant de pouvoir utiliser les gestes, quelques paramétrages sont nécessaires.</string>
     <string name="draw_over_apps_desc">Afin d\'afficher la pilule de Navigation Gestures, vous devrez accorder la permission \"Superposer aux autres applis\". Appuyez sur le bouton ci-dessous pour le faire. Si vous avez installé depuis le Play Store, cette permission est déjà accordée.</string>
