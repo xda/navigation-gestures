@@ -206,6 +206,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 Thread.setDefaultUncaughtExceptionHandler(crashHandler)
             }
 
+            //Make sure lazy init happens in main Thread
+            bar.onCreate()
+
             val core = CrashlyticsCore.Builder()
                     .disabled(BuildConfig.DEBUG)
                     .build()

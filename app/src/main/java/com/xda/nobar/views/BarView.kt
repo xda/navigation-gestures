@@ -14,6 +14,7 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -196,11 +197,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         currentGestureDetector.singleton.loadActionMap()
         isSoundEffectsEnabled = context.prefManager.feedbackSound
-
-        updatePillColorsAndRadii()
-        updateDividers()
-
-        adjustPillShadowAndHitbox()
     }
 
     private var colorAnimation: ValueAnimator? = null
@@ -232,7 +228,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 setStroke(dp, fgColor)
                 cornerRadius = radius
             }
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+            Log.e("NoBar", "error", e)
+        }
 
 //        (pill_tap_flash.background as GradientDrawable).apply {
 //            cornerRadius = radius
@@ -352,6 +350,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         (section_1_flash.background as RippleDrawable).setColor(newColor)
         (section_2_flash.background as RippleDrawable).setColor(newColor)
         (section_3_flash.background as RippleDrawable).setColor(newColor)
+    }
+
+    fun onCreate() {
+        updatePillColorsAndRadii()
+        updateDividers()
+
+        adjustPillShadowAndHitbox()
     }
 
     /**
