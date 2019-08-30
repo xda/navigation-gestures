@@ -249,6 +249,8 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="overlay_nav_desc">Show the pill in the native navigation area. Not compatible with the navigation bar hiding feature, nor devices without software navigation bar.</string>
     <string name="select_color">Select Color</string>
     <string name="per_app_colors">Per-App Pill Color</string>
+    <string name="deleted">Deleted</string>
+    <string name="undo">Undo</string>
     <!--Paragraphs-->
     <string name="app_purpose">Ứng dụng mang đến cử chỉ điều hướng tuyệt vời đến bất kì thiết bị Android. Tốt hơn cả, nó không cần có root! Trước khi bạn có thể sử dụng cử chỉ, có vài thứ cần làm để thiết lập ứng dụng.</string>
     <string name="draw_over_apps_desc">Để Navigation Gesture có thể hiểu thị lên viên điều hướng, bạn phải cho phép vẽ đè lên các ứng dụng khác. Ấn nút bên dưới để thực hiện điều này. Nếu ứng dụng được tải từ Play Store, quyền này sẽ được cho cấp sẵn.</string>
