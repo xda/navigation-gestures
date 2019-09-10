@@ -127,8 +127,7 @@ val Context.isOnKeyguard: Boolean
     get() {
         val kgm = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
 
-        return kgm.inKeyguardRestrictedInputMode()
-                || kgm.isKeyguardLocked
+        return kgm.isKeyguardLocked
                 || (if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) kgm.isDeviceLocked else false)
     }
 
