@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -47,6 +48,9 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
 
         setContentView(R.layout.activity_app_color_settings)
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         setTitle(R.string.per_app_colors)
 
         val layoutManager = LinearLayoutManager(this,
@@ -78,6 +82,13 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
                 adapter.addItems(items)
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
