@@ -164,38 +164,42 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
 
         listPrefs.forEach {
             it.setOnPreferenceChangeListener { _, newValue ->
-                if (newValue == actionHolder.premTypeLaunchApp.toString() || newValue == actionHolder.premTypeLaunchActivity.toString()) {
-                    val forActivity = newValue == actionHolder.premTypeLaunchActivity.toString()
-                    val intent = Intent(activity, AppLaunchSelectActivity::class.java)
+                if (activity?.isDestroyed == false) {
+                    if (newValue == actionHolder.premTypeLaunchApp.toString() || newValue == actionHolder.premTypeLaunchActivity.toString()) {
+                        val forActivity = newValue == actionHolder.premTypeLaunchActivity.toString()
+                        val intent = Intent(activity, AppLaunchSelectActivity::class.java)
 
-                    var pack = if (forActivity) prefManager.getActivity(it.key) else prefManager.getPackage(it.key)
-                    var activity: String? = null
-                    if (pack != null) {
-                        activity = pack.split("/")[1]
-                        pack = pack.split("/")[0]
+                        var pack = if (forActivity) prefManager.getActivity(it.key) else prefManager.getPackage(it.key)
+                        var activity: String? = null
+                        if (pack != null) {
+                            activity = pack.split("/")[1]
+                            pack = pack.split("/")[0]
+                        }
+
+                        intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
+                        intent.putExtra(AppLaunchSelectActivity.CHECKED_PACKAGE, pack)
+                        intent.putExtra(AppLaunchSelectActivity.CHECKED_ACTIVITY, activity)
+                        intent.putExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, forActivity)
+
+                        startActivityForResult(intent, REQ_APP)
+                    } else if (newValue == actionHolder.premTypeIntent.toString()) {
+                        val intent = Intent(activity, IntentSelectorActivity::class.java)
+
+                        intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
+
+                        startActivityForResult(intent, REQ_INTENT)
+                    } else if (newValue == actionHolder.premTypeLaunchShortcut.toString()) {
+                        val intent = Intent(activity, ShortcutSelectActivity::class.java)
+
+                        intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
+
+                        startActivityForResult(intent, REQ_SHORTCUT)
                     }
 
-                    intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
-                    intent.putExtra(AppLaunchSelectActivity.CHECKED_PACKAGE, pack)
-                    intent.putExtra(AppLaunchSelectActivity.CHECKED_ACTIVITY, activity)
-                    intent.putExtra(AppLaunchSelectActivity.FOR_ACTIVITY_SELECT, forActivity)
-
-                    startActivityForResult(intent, REQ_APP)
-                } else if (newValue == actionHolder.premTypeIntent.toString()) {
-                    val intent = Intent(activity, IntentSelectorActivity::class.java)
-
-                    intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
-
-                    startActivityForResult(intent, REQ_INTENT)
-                } else if (newValue == actionHolder.premTypeLaunchShortcut.toString()) {
-                    val intent = Intent(activity, ShortcutSelectActivity::class.java)
-
-                    intent.putExtra(BaseAppSelectActivity.EXTRA_KEY, it.key)
-
-                    startActivityForResult(intent, REQ_SHORTCUT)
+                    true
+                } else {
+                    false
                 }
-
-                true
             }
         }
     }
