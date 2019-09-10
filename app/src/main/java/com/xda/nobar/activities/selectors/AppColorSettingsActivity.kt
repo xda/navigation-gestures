@@ -60,6 +60,7 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
             startActivityForResult(
                     Intent(this, AppLaunchSelectActivity::class.java).apply {
                         putExtra(AppLaunchSelectActivity.EXTRA_INCLUDE_ALL_APPS, true)
+                        putExtra(AppLaunchSelectActivity.EXTRA_TITLE, resources.getString(R.string.select_app))
                     },
                     REQ_COLOR)
         }

@@ -26,6 +26,7 @@ class AppLaunchSelectActivity : BaseAppSelectActivity<Any, AppInfo>() {
         const val CHECKED_ACTIVITY = "checked_activity"
         const val EXTRA_PACKAGE = "package_name"
         const val EXTRA_INCLUDE_ALL_APPS = "include_all_apps"
+        const val EXTRA_TITLE = "activity_title"
 
         const val FOR_ACTIVITY_SELECT = "activity_select"
 
@@ -59,10 +60,13 @@ class AppLaunchSelectActivity : BaseAppSelectActivity<Any, AppInfo>() {
         }
     })
 
+    private val customTitle by lazy { intent.getStringExtra(EXTRA_TITLE) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        title = resources.getText(if (isForActivitySelect()) R.string.prem_launch_activity_no_format else R.string.prem_launch_app_no_format)
+        title = customTitle ?: resources.getText(
+                if (isForActivitySelect()) R.string.prem_launch_activity_no_format else R.string.prem_launch_app_no_format)
     }
 
     override fun canRun() = intent != null
