@@ -36,6 +36,7 @@
 
     <Preference
         android:title="@string/per_app_colors"
+        android:summary="@string/per_app_pill_color_desc"
         android:key="per_app_colors">
         <intent
             android:action="android.intent.action.VIEW"
