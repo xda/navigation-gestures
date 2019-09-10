@@ -25,18 +25,21 @@
         android:summary="@string/anchor_pill_desc"
         android:key="anchor_pill"
         android:defaultValue="@bool/anchor_pill_default"
+        android:icon="@drawable/anchor_white"
         />
 
     <SwitchPreference
         android:title="@string/overlay_nav"
         android:summary="@string/overlay_nav_desc"
         android:key="overlay_nav"
+        android:icon="@drawable/ic_layers_white_24dp"
         android:defaultValue="@bool/overlay_nav_default"
         />
 
     <Preference
         android:title="@string/per_app_colors"
         android:summary="@string/per_app_pill_color_desc"
+        android:icon="@drawable/palette_white"
         android:key="per_app_colors">
         <intent
             android:action="android.intent.action.VIEW"
