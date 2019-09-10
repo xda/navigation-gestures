@@ -272,6 +272,7 @@
     <string name="pill_overlaps_content_expl">Unfortunately, there\'s no way to fix this. We can\'t make a dedicated navigation space for the pill. Try lowering the pill height or turning off Larger Hitbox in Behavior.</string>
     <string name="crash_message">Navigation Gestures has crashed! Don\'t worry, we\'ve already got the information. If this happens often, consider enabling your Crashlytics ID and sending it to us. You can turn it on from the \"i\" button on the main screen of the app.</string>
     <string name="pill_not_showing_desc">Unfortunately, on Android 5.0, and maybe some heavily customized versions of Android, there is no proper way to display the pill everywhere.</string>
+    <string name="per_app_pill_color_desc">Set the pill color on a per-app basis. This overrides the color set in Appearance for apps you add.</string>
     <!--Gestures-->
     <string name="tap">Tap</string>
     <string name="left">Deslize para a esquerda</string>
