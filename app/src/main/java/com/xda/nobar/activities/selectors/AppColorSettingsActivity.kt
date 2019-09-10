@@ -47,6 +47,8 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
 
         setContentView(R.layout.activity_app_color_settings)
 
+        setTitle(R.string.per_app_colors)
+
         val layoutManager = LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false)
         app_list.layoutManager = layoutManager
