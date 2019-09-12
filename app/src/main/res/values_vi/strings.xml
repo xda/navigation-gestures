@@ -248,6 +248,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="hide_on_installer_desc">Disable the pill altogether when you\'re sideloading an APK.</string>
     <string name="overlay_nav_desc">Show the pill in the native navigation area. Not compatible with the navigation bar hiding feature, nor devices without software navigation bar.</string>
     <string name="select_color">Select Color</string>
+    <string name="select_app">Select App</string>
     <string name="per_app_colors">Per-App Pill Color</string>
     <string name="deleted">Deleted</string>
     <string name="undo">Undo</string>
@@ -274,6 +275,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="pill_overlaps_content_expl">Unfortunately, there\'s no way to fix this. We can\'t make a dedicated navigation space for the pill. Try lowering the pill height or turning off Larger Hitbox in Behavior.</string>
     <string name="crash_message">Navigation Gestures has crashed! Don\'t worry, we\'ve already got the information. If this happens often, consider enabling your Crashlytics ID and sending it to us. You can turn it on from the \"i\" button on the main screen of the app.</string>
     <string name="pill_not_showing_desc">Unfortunately, on Android 5.0, and maybe some heavily customized versions of Android, there is no proper way to display the pill everywhere.</string>
+    <string name="per_app_pill_color_desc">Set the pill color on a per-app basis. This overrides the color set in Appearance for apps you add.</string>
     <!--Gestures-->
     <string name="tap">Chạm</string>
     <string name="left">Vuốt trái</string>
