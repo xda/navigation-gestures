@@ -238,14 +238,18 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
 
         fun addItems(items: Collection<ColoredAppData>) {
             this.items.addAll(
-                    items.map {
-                        val info = packageManager.getApplicationInfo(it.packageName, 0)
-                        ListItem(
-                                info,
-                                packageManager.getApplicationLabel(info),
-                                it.packageName,
-                                it.color
-                        )
+                    items.mapNotNull {
+                        try {
+                            val info = packageManager.getApplicationInfo(it.packageName, 0)
+                            ListItem(
+                                    info,
+                                    packageManager.getApplicationLabel(info),
+                                    it.packageName,
+                                    it.color
+                            )
+                        } catch (e: Exception) {
+                            null
+                        }
                     }.filter {
                         ids.add(it.packageName)
                     }
