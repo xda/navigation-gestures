@@ -9,7 +9,6 @@ import android.view.Surface
 import android.view.WindowManager
 import android.widget.LinearLayout
 import com.xda.nobar.util.*
-import kotlinx.coroutines.launch
 
 class NavBlackout : LinearLayout {
     constructor(context: Context) : super(context)
@@ -82,7 +81,7 @@ class NavBlackout : LinearLayout {
             if (!isAdded || !params.same(oldParams)) {
                 oldParams = params
 
-                mainScope.launch {
+                mainHandler.post {
                     try {
                         if (isAdded) wm.updateViewLayout(this@NavBlackout, params)
                         else if (!waitingToAdd) {
@@ -103,7 +102,8 @@ class NavBlackout : LinearLayout {
         synchronized(isTryingToRemove) {
             if (!isTryingToRemove && isAdded) {
                 isTryingToRemove = true
-                mainScope.launch {
+
+                mainHandler.post {
                     try {
                         wm.removeView(this@NavBlackout)
                     } catch (e: Exception) {

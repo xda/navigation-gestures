@@ -269,10 +269,12 @@ val Context.vibrator: Vibrator
     get() = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
 fun Context.checkNavHiddenAsync(listener: (Boolean) -> Unit) {
-    mainScope.launch {
-        val hidden = withContext(Dispatchers.IO) { isNavBarHidden }
+    logicScope.launch {
+        val hidden = isNavBarHidden
 
-        listener.invoke(hidden)
+        mainHandler.post {
+            listener.invoke(hidden)
+        }
     }
 }
 
