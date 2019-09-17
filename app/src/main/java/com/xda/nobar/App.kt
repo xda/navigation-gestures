@@ -18,6 +18,7 @@ import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
@@ -32,6 +33,7 @@ import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.providers.BaseProvider
 import com.xda.nobar.root.RootWrapper
 import com.xda.nobar.services.Actions
+import com.xda.nobar.services.KeepAliveService
 import com.xda.nobar.util.*
 import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.util.helpers.*
@@ -206,6 +208,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 Thread.setDefaultUncaughtExceptionHandler(crashHandler)
             }
 
+            handleKeepAlive()
+
             //Make sure lazy init happens in main Thread
             bar.onCreate()
 
@@ -351,6 +355,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
             PrefManager.ENABLE_ANALYTICS -> {
                 analytics.setAnalyticsCollectionEnabled(prefManager.enableAnalytics)
+            }
+            PrefManager.KEEP_ALIVE -> {
+                handleKeepAlive()
             }
         }
 
@@ -596,6 +603,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     private fun addBarInternalUnconditionally() {
         postAction {
             it.addBarAndBlackout()
+        }
+    }
+
+    private fun handleKeepAlive() {
+        val serviceIntent = Intent(this, KeepAliveService::class.java)
+
+        if (prefManager.keepAlive) {
+            ContextCompat.startForegroundService(this, serviceIntent)
+        } else {
+            stopService(serviceIntent)
         }
     }
 
