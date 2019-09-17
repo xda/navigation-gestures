@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.IPackageManager
 import android.hardware.input.InputManager
 import android.os.Looper
-import android.os.ServiceManager
 import android.os.SystemClock
 import android.view.InputDevice
 import android.view.KeyCharacterMap
@@ -27,8 +25,6 @@ object RootHandler {
 
     private val im by lazy { inputManager }
     private val am by lazy { context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager }
-    private val iam by lazy { ActivityManager.getService() }
-    private val pm by lazy { IPackageManager.Stub.asInterface(ServiceManager.getService("package")) }
     private val accm by lazy { context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager }
 
     @JvmStatic
