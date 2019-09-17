@@ -44,7 +44,6 @@ import eu.chainfire.libsuperuser.Shell
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.PrintWriter
 import java.io.StringWriter
 
@@ -332,6 +331,21 @@ fun Context.runNougatAction(action: () -> Unit): Boolean {
     }
 }
 
+fun Context.runOreoAction(action: () -> Unit): Boolean {
+    return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+        action.invoke()
+        true
+    } else {
+        DialogActivity.Builder(this).apply {
+            title = R.string.nougat_required
+            message = R.string.nougat_required_desc
+            yesRes = android.R.string.ok
+            start()
+        }
+        false
+    }
+}
+
 fun Context.runPieAction(action: () -> Unit): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
         action.invoke()
@@ -466,7 +480,9 @@ fun BarView.isRootAction(action: Int): Boolean {
                 actionHolder.typeRootKeycode,
                 actionHolder.typeRootDoubleKeycode,
                 actionHolder.typeRootLongKeycode,
-                actionHolder.typeRootKillCurrentApp
+                actionHolder.typeRootKillCurrentApp,
+                actionHolder.typeRootAccessibilityMenu,
+                actionHolder.typeRootChooseAccessibilityMenu
         ))
     }
 

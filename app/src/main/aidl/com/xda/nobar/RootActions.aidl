@@ -9,4 +9,6 @@ interface RootActions {
     void lockScreen();
     void screenshot();
     void killCurrentApp();
+    void notifyAccessibilityButtonClicked();
+    void launchAccessibilityButtonChooser();
 }

@@ -56,6 +56,8 @@
     <string name="root_kill_current_app">Kill Current App (Root)</string>
     <string name="prem_app_drawer">App Drawer (Premium)</string>
     <string name="prem_toggle_rotation_lock">Toggle Rotation Lock (Premium)</string>
+    <string name="open_accessibility_menu">Accessibility Button (Root, Oreo+)</string>
+    <string name="choose_accessibility_button">Choose Accessibility Button (Root, Oreo+)</string>
 
     <!--Action Values-->
     <string name="type_no_action">-1</string>
@@ -106,6 +108,8 @@
     <string name="root_type_kill_current_app">45</string>
     <string name="prem_type_app_drawer">46</string>
     <string name="prem_type_toggle_rotation_lock">47</string>
+    <string name="type_accessibility_button">48</string>
+    <string name="type_choose_accessibility_button">49</string>
 
     <!--Main Action Keys-->
     <string name="action_left">left</string>

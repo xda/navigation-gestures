@@ -26,7 +26,7 @@
     <string name="welcome">Welcome!</string>
     <string name="draw_over_apps">Draw Over Apps</string>
     <string name="grant">Grant</string>
-    <string name="accessibility">Accessibility Service</string>
+    <string name="accessibility_service">Accessibility Service</string>
     <string name="write_secure_settings">Write Secure Settings</string>
     <string name="ready">All Set</string>
     <string name="root_found">You have root!</string>
@@ -34,6 +34,7 @@
     <string name="missing_perms">Missing Permissions!</string>
     <string name="premium_required">Premium Action!</string>
     <string name="nougat_required">Requires Nougat</string>
+    <string name="oreo_required">Requires Oreo</string>
     <string name="pie_required">Requires Pie</string>
     <string name="hold_time">Swipe and Hold Time</string>
     <string name="vibration_duration">Vibration Duration</string>
@@ -167,6 +168,7 @@
     <string name="hide_on_installer">Don\'t Show on Package Installer</string>
     <string name="root">Root</string>
     <string name="overlay_nav">Overlay NavBar</string>
+    <string name="accessibility">Accessibility</string>
 
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
@@ -261,6 +263,7 @@
     <string name="missing_perms_desc">Looks like one or more permissions got revoked somehow. No worries, though. We\'ll help get you back up and running.</string>
     <string name="premium_required_desc">This action requires the premium add-on. Would you like to purchase it?</string>
     <string name="nougat_required_desc">This action requires a device running Android Nougat or later. Sorry about that.</string>
+    <string name="oreo_required_desc">This action requires a device running Android Oreo or later. Sorry about that.</string>
     <string name="pie_required_desc">This action requires a device running Android Pie or later. Sorry about that.</string>
     <string name="nougat_qs_reminder">Android Nougat allows for custom quick settings tiles, and we\'ve included one to toggle Navigation Gestures. You can add it by swiping down twice from the status bar, tapping the pencil icon or \"EDIT\" and dragging Navigation Gestures\' tile into the active area.</string>
     <string name="accessibility_screen_text">This app uses an Accessibility Service to simulate navigation button presses like the back, home, and multitasking buttons. We do not use it to collect any personal information, and no action will be performed except by the user.</string>

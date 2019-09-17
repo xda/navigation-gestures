@@ -3,22 +3,33 @@ package com.xda.nobar.root
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.content.Intent
+import android.content.pm.IPackageManager
 import android.hardware.input.InputManager
 import android.os.Looper
+import android.os.ServiceManager
 import android.os.SystemClock
 import android.view.InputDevice
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
+import android.view.accessibility.AccessibilityManager
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.RootActions
 import com.xda.nobar.util.inputManager
 import eu.chainfire.librootjava.RootIPC
 import eu.chainfire.librootjava.RootJava
+import eu.chainfire.libsuperuser.Shell
 
 @SuppressLint("PrivateApi")
 object RootHandler {
+    private val context: Context
+        get() = RootJava.getSystemContext()
+
     private val im by lazy { inputManager }
-    private val am by lazy { RootJava.getSystemContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager }
+    private val am by lazy { context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager }
+    private val iam by lazy { ActivityManager.getService() }
+    private val pm by lazy { IPackageManager.Stub.asInterface(ServiceManager.getService("package")) }
+    private val accm by lazy { context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager }
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -82,6 +93,14 @@ object RootHandler {
             //this can be used to launch split screen (wrap in try-catch)
 //            am.setTaskWindowingModeSplitScreenPrimary(info.id, ActivityManager.SPLIT_SCREEN_CREATE_MODE_TOP_OR_LEFT, true,
 //                    true, null, true)
+        }
+
+        override fun notifyAccessibilityButtonClicked() {
+            accm.notifyAccessibilityButtonClicked()
+        }
+
+        override fun launchAccessibilityButtonChooser() {
+            Shell.SU.run("am start-activity -a ${AccessibilityManager.ACTION_CHOOSE_ACCESSIBILITY_BUTTON} -f ${Intent.FLAG_ACTIVITY_NEW_TASK} -f ${Intent.FLAG_ACTIVITY_CLEAR_TASK}")
         }
 
         private fun injectKeyEvent(event: KeyEvent) {

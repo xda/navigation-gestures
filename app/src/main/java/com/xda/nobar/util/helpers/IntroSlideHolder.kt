@@ -64,7 +64,7 @@ class IntroSlideHolder(private val activity: Activity) : ContextWrapper(activity
 
     val accessibilitySlide by lazy {
         DynamicForwardSlide(SimpleSlide.Builder()
-                .title(R.string.accessibility)
+                .title(R.string.accessibility_service)
                 .description(R.string.accessibility_desc)
                 .image(R.drawable.nav_acc)
                 .background(R.color.slide_3)

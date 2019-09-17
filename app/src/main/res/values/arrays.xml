@@ -10,6 +10,8 @@
         <item>@string/forward</item>
         <item>@string/menu</item>
         <item>@string/root_kill_current_app</item>
+        <item>@string/open_accessibility_menu</item>
+        <item>@string/choose_accessibility_button</item>
         <item>@string/root_send_keycode_no_format</item>
         <item>@string/root_send_long_keycode_no_format</item>
         <item>@string/root_send_double_keycode_no_format</item>
@@ -20,6 +22,8 @@
         <item>@string/type_forward</item>
         <item>@string/type_menu</item>
         <item>@string/root_type_kill_current_app</item>
+        <item>@string/type_accessibility_button</item>
+        <item>@string/type_choose_accessibility_button</item>
         <item>@string/root_type_send_keycode</item>
         <item>@string/root_type_send_long_keycode</item>
         <item>@string/root_type_send_double_keycode</item>
@@ -134,7 +138,7 @@
         <item>@string/prem_type_intent</item>
         <item>@string/prem_type_kill_background</item>
     </string-array>
-    
+
     <string-array name="action_section_names">
         <item> </item>
         <item>@string/navigation</item>

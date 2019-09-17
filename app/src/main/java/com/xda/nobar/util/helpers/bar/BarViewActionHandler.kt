@@ -1,7 +1,6 @@
 package com.xda.nobar.util.helpers.bar
 
 import android.Manifest
-import android.app.ActivityOptions
 import android.app.SearchManager
 import android.bluetooth.BluetoothAdapter
 import android.content.ActivityNotFoundException
@@ -12,22 +11,17 @@ import android.media.AudioManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
-import android.os.UserHandle
 import android.provider.MediaStore
 import android.provider.Settings
-import android.service.voice.VoiceInteractionSession
-import android.speech.RecognizerIntent
 import android.util.Log
 import android.view.KeyEvent
 import android.view.OrientationEventListener
 import android.view.Surface
+import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.android.internal.R.attr.key
-import com.android.internal.app.AssistUtils
 import com.joaomgcd.taskerpluginlibrary.extensions.requestQuery
-import com.xda.nobar.BuildConfig
 import com.xda.nobar.R
 import com.xda.nobar.activities.helpers.RequestPermissionsActivity
 import com.xda.nobar.activities.helpers.ScreenshotActivity
@@ -452,7 +446,7 @@ class BarViewActionHandler(private val bar: BarView) {
 
     private fun sendRootAction(which: Int, key: String) {
         rootWrapper.postAction {
-            with(bar.actionHolder) {
+            bar.actionHolder.apply {
                 when (which) {
                     typeRootForward -> it.sendKeyEvent(KeyEvent.KEYCODE_FORWARD)
                     typeRootHoldBack -> it.sendLongKeyEvent(KeyEvent.KEYCODE_BACK)
@@ -479,6 +473,12 @@ class BarViewActionHandler(private val bar: BarView) {
                     }
                     typeRootKillCurrentApp -> {
                         it.killCurrentApp()
+                    }
+                    typeRootAccessibilityMenu -> context.runOreoAction {
+                        it.notifyAccessibilityButtonClicked()
+                    }
+                    typeRootChooseAccessibilityMenu -> context.runOreoAction {
+                        it.launchAccessibilityButtonChooser()
                     }
                     else -> {
                     }
