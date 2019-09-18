@@ -170,6 +170,7 @@
     <string name="root">Root</string>
     <string name="overlay_nav">Overlay NavBar</string>
     <string name="accessibility">Accessibility</string>
+    <string name="keep_alive">Keep Alive</string>
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
     <string name="appearance_desc">Customize appearance of the navigation pill</string>
@@ -245,12 +246,13 @@
     <string name="hide_on_lockscreen_desc">Disable the pill altogether when your device is on the lock screen.</string>
     <string name="hide_on_permissions_desc">Disable the pill altogether when you\'re adjusting an app\'s permissions.</string>
     <string name="hide_on_installer_desc">Disable the pill altogether when you\'re sideloading an APK.</string>
-    <string name="overlay_nav_desc">Show the pill in the native navigation area. Not compatible with the navigation bar hiding feature, nor devices without software navigation bar.</string>
+    <string name="overlay_nav_desc">Show the pill in the native navigation area. Not compatible with the navigation bar hiding feature, nor devices without a software navigation bar.</string>
     <string name="select_color">Select Color</string>
     <string name="select_app">Select App</string>
     <string name="per_app_colors">Per-App Pill Color</string>
     <string name="deleted">Deleted</string>
     <string name="undo">Undo</string>
+    <string name="keep_alive_desc">While Navigation Gesture\'s accessibility service should keep the app running in most cases, certain devices still kill it. Enabling this should make Navigation Gestures run more reliably on these devices.</string>
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
     <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
@@ -276,6 +278,7 @@
     <string name="crash_message">Navigation Gestures has crashed! Don\'t worry, we\'ve already got the information. If this happens often, consider enabling your Crashlytics ID and sending it to us. You can turn it on from the \"i\" button on the main screen of the app.</string>
     <string name="pill_not_showing_desc">Unfortunately, on Android 5.0, and maybe some heavily customized versions of Android, there is no proper way to display the pill everywhere.</string>
     <string name="per_app_pill_color_desc">Set the pill color on a per-app basis. This overrides the color set in Appearance for apps you add.</string>
+    <string name="keep_alive_service_text">Hi! I\'m here to make sure Navigation Gestures isn\'t killed. Hold down on me to disable this notification.</string>
     <!--Gestures-->
     <string name="tap">Касание</string>
     <string name="left">Свайп влево</string>
