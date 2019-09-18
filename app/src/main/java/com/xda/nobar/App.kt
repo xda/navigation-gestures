@@ -970,6 +970,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                 if (changed) bar.updateLayout()
             }
+
+            if (isPillShown()) {
+                try {
+                    if (!prefManager.useImmersiveWhenNavHidden)
+                        immersiveHelperManager.exitNavImmersive()
+
+                    if (prefManager.hidePillWhenKeyboardShown) {
+                        if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
+                        else bar.showPill(HiddenPillReasonManager.KEYBOARD)
+                    }
+                } catch (e: NullPointerException) {
+                }
+            }
         }
 
         fun updateBlacklists() {
@@ -1047,19 +1060,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                 disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.FULLSCREEN)
                             } else {
                                 disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.FULLSCREEN)
-                            }
-                        }
-
-                        if (isPillShown()) {
-                            try {
-                                if (!prefManager.useImmersiveWhenNavHidden)
-                                    immersiveHelperManager.exitNavImmersive()
-
-                                if (prefManager.hidePillWhenKeyboardShown) {
-                                    if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
-                                    else bar.showPill(HiddenPillReasonManager.KEYBOARD)
-                                }
-                            } catch (e: NullPointerException) {
                             }
                         }
 
