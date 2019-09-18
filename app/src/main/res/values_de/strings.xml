@@ -27,7 +27,7 @@
     <string name="welcome">Willkommen!</string>
     <string name="draw_over_apps">Zeige über Apps</string>
     <string name="grant">Gewähren</string>
-    <string name="accessibility">Eingabehilfedienste</string>
+    <string name="accessibility_service">Accessibility Service</string>
     <string name="write_secure_settings">Sicherheitseinstellungen schreiben</string>
     <string name="ready">Alles Bereit</string>
     <string name="root_found">Du hast Root!</string>
@@ -35,6 +35,7 @@
     <string name="missing_perms">Berechtigungen fehlen!</string>
     <string name="premium_required">Premium Aktionen!</string>
     <string name="nougat_required">Benötigt Nougat</string>
+    <string name="oreo_required">Requires Oreo</string>
     <string name="pie_required">Requires Pie</string>
     <string name="hold_time">Wisch- und Haltezeit</string>
     <string name="vibration_duration">Vibrationsdauer</string>
@@ -168,6 +169,8 @@
     <string name="hide_on_installer">Don\'t Show on Package Installer</string>
     <string name="root">Root</string>
     <string name="overlay_nav">Overlay NavBar</string>
+    <string name="accessibility">Accessibility</string>
+    <string name="keep_alive">Keep Alive</string>
     <!--Descriptions-->
     <string name="gestures_desc">Gestenaktionen anpassen</string>
     <string name="appearance_desc">Aussehen der Navigation-Pille anpassen</string>
@@ -243,12 +246,13 @@
     <string name="hide_on_lockscreen_desc">Disable the pill altogether when your device is on the lock screen.</string>
     <string name="hide_on_permissions_desc">Disable the pill altogether when you\'re adjusting an app\'s permissions.</string>
     <string name="hide_on_installer_desc">Disable the pill altogether when you\'re sideloading an APK.</string>
-    <string name="overlay_nav_desc">Show the pill in the native navigation area. Not compatible with the navigation bar hiding feature, nor devices without software navigation bar.</string>
+    <string name="overlay_nav_desc">Show the pill in the native navigation area. Not compatible with the navigation bar hiding feature, nor devices without a software navigation bar.</string>
     <string name="select_color">Select Color</string>
     <string name="select_app">Select App</string>
     <string name="per_app_colors">Per-App Pill Color</string>
     <string name="deleted">Deleted</string>
     <string name="undo">Undo</string>
+    <string name="keep_alive_desc">While Navigation Gesture\'s accessibility service should keep the app running in most cases, certain devices still kill it. Enabling this should make Navigation Gestures run more reliably on these devices.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Diese App bringt großartige Gestennavigation auf jedes Android Gerät. Und das Beste ist, man benötigt hierfür keinen Root-Zugriff. Bevor du die Gestennavigation nutzen kann gibt es ein paar Sachen, die noch eingestellt werden müssen.</string>
     <string name="draw_over_apps_desc">Damit Navigation Gestures den Pill-Nav anzeigen kann, musst du der App Berechtigung geben, damit es über anderen Apps angezeigt werden kann. Tippe den unteren Knopf um dies zu tun. Wenn du die App über den Play Store installiert hat, wurde die berechtigung schon gewährt.</string>
@@ -260,6 +264,7 @@
     <string name="missing_perms_desc">Sieht so aus, als wäre eine Genehmigung entzogen worden. Keine Sorge, wir werden dir helfen dies wieder zum Laufen zu bekommen.</string>
     <string name="premium_required_desc">Diese Aktion erfordert das premium Add-On. Möchtest du es erwerben?</string>
     <string name="nougat_required_desc">Diese Aktion erforder, dass das Gerät mit Android Nougat oder neuer läuft. Bitte entschuldige dies.</string>
+    <string name="oreo_required_desc">This action requires a device running Android Oreo or later. Sorry about that.</string>
     <string name="pie_required_desc">This action requires a device running Android Pie or later. Sorry about that.</string>
     <string name="nougat_qs_reminder">Android Nougat erlaubt Quick Settings Kacheln und wir fügen eine hinzu um Navigation Gestures an und aus zu machen. Du kannst die Kachel hinzufügen, indem du von der Statusleiste zwei Mal nach unten wischt, das Stift Symbol oder \"EDIT\" antippst und die Navigation Gesture Kachel in die Active Area verschiebst.</string>
     <string name="accessibility_screen_text">Diese App nutzt den Eingabehilfe Service, um die Navigationstasten wie Zurück, Home und Multitasking zu simulieren. Wir nutzen es nicht um persönliche Informationen zu sammeln und keine Aktion wird durchgeführt, außer von dem Nutzer.</string>
@@ -273,6 +278,7 @@
     <string name="crash_message">Navigation Gestures has crashed! Don\'t worry, we\'ve already got the information. If this happens often, consider enabling your Crashlytics ID and sending it to us. You can turn it on from the \"i\" button on the main screen of the app.</string>
     <string name="pill_not_showing_desc">Unfortunately, on Android 5.0, and maybe some heavily customized versions of Android, there is no proper way to display the pill everywhere.</string>
     <string name="per_app_pill_color_desc">Set the pill color on a per-app basis. This overrides the color set in Appearance for apps you add.</string>
+    <string name="keep_alive_service_text">Hi! I\'m here to make sure Navigation Gestures isn\'t killed. Hold down on me to disable this notification.</string>
     <!--Gestures-->
     <string name="tap">Tippen</string>
     <string name="left">Nach links streichen</string>
