@@ -27,7 +27,7 @@
     <string name="welcome">환영합니다!</string>
     <string name="draw_over_apps">앱 위에 표시</string>
     <string name="grant">권한</string>
-    <string name="accessibility">접근성</string>
+    <string name="accessibility_service">Accessibility Service</string>
     <string name="write_secure_settings">보안 설정 쓰기</string>
     <string name="ready">준비 완료</string>
     <string name="root_found">루팅 됨!</string>
@@ -35,6 +35,7 @@
     <string name="missing_perms">권한 없음!</string>
     <string name="premium_required">프리미엄 기능 필요!</string>
     <string name="nougat_required">Nougat 필요</string>
+    <string name="oreo_required">Requires Oreo</string>
     <string name="pie_required">Requires Pie</string>
     <string name="hold_time">끌어 멈춤 시간</string>
     <string name="vibration_duration">진동 길이</string>
@@ -168,6 +169,8 @@
     <string name="hide_on_installer">Don\'t Show on Package Installer</string>
     <string name="root">Root</string>
     <string name="overlay_nav">Overlay NavBar</string>
+    <string name="accessibility">Accessibility</string>
+    <string name="keep_alive">Keep Alive</string>
     <!--Descriptions-->
     <string name="gestures_desc">제스처 동작 사용자 지정</string>
     <string name="appearance_desc">Pill의 외관 사용자 지정</string>
@@ -243,12 +246,13 @@
     <string name="hide_on_lockscreen_desc">Disable the pill altogether when your device is on the lock screen.</string>
     <string name="hide_on_permissions_desc">Disable the pill altogether when you\'re adjusting an app\'s permissions.</string>
     <string name="hide_on_installer_desc">Disable the pill altogether when you\'re sideloading an APK.</string>
-    <string name="overlay_nav_desc">Show the pill in the native navigation area. Not compatible with the navigation bar hiding feature, nor devices without software navigation bar.</string>
+    <string name="overlay_nav_desc">Show the pill in the native navigation area. Not compatible with the navigation bar hiding feature, nor devices without a software navigation bar.</string>
     <string name="select_color">Select Color</string>
     <string name="select_app">Select App</string>
     <string name="per_app_colors">Per-App Pill Color</string>
     <string name="deleted">Deleted</string>
     <string name="undo">Undo</string>
+    <string name="keep_alive_desc">While Navigation Gesture\'s accessibility service should keep the app running in most cases, certain devices still kill it. Enabling this should make Navigation Gestures run more reliably on these devices.</string>
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
     <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
@@ -260,6 +264,7 @@
     <string name="missing_perms_desc">Looks like one or more permissions got revoked somehow. No worries, though. We\'ll help get you back up and running.</string>
     <string name="premium_required_desc">This action requires the premium add-on. Would you like to purchase it?</string>
     <string name="nougat_required_desc">This action requires a device running Android Nougat or later. Sorry about that.</string>
+    <string name="oreo_required_desc">This action requires a device running Android Oreo or later. Sorry about that.</string>
     <string name="pie_required_desc">This action requires a device running Android Pie or later. Sorry about that.</string>
     <string name="nougat_qs_reminder">Android Nougat allows for custom quick settings tiles, and we\'ve included one to toggle Navigation Gestures. You can add it by swiping down twice from the status bar, tapping the pencil icon or \"EDIT\" and dragging Navigation Gestures\' tile into the active area.</string>
     <string name="accessibility_screen_text">This app uses an Accessibility Service to simulate navigation button presses like the back, home, and multitasking buttons. We do not use it to collect any personal information, and no action will be performed except by the user.</string>
@@ -273,6 +278,7 @@
     <string name="crash_message">Navigation Gestures has crashed! Don\'t worry, we\'ve already got the information. If this happens often, consider enabling your Crashlytics ID and sending it to us. You can turn it on from the \"i\" button on the main screen of the app.</string>
     <string name="pill_not_showing_desc">Unfortunately, on Android 5.0, and maybe some heavily customized versions of Android, there is no proper way to display the pill everywhere.</string>
     <string name="per_app_pill_color_desc">Set the pill color on a per-app basis. This overrides the color set in Appearance for apps you add.</string>
+    <string name="keep_alive_service_text">Hi! I\'m here to make sure Navigation Gestures isn\'t killed. Hold down on me to disable this notification.</string>
     <!--Gestures-->
     <string name="tap">Tap</string>
     <string name="left">Swipe Left</string>
