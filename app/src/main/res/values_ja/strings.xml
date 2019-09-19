@@ -171,6 +171,7 @@
     <string name="overlay_nav">Overlay NavBar</string>
     <string name="accessibility">Accessibility</string>
     <string name="keep_alive">Keep Alive</string>
+    <string name="overlay_nav_blackout">Blackout</string>
     <!--Descriptions-->
     <string name="gestures_desc">ジェスチャーアクションのカスタマイズ</string>
     <string name="appearance_desc">ピルの外観をカスタマイズする</string>
@@ -253,6 +254,7 @@
     <string name="deleted">Deleted</string>
     <string name="undo">Undo</string>
     <string name="keep_alive_desc">While Navigation Gesture\'s accessibility service should keep the app running in most cases, certain devices still kill it. Enabling this should make Navigation Gestures run more reliably on these devices.</string>
+    <string name="overlay_nav_blackout_desc">When \"Overlay NavBar\" is enabled, place a black bar behind it to hide the original navigation buttons.</string>
     <!--Paragraphs-->
     <string name="app_purpose">このアプリでどのデバイスでも非ルートでナビゲーションジェスチャーを使えるようになります! 利用する前にいくつか設定が必要です。</string>
     <string name="draw_over_apps_desc">ピルを表示させるために\”他のアプリの上に重ねて表示\”を有効にしないといけません。下のボタンをタップして有効にしてください。Playストアからインストールした場合には既に有効になっています。</string>
