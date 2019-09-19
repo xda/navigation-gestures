@@ -171,6 +171,7 @@
     <string name="overlay_nav">Overlay NavBar</string>
     <string name="accessibility">Accessibility</string>
     <string name="keep_alive">Keep Alive</string>
+    <string name="overlay_nav_blackout">Blackout</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizar acciones de gestos</string>
     <string name="appearance_desc">Personalizar el aspecto de la barra de gestos</string>
@@ -253,6 +254,7 @@
     <string name="deleted">Deleted</string>
     <string name="undo">Undo</string>
     <string name="keep_alive_desc">While Navigation Gesture\'s accessibility service should keep the app running in most cases, certain devices still kill it. Enabling this should make Navigation Gestures run more reliably on these devices.</string>
+    <string name="overlay_nav_blackout_desc">When \"Overlay NavBar\" is enabled, place a black bar behind it to hide the original navigation buttons.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Esta aplicación proporciona increíbles gestos de navegación para cualquier dispositivo Android. ¡Lo mejor de todo es que no necesita root! Antes de utilizar los gestos, hay algunas cosas que tenemos que hacer para configurar la aplicación.</string>
     <string name="draw_over_apps_desc">Para que Navigation Gestures muestre la barra, tendrás que otorgar el permiso para que pueda dibujarse sobre otras aplicaciones. Pulsa el botón de abajo para hacerlo. Si lo instalaste desde Play Store, ya se habrá otorgado este permiso.</string>
