@@ -30,4 +30,5 @@
     <bool name="hide_on_installer_default">true</bool>
     <bool name="overlay_nav_default">false</bool>
     <bool name="keep_alive_default">false</bool>
+    <bool name="overlay_nav_blackout_default">true</bool>
 </resources>

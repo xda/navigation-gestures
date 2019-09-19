@@ -220,8 +220,13 @@ class Actions : AccessibilityService(), ReceiverCallback {
         }
 
         fun addBlackout() {
-            if ((prefManager.isActive && prefManager.overlayNav) || (prefManager.shouldUseOverscanMethod && !prefManager.useFullOverscan)) {
-                this@Actions.addBlackout()
+            val ovsc = (prefManager.shouldUseOverscanMethod && !prefManager.useFullOverscan)
+            if ((prefManager.isActive && prefManager.overlayNav) || ovsc) {
+                if (prefManager.overlayNavBlackout || ovsc) {
+                    this@Actions.addBlackout()
+                } else {
+                    this@Actions.addBar()
+                }
             }
         }
 

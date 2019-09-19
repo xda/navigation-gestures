@@ -477,6 +477,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             PrefManager.HIDE_NAV -> {
                 setOverlayNav(context.prefManager.overlayNav)
             }
+            PrefManager.OVERLAY_NAV_BLACKOUT -> {
+                context.app.postAction {
+                    it.remBar()
+
+                    mainHandler.postDelayed({ it.addBarAndBlackout() }, 100)
+                }
+            }
         }
     }
 

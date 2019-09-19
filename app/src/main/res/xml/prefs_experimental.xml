@@ -36,6 +36,14 @@
         android:defaultValue="@bool/overlay_nav_default"
         />
 
+    <SwitchPreference
+        android:title="@string/overlay_nav_blackout"
+        android:summary="@string/overlay_nav_blackout_desc"
+        android:key="overlay_nav_blackout"
+        android:defaultValue="@bool/overlay_nav_blackout_default"
+        android:dependency="overlay_nav"
+        />
+
     <Preference
         android:title="@string/per_app_colors"
         android:summary="@string/per_app_pill_color_desc"

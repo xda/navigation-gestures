@@ -65,6 +65,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val HIDE_ON_INSTALLER = "hide_on_installer"
         const val OVERLAY_NAV = "overlay_nav"
         const val KEEP_ALIVE = "keep_alive"
+        const val OVERLAY_NAV_BLACKOUT = "overlay_nav_blackout"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
@@ -244,6 +245,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getBoolean(OVERLAY_NAV, resources.getBoolean(R.bool.overlay_nav_default)) && !shouldUseOverscanMethod
     val keepAlive: Boolean
         get() = getBoolean(KEEP_ALIVE, resources.getBoolean(R.bool.keep_alive_default))
+    val overlayNavBlackout: Boolean
+        get() = getBoolean(OVERLAY_NAV_BLACKOUT, resources.getBoolean(R.bool.overlay_nav_blackout_default)) && overlayNav
 
     /**
      * Get the user-defined or default pill color
