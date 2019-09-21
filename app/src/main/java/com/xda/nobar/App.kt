@@ -743,6 +743,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             contentResolver.registerContentObserver(Settings.Global.getUriFor(POLICY_CONTROL), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
             contentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, this)
+            contentResolver.registerContentObserver(Settings.Secure.getUriFor("navigation_mode"), true, this)
         }
 
         fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
@@ -1080,6 +1081,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         if (prefManager.isActive) {
                             touchWizNavEnabled = !immersiveHelperManager.isNavImmersive()
                         }
+                    }
+
+                    Settings.Secure.getUriFor("navigation_mode") -> {
+                        refreshNavHeights()
                     }
                 }
             }
