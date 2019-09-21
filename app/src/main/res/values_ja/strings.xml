@@ -256,6 +256,7 @@
     <string name="keep_alive_desc">While Navigation Gesture\'s accessibility service should keep the app running in most cases, certain devices still kill it. Enabling this should make Navigation Gestures run more reliably on these devices.</string>
     <string name="overlay_nav_blackout_desc">When \"Overlay NavBar\" is enabled, place a black bar behind it to hide the original navigation buttons.</string>
     <string name="restart_for_restore_desc">We recommend that you restart Navigation Gestures after restoring your settings. Would you like to do so?</string>
+    <string name="restart_problems_desc">Sometimes, your best bet for fixing problems with Navigation Gestures is restarting the app. Tap here to give it a try.</string>
     <!--Paragraphs-->
     <string name="app_purpose">このアプリでどのデバイスでも非ルートでナビゲーションジェスチャーを使えるようになります! 利用する前にいくつか設定が必要です。</string>
     <string name="draw_over_apps_desc">ピルを表示させるために\”他のアプリの上に重ねて表示\”を有効にしないといけません。下のボタンをタップして有効にしてください。Playストアからインストールした場合には既に有効になっています。</string>
