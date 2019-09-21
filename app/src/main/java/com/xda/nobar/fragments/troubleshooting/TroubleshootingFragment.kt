@@ -26,6 +26,7 @@ class TroubleshootingFragment : BasePrefFragment() {
         const val BETA_SIGN_UP = "beta_sign_up"
         const val PILL_NOT_SHOWING = "pill_not_showing"
         const val AUTO_HIDING_NAV = "auto_hiding_nav"
+        const val RESTART_PRPBLEMS = "restart_problems"
     }
 
     override val resId = R.xml.prefs_troubleshooting
@@ -124,6 +125,10 @@ class TroubleshootingFragment : BasePrefFragment() {
                     }
                 }
                 showExplanation(preference.summary, R.string.fixed)
+                true
+            }
+            RESTART_PRPBLEMS -> {
+                context?.restartApp()
                 true
             }
             else -> super.onPreferenceTreeClick(preference)

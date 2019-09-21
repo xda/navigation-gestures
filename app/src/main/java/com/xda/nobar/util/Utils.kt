@@ -46,6 +46,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.PrintWriter
 import java.io.StringWriter
+import kotlin.system.exitProcess
 
 val mainHandler = Handler(Looper.getMainLooper())
 
@@ -595,3 +596,12 @@ val Display.cachedDisplayInfo: DisplayInfo
                 .apply { isAccessible = true }
                 .get(this) as DisplayInfo
     }
+
+fun Context.restartApp() {
+    val mainActivity = Intent(this, MainActivity::class.java)
+    val pendingIntent = PendingIntent.getActivity(this, 100, mainActivity, PendingIntent.FLAG_CANCEL_CURRENT)
+    val am = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+    am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 100, pendingIntent)
+    exitProcess(0)
+}

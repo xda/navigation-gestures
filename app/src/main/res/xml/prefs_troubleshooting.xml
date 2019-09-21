@@ -76,6 +76,12 @@
         android:title="@string/something_else">
 
         <Preference
+            android:summary="@string/restart_problems_desc"
+            android:key="restart_problems"
+            android:icon="@drawable/circle_small"
+            />
+
+        <Preference
             android:summary="@string/something_else_desc"
             android:key="something_else"
             android:icon="@drawable/circle_small"

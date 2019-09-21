@@ -1,7 +1,5 @@
 package com.xda.nobar.util.backup
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
@@ -9,15 +7,14 @@ import android.net.Uri
 import android.widget.Toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xda.nobar.R
-import com.xda.nobar.activities.MainActivity
 import com.xda.nobar.util.prefManager
+import com.xda.nobar.util.restartApp
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.system.exitProcess
 
 abstract class BaseBackupRestoreManager(context: Context) : ContextWrapper(context) {
     internal abstract val type: String
@@ -94,12 +91,7 @@ abstract class BaseBackupRestoreManager(context: Context) : ContextWrapper(conte
                 .setTitle(R.string.restart_app)
                 .setMessage(R.string.restart_for_restore_desc)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
-                    val mainActivity = Intent(this, MainActivity::class.java)
-                    val pendingIntent = PendingIntent.getActivity(this, 100, mainActivity, PendingIntent.FLAG_CANCEL_CURRENT)
-                    val am = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-                    am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 100, pendingIntent)
-                    exitProcess(0)
+                    restartApp()
                 }
                 .setNegativeButton(android.R.string.no, null)
                 .setCancelable(false)
