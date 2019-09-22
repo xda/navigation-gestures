@@ -171,6 +171,7 @@
     <string name="overlay_nav">Overlay NavBar</string>
     <string name="accessibility">Accessibility</string>
     <string name="keep_alive">Keep Alive</string>
+    <string name="overlay_nav_blackout">Blackout</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizza gesture</string>
     <string name="appearance_desc">Personalizza l\'aspetto della pillola</string>
@@ -253,6 +254,9 @@
     <string name="deleted">Deleted</string>
     <string name="undo">Undo</string>
     <string name="keep_alive_desc">While Navigation Gesture\'s accessibility service should keep the app running in most cases, certain devices still kill it. Enabling this should make Navigation Gestures run more reliably on these devices.</string>
+    <string name="overlay_nav_blackout_desc">When \"Overlay NavBar\" is enabled, place a black bar behind it to hide the original navigation buttons.</string>
+    <string name="restart_for_restore_desc">We recommend that you restart Navigation Gestures after restoring your settings. Would you like to do so?</string>
+    <string name="restart_problems_desc">Sometimes, your best bet for fixing problems with Navigation Gestures is restarting the app. Tap here to give it a try.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Quest\'applicazione rende disponibili I gesti di navigazione per tutti i dispositivi Android. E non è tutto, non richiede il Root! Prima che tu possa usare i gesti, ci sono alcune cose da impostare per farla funzionare.</string>
     <string name="draw_over_apps_desc">Per rendere visibile della barra, avrai bisogno di consentire il permesso per essere mostrata sopra altre applicazioni. Tocca il pulsante sotto per farlo. Se l\'hai installata dal Play Store, questo permesso sarà già stato concesso.</string>
