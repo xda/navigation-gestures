@@ -13,6 +13,7 @@ import com.crashlytics.android.Crashlytics
 import com.xda.nobar.BuildConfig
 import com.xda.nobar.R
 import com.xda.nobar.activities.ui.LibraryActivity
+import com.xda.nobar.dev.PreferenceViewerActivity
 import com.xda.nobar.util.PrefManager
 import com.xda.nobar.util.launchUrl
 import com.xda.nobar.util.prefManager
@@ -32,6 +33,8 @@ class HelpFragment : PreferenceFragmentCompat() {
         const val CRASHLYTICS_ID = "crashlytics_id"
     }
 
+    private var clickCount = 0
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.prefs_about)
 
@@ -44,6 +47,17 @@ class HelpFragment : PreferenceFragmentCompat() {
         addPremiumListener()
         addLibListener()
         crashlyticsStuff()
+
+        findPreference<Preference>(VERSION)?.setOnPreferenceClickListener {
+            clickCount++
+
+            if (clickCount > 4) {
+                clickCount = 0
+                startActivity(Intent(requireActivity(), PreferenceViewerActivity::class.java))
+            }
+
+            true
+        }
     }
 
     private fun fillInVersion() {

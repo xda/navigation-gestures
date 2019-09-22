@@ -4,7 +4,6 @@
     <Preference
         android:title="@string/version"
         android:key="version"
-        android:enabled="false"
         />
 
     <SwitchPreference

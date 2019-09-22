@@ -164,6 +164,9 @@
         <activity android:name=".activities.selectors.AppColorSettingsActivity"
             android:exported="false"
             />
+        <activity android:name=".dev.PreferenceViewerActivity"
+            android:exported="false"
+            />
 
         <service
             android:name=".tiles.GestureToggle"
