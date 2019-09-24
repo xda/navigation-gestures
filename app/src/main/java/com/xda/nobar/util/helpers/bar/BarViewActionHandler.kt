@@ -14,10 +14,10 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
+import android.view.Display
 import android.view.KeyEvent
 import android.view.OrientationEventListener
 import android.view.Surface
-import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -151,8 +151,8 @@ class BarViewActionHandler(private val bar: BarView) {
                                 searchMan.launchAssist(Bundle())
                             } else {
                                 val launchAssistAction = searchMan::class.java
-                                                .getMethod("launchAssistAction", Int::class.java, String::class.java, Int::class.java)
-                                        launchAssistAction.invoke(searchMan, 1, null, -2)
+                                        .getMethod("launchAssistAction", Int::class.java, String::class.java, Int::class.java)
+                                launchAssistAction.invoke(searchMan, 1, null, -2)
                             }
                         }
                         typeOhm -> {
@@ -179,7 +179,16 @@ class BarViewActionHandler(private val bar: BarView) {
                             audio.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_NEXT))
                         }
                         premTypeSwitchIme -> context.runPremiumAction {
-                            imm.showInputMethodPicker()
+                            context.runSecureSettingsAction {
+                                //TODO: Use variable once we target Q
+                                if (Build.VERSION.SDK_INT < 29) {
+                                    imm.showInputMethodPicker()
+                                } else {
+                                    InputMethodManager::class.java
+                                            .getMethod("showInputMethodPickerFromSystem", Boolean::class.java, Int::class.java)
+                                            .invoke(imm, false, Display.DEFAULT_DISPLAY)
+                                }
+                            }
                         }
                         premTypeLaunchApp -> context.runPremiumAction {
                             val launchPackage = context.app.prefManager.getPackage(key)

@@ -382,12 +382,11 @@ fun Context.runPremiumAction(action: () -> Unit): Boolean {
     return app.isValidPremium
 }
 
-fun Context.runSecureSettingsAction(action: () -> Boolean): Boolean {
-    return if (hasWss) {
+fun Context.runSecureSettingsAction(action: () -> Unit) {
+    if (hasWss) {
         action.invoke()
     } else {
         IntroActivity.startForWss(this)
-        false
     }
 }
 
