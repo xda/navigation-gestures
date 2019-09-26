@@ -172,6 +172,7 @@
     <string name="accessibility">Accessibility</string>
     <string name="keep_alive">Keep Alive</string>
     <string name="overlay_nav_blackout">Blackout</string>
+    <string name="hide_dialog_apps">Hide Pill on Dialogs</string>
     <!--Descriptions-->
     <string name="gestures_desc">Gestenaktionen anpassen</string>
     <string name="appearance_desc">Aussehen der Navigation-Pille anpassen</string>
@@ -257,6 +258,7 @@
     <string name="overlay_nav_blackout_desc">When \"Overlay NavBar\" is enabled, place a black bar behind it to hide the original navigation buttons.</string>
     <string name="restart_for_restore_desc">We recommend that you restart Navigation Gestures after restoring your settings. Would you like to do so?</string>
     <string name="restart_problems_desc">Sometimes, your best bet for fixing problems with Navigation Gestures is restarting the app. Tap here to give it a try.</string>
+    <string name="hide_dialog_apps_desc">On certain devices, when the pill is shown, attempting to perform actions on dialogs in specific apps will result in an \"Overlay Detected\" error. Use this option to hide the pill in selected apps when a dialog is shown.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Diese App bringt großartige Gestennavigation auf jedes Android Gerät. Und das Beste ist, man benötigt hierfür keinen Root-Zugriff. Bevor du die Gestennavigation nutzen kann gibt es ein paar Sachen, die noch eingestellt werden müssen.</string>
     <string name="draw_over_apps_desc">Damit Navigation Gestures den Pill-Nav anzeigen kann, musst du der App Berechtigung geben, damit es über anderen Apps angezeigt werden kann. Tippe den unteren Knopf um dies zu tun. Wenn du die App über den Play Store installiert hat, wurde die berechtigung schon gewährt.</string>
