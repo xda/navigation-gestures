@@ -738,14 +738,32 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      * Listens for TouchWiz navbar hiding and coloring and adjusts appropriately
      * //TODO: More work may be needed on immersive detection
      */
-    inner class UIHandler : ContentObserver(logicHandler), ViewTreeObserver.OnGlobalLayoutListener, (Boolean) -> Unit {
+    inner class UIHandler : ContentObserver(logicHandler), ViewTreeObserver.OnGlobalLayoutListener, (Boolean) -> Unit, SharedPreferences.OnSharedPreferenceChangeListener {
         private var rotLock = Any()
+
+        private val navArray = ArrayList<String>()
+        private val barArray = ArrayList<String>()
+        private val immArray = ArrayList<String>()
+        private val windowArray = ArrayList<String>()
+        private val coloredArray = ArrayList<ColoredAppData>()
+        private val hideDialogApps = ArrayList<String>()
 
         fun register() {
             contentResolver.registerContentObserver(Settings.Global.getUriFor(POLICY_CONTROL), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
             contentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, this)
             contentResolver.registerContentObserver(Settings.Secure.getUriFor("navigation_mode"), true, this)
+
+            prefManager.apply {
+                loadBlacklistedNavPackages(navArray)
+                loadBlacklistedBarPackages(barArray)
+                loadBlacklistedImmPackages(immArray)
+                loadOtherWindowApps(windowArray)
+                loadColoredApps(coloredArray)
+                loadHideDialogApps(hideDialogApps)
+            }
+
+            registerOnSharedPreferenceChangeListener(this)
         }
 
         fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
@@ -766,6 +784,35 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         )
 
         private fun isPackageInstaller(pName: String?) = installers.contains(pName)
+
+        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+            when (key) {
+                PrefManager.BLACKLISTED_NAV_APPS -> {
+                    navArray.clear()
+                    prefManager.loadBlacklistedNavPackages(navArray)
+                }
+                PrefManager.BLACKLISTED_BAR_APPS -> {
+                    barArray.clear()
+                    prefManager.loadBlacklistedBarPackages(barArray)
+                }
+                PrefManager.BLACKLISTED_IMM_APPS -> {
+                    immArray.clear()
+                    prefManager.loadBlacklistedImmPackages(immArray)
+                }
+                PrefManager.OTHER_WINDOW_APPS -> {
+                    windowArray.clear()
+                    prefManager.loadOtherWindowApps(windowArray)
+                }
+                PrefManager.COLORED_APPS -> {
+                    coloredArray.clear()
+                    prefManager.loadColoredApps(coloredArray)
+                }
+                PrefManager.HIDE_DIALOG_APPS -> {
+                    hideDialogApps.clear()
+                    prefManager.loadHideDialogApps(hideDialogApps)
+                }
+            }
+        }
 
         @SuppressLint("WrongConstant")
         private fun handleNewEvent(info: AccessibilityEvent) {
@@ -800,7 +847,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.INSTALLER)
                 }
 
-                val hideDialogApps = ArrayList<String>().apply { prefManager.loadHideDialogApps(this) }
                 if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains("dialog") == true) {
                     disabledBarReasonManager.add(DisabledReasonManager.PillReasons.HIDE_DIALOG)
                 } else {
@@ -828,29 +874,24 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         @SuppressLint("ResourceType")
         private fun runNewNodeInfo(pName: String?) {
             if (pName != null) {
-                val navArray = ArrayList<String>().apply { prefManager.loadBlacklistedNavPackages(this) }
                 if (navArray.contains(pName)) {
                     disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
                 } else {
                     disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
                 }
 
-                val barArray = ArrayList<String>().apply { prefManager.loadBlacklistedBarPackages(this) }
                 if (barArray.contains(pName)) {
                     disabledBarReasonManager.add(DisabledReasonManager.PillReasons.BLACKLIST)
                 } else {
                     disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.BLACKLIST)
                 }
 
-
-                val immArray = ArrayList<String>().apply { prefManager.loadBlacklistedImmPackages(this) }
                 if (immArray.contains(pName)) {
                     disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.BLACKLIST)
                 } else {
                     disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.BLACKLIST)
                 }
 
-                val windowArray = ArrayList<String>().apply { prefManager.loadOtherWindowApps(this) }
                 if (windowArray.contains(pName)) {
                     if (!isInOtherWindowApp && prefManager.isActive) {
                         addBar(false)
@@ -858,7 +899,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     }
                 } else if (isInOtherWindowApp) isInOtherWindowApp = false
 
-                val coloredArray = ArrayList<ColoredAppData>().apply { prefManager.loadColoredApps(this) }
                 if (coloredArray.map { it.packageName }.contains(pName)) {
                     coloredArray.forEach {
                         if (it.packageName == pName) {
