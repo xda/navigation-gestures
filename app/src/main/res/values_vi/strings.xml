@@ -174,6 +174,7 @@ or
     <string name="accessibility">Accessibility</string>
     <string name="keep_alive">Keep Alive</string>
     <string name="overlay_nav_blackout">Blackout</string>
+    <string name="hide_dialog_apps">Hide Pill on Dialogs</string>
     <!--Descriptions-->
     <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
     <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
@@ -260,6 +261,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="overlay_nav_blackout_desc">When \"Overlay NavBar\" is enabled, place a black bar behind it to hide the original navigation buttons.</string>
     <string name="restart_for_restore_desc">We recommend that you restart Navigation Gestures after restoring your settings. Would you like to do so?</string>
     <string name="restart_problems_desc">Sometimes, your best bet for fixing problems with Navigation Gestures is restarting the app. Tap here to give it a try.</string>
+    <string name="hide_dialog_apps_desc">On certain devices, when the pill is shown, attempting to perform actions on dialogs in specific apps will result in an \"Overlay Detected\" error. Use this option to hide the pill in selected apps when a dialog is shown.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Ứng dụng mang đến cử chỉ điều hướng tuyệt vời đến bất kì thiết bị Android. Tốt hơn cả, nó không cần có root! Trước khi bạn có thể sử dụng cử chỉ, có vài thứ cần làm để thiết lập ứng dụng.</string>
     <string name="draw_over_apps_desc">Để Navigation Gesture có thể hiểu thị lên viên điều hướng, bạn phải cho phép vẽ đè lên các ứng dụng khác. Ấn nút bên dưới để thực hiện điều này. Nếu ứng dụng được tải từ Play Store, quyền này sẽ được cho cấp sẵn.</string>
