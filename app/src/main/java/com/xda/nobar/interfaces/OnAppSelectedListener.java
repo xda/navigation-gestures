@@ -12,5 +12,5 @@ public interface OnAppSelectedListener {
      * Called when the user selects an app
      * @param info the information corresponding to the selected app
      */
-    void onAppSelected(AppInfo info);
+    void onAppSelected(AppInfo info, boolean isChecked);
 }

@@ -107,6 +107,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val BLACKLISTED_IMM_APPS = "blacklisted_imm_apps"
         const val OTHER_WINDOW_APPS = "other_window_apps"
         const val COLORED_APPS = "colored_apps"
+        const val HIDE_DIALOG_APPS = "hide_dialog_apps"
 
         /* Misc */
         const val SUFFIX_INTENT = "_intent"
@@ -513,6 +514,12 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         packages.addAll(list)
     }
 
+    fun loadHideDialogApps(packages: ArrayList<String>) {
+        val list = getStringSet(HIDE_DIALOG_APPS, HashSet())
+
+        packages.addAll(list)
+    }
+
     /**
      * Save the list of apps that should keep the navbar shown
      */
@@ -538,6 +545,10 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         putString(COLORED_APPS, GsonBuilder()
                 .create()
                 .toJson(packages))
+    }
+
+    fun saveHideDialogApps(packages: ArrayList<String>) {
+        putStringSet(HIDE_DIALOG_APPS, HashSet(packages))
     }
 
     fun getBoolean(key: String, def: Boolean) = prefs.getBoolean(key, def)

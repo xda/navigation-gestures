@@ -13,9 +13,9 @@ import kotlin.collections.ArrayList
 class AppDrawerActivity : BaseAppSelectActivity<ResolveInfo, AppInfo>(), OnAppSelectedListener {
     private val launcherIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
 
-    override val adapter = AppSelectAdapter(false, true, this, showCheck = false)
+    override val adapter = AppSelectAdapter(isSingleSelect = false, showSummary = true, checkListener = this, showCheck = false)
 
-    override fun onAppSelected(info: AppInfo) {
+    override fun onAppSelected(info: AppInfo, isChecked: Boolean) {
         val intent = Intent(Intent.ACTION_MAIN)
         intent.component = ComponentName(info.packageName, info.activity)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

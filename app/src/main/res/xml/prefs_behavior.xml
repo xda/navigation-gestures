@@ -182,6 +182,13 @@
             />
 
         <Preference
+            android:title="@string/hide_dialog_apps"
+            android:summary="@string/hide_dialog_apps_desc"
+            android:key="hide_dialog_apps"
+            android:icon="@drawable/visibility_off"
+            />
+
+        <Preference
             android:title="@string/nav_blacklist"
             android:summary="@string/nav_blacklist_desc"
             android:icon="@drawable/border_bottom"

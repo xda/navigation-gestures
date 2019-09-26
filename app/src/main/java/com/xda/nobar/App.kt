@@ -46,6 +46,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.lang.reflect.Method
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -797,6 +799,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 } else {
                     disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.INSTALLER)
                 }
+
+                val hideDialogApps = ArrayList<String>().apply { prefManager.loadHideDialogApps(this) }
+                if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains("dialog") == true) {
+                    disabledBarReasonManager.add(DisabledReasonManager.PillReasons.HIDE_DIALOG)
+                } else {
+                    disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.HIDE_DIALOG)
+                }
             }
 
             if (prefManager.hideOnLockscreen && isOnKeyguard) {
@@ -1003,7 +1012,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 removeBar(false)
                 if (disabledBarReasonManager.run {
                             contains(DisabledReasonManager.PillReasons.INSTALLER)
-                                    || contains(DisabledReasonManager.PillReasons.PERMISSIONS)}) {
+                                    || contains(DisabledReasonManager.PillReasons.PERMISSIONS)
+                                    || contains(DisabledReasonManager.PillReasons.HIDE_DIALOG) }) {
                     removeImmersiveHelper()
                 } else {
                     addImmersiveHelper()

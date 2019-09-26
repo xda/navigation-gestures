@@ -31,6 +31,8 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
 
     override val sortedApps = SortedList(AppInfo::class.java, AppInfoSorterCallback(this, activity))
 
+    private val selectedApps = ArrayList<String>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             BaseSelectAdapter.VH(LayoutInflater.from(parent.context)
                     .inflate(if (isSingleSelect) R.layout.app_info_single else R.layout.app_info_multi, parent, false))
@@ -66,7 +68,14 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
             ContextCompat.getDrawable(view.context, R.drawable.blank)
         }
 
+        if (selectedApps.contains(app.packageName)) {
+            app.isChecked = true
+            check.isChecked = true
+        }
+
         view.setOnClickListener {
+            val app = sortedApps[holder.adapterPosition]
+
             check.isChecked = !check.isChecked || isSingleSelect
             app.isChecked = check.isChecked
 
@@ -81,7 +90,7 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
                         }
             }
 
-            checkListener.onAppSelected(app)
+            checkListener.onAppSelected(app, app.isChecked)
         }
 
         check.isChecked = app.isChecked
@@ -95,5 +104,10 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
                     it.isChecked = true
                     notifyItemChanged(sortedApps.indexOf(it))
                 }
+    }
+
+    fun setInitiallySelectedPackages(packages: ArrayList<String>) {
+        selectedApps.clear()
+        selectedApps.addAll(packages)
     }
 }

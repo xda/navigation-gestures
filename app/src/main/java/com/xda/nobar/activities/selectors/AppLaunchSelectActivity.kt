@@ -27,6 +27,9 @@ class AppLaunchSelectActivity : BaseAppSelectActivity<Any, AppInfo>() {
         const val EXTRA_PACKAGE = "package_name"
         const val EXTRA_INCLUDE_ALL_APPS = "include_all_apps"
         const val EXTRA_TITLE = "activity_title"
+        const val EXTRA_USE_SINGLE_SELECT = "use_single_select"
+        const val EXTRA_SHOW_UP_AS_CHECK = "show_up_as_check"
+        const val EXTRA_SELECTED_APPS = "selected_apps"
 
         const val FOR_ACTIVITY_SELECT = "activity_select"
 
@@ -35,30 +38,43 @@ class AppLaunchSelectActivity : BaseAppSelectActivity<Any, AppInfo>() {
 
     private val includeAllApps: Boolean
         get() = intent.getBooleanExtra(EXTRA_INCLUDE_ALL_APPS, false)
+    private val useSingleSelect: Boolean
+        get() = intent.getBooleanExtra(EXTRA_USE_SINGLE_SELECT, true)
+    private val showUpAsCheck: Boolean
+        get() = intent.getBooleanExtra(EXTRA_SHOW_UP_AS_CHECK, false)
 
-    override val adapter = AppSelectAdapter(isSingleSelect = true, showSummary = true, checkListener = OnAppSelectedListener { info ->
-        if (isForActivitySelect()) {
-            val intent = Intent(this, ActivityLaunchSelectActivity::class.java)
-            intent.putExtras(this.intent)
-            passAppInfo(intent, info)
-            startActivityForResult(intent, ACTIVITY_REQ)
-        } else {
-            if (key != null) {
-                prefManager.apply {
-                    putPackage(key!!, "${info.packageName}/${info.activity}")
-                    putDisplayName(key!!, info.displayName)
+    private val selectedApps by lazy { intent.getStringArrayListExtra(EXTRA_SELECTED_APPS) ?: ArrayList<String>() }
+
+    override val adapter by lazy {
+        AppSelectAdapter(isSingleSelect = useSingleSelect, showSummary = true, checkListener = OnAppSelectedListener { info, isChecked ->
+            if (isForActivitySelect()) {
+                val intent = Intent(this, ActivityLaunchSelectActivity::class.java)
+                intent.putExtras(this.intent)
+                passAppInfo(intent, info)
+                startActivityForResult(intent, ACTIVITY_REQ)
+            } else {
+                if (useSingleSelect) {
+                    if (key != null) {
+                        prefManager.apply {
+                            putPackage(key!!, "${info.packageName}/${info.activity}")
+                            putDisplayName(key!!, info.displayName)
+                        }
+                    }
+
+                    val resultIntent = Intent()
+                    resultIntent.putExtras(intent)
+                    resultIntent.putExtra(EXTRA_PACKAGE, info.packageName)
+                    resultIntent.putExtra(EXTRA_RESULT_DISPLAY_NAME, info.displayName)
+                    resultIntent.putExtra(FOR_ACTIVITY_SELECT, false)
+                    setResult(Activity.RESULT_OK, resultIntent)
+                    finish()
+                } else {
+                    if (isChecked) selectedApps.add(info.packageName)
+                    else selectedApps.remove(info.packageName)
                 }
             }
-
-            val resultIntent = Intent()
-            resultIntent.putExtras(intent)
-            resultIntent.putExtra(EXTRA_PACKAGE, info.packageName)
-            resultIntent.putExtra(EXTRA_RESULT_DISPLAY_NAME, info.displayName)
-            resultIntent.putExtra(FOR_ACTIVITY_SELECT, false)
-            setResult(Activity.RESULT_OK, resultIntent)
-            finish()
-        }
-    })
+        })
+    }
 
     private val customTitle by lazy { intent.getStringExtra(EXTRA_TITLE) }
 
@@ -67,11 +83,13 @@ class AppLaunchSelectActivity : BaseAppSelectActivity<Any, AppInfo>() {
 
         title = customTitle ?: resources.getText(
                 if (isForActivitySelect()) R.string.prem_launch_activity_no_format else R.string.prem_launch_app_no_format)
+
+        adapter.setInitiallySelectedPackages(selectedApps)
     }
 
     override fun canRun() = intent != null
 
-    override fun showUpAsCheckMark() = false
+    override fun showUpAsCheckMark() = showUpAsCheck
 
     override fun loadAppList(): ArrayList<Any> {
         return if (isForActivitySelect() || includeAllApps) {
@@ -116,10 +134,18 @@ class AppLaunchSelectActivity : BaseAppSelectActivity<Any, AppInfo>() {
             } else true
 
     override fun onBackPressed() {
-        val resultIntent = Intent()
-        resultIntent.putExtras(intent)
-        setResult(Activity.RESULT_CANCELED, resultIntent)
-        finish()
+        if (useSingleSelect) {
+            val resultIntent = Intent()
+            resultIntent.putExtras(intent)
+            setResult(Activity.RESULT_CANCELED, resultIntent)
+            finish()
+        } else {
+            val resultIntent = Intent()
+            resultIntent.putExtras(intent)
+            resultIntent.putExtra(EXTRA_SELECTED_APPS, selectedApps)
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

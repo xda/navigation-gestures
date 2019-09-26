@@ -1,14 +1,17 @@
 package com.xda.nobar.fragments.settings
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.xda.nobar.R
+import com.xda.nobar.activities.selectors.AppLaunchSelectActivity
 import com.xda.nobar.activities.selectors.BlacklistSelectorActivity
 import com.xda.nobar.prefs.SeekBarSwitchPreference
 import com.xda.nobar.util.PrefManager
+import com.xda.nobar.util.prefManager
 import com.xda.nobar.util.vibrator
 import tk.zwander.seekbarpreference.SeekBarPreference
 
@@ -19,6 +22,8 @@ class BehaviorFragment : BasePrefFragment() {
     companion object {
         const val BAR_BLACKLIST = "bar_blacklist"
         const val NAV_BLACKLIST = "nav_blacklist"
+
+        const val REQ_HIDE_DIALOG = 104
     }
 
     override val resId = R.xml.prefs_behavior
@@ -131,5 +136,32 @@ class BehaviorFragment : BasePrefFragment() {
         }
 
         vibeStrength.isVisible = customVibeStrength.run { isVisible && isChecked }
+
+        val hideDialogApps = findPreference<Preference>(PrefManager.HIDE_DIALOG_APPS)
+
+        hideDialogApps?.setOnPreferenceClickListener {
+            startActivityForResult(
+                    Intent(requireActivity(), AppLaunchSelectActivity::class.java).apply {
+                        putExtra(AppLaunchSelectActivity.EXTRA_INCLUDE_ALL_APPS, true)
+                        putExtra(AppLaunchSelectActivity.EXTRA_TITLE, resources.getString(R.string.hide_dialog_apps))
+                        putExtra(AppLaunchSelectActivity.EXTRA_SHOW_UP_AS_CHECK, true)
+                        putExtra(AppLaunchSelectActivity.EXTRA_USE_SINGLE_SELECT, false)
+                        putExtra(AppLaunchSelectActivity.EXTRA_SELECTED_APPS,
+                                ArrayList<String>().apply { requireActivity().prefManager.loadHideDialogApps(this) })
+                    },
+                    REQ_HIDE_DIALOG)
+
+            true
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQ_HIDE_DIALOG && resultCode == Activity.RESULT_OK) {
+            requireActivity()
+                    .prefManager
+                    .saveHideDialogApps(data!!.getStringArrayListExtra(AppLaunchSelectActivity.EXTRA_SELECTED_APPS))
+        }
     }
 }

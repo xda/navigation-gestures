@@ -98,9 +98,13 @@ abstract class BaseAppSelectActivity<ListItem : Any, Info : Parcelable> : AppCom
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            android.R.id.home -> onBackPressed()
+            android.R.id.home -> onUpPressed()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    open fun onUpPressed() {
+        onBackPressed()
     }
 
     override fun onBackPressed() {

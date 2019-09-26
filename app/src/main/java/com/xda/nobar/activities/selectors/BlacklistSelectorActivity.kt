@@ -29,7 +29,7 @@ class BlacklistSelectorActivity : BaseAppSelectActivity<ApplicationInfo, AppInfo
 
     private val currentlyBlacklisted = ArrayList<String>()
 
-    override val adapter = AppSelectAdapter(isSingleSelect = false, showSummary = true, checkListener = OnAppSelectedListener { info ->
+    override val adapter = AppSelectAdapter(isSingleSelect = false, showSummary = true, checkListener = OnAppSelectedListener { info, _ ->
         if (info.isChecked) currentlyBlacklisted.add(info.packageName)
         else currentlyBlacklisted.removeAll(Collections.singleton(info.packageName))
     })

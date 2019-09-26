@@ -13,7 +13,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class ActivityLaunchSelectActivity : BaseAppSelectActivity<ActivityInfo, AppInfo>() {
-    override val adapter = AppSelectAdapter(true, true, OnAppSelectedListener { info ->
+    override val adapter = AppSelectAdapter(isSingleSelect = true, showSummary = true, checkListener = OnAppSelectedListener { info, _ ->
         prefManager.apply {
             putActivity(key!!, "${info.packageName}/${info.activity}")
             putDisplayName(key!!, "${getPassedAppInfo()?.displayName}/${info.displayName}")
@@ -25,7 +25,7 @@ class ActivityLaunchSelectActivity : BaseAppSelectActivity<ActivityInfo, AppInfo
                 "${getPassedAppInfo()?.displayName}/${info.displayName}")
         setResult(Activity.RESULT_OK, resultIntent)
         finish()
-    }, true)
+    }, activity = true)
 
     override fun canRun() = intent.hasExtra(APPINFO) && key != null
 

@@ -16,8 +16,8 @@ class EventConfigureActivity : BaseAppSelectActivity<String, AppInfo>(), TaskerP
     override val context by lazy { this }
     override val inputForTasker: TaskerInput<EventInput>
         get() = TaskerInput(EventInput(gesture))
-    override val adapter = AppSelectAdapter(true, false, OnAppSelectedListener {
-        gesture = it.packageName
+    override val adapter = AppSelectAdapter(true, false, OnAppSelectedListener { info, _ ->
+        gesture = info.packageName
     }, false, isRemote = false)
 
     private var gesture: String? = null
