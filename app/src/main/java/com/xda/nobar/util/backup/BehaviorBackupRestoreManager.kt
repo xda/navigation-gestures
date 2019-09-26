@@ -43,6 +43,7 @@ class BehaviorBackupRestoreManager(context: Context) : BaseBackupRestoreManager(
         data[PrefManager.FADE_IN_FULSCREEN_APPS_PROGRESS] = prefManager.get(PrefManager.FADE_IN_FULSCREEN_APPS_PROGRESS)
         data[PrefManager.FADE_OPACITY] = prefManager.get(PrefManager.FADE_OPACITY)
         data[PrefManager.FADE_DURATION] = prefManager.get(PrefManager.FADE_DURATION)
+        data[PrefManager.HIDE_DIALOG_APPS] = prefManager.get(PrefManager.HIDE_DIALOG_APPS)
 
         serialize(dest, data)
     }
