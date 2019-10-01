@@ -37,6 +37,7 @@ import com.xda.nobar.services.KeepAliveService
 import com.xda.nobar.util.*
 import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.util.helpers.*
+import com.xda.nobar.util.helpers.bar.ActionManager
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.NavBlackout
 import io.fabric.sdk.android.Fabric

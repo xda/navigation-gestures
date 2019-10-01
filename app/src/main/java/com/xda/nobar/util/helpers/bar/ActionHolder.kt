@@ -2,7 +2,7 @@ package com.xda.nobar.util.helpers.bar
 
 import android.content.Context
 import com.xda.nobar.R
-import com.xda.nobar.util.prefManager
+import com.xda.nobar.util.actionManager
 
 class ActionHolder private constructor(private val context: Context) {
     companion object {
@@ -111,9 +111,7 @@ class ActionHolder private constructor(private val context: Context) {
     }
 
     fun hasAnyOfActions(vararg gestures: String): Boolean {
-        val map = HashMap<String, Int>().apply {
-            context.prefManager.getActionsList(this)
-        }
+        val map = context.actionManager.actionMap
 
         gestures.forEach {
             if (map[it] != typeNoAction) return true
@@ -123,9 +121,7 @@ class ActionHolder private constructor(private val context: Context) {
     }
 
     fun hasAllOfActions(vararg gestures: String): Boolean {
-        val map = HashMap<String, Int>().apply {
-            context.prefManager.getActionsList(this)
-        }
+        val map = context.actionManager.actionMap
 
         gestures.forEach {
             if (map[it].run { this == null || this == typeNoAction }) return false

@@ -438,6 +438,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
      */
     fun getActionsList(map: HashMap<String, Int>) {
         try {
+            map.clear()
+
             val actionHolder = actionHolder
 
             val left = getString(actionHolder.actionLeft, actionHolder.typeBack.toString())!!.toInt()
@@ -477,8 +479,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
             map[actionHolder.actionUpHoldCenter] = upHoldCenter
             map[actionHolder.actionUpRight] = upRight
             map[actionHolder.actionUpHoldRight] = upHoldRight
-        } catch (e: Exception) {
-        }
+        } catch (e: Exception) {}
     }
 
     /**

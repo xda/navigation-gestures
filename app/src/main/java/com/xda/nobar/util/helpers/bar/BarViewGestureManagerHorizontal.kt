@@ -232,20 +232,20 @@ class BarViewGestureManagerHorizontal(bar: BarView) : BaseBarViewGestureManager(
 
         override fun handleLongDown() {
             isRunningLongDown = true
-            if (actionMap[bar.actionHolder.actionDownHold] != bar.actionHolder.typeNoAction) {
+            if (actionManager.hasAction(bar.actionHolder.actionDownHold)) {
                 sendAction(bar.actionHolder.actionDownHold)
             }
         }
 
         override fun handleLongLeft() {
             isRunningLongLeft = true
-            if (actionMap[bar.actionHolder.actionLeftHold] != bar.actionHolder.typeNoAction) {
+            if (actionManager.hasAction(bar.actionHolder.actionLeftHold)) {
                 sendAction(bar.actionHolder.actionLeftHold)
             }
         }
 
         override fun handleLongRight() {
-            if (actionMap[bar.actionHolder.actionRightHold] != bar.actionHolder.typeNoAction) {
+            if (actionManager.hasAction(bar.actionHolder.actionRightHold)) {
                 isRunningLongRight = true
                 sendAction(bar.actionHolder.actionRightHold)
             }

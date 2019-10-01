@@ -195,7 +195,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         alpha = ALPHA_GONE
         View.inflate(context, R.layout.pill, this)
 
-        currentGestureDetector.singleton.loadActionMap()
         isSoundEffectsEnabled = context.prefManager.feedbackSound
     }
 
@@ -394,10 +393,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (currentGestureDetector.actionMap.keys.contains(key)) {
-            currentGestureDetector.singleton.loadActionMap()
-        }
-
         when (key) {
             PrefManager.CUSTOM_WIDTH,
             PrefManager.CUSTOM_WIDTH_PERCENT,
@@ -419,14 +414,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 context.refreshScreenSize()
                 handleRotationOrAnchorUpdate()
                 updateDividers()
-            }
-
-            PrefManager.IS_ACTIVE -> {
-                currentGestureDetector.singleton.refreshFlashlightState()
-            }
-
-            PrefManager.FLASHLIGHT_COMPAT -> {
-                currentGestureDetector.singleton.refreshFlashlightState()
             }
 
             PrefManager.PILL_BG,
@@ -979,8 +966,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         if (changed) {
             updateLayout()
-
-            currentGestureDetector.singleton.loadActionMap()
         }
     }
 

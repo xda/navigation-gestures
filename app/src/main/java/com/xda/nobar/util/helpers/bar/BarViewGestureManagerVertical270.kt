@@ -221,21 +221,21 @@ class BarViewGestureManagerVertical270(bar: BarView) : BaseBarViewGestureManager
     inner class GestureHandler(looper: Looper) : BaseGestureHandler(looper) {
         override fun handleLongUp() {
             isRunningLongUp = true
-            if (actionMap[bar.actionHolder.actionLeftHold] != bar.actionHolder.typeNoAction) {
+            if (actionManager.hasAction(bar.actionHolder.actionLeftHold)) {
                 sendAction(bar.actionHolder.actionLeftHold)
             }
         }
 
         override fun handleLongDown() {
             isRunningLongDown = true
-            if (actionMap[bar.actionHolder.actionRightHold] != bar.actionHolder.typeNoAction) {
+            if (actionManager.hasAction(bar.actionHolder.actionRightHold)) {
                 sendAction(bar.actionHolder.actionRightHold)
             }
         }
 
         override fun handleLongLeft() {
             isRunningLongLeft = true
-            if (actionMap[bar.actionHolder.actionDownHold] != bar.actionHolder.typeNoAction) {
+            if (actionManager.hasAction(bar.actionHolder.actionDownHold)) {
                 sendAction(bar.actionHolder.actionDownHold)
             }
         }

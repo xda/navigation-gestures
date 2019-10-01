@@ -37,9 +37,10 @@ import com.xda.nobar.util.flashlight.FlashlightControllerMarshmallow
 import com.xda.nobar.views.BarView
 import kotlinx.coroutines.launch
 
-class BarViewActionHandler(private val bar: BarView) {
-    private val context = bar.context
+class BarViewActionHandler(private val context: Context) {
 
+    private val bar: BarView
+        get() = context.app.bar
     private val audio = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     private val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -89,9 +90,9 @@ class BarViewActionHandler(private val bar: BarView) {
         }
     }
 
-    fun sendActionInternal(key: String, map: Map<String, Int>) {
+    fun sendActionInternal(key: String) {
         mainScope.launch {
-            val which = map[key] ?: return@launch
+            val which = context.actionManager.getAction(key) ?: return@launch
 
             if (which == bar.actionHolder.typeNoAction) return@launch
 

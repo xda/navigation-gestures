@@ -39,6 +39,7 @@ import com.xda.nobar.fragments.settings.BasePrefFragment
 import com.xda.nobar.interfaces.OnDialogChoiceMadeListener
 import com.xda.nobar.receivers.StartupReceiver
 import com.xda.nobar.util.helpers.bar.ActionHolder
+import com.xda.nobar.util.helpers.bar.ActionManager
 import com.xda.nobar.views.BarView
 import eu.chainfire.libsuperuser.Shell
 import kotlinx.coroutines.CoroutineScope
@@ -604,3 +605,6 @@ fun Context.restartApp() {
     am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 100, pendingIntent)
     exitProcess(0)
 }
+
+val Context.actionManager: ActionManager
+    get() = ActionManager.getInstance(app)

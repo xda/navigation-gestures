@@ -1,6 +1,5 @@
 package com.xda.nobar.util.helpers.bar
 
-import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
 import android.os.*
@@ -8,11 +7,11 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.annotation.CallSuper
 import com.xda.nobar.util.actionHolder
+import com.xda.nobar.util.actionManager
 import com.xda.nobar.util.app
 import com.xda.nobar.util.helpers.HiddenPillReasonManager
 import com.xda.nobar.util.prefManager
 import com.xda.nobar.views.BarView
-import java.util.*
 
 abstract class BaseBarViewGestureManager(internal val bar: BarView) {
     companion object {
@@ -35,48 +34,6 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
         internal const val MSG_TAP = 8
         internal const val MSG_DOUBLE_TAP = 9
         internal const val MSG_HOLD = 10
-    }
-
-    class Singleton private constructor(private val bar: BarView) {
-        companion object {
-            @SuppressLint("StaticFieldLeak")
-            private var instance: Singleton? = null
-
-            fun getInstance(bar: BarView): Singleton {
-                if (instance == null) instance = Singleton(bar)
-
-                return instance!!
-            }
-        }
-
-        val actionMap = HashMap<String, Int>()
-        val context: Context = bar.context
-        val actionHandler by lazy { BarViewActionHandler(bar) }
-        val gestureThread = HandlerThread("NoBar-Gesture").apply { start() }
-
-        /**
-         * Load the user's custom gesture/action pairings; default values if a pairing doesn't exist
-         */
-        fun loadActionMap() {
-            context.prefManager.getActionsList(actionMap)
-
-            refreshFlashlightState()
-        }
-
-        fun refreshFlashlightState() {
-            if (context.prefManager.isActive
-                    && actionMap.values.contains(bar.actionHolder.premTypeFlashlight)) {
-                val flashlightCompat = context.prefManager.flashlightCompat
-
-                if (!actionHandler.flashlightController.isCreated
-                        && !flashlightCompat)
-                    actionHandler.flashlightController.onCreate()
-                else if (flashlightCompat)
-                    actionHandler.flashlightController.onDestroy()
-            } else {
-                actionHandler.flashlightController.onDestroy()
-            }
-        }
     }
 
     internal abstract val adjCoord: Float
@@ -118,13 +75,11 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
     internal var origAdjX = 0F
     internal var origAdjY = 0F
 
-    val singleton = Singleton.getInstance(bar)
-    val actionMap = singleton.actionMap
-
     internal val detector = BaseDetector()
     internal val manager by lazy { GestureDetector(bar.context, detector) }
-    internal val actionHandler = singleton.actionHandler
-    internal val gestureThread = singleton.gestureThread
+    internal val actionManager = context.actionManager
+    internal val actionHandler = actionManager.actionHandler
+    internal val gestureThread = actionManager.gestureThread
 
     fun onTouchEvent(ev: MotionEvent?): Boolean {
         return handleTouchEvent(ev) || manager.onTouchEvent(ev)
@@ -230,23 +185,23 @@ abstract class BaseBarViewGestureManager(internal val bar: BarView) {
     }
 
     internal fun getSectionedUpHoldAction(coord: Float): Int? {
-        return if (!context.app.prefManager.sectionedPill) actionMap[bar.actionHolder.actionUpHold]
+        return if (!context.app.prefManager.sectionedPill) actionManager.getAction(bar.actionHolder.actionUpHold)
         else when (getSection(coord)) {
-            FIRST_SECTION -> actionMap[bar.actionHolder.actionUpHoldLeft]
-            SECOND_SECTION -> actionMap[bar.actionHolder.actionUpHoldCenter]
-            else -> actionMap[bar.actionHolder.actionUpHoldRight]
+            FIRST_SECTION -> actionManager.getAction(bar.actionHolder.actionUpHoldLeft)
+            SECOND_SECTION -> actionManager.getAction(bar.actionHolder.actionUpHoldCenter)
+            else -> actionManager.getAction(bar.actionHolder.actionUpHoldRight)
         }
     }
 
     internal fun sendAction(action: String) {
         if (action.isEligible()) {
             when (getSection(adjCoord)) {
-                FIRST_SECTION -> actionHandler.sendActionInternal("${action}_left", actionMap)
-                SECOND_SECTION -> actionHandler.sendActionInternal("${action}_center", actionMap)
-                THIRD_SECTION -> actionHandler.sendActionInternal("${action}_right", actionMap)
+                FIRST_SECTION -> actionHandler.sendActionInternal("${action}_left")
+                SECOND_SECTION -> actionHandler.sendActionInternal("${action}_center")
+                THIRD_SECTION -> actionHandler.sendActionInternal("${action}_right")
             }
         } else {
-            actionHandler.sendActionInternal(action, actionMap)
+            actionHandler.sendActionInternal(action)
         }
     }
 
