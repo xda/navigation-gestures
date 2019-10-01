@@ -49,12 +49,15 @@ abstract class BaseBackupRestoreManager(context: Context) : ContextWrapper(conte
 
         if (deserialize == null) toastInvalid()
         else {
+            onBeforeApply()
             deserialize.forEach {
                 prefManager.put(it.key, it.value)
             }
             restored()
         }
     }
+
+    open fun onBeforeApply() {}
 
     internal fun serialize(dest: Uri, data: HashMap<String, Any?>) {
         contentResolver.openFileDescriptor(dest, "w")?.use { fd ->

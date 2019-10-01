@@ -15,4 +15,8 @@ class OmniBackupRestoreManager(context: Context) : BaseBackupRestoreManager(cont
 
         serialize(dest, data)
     }
+
+    override fun onBeforeApply() {
+        prefManager.clear()
+    }
 }

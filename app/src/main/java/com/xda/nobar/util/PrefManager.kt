@@ -582,6 +582,10 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         }
     }
 
+    fun clear() {
+        prefs.edit().clear().commit()
+    }
+
     fun registerOnSharedPreferenceChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
         prefs.registerOnSharedPreferenceChangeListener(listener)
     }
