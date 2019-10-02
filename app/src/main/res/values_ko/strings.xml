@@ -173,6 +173,7 @@
     <string name="keep_alive">Keep Alive</string>
     <string name="overlay_nav_blackout">Blackout</string>
     <string name="hide_dialog_apps">Hide Pill on Dialogs</string>
+    <string name="improved_app_change_detection">Improved App-Change Detection</string>
     <!--Descriptions-->
     <string name="gestures_desc">제스처 동작 사용자 지정</string>
     <string name="appearance_desc">Pill의 외관 사용자 지정</string>
@@ -259,6 +260,7 @@
     <string name="restart_for_restore_desc">We recommend that you restart Navigation Gestures after restoring your settings. Would you like to do so?</string>
     <string name="restart_problems_desc">Sometimes, your best bet for fixing problems with Navigation Gestures is restarting the app. Tap here to give it a try.</string>
     <string name="hide_dialog_apps_desc">On certain devices, when the pill is shown, attempting to perform actions on dialogs in specific apps will result in an \"Overlay Detected\" error. Use this option to hide the pill in selected apps when a dialog is shown.</string>
+    <string name="improved_app_change_detection_desc">(Tap to enable.) Enabling this option on certain devices will result in a smoother experience when using app-specific options, such as Per-App Pill Color.</string>
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
     <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
@@ -309,6 +311,8 @@
     <string name="unable_to_execute_action">Unable to execute action.</string>
     <string name="invalid_backup">Invalid backup file.</string>
     <string name="grant_notification_policy">Please grant Navigation Gestures notification policy access.</string>
+    <string name="improved_app_change_detection_already_granted">This option is already enabled.</string>
+    <string name="improved_app_change_detection_grant">Please allow Navigation Gestures access to Usage Stats.</string>
     <!--Libraries-->
     <string name="material_intro">Material Intro (Fork)</string>
     <string name="slider_pref">SeekBarPreference</string>
