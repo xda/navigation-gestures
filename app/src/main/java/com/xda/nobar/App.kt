@@ -849,6 +849,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
             }
 
+            if (coloredArray.map { it.packageName }.contains(pName)) {
+                coloredArray.forEach {
+                    if (it.packageName == pName) {
+                        prefManager.autoPillBGColor = it.color
+                    }
+                }
+            } else {
+                prefManager.autoPillBGColor = 0
+            }
+
             if (prefManager.hideOnLockscreen && isOnKeyguard) {
                 disabledBarReasonManager.add(DisabledReasonManager.PillReasons.LOCK_SCREEN)
             } else {
@@ -893,16 +903,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         isInOtherWindowApp = true
                     }
                 } else if (isInOtherWindowApp) isInOtherWindowApp = false
-
-                if (coloredArray.map { it.packageName }.contains(pName)) {
-                    coloredArray.forEach {
-                        if (it.packageName == pName) {
-                            prefManager.autoPillBGColor = it.color
-                        }
-                    }
-                } else {
-                    prefManager.autoPillBGColor = 0
-                }
 
 //                try {
 //                    if (checkGoodPackage(pName, className)) {
