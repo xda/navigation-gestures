@@ -849,14 +849,18 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
             }
 
-            if (coloredArray.map { it.packageName }.contains(pName)) {
-                coloredArray.forEach {
-                    if (it.packageName == pName) {
-                        prefManager.autoPillBGColor = it.color
+            if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                    || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
+                    || pName != "com.android.systemui") {
+                if (coloredArray.map { it.packageName }.contains(pName)) {
+                    coloredArray.forEach {
+                        if (it.packageName == pName) {
+                            prefManager.autoPillBGColor = it.color
+                        }
                     }
+                } else {
+                    prefManager.autoPillBGColor = 0
                 }
-            } else {
-                prefManager.autoPillBGColor = 0
             }
 
             if (prefManager.hideOnLockscreen && isOnKeyguard) {
