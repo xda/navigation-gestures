@@ -113,9 +113,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     var navHidden = false
     var pillShown = false
-        set(value) {
-            field = value
-        }
     var helperAdded = false
     var keyboardShown = false
     var isValidPremium = false
