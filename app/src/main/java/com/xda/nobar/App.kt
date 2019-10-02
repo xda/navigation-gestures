@@ -762,13 +762,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
-            logicScope.launch {
-                synchronized(this) {
-                    try {
-                        handleNewEvent(info ?: return@launch)
-                    } catch (e: NullPointerException) {}
-                }
-            }
+            handleNewEvent(info ?: return)
         }
 
         private var oldPName: String? = null
@@ -809,74 +803,80 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
+        private val eventLock = Any()
+
         @SuppressLint("WrongConstant")
         private fun handleNewEvent(info: AccessibilityEvent) {
-            val pName = info.packageName?.toString()
-            val className = info.className?.toString()
+            logicScope.launch {
+                synchronized(eventLock) {
+                    val pName = info.packageName?.toString()
+                    val className = info.className?.toString()
 
-            if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                    || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
+                    if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                            || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
 
-                if (prefManager.shouldUseOverscanMethod
-                        && prefManager.useImmersiveWhenNavHidden) {
-                    if (pName == "com.android.systemui" && className?.contains("RecentsActivity") == true) {
-                        immersiveHelperManager.tempForcePolicyControlForRecents()
-                    } else {
-                        immersiveHelperManager.putBackOldImmersive()
-                    }
-                }
+                        if (prefManager.shouldUseOverscanMethod
+                                && prefManager.useImmersiveWhenNavHidden) {
+                            if (pName == "com.android.systemui" && className?.contains("RecentsActivity") == true) {
+                                immersiveHelperManager.tempForcePolicyControlForRecents()
+                            } else {
+                                immersiveHelperManager.putBackOldImmersive()
+                            }
+                        }
 
-                if (prefManager.hideOnPermissions
-                        && isPackageInstaller(pName)
-                        && (className?.contains("ManagePermissionsActivity") == true
-                                || className?.contains("GrantPermissionsActivity") == true)) {
-                    disabledBarReasonManager.add(DisabledReasonManager.PillReasons.PERMISSIONS)
-                } else {
-                    disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
-                }
+                        if (prefManager.hideOnPermissions
+                                && isPackageInstaller(pName)
+                                && (className?.contains("ManagePermissionsActivity") == true
+                                        || className?.contains("GrantPermissionsActivity") == true)) {
+                            disabledBarReasonManager.add(DisabledReasonManager.PillReasons.PERMISSIONS)
+                        } else {
+                            disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
+                        }
 
-                if (prefManager.hideOnInstaller
-                        && isPackageInstaller(pName) && className?.contains("PackageInstallerActivity") == true) {
-                    disabledBarReasonManager.add(DisabledReasonManager.PillReasons.INSTALLER)
-                } else {
-                    disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.INSTALLER)
-                }
+                        if (prefManager.hideOnInstaller
+                                && isPackageInstaller(pName) && className?.contains("PackageInstallerActivity") == true) {
+                            disabledBarReasonManager.add(DisabledReasonManager.PillReasons.INSTALLER)
+                        } else {
+                            disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.INSTALLER)
+                        }
 
-                if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains("dialog") == true) {
-                    disabledBarReasonManager.add(DisabledReasonManager.PillReasons.HIDE_DIALOG)
-                } else {
-                    disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.HIDE_DIALOG)
-                }
-            }
-
-            if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                    || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                    || pName != "com.android.systemui") {
-                if (coloredArray.map { it.packageName }.contains(pName)) {
-                    coloredArray.forEach {
-                        if (it.packageName == pName) {
-                            prefManager.autoPillBGColor = it.color
+                        if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains("dialog") == true) {
+                            disabledBarReasonManager.add(DisabledReasonManager.PillReasons.HIDE_DIALOG)
+                        } else {
+                            disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.HIDE_DIALOG)
                         }
                     }
-                } else {
-                    prefManager.autoPillBGColor = 0
+
+                    if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                            || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
+                            || pName != "com.android.systemui") {
+                        if (coloredArray.map { it.packageName }.contains(pName)) {
+                            coloredArray.forEach {
+                                if (it.packageName == pName) {
+                                    prefManager.autoPillBGColor = it.color
+                                }
+                            }
+                        } else {
+                            prefManager.autoPillBGColor = 0
+                        }
+                    }
+
+                    if (prefManager.hideOnLockscreen && isOnKeyguard) {
+                        disabledBarReasonManager.add(DisabledReasonManager.PillReasons.LOCK_SCREEN)
+                    } else {
+                        disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.LOCK_SCREEN)
+                    }
+
+                    updateKeyboardFlagState()
+
+                    if (pName != oldPName) {
+                        oldPName = pName
+
+                        runNewNodeInfo(pName)
+                    } else {
+                        updateBlacklists()
+                    }
                 }
-            }
-
-            if (prefManager.hideOnLockscreen && isOnKeyguard) {
-                disabledBarReasonManager.add(DisabledReasonManager.PillReasons.LOCK_SCREEN)
-            } else {
-                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.LOCK_SCREEN)
-            }
-
-            updateKeyboardFlagState()
-
-            if (pName != oldPName) {
-                oldPName = pName
-
-                runNewNodeInfo(pName)
-            } else {
-                updateBlacklists()
             }
         }
 
