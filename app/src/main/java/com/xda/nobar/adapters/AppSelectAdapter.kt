@@ -74,23 +74,27 @@ class AppSelectAdapter(val isSingleSelect: Boolean,
         }
 
         view.setOnClickListener {
-            val app = sortedApps[holder.adapterPosition]
+            val position = holder.adapterPosition
 
-            check.isChecked = !check.isChecked || isSingleSelect
-            app.isChecked = check.isChecked
+            if (position > -1) {
+                val app = sortedApps[position]
 
-            if (isSingleSelect) {
-                (0 until sortedApps.size())
-                        .map { int -> sortedApps[int] }
-                        .filterNot { info -> info == app }
-                        .filter { info -> info.isChecked }
-                        .forEach { info ->
-                            info.isChecked = false
-                            notifyItemChanged(sortedApps.indexOf(info))
-                        }
+                check.isChecked = !check.isChecked || isSingleSelect
+                app.isChecked = check.isChecked
+
+                if (isSingleSelect) {
+                    (0 until sortedApps.size())
+                            .map { int -> sortedApps[int] }
+                            .filterNot { info -> info == app }
+                            .filter { info -> info.isChecked }
+                            .forEach { info ->
+                                info.isChecked = false
+                                notifyItemChanged(sortedApps.indexOf(info))
+                            }
+                }
+
+                checkListener.onAppSelected(app, app.isChecked)
             }
-
-            checkListener.onAppSelected(app, app.isChecked)
         }
 
         check.isChecked = app.isChecked

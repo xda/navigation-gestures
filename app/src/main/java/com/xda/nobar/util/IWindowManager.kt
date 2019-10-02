@@ -75,7 +75,7 @@ object IWindowManager {
             true
         } catch (e: Throwable) {
             val res = Shell.run("sh", arrayOf("wm overscan $left,$top,$right,$bottom"), null, true)
-            res.joinToString("").isBlank()
+            res == null || res.joinToString("").isBlank()
         }
     }
 
