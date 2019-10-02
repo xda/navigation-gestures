@@ -4,6 +4,7 @@ package com.xda.nobar.util
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
+import android.app.AppOpsManager
 import android.app.KeyguardManager
 import android.app.PendingIntent
 import android.content.ClipData
@@ -608,3 +609,15 @@ fun Context.restartApp() {
 
 val Context.actionManager: ActionManager
     get() = ActionManager.getInstance(app)
+
+val Context.hasUsage: Boolean
+    get() {
+        val aom = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+
+        val hasAppOps = aom.checkOpNoThrow(AppOpsManager.OP_GET_USAGE_STATS, Process.myUid(), packageName) ==
+                                AppOpsManager.MODE_ALLOWED
+        val hasPerm = checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) ==
+                                PackageManager.PERMISSION_GRANTED
+
+        return hasAppOps || hasPerm
+    }

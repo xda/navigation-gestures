@@ -56,4 +56,11 @@
             />
     </Preference>
 
+    <Preference
+        android:title="@string/improved_app_change_detection"
+        android:summary="@string/improved_app_change_detection_desc"
+        android:key="improved_app_change_detection"
+        android:icon="@drawable/ic_search_24dp"
+        />
+
 </PreferenceScreen>

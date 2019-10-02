@@ -4,6 +4,7 @@ import android.Manifest
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.*
+import android.app.usage.UsageStatsManager
 import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -68,6 +69,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val imm by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
     val am by lazy { getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager }
     val immersiveHelperManager by lazy { ImmersiveHelperManager(this, uiHandler) }
+    val usm by lazy { getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager }
 
     val rootWrapper by lazy { RootWrapper(this) }
     val blackout by lazy { NavBlackout(this) }
@@ -809,8 +811,25 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private fun handleNewEvent(info: AccessibilityEvent) {
             logicScope.launch {
                 synchronized(eventLock) {
-                    val pName = info.packageName?.toString()
+                    var pName = info.packageName?.toString()
                     val className = info.className?.toString()
+
+                    if (hasUsage) {
+                        val time = System.currentTimeMillis()
+                        val appStats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time)
+
+                        if (appStats != null && appStats.isNotEmpty()) {
+                            pName = Collections.max(appStats) { o1, o2 -> compareValues(o1.lastTimeUsed, o2.lastTimeUsed) }.packageName
+                        }
+                    }
+
+                    if (pName != oldPName) {
+                        oldPName = pName
+
+                        runNewNodeInfo(pName)
+                    } else {
+                        updateBlacklists()
+                    }
 
                     if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                             || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
@@ -847,20 +866,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         }
                     }
 
-                    if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                            || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                            || pName != "com.android.systemui") {
-                        if (coloredArray.map { it.packageName }.contains(pName)) {
-                            coloredArray.forEach {
-                                if (it.packageName == pName) {
-                                    prefManager.autoPillBGColor = it.color
-                                }
-                            }
-                        } else {
-                            prefManager.autoPillBGColor = 0
-                        }
-                    }
-
                     if (prefManager.hideOnLockscreen && isOnKeyguard) {
                         disabledBarReasonManager.add(DisabledReasonManager.PillReasons.LOCK_SCREEN)
                     } else {
@@ -868,14 +873,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     }
 
                     updateKeyboardFlagState()
-
-                    if (pName != oldPName) {
-                        oldPName = pName
-
-                        runNewNodeInfo(pName)
-                    } else {
-                        updateBlacklists()
-                    }
                 }
             }
         }
@@ -907,6 +904,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         isInOtherWindowApp = true
                     }
                 } else if (isInOtherWindowApp) isInOtherWindowApp = false
+
+                if (coloredArray.map { it.packageName }.contains(pName)) {
+                    coloredArray.forEach {
+                        if (it.packageName == pName) {
+                            prefManager.autoPillBGColor = it.color
+                        }
+                    }
+                } else {
+                    prefManager.autoPillBGColor = 0
+                }
 
 //                try {
 //                    if (checkGoodPackage(pName, className)) {

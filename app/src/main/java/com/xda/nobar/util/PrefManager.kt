@@ -66,6 +66,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val OVERLAY_NAV = "overlay_nav"
         const val KEEP_ALIVE = "keep_alive"
         const val OVERLAY_NAV_BLACKOUT = "overlay_nav_blackout"
+        const val IMPROVED_APP_CHANGE_DETECTION = "improved_app_change_detection"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
