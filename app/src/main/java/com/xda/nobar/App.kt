@@ -831,6 +831,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         updateBlacklists()
                     }
 
+                    if (hasUsage
+                            || (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                                    || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
+                                    || pName != "com.android.systemui")
+                    ) processColor(pName)
+
                     if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                             || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
 
@@ -877,6 +883,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
+        private fun processColor(pName: String?) {
+            if (coloredArray.isNotEmpty()
+                    && coloredArray.map { it.packageName }.contains(pName)) {
+                coloredArray.forEach {
+                    if (it.packageName == pName) {
+                        prefManager.autoPillBGColor = it.color
+                    }
+                }
+            } else {
+                prefManager.autoPillBGColor = 0
+            }
+        }
+
         @SuppressLint("ResourceType")
         private fun runNewNodeInfo(pName: String?) {
             if (pName != null) {
@@ -904,16 +923,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         isInOtherWindowApp = true
                     }
                 } else if (isInOtherWindowApp) isInOtherWindowApp = false
-
-                if (coloredArray.map { it.packageName }.contains(pName)) {
-                    coloredArray.forEach {
-                        if (it.packageName == pName) {
-                            prefManager.autoPillBGColor = it.color
-                        }
-                    }
-                } else {
-                    prefManager.autoPillBGColor = 0
-                }
 
 //                try {
 //                    if (checkGoodPackage(pName, className)) {
@@ -1059,7 +1068,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 if (disabledBarReasonManager.run {
                             contains(DisabledReasonManager.PillReasons.INSTALLER)
                                     || contains(DisabledReasonManager.PillReasons.PERMISSIONS)
-                                    || contains(DisabledReasonManager.PillReasons.HIDE_DIALOG) }) {
+                                    || contains(DisabledReasonManager.PillReasons.HIDE_DIALOG)
+                        }) {
                     removeImmersiveHelper()
                 } else {
                     addImmersiveHelper()
