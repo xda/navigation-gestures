@@ -468,7 +468,7 @@ fun BarView.isAccessibilityAction(action: Int): Boolean {
     return accessibilityActions.contains(action)
 }
 
-private var rootActions = ArrayList<Int>()
+private val rootActions = ArrayList<Int>()
 
 fun BarView.isRootAction(action: Int): Boolean {
     if (rootActions.isEmpty()) {
