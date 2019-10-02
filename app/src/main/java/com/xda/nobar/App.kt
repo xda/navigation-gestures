@@ -487,7 +487,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             else hideNav()
 
             BaseProvider.sendUpdate(this)
-            true
         }
     }
 
