@@ -1038,8 +1038,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             msg.what = MSG_HIDE
             msg.obj = reason
 
-            removeMessages(MSG_HIDE, reason)
-
             if (!isHidden) sendMessageAtTime(msg, SystemClock.uptimeMillis() + time)
         }
 
@@ -1048,8 +1046,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             msg.what = MSG_SHOW
             msg.arg1 = if (forceShow) 1 else 0
             msg.obj = reason
-
-            removeMessages(MSG_SHOW, reason)
 
             if (isHidden) sendMessage(msg)
         }
