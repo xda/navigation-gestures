@@ -5,6 +5,8 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.widget.Toast
+import com.xda.nobar.R
 import com.xda.nobar.adapters.ShortcutSelectAdapter
 import com.xda.nobar.adapters.info.ShortcutInfo
 import com.xda.nobar.interfaces.OnShortcutSelectedListener
@@ -26,7 +28,12 @@ class ShortcutSelectActivity : BaseAppSelectActivity<ActivityInfo, ShortcutInfo>
         configIntent.`package` = it.packageName
         configIntent.component = ComponentName(it.packageName, it.clazz)
 
-        startActivityForResult(configIntent, CODE_CONFIG)
+        try {
+            startActivityForResult(configIntent, CODE_CONFIG)
+        } catch (e: Exception) {
+            Toast.makeText(this, R.string.unable_to_configure_shortcut, Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+        }
     })
 
     override fun canRun() = intent != null && key != null
