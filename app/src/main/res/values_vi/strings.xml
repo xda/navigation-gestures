@@ -316,6 +316,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="grant_notification_policy">Please grant Navigation Gestures notification policy access.</string>
     <string name="improved_app_change_detection_already_granted">This option is already enabled.</string>
     <string name="improved_app_change_detection_grant">Please allow Navigation Gestures access to Usage Stats.</string>
+    <string name="unable_to_configure_shortcut">Unable to configure shortcut.</string>
     <!--Libraries-->
     <string name="material_intro">Material Intro (Fork)</string>
     <string name="slider_pref">SeekBarPreference</string>
