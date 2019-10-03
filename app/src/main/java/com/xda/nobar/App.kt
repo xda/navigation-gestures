@@ -15,6 +15,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
+import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
@@ -1157,22 +1158,27 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         private val immersiveLock = Any()
+        private var oldImmersive = false
 
         private fun handleImmersiveChange(isImmersive: Boolean) {
             logicScope.launch {
                 synchronized(immersiveLock) {
-                    if (!IntroActivity.needsToRun(this@App)) {
-                        bar.updatePositionAndDimens()
+                    if (isImmersive != oldImmersive) {
+                        oldImmersive = isImmersive
 
-                        val hideInFullScreen = prefManager.hideInFullscreen
-                        val fadeInFullScreen = prefManager.fullscreenFade
+                        if (!IntroActivity.needsToRun(this@App)) {
+                            bar.updatePositionAndDimens()
 
-                        if (isImmersive) {
-                            if (hideInFullScreen && !fadeInFullScreen) bar.scheduleHide(HiddenPillReasonManager.FULLSCREEN)
-                            if (fadeInFullScreen && !hideInFullScreen) bar.scheduleFade(prefManager.fullscreenFadeTime)
-                        } else {
-                            bar.showPill(HiddenPillReasonManager.FULLSCREEN)
-                            bar.scheduleUnfade()
+                            val hideInFullScreen = prefManager.hideInFullscreen
+                            val fadeInFullScreen = prefManager.fullscreenFade
+
+                            if (isImmersive) {
+                                if (hideInFullScreen && !fadeInFullScreen) bar.scheduleHide(HiddenPillReasonManager.FULLSCREEN)
+                                if (fadeInFullScreen && !hideInFullScreen) bar.scheduleFade(prefManager.fullscreenFadeTime)
+                            } else {
+                                bar.showPill(HiddenPillReasonManager.FULLSCREEN)
+                                bar.scheduleUnfade()
+                            }
                         }
                     }
                 }
