@@ -133,8 +133,16 @@ val Context.isOnKeyguard: Boolean
                 || (if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) kgm.isDeviceLocked else false)
     }
 
+private var cachedTouchWiz: Boolean? = null
+
 val Context.isTouchWiz: Boolean
-    get() = packageManager.hasSystemFeature("com.samsung.feature.samsung_experience_mobile")
+    get() {
+        if (cachedTouchWiz == null) {
+            cachedTouchWiz = packageManager.hasSystemFeature("com.samsung.feature.samsung_experience_mobile")
+        }
+
+        return cachedTouchWiz!!
+    }
 
 val Context.minPillHeightDp: Int
     get() = resources.getInteger(R.integer.min_pill_height_dp)
