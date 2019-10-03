@@ -992,6 +992,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     inner class HideHandler(looper: Looper) : Handler(looper) {
+        private var isFaded = false
+
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
                 MSG_HIDE -> {
@@ -1004,27 +1006,31 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
 
                 MSG_FADE -> {
-                    if (!isHidden) {
+                    if (!isHidden && !isFaded) {
                         synchronized(this@BarView) {
                             animate()
                                     .alpha(context.prefManager.fadeOpacity / 100f)
+                                    .withEndAction {
+                                        isFaded = true
+                                    }
                                     .duration = context.prefManager.fadeDuration
                         }
                     }
                 }
 
                 MSG_UNFADE -> {
-                    val fadeDelay =
-                            if (isImmersive && context.prefManager.fullscreenFade) context.prefManager.fullscreenFadeTime
-                            else if (context.prefManager.autoFade) context.prefManager.autoFadeTime
-                            else -1
-
-                    if (!isHidden) {
+                    if (!isHidden && isFaded) {
                         synchronized(this@BarView) {
+                            val fadeDelay =
+                                    if (isImmersive && context.prefManager.fullscreenFade) context.prefManager.fullscreenFadeTime
+                                    else if (context.prefManager.autoFade) context.prefManager.autoFadeTime
+                                    else -1
+
                             animate()
                                     .alpha(ALPHA_ACTIVE)
                                     .setDuration(context.prefManager.fadeDuration)
                                     .withEndAction {
+                                        isFaded = false
                                         if (fadeDelay != -1L) scheduleFade(fadeDelay)
                                     }
                         }
