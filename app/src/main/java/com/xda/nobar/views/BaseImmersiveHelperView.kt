@@ -10,12 +10,11 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
 import com.xda.nobar.util.*
-import com.xda.nobar.util.helpers.ImmersiveHelperManager
 import kotlinx.coroutines.launch
 
 @SuppressLint("ViewConstructor")
 @Suppress("DEPRECATION")
-open class BaseImmersiveHelperView(context: Context, val manager: ImmersiveHelperManager,
+open class BaseImmersiveHelperView(context: Context,
                                    private val immersiveListener: (left: Int, top: Int, right: Int, bottom: Int) -> Unit) : View(context), ViewTreeObserver.OnGlobalLayoutListener {
     val params = WindowManager.LayoutParams().apply {
         width = WindowManager.LayoutParams.MATCH_PARENT

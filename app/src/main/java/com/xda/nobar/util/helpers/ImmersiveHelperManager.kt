@@ -11,7 +11,7 @@ import com.xda.nobar.views.BaseImmersiveHelperView
 class ImmersiveHelperManager(private val context: Context,
                              private val immersiveListener: (Boolean) -> Unit)
     : IImersiveHelperManager() {
-    val base = BaseImmersiveHelperView(context, this) { left, top, right, bottom ->
+    val base = BaseImmersiveHelperView(context) { left, top, right, bottom ->
         layout = Rect(left, top, right, bottom)
     }
 
