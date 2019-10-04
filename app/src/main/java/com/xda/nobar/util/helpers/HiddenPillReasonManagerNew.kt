@@ -10,8 +10,8 @@ class HiddenPillReasonManagerNew : TreeMap<Long, String>() {
         const val MANUAL = "manual"
     }
 
-    fun getMostRecentReason(): String {
-        return lastEntry().value
+    fun getMostRecentReason(): String? {
+        return lastEntry()?.value
     }
 
     fun removeReason(reason: String) {
