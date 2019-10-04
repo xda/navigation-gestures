@@ -352,10 +352,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun onCreate() {
-        updatePillColorsAndRadii()
-        updateDividers()
-
-        adjustPillShadowAndHitbox()
+        //This is just to allow BarView to be lazy-init on the main thread from App
     }
 
     /**
@@ -363,6 +360,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
      */
     override fun onAttachedToWindow() {
         context.app.pillShown = true
+
+        updatePillColorsAndRadii()
+        updateDividers()
+
+        adjustPillShadowAndHitbox()
 
         super.onAttachedToWindow()
 

@@ -15,7 +15,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
@@ -211,9 +210,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             handleKeepAlive()
 
-            //Make sure lazy init happens in main Thread
-            bar.onCreate()
-
             val core = CrashlyticsCore.Builder()
                     .disabled(BuildConfig.DEBUG)
                     .build()
@@ -268,6 +264,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             permissionListener.register()
             IWindowManager.watchRotation(displayChangeListener, Display.DEFAULT_DISPLAY)
             miniViewListener.register()
+
+            //Make sure lazy init happens in main Thread
+            bar.onCreate()
 
             mainHandler.post {
                 refreshScreenSize()
