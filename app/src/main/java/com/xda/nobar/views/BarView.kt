@@ -28,7 +28,7 @@ import androidx.dynamicanimation.animation.SpringAnimation
 import com.xda.nobar.R
 import com.xda.nobar.util.*
 import com.xda.nobar.util.IWindowManager
-import com.xda.nobar.util.helpers.HiddenPillReasonManager
+import com.xda.nobar.util.helpers.HiddenPillReasonManagerNew
 import com.xda.nobar.util.helpers.bar.BarViewGestureManagerHorizontal
 import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical
 import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical270
@@ -94,7 +94,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
         }
     }
-    private val hiddenPillReasons = HiddenPillReasonManager()
+    private val hiddenPillReasons = HiddenPillReasonManagerNew()
 
     /**
      * Get the user-defined or default duration of the pill animations
@@ -371,7 +371,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         show(null)
 
         if (context.prefManager.autoHide && !context.prefManager.autoFade) {
-            val reason = HiddenPillReasonManager.AUTO
+            val reason = HiddenPillReasonManagerNew.AUTO
             scheduleHide(reason)
         }
 
@@ -448,9 +448,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             PrefManager.AUTO_HIDE_PILL -> {
                 if (context.prefManager.autoHide) {
-                    if (!isHidden) scheduleHide(HiddenPillReasonManager.AUTO)
+                    if (!isHidden) scheduleHide(HiddenPillReasonManagerNew.AUTO)
                 } else {
-                    if (isHidden) hideHandler.show(HiddenPillReasonManager.AUTO)
+                    if (isHidden) hideHandler.show(HiddenPillReasonManagerNew.AUTO)
                 }
             }
 
@@ -560,10 +560,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     fun hidePill(auto: Boolean, autoReason: String?, overrideBeingTouched: Boolean = false) {
         mainScope.launch {
             synchronized(hideLock) {
-                if (auto && autoReason == null) throw IllegalArgumentException("autoReason must not be null when auto is true")
-                if (auto && autoReason != null) hiddenPillReasons.add(autoReason)
+                require(!(auto && autoReason == null)) { "autoReason must not be null when auto is true" }
+                if (auto && autoReason != null) hiddenPillReasons.addReason(autoReason)
 
-                if (!auto) hiddenPillReasons.add(HiddenPillReasonManager.MANUAL)
+                if (!auto) hiddenPillReasons.addReason(HiddenPillReasonManagerNew.MANUAL)
 
                 if (((!beingTouched && !isCarryingOutTouchAction) || overrideBeingTouched) && !isPillHidingOrShowing) {
                     if (context.app.isPillShown()) {
@@ -615,9 +615,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private fun parseHideTime(reason: String) =
             when (reason) {
-                HiddenPillReasonManager.AUTO -> context.prefManager.autoHideTime.toLong()
-                HiddenPillReasonManager.FULLSCREEN -> context.prefManager.hideInFullscreenTime.toLong()
-                HiddenPillReasonManager.KEYBOARD -> context.prefManager.hideOnKeyboardTime.toLong()
+                HiddenPillReasonManagerNew.AUTO -> context.prefManager.autoHideTime.toLong()
+                HiddenPillReasonManagerNew.FULLSCREEN -> context.prefManager.hideInFullscreenTime.toLong()
+                HiddenPillReasonManagerNew.KEYBOARD -> context.prefManager.hideOnKeyboardTime.toLong()
                 else -> throw IllegalArgumentException("$reason is not a valid hide reason")
             }
 
@@ -633,7 +633,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private fun showPillInternal(autoReasonToRemove: String?, forceShow: Boolean = false) {
         mainScope.launch {
             synchronized(showLock) {
-                if (autoReasonToRemove != null) hiddenPillReasons.remove(autoReasonToRemove)
+                if (autoReasonToRemove != null) hiddenPillReasons.removeReason(autoReasonToRemove)
                 if (!isPillHidingOrShowing) {
                     if (context.app.isPillShown()) {
                         isPillHidingOrShowing = true
@@ -672,7 +672,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 isPillHidingOrShowing = false
 
                 if (rehide && reason != null) {
-                    scheduleHide(if (reason == HiddenPillReasonManager.MANUAL)
+                    scheduleHide(if (reason == HiddenPillReasonManagerNew.MANUAL)
                         hiddenPillReasons.getMostRecentReason() ?: return@Runnable else reason)
                 }
             }, (if (animationDurationMs < 12) 12 else 0))

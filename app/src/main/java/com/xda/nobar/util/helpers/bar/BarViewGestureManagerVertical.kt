@@ -6,7 +6,7 @@ import android.view.MotionEvent
 import androidx.dynamicanimation.animation.DynamicAnimation
 import com.xda.nobar.util.actionHolder
 import com.xda.nobar.util.app
-import com.xda.nobar.util.helpers.HiddenPillReasonManager
+import com.xda.nobar.util.helpers.HiddenPillReasonManagerNew
 import com.xda.nobar.util.prefManager
 import com.xda.nobar.util.realScreenSize
 import com.xda.nobar.views.BarView
@@ -201,7 +201,7 @@ class BarViewGestureManagerVertical(bar: BarView) : BaseBarViewGestureManager(ba
                 && distanceY.absoluteValue < distanceX.absoluteValue) { //left swipe
             if (bar.isHidden && !bar.isPillHidingOrShowing && !bar.beingTouched) {
                 bar.vibrate(context.prefManager.vibrationDuration.toLong())
-                bar.showPill(HiddenPillReasonManager.MANUAL, true)
+                bar.showPill(HiddenPillReasonManagerNew.MANUAL, true)
             }
             true
         } else false

@@ -1042,8 +1042,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         immersiveHelperManager.exitNavImmersive()
 
                     if (prefManager.hidePillWhenKeyboardShown) {
-                        if (keyboardShown) bar.scheduleHide(HiddenPillReasonManager.KEYBOARD)
-                        else bar.showPill(HiddenPillReasonManager.KEYBOARD)
+                        if (keyboardShown) bar.scheduleHide(HiddenPillReasonManagerNew.KEYBOARD)
+                        else bar.showPill(HiddenPillReasonManagerNew.KEYBOARD)
                     }
                 } catch (e: NullPointerException) {
                 }
@@ -1172,10 +1172,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             val fadeInFullScreen = prefManager.fullscreenFade
 
                             if (isImmersive) {
-                                if (hideInFullScreen && !fadeInFullScreen) bar.scheduleHide(HiddenPillReasonManager.FULLSCREEN)
+                                if (hideInFullScreen && !fadeInFullScreen) bar.scheduleHide(HiddenPillReasonManagerNew.FULLSCREEN)
                                 if (fadeInFullScreen && !hideInFullScreen) bar.scheduleFade(prefManager.fullscreenFadeTime)
                             } else {
-                                bar.showPill(HiddenPillReasonManager.FULLSCREEN)
+                                bar.showPill(HiddenPillReasonManagerNew.FULLSCREEN)
                                 bar.scheduleUnfade()
                             }
                         }
