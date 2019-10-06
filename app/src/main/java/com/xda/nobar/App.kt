@@ -745,6 +745,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private val coloredArray = ArrayList<ColoredAppData>()
         private val hideDialogApps = ArrayList<String>()
 
+        private var useOverscan = false
+        private var immersiveWhenNavHidden = false
+        private var hidePermissions = false
+        private var hideInstaller = false
+        private var hideLockscreen = false
+        private var active = false
+        private var origInFullscreen = false
+
         fun register() {
             contentResolver.registerContentObserver(Settings.Global.getUriFor(POLICY_CONTROL), true, this)
             contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
@@ -758,6 +766,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 loadOtherWindowApps(windowArray)
                 loadColoredApps(coloredArray)
                 loadHideDialogApps(hideDialogApps)
+
+                useOverscan = shouldUseOverscanMethod
+                immersiveWhenNavHidden = useImmersiveWhenNavHidden
+                hidePermissions = hideOnPermissions
+                hideInstaller = hideOnInstaller
+                hideLockscreen = hideOnLockscreen
+                active = isActive
+                origInFullscreen = origBarInFullscreen
             }
 
             registerOnSharedPreferenceChangeListener(this)
@@ -801,6 +817,27 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 PrefManager.HIDE_DIALOG_APPS -> {
                     hideDialogApps.clear()
                     prefManager.loadHideDialogApps(hideDialogApps)
+                }
+                PrefManager.HIDE_NAV -> {
+                    useOverscan = prefManager.shouldUseOverscanMethod
+                }
+                PrefManager.USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN -> {
+                    immersiveWhenNavHidden = prefManager.useImmersiveWhenNavHidden
+                }
+                PrefManager.HIDE_ON_PERMISSIONS -> {
+                    hidePermissions = prefManager.hideOnPermissions
+                }
+                PrefManager.HIDE_ON_INSTALLER -> {
+                    hideInstaller = prefManager.hideOnInstaller
+                }
+                PrefManager.HIDE_ON_LOCKSCREEN -> {
+                    hideLockscreen = prefManager.hideOnLockscreen
+                }
+                PrefManager.IS_ACTIVE -> {
+                    active = prefManager.isActive
+                }
+                PrefManager.ORIG_NAV_IN_IMMERSIVE -> {
+                    origInFullscreen = prefManager.origBarInFullscreen
                 }
             }
         }
@@ -847,8 +884,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                             || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
 
-                        if (prefManager.shouldUseOverscanMethod
-                                && prefManager.useImmersiveWhenNavHidden) {
+                        if (useOverscan
+                                && immersiveWhenNavHidden) {
                             if (pName == systemUIPackage && className?.contains(recentsActivity) == true) {
                                 immersiveHelperManager.tempForcePolicyControlForRecents()
                             } else {
@@ -856,7 +893,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             }
                         }
 
-                        if (prefManager.hideOnPermissions
+                        if (hidePermissions
                                 && isPackageInstaller(pName)
                                 && (className?.contains(managePermissionsActivity) == true
                                         || className?.contains(grantPermissionsActivity) == true)) {
@@ -865,7 +902,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
                         }
 
-                        if (prefManager.hideOnInstaller
+                        if (hideInstaller
                                 && isPackageInstaller(pName) && className?.contains(packageInstallerActivity) == true) {
                             disabledBarReasonManager.add(DisabledReasonManager.PillReasons.INSTALLER)
                         } else {
@@ -879,7 +916,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         }
                     }
 
-                    if (prefManager.hideOnLockscreen && isOnKeyguard) {
+                    if (hideLockscreen && isOnKeyguard) {
                         disabledBarReasonManager.add(DisabledReasonManager.PillReasons.LOCK_SCREEN)
                     } else {
                         disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.LOCK_SCREEN)
@@ -926,7 +963,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
 
                 if (windowArray.contains(pName)) {
-                    if (!isInOtherWindowApp && prefManager.isActive) {
+                    if (!isInOtherWindowApp && active) {
                         addBar(false)
                         isInOtherWindowApp = true
                     }
@@ -1060,8 +1097,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         fun updateBlacklists() {
             if (disabledImmReasonManager.isEmpty()) {
-                if (prefManager.shouldUseOverscanMethod
-                        && prefManager.useImmersiveWhenNavHidden)
+                if (useOverscan
+                        && immersiveWhenNavHidden)
                     immersiveHelperManager.enterNavImmersive()
             } else {
                 immersiveHelperManager.exitNavImmersive()
@@ -1084,7 +1121,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
             }
 
-            if (prefManager.shouldUseOverscanMethod) {
+            if (useOverscan) {
                 if (disabledNavReasonManager.isEmpty()) {
                     hideNav()
                 } else {
@@ -1130,7 +1167,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             }
                         }
 
-                        if (prefManager.origBarInFullscreen) {
+                        if (origInFullscreen) {
                             if (immersiveHelperManager.isFullImmersive()) {
                                 disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.FULLSCREEN)
                             } else {
