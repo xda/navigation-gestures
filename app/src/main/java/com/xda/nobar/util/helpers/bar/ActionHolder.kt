@@ -40,6 +40,11 @@ class ActionHolder private constructor(private val context: Context) {
     val actionUpRight: String by lazy { context.resources.getString(R.string.action_up_right) }
     val actionUpHoldRight: String by lazy { context.resources.getString(R.string.action_up_hold_right) }
 
+    val complexActionLeftUp: String by lazy { context.resources.getString(R.string.action_complex_left_up) }
+    val complexActionRightUp: String by lazy { context.resources.getString(R.string.action_complex_right_up) }
+    val complexActionLeftDown: String by lazy { context.resources.getString(R.string.action_complex_left_down) }
+    val complexActionRightDown: String by lazy { context.resources.getString(R.string.action_complex_right_down) }
+
     val actionsList by lazy {
         arrayListOf(
                 actionLeft,
@@ -58,7 +63,11 @@ class ActionHolder private constructor(private val context: Context) {
                 actionUpCenter,
                 actionUpHoldCenter,
                 actionUpRight,
-                actionUpHoldRight
+                actionUpHoldRight,
+                complexActionLeftUp,
+                complexActionRightUp,
+                complexActionLeftDown,
+                complexActionRightDown
         )
     }
 
@@ -81,6 +90,10 @@ class ActionHolder private constructor(private val context: Context) {
             actionUpHoldCenter -> R.string.swipe_up_hold_center
             actionUpRight -> R.string.swipe_up_right
             actionUpHoldRight -> R.string.swipe_up_hold_right
+            complexActionLeftUp -> R.string.swipe_left_up
+            complexActionRightUp -> R.string.swipe_right_up
+            complexActionLeftDown -> R.string.swipe_left_down
+            complexActionRightDown -> R.string.swipe_right_down
             else -> 0
         }
         return if (res != 0) context.resources.getString(res)

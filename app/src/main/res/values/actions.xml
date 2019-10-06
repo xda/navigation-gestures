@@ -135,4 +135,10 @@
     <!--Right Action Keys-->
     <string name="action_up_right">up_right</string>
     <string name="action_up_hold_right">up_hold_right</string>
+
+    <!--Complex Action Keys-->
+    <string name="action_complex_left_up">complex_left_up</string>
+    <string name="action_complex_right_up">complex_right_up</string>
+    <string name="action_complex_left_down">complex_left_down</string>
+    <string name="action_complex_right_down">complex_right_down</string>
 </resources>

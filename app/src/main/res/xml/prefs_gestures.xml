@@ -199,4 +199,46 @@
 
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:title="@string/complex_swipes"
+        android:key="complex_swipes">
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_left_up"
+            android:key="@string/action_complex_left_up"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_right_up"
+            android:key="@string/action_complex_right_up"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_left_down"
+            android:key="@string/action_complex_left_down"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_right_down"
+            android:key="@string/action_complex_right_down"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
+
 </PreferenceScreen>

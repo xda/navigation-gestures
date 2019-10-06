@@ -462,6 +462,11 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
             val upRight = getString(actionHolder.actionUpRight, actionHolder.typeBack.toString())!!.toInt()
             val upHoldRight = getString(actionHolder.actionUpHoldRight, actionHolder.typeNoAction.toString())!!.toInt()
 
+            val complexLeftUp = getString(actionHolder.complexActionLeftUp, actionHolder.typeNoAction.toString())!!.toInt()
+            val complexRightUp = getString(actionHolder.complexActionRightUp, actionHolder.typeNoAction.toString())!!.toInt()
+            val complexLeftDown = getString(actionHolder.complexActionLeftDown, actionHolder.typeNoAction.toString())!!.toInt()
+            val complexRightDown = getString(actionHolder.complexActionRightDown, actionHolder.typeNoAction.toString())!!.toInt()
+
             map[actionHolder.actionLeft] = left
             map[actionHolder.actionRight] = right
             map[actionHolder.actionTap] = tap
@@ -480,6 +485,11 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
             map[actionHolder.actionUpHoldCenter] = upHoldCenter
             map[actionHolder.actionUpRight] = upRight
             map[actionHolder.actionUpHoldRight] = upHoldRight
+
+            map[actionHolder.complexActionLeftUp] = complexLeftUp
+            map[actionHolder.complexActionRightUp] = complexRightUp
+            map[actionHolder.complexActionLeftDown] = complexLeftDown
+            map[actionHolder.complexActionRightDown] = complexRightDown
         } catch (e: Exception) {}
     }
 

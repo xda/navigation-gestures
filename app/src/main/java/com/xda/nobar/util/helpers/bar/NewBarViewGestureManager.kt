@@ -25,6 +25,8 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         const val MSG_LONG_DOWN = 101
         const val MSG_LONG_LEFT = 102
         const val MSG_LONG_RIGHT = 103
+
+        const val MSG_LONG = 104
     }
 
     private enum class Mode {
@@ -57,6 +59,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private val actionHandler = actionManager.actionHandler
 
     private val swipes = ArrayList<Swipe>()
+    private var lastSwipe: Swipe? = null
 
     private var xThresh = prefManager.xThresholdPx
     private var yThreshUp = prefManager.yThresholdUpPx
@@ -156,7 +159,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                         bar.updateLayout()
                     }
 
-                    parseSwipe(false)
+                    parseSwipe()
                 }
             }
 
@@ -192,17 +195,17 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
         if (bar.params.x != bar.adjustedHomeX || bar.params.y != bar.adjustedHomeY) {
             if (bar.isVertical && (bar.isHidden || bar.isPillHidingOrShowing)) {
-                bar.animator.horizontalHomeY(DynamicAnimation.OnAnimationEndListener {_, _, _, _ ->
+                bar.animator.horizontalHomeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
                     isParamDone = true
                     if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
                 })
             } else if (!bar.isVertical && (bar.isHidden || bar.isPillHidingOrShowing)) {
-                bar.animator.horizontalHomeX(DynamicAnimation.OnAnimationEndListener {_, _, _, _ ->
+                bar.animator.horizontalHomeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
                     isParamDone = true
                     if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
                 })
             } else {
-                bar.animator.home(DynamicAnimation.OnAnimationEndListener {_, _, _, _ ->
+                bar.animator.home(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
                     isParamDone = true
                     if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
                 })
@@ -230,12 +233,12 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 //            }
 //        }
 
-        Log.e("NoBar", swipes.toString())
-        swipes.clear()
-
         if (!isForce) {
-            parseSwipe(true)
+            handleSwipe()
         }
+
+        swipes.clear()
+        lastSwipeDirection = null
 
         sentLongUp = false
         sentLongDown = false
@@ -253,23 +256,22 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
     private val swipeThresh = dpAsPx(32)
 
-    private fun addSwipe(swipe: Swipe, distance: Float, actionUp: Boolean) {
+    private fun addSwipe(swipe: Swipe, distance: Float) {
         if ((swipes.isEmpty() || swipes.last() != swipe)
                 && distance.absoluteValue > swipeThresh
-                && !actionUp)
+                && swipes.size < 2)
             swipes.add(swipe)
     }
 
-    private fun parseSwipe(isActionUp: Boolean = false) {
+    private var lastSwipeDirection: Swipe? = null
+
+    private fun parseSwipe() {
         val distanceX = prevX - downX
         val distanceY = prevY - downY
 
 //        Log.e("NoBar", "$distanceX, $distanceY")
 
-        if (isActionUp) longHandler.removeCallbacksAndMessages(null)
-
-        if ((actionHolder.hasAnyOfActions(actionHolder.actionLeft, actionHolder.actionLeftHold) || bar.isHidden)
-                && distanceX < 0
+        if (distanceX < 0
                 && distanceX < -xThresh
                 && distanceX.absoluteValue >= distanceY.absoluteValue) {
             //(long) left swipe
@@ -277,26 +279,21 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
             when {
                 bar.is90Vertical -> {
-                    addSwipe(Swipe.UP, distanceX, isActionUp)
-
-                    if (isActionUp) {
-                        sendUp()
-                        if (bar.isHidden) showPill()
-                    } else longHandler.postLongUp()
+                    lastSwipe = Swipe.UP
+                    addSwipe(Swipe.UP, distanceX)
                 }
                 bar.is270Vertical -> {
-                    addSwipe(Swipe.DOWN, distanceX, isActionUp)
-
-                    if (isActionUp) sendDown() else longHandler.postLongDown()
+                    lastSwipe = Swipe.DOWN
+                    addSwipe(Swipe.DOWN, distanceX)
                 }
                 else -> {
-                    addSwipe(Swipe.LEFT, distanceX, isActionUp)
-
-                    if (isActionUp) sendLeft() else longHandler.postLongLeft()
+                    lastSwipe = Swipe.LEFT
+                    addSwipe(Swipe.LEFT, distanceX)
                 }
             }
-        } else if ((actionHolder.hasAnyOfActions(actionHolder.actionRight, actionHolder.actionRightHold) || bar.isHidden)
-                && distanceX > 0
+
+            longHandler.postLong()
+        } else if (distanceX > 0
                 && distanceX > xThresh
                 && distanceX.absoluteValue >= distanceY.absoluteValue) {
             //(long) right swipe
@@ -304,76 +301,128 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
             when {
                 bar.is90Vertical -> {
-                    addSwipe(Swipe.DOWN, distanceX, isActionUp)
-
-                    if (isActionUp) sendDown() else longHandler.postLongDown()
+                    lastSwipe = Swipe.DOWN
+                    addSwipe(Swipe.DOWN, distanceX)
                 }
                 bar.is270Vertical -> {
-                    addSwipe(Swipe.UP, distanceX, isActionUp)
-
-                    if (isActionUp) {
-                        sendUp()
-                        if (bar.isHidden) showPill()
-                    } else longHandler.postLongUp()
+                    lastSwipe = Swipe.UP
+                    addSwipe(Swipe.UP, distanceX)
                 }
                 else -> {
-                    addSwipe(Swipe.RIGHT, distanceX, isActionUp)
-
-                    if (isActionUp) sendRight() else longHandler.postLongRight()
+                    lastSwipe = Swipe.RIGHT
+                    addSwipe(Swipe.RIGHT, distanceX)
                 }
             }
-        } else if ((actionHolder.hasSomeUpAction() || bar.isHidden)
-                && distanceY < 0
+
+            longHandler.postLong()
+        } else if (distanceY < 0
                 && distanceY < -yThreshUp) {
             //(long) up swipes
 //            Log.e("NoBar", "up")
 
             when {
                 bar.is90Vertical -> {
-                    addSwipe(Swipe.RIGHT, distanceY, isActionUp)
-
-                    if (isActionUp) sendRight() else longHandler.postLongRight()
+                    lastSwipe = Swipe.RIGHT
+                    addSwipe(Swipe.RIGHT, distanceY)
                 }
                 bar.is270Vertical -> {
-                    addSwipe(Swipe.LEFT, distanceY, isActionUp)
-
-                    if (isActionUp) sendLeft() else longHandler.postLongLeft()
+                    lastSwipe = Swipe.LEFT
+                    addSwipe(Swipe.LEFT, distanceY)
                 }
                 else -> {
-                    addSwipe(Swipe.UP, distanceY, isActionUp)
-
-                    if (isActionUp) {
-                        sendUp()
-                        if (bar.isHidden) showPill()
-                    } else longHandler.postLongUp()
+                    lastSwipe = Swipe.UP
+                    addSwipe(Swipe.UP, distanceY)
                 }
             }
-        } else if (actionHolder.hasAnyOfActions(actionHolder.actionDown, actionHolder.actionDownHold)
-                && distanceY > 0
+
+            longHandler.postLong()
+        } else if (distanceY > 0
                 && distanceY > yThreshDown) {
             //(long) down swipe
 //            Log.e("NoBar", "down")
 
             when {
                 bar.is90Vertical -> {
-                    addSwipe(Swipe.LEFT, distanceY, isActionUp)
-
-                    if (isActionUp) sendLeft() else longHandler.postLongLeft()
+                    lastSwipe = Swipe.LEFT
+                    addSwipe(Swipe.LEFT, distanceY)
                 }
                 bar.is270Vertical -> {
-                    addSwipe(Swipe.RIGHT, distanceY, isActionUp)
-
-                    if (isActionUp) sendRight() else longHandler.postLongRight()
+                    lastSwipe = Swipe.RIGHT
+                    addSwipe(Swipe.RIGHT, distanceY)
                 }
                 else -> {
-                    addSwipe(Swipe.DOWN, distanceY, isActionUp)
-
-                    if (isActionUp) sendDown() else longHandler.postLongDown()
+                    lastSwipe = Swipe.DOWN
+                    addSwipe(Swipe.DOWN, distanceY)
                 }
             }
+
+            longHandler.postLong()
         }
 
 //        Log.e("NoBar", "distanceX: $distanceX, \ndistanceY: $distanceY, \nxThresh: $xThresh, \nyThreshUp: $yThreshUp, \nyThreshDown: $yThreshDown")
+    }
+
+    private val patternLeftUp = arrayOf(Swipe.LEFT, Swipe.UP)
+    private val patternUpLeft = arrayOf(Swipe.UP, Swipe.LEFT)
+    private val patternRightUp = arrayOf(Swipe.RIGHT, Swipe.UP)
+    private val patternUpRight = arrayOf(Swipe.UP, Swipe.RIGHT)
+    private val patternLeftDown = arrayOf(Swipe.LEFT, Swipe.DOWN)
+    private val patternDownLeft = arrayOf(Swipe.DOWN, Swipe.LEFT)
+    private val patternRightDown = arrayOf(Swipe.RIGHT, Swipe.DOWN)
+    private val patternDownRight = arrayOf(Swipe.DOWN, Swipe.RIGHT)
+
+    private fun handleSwipe() {
+        longHandler.removeCallbacksAndMessages(null)
+
+        when {
+            actionHolder.run { hasAnyOfActions(complexActionLeftUp) }
+                    && (patternMatches(patternLeftUp)
+                    || patternMatches(patternUpLeft)) -> {
+                sendAction(actionHolder.complexActionLeftUp)
+            }
+            actionHolder.run { hasAnyOfActions(complexActionRightUp) }
+                    && (patternMatches(patternRightUp)
+                    || patternMatches(patternUpRight)) -> {
+                sendAction(actionHolder.complexActionRightUp)
+            }
+            actionHolder.run { hasAnyOfActions(complexActionLeftDown) }
+                    && (patternMatches(patternLeftDown)
+                    || patternMatches(patternDownLeft)) -> {
+                sendAction(actionHolder.complexActionLeftDown)
+            }
+            actionHolder.run { hasAnyOfActions(complexActionRightDown) }
+                    && (patternMatches(patternRightDown)
+                    || patternMatches(patternDownRight)) -> {
+                sendAction(actionHolder.complexActionRightDown)
+            }
+            else -> when (swipes.lastOrNull() ?: lastSwipe) {
+                Swipe.UP -> {
+                    if (!sentLongUp) {
+                        sendUp()
+                        if (bar.isHidden) showPill()
+                    }
+                }
+                Swipe.DOWN -> {
+                    if (!sentLongDown) {
+                        sendDown()
+                    }
+                }
+                Swipe.LEFT -> {
+                    if (!sentLongLeft) {
+                        sendLeft()
+                    }
+                }
+                Swipe.RIGHT -> {
+                    if (!sentLongRight) {
+                        sendRight()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun patternMatches(pattern: Array<Swipe>): Boolean {
+        return swipes.toTypedArray().contentEquals(pattern)
     }
 
     private fun setMode(rotation: Int) {
@@ -483,38 +532,46 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     }
 
     private fun sendLongUp() {
-        if (!bar.isHidden) {
+        val upHold = actionHolder.actionUpHold
+
+        if (!bar.isHidden && actionHolder.hasAnyOfActions(upHold)) {
             sentLongUp = true
 //            Log.e("NoBar", "longUp")
 
-            sendAction(actionHolder.actionUpHold)
+            sendAction(upHold)
         }
     }
 
     private fun sendLongDown() {
-        if (!bar.isHidden) {
+        val downHold = actionHolder.actionDownHold
+
+        if (!bar.isHidden && actionHolder.hasAnyOfActions(downHold)) {
             sentLongDown = true
 //            Log.e("NoBar", "longDown")
 
-            sendAction(actionHolder.actionDownHold)
+            sendAction(downHold)
         }
     }
 
     private fun sendLongLeft() {
-        if (!bar.isHidden) {
+        val leftHold = actionHolder.actionLeftHold
+
+        if (!bar.isHidden && actionHolder.hasAnyOfActions(leftHold)) {
             sentLongLeft = true
 //            Log.e("NoBar", "longLeft")
 
-            sendAction(actionHolder.actionLeftHold)
+            sendAction(leftHold)
         }
     }
 
     private fun sendLongRight() {
-        if (!bar.isHidden) {
+        val rightHold = actionHolder.actionRightHold
+
+        if (!bar.isHidden && actionHolder.hasAnyOfActions(rightHold)) {
             sentLongRight = false
 //            Log.e("NoBar", "longRight")
 
-            sendAction(actionHolder.actionRightHold)
+            sendAction(rightHold)
         }
     }
 
@@ -614,6 +671,15 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                 MSG_LONG_RIGHT -> {
                     sendLongRight()
                 }
+
+                MSG_LONG -> {
+                    when (swipes.lastOrNull()) {
+                        Swipe.UP -> sendLongUp()
+                        Swipe.DOWN -> sendLongDown()
+                        Swipe.LEFT -> sendLongLeft()
+                        Swipe.RIGHT -> sendLongRight()
+                    }
+                }
             }
         }
 
@@ -655,6 +721,11 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
             if (!hasMessages(MSG_LONG_RIGHT)) {
                 sendEmptyMessageDelayed(MSG_LONG_RIGHT, prefManager.holdTime.toLong())
             }
+        }
+
+        fun postLong() {
+            if (!hasMessages(MSG_LONG))
+                sendEmptyMessageDelayed(MSG_LONG, prefManager.holdTime.toLong())
         }
     }
 }
