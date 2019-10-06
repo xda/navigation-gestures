@@ -807,6 +807,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         private val eventLock = Any()
 
+        private val systemUIPackage = "com.android.systemui"
+        private val dialog = "dialog"
+        private val recentsActivity = "RecentsActivity"
+        private val managePermissionsActivity = "ManagerPermissionsActivity"
+        private val grantPermissionsActivity = "GrantPermissionsActivity"
+        private val packageInstallerActivity = "PackageInstallerActivity"
+
         @SuppressLint("WrongConstant")
         private fun handleNewEvent(info: AccessibilityEvent) {
             logicScope.launch {
@@ -834,7 +841,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (hasUsage
                             || (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                                     || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                                    || pName != "com.android.systemui")
+                                    || pName != systemUIPackage)
                     ) processColor(pName)
 
                     if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
@@ -842,7 +849,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                         if (prefManager.shouldUseOverscanMethod
                                 && prefManager.useImmersiveWhenNavHidden) {
-                            if (pName == "com.android.systemui" && className?.contains("RecentsActivity") == true) {
+                            if (pName == systemUIPackage && className?.contains(recentsActivity) == true) {
                                 immersiveHelperManager.tempForcePolicyControlForRecents()
                             } else {
                                 immersiveHelperManager.putBackOldImmersive()
@@ -851,21 +858,21 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                         if (prefManager.hideOnPermissions
                                 && isPackageInstaller(pName)
-                                && (className?.contains("ManagePermissionsActivity") == true
-                                        || className?.contains("GrantPermissionsActivity") == true)) {
+                                && (className?.contains(managePermissionsActivity) == true
+                                        || className?.contains(grantPermissionsActivity) == true)) {
                             disabledBarReasonManager.add(DisabledReasonManager.PillReasons.PERMISSIONS)
                         } else {
                             disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
                         }
 
                         if (prefManager.hideOnInstaller
-                                && isPackageInstaller(pName) && className?.contains("PackageInstallerActivity") == true) {
+                                && isPackageInstaller(pName) && className?.contains(packageInstallerActivity) == true) {
                             disabledBarReasonManager.add(DisabledReasonManager.PillReasons.INSTALLER)
                         } else {
                             disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.INSTALLER)
                         }
 
-                        if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains("dialog") == true) {
+                        if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains(dialog) == true) {
                             disabledBarReasonManager.add(DisabledReasonManager.PillReasons.HIDE_DIALOG)
                         } else {
                             disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.HIDE_DIALOG)
