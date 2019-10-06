@@ -136,9 +136,9 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                         }
 
                         bar.updateLayout()
-
-                        parseSwipe(false)
                     }
+
+                    parseSwipe(false)
                 }
             }
 
