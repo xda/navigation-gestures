@@ -9,6 +9,7 @@ import android.view.Surface
 import android.view.WindowManager
 import android.widget.LinearLayout
 import com.xda.nobar.util.*
+import kotlinx.coroutines.launch
 
 class NavBlackout : LinearLayout {
     constructor(context: Context) : super(context)
@@ -68,28 +69,30 @@ class NavBlackout : LinearLayout {
     private var oldParams: WindowManager.LayoutParams? = null
 
     fun add(wm: WindowManager) {
-        synchronized(addLock) {
-            val params = if (context.prefManager.useTabletMode) bottomParams
-            else when (cachedRotation) {
-                Surface.ROTATION_0 -> bottomParams
-                Surface.ROTATION_180 -> bottomParams
-                Surface.ROTATION_90 -> rightParams
-                Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) rightParams else leftParams
-                else -> return
-            }
+        logicScope.launch {
+            synchronized(addLock) {
+                val params = if (context.prefManager.useTabletMode) bottomParams
+                else when (cachedRotation) {
+                    Surface.ROTATION_0 -> bottomParams
+                    Surface.ROTATION_180 -> bottomParams
+                    Surface.ROTATION_90 -> rightParams
+                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) rightParams else leftParams
+                    else -> return@launch
+                }
 
-            if (!isAdded || !params.same(oldParams)) {
-                oldParams = params
+                if (!isAdded || !params.same(oldParams)) {
+                    oldParams = params
 
-                mainHandler.post {
-                    try {
-                        if (isAdded) wm.updateViewLayout(this@NavBlackout, params)
-                        else if (!waitingToAdd) {
-                            waitingToAdd = true
-                            wm.addView(this@NavBlackout, params)
+                    mainHandler.post {
+                        try {
+                            if (isAdded) wm.updateViewLayout(this@NavBlackout, params)
+                            else if (!waitingToAdd) {
+                                waitingToAdd = true
+                                wm.addView(this@NavBlackout, params)
+                            }
+                        } catch (e: Exception) {
+                            e.logStack()
                         }
-                    } catch (e: Exception) {
-                        e.logStack()
                     }
                 }
             }
