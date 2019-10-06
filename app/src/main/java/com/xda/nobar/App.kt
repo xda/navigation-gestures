@@ -884,12 +884,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         private fun processColor(pName: String?) {
-            if (coloredArray.isNotEmpty()
-                    && coloredArray.map { it.packageName }.contains(pName)) {
-                coloredArray.forEach {
-                    if (it.packageName == pName) {
-                        prefManager.autoPillBGColor = it.color
-                    }
+            if (coloredArray.isNotEmpty()) {
+                val info = coloredArray.filter { it.packageName == pName }
+
+                if (info.isNotEmpty()) {
+                    prefManager.autoPillBGColor = info[0].color
+                } else {
+                    prefManager.autoPillBGColor = 0
                 }
             } else {
                 prefManager.autoPillBGColor = 0
