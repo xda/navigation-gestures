@@ -27,6 +27,10 @@ class BarAnimator(private val bar: BarView) {
         animateHorizontally(listener, bar.adjustedHomeX)
     }
 
+    fun home(listener: DynamicAnimation.OnAnimationEndListener) {
+        animateBoth(listener, bar.adjustedHomeX, bar.adjustedHomeY)
+    }
+
     fun show(listener: DynamicAnimation.OnAnimationEndListener) {
         if (bar.isVertical) verticalHomeY(listener)
         else horizontalHomeY(listener)
@@ -78,6 +82,54 @@ class BarAnimator(private val bar: BarView) {
             }
 
             horizontalAnimator?.start()
+        } else {
+            listener?.onAnimationEnd(null, false, -1f, -1f)
+        }
+    }
+
+    fun animateBoth(listener: DynamicAnimation.OnAnimationEndListener?, toX: Int, toY: Int) {
+        cancelHorizontal()
+        cancelVertical()
+
+        if (bar.shouldAnimate) {
+            var endCount = 0
+            val endListener = DynamicAnimation.OnAnimationEndListener { animation, canceled, value, velocity ->
+                endCount++
+
+                if (endCount > 1) {
+                    listener?.onAnimationEnd(animation, canceled, value, velocity)
+                }
+            }
+
+            horizontalAnimator = SpringAnimation(bar.params, object : FloatPropertyCompat<WindowManager.LayoutParams>("x") {
+                override fun getValue(`object`: WindowManager.LayoutParams): Float {
+                    return `object`.x.toFloat()
+                }
+
+                override fun setValue(`object`: WindowManager.LayoutParams, value: Float) {
+                    `object`.x = value.toInt()
+                    bar.updateLayout()
+                }
+            }, toX.toFloat()).apply {
+                addEndListener(endListener)
+            }
+
+            horizontalAnimator?.start()
+
+            verticalAnimator = SpringAnimation(bar.params, object : FloatPropertyCompat<WindowManager.LayoutParams>("y") {
+                override fun getValue(`object`: WindowManager.LayoutParams): Float {
+                    return `object`.y.toFloat()
+                }
+
+                override fun setValue(`object`: WindowManager.LayoutParams, value: Float) {
+                    `object`.y = value.toInt()
+                    bar.updateLayout()
+                }
+            }, toY.toFloat()).apply {
+                addEndListener(endListener)
+            }
+
+            verticalAnimator?.start()
         } else {
             listener?.onAnimationEnd(null, false, -1f, -1f)
         }

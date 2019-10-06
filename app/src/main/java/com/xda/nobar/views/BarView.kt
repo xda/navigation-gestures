@@ -29,12 +29,10 @@ import com.xda.nobar.R
 import com.xda.nobar.util.*
 import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.util.helpers.HiddenPillReasonManagerNew
-import com.xda.nobar.util.helpers.bar.BarViewGestureManagerHorizontal
-import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical
-import com.xda.nobar.util.helpers.bar.BarViewGestureManagerVertical270
-import com.xda.nobar.util.helpers.bar.BaseBarViewGestureManager
+import com.xda.nobar.util.helpers.bar.NewBarViewGestureManager
 import kotlinx.android.synthetic.main.pill.view.*
 import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
 
 /**
  * The Pill™©® (not really copyrighted)
@@ -162,15 +160,21 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         get() = context.prefManager.anchorPill
                 && cachedRotation.run { this == Surface.ROTATION_270 || this == Surface.ROTATION_90 }
 
+    val is90Vertical: Boolean
+        get() = isVertical
+                && cachedRotation == Surface.ROTATION_90
+
     val is270Vertical: Boolean
         get() = isVertical
                 && cachedRotation == Surface.ROTATION_270
 
-    private val horizontalGestureManager = BarViewGestureManagerHorizontal(this)
-    private val verticalGestureManager = BarViewGestureManagerVertical(this)
-    private val vertical270GestureManager = BarViewGestureManagerVertical270(this)
+//    private val horizontalGestureManager = BarViewGestureManagerHorizontal(this)
+//    private val verticalGestureManager = BarViewGestureManagerVertical(this)
+//    private val vertical270GestureManager = BarViewGestureManagerVertical270(this)
 
-    var currentGestureDetector: BaseBarViewGestureManager = horizontalGestureManager
+//    var currentGestureDetector: BaseBarViewGestureManager = horizontalGestureManager
+
+    val currentGestureDetector: NewBarViewGestureManager = NewBarViewGestureManager(this)
 
     private val wm: WindowManager = context.app.wm
     val animator = BarAnimator(this)
@@ -923,8 +927,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (enabled) {
             val is270 = is270Vertical
 
-            currentGestureDetector =
-                    if (is270) vertical270GestureManager else verticalGestureManager
+//            currentGestureDetector =
+//                    if (is270) vertical270GestureManager else verticalGestureManager
 
             val newGrav = Gravity.CENTER or
                     if (!is270) Gravity.LEFT else Gravity.RIGHT
@@ -944,8 +948,17 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                     changed = true
                 }
             }
+
+            if (isHidden && pill.translationX == 0f) {
+                mainHandler.post {
+                    pill.translationX = pill.translationY * if (is270) -1 else 1
+                    pill.translationY = 0f
+                }
+
+                changed = true
+            }
         } else {
-            currentGestureDetector = horizontalGestureManager
+//            currentGestureDetector = horizontalGestureManager
 
             val newGrav = Gravity.TOP or Gravity.CENTER
 
@@ -963,6 +976,15 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                     changed = true
                 }
+            }
+
+            if (isHidden && pill.translationY == 0f) {
+                mainHandler.post {
+                    pill.translationY = pill.translationX.absoluteValue
+                    pill.translationX = 0f
+                }
+
+                changed = true
             }
         }
 

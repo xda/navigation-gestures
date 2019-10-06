@@ -1382,7 +1382,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             val which = intent.getIntExtra(Actions.EXTRA_ACTION, -1)
                             val key = intent.getStringExtra(Actions.EXTRA_GESTURE) ?: return
 
-                            bar.currentGestureDetector.actionHandler.handleAction(which, key)
+                            actionManager.actionHandler.handleAction(which, key)
                         }
                     }
                 }
