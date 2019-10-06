@@ -61,6 +61,8 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private var yThreshUp = prefManager.yThresholdUpPx
     private var yThreshDown = prefManager.yThresholdDownPx
 
+    private var slop = bar.viewConfig.scaledTouchSlop
+
     private val detector = GestureDetector(this, Listener())
     private val longHandler = LongHandler()
     private val actionHandler = actionManager.actionHandler
@@ -104,6 +106,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                 xThresh = prefManager.xThresholdPx
                 yThreshUp = prefManager.yThresholdUpPx
                 yThreshDown = prefManager.yThresholdDownPx
+                slop = bar.viewConfig.scaledTouchSlop
 
                 downX = e.rawX
                 downY = e.rawY
@@ -127,10 +130,14 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                 val velocityY = prevY - newY
 
                 val slop = bar.viewConfig.scaledTouchSlop
-                if ((newX - downX).absoluteValue < slop && (newY - downY).absoluteValue < slop) return false
 
-                prevX = newX
-                prevY = newY
+                if ((newX - downX).absoluteValue > slop) {
+                    prevX = newX
+                }
+
+                if ((newY - downY).absoluteValue > slop) {
+                    prevY = newY
+                }
 
                 if (!bar.isHidden) {
                     if (bar.shouldAnimate) {
@@ -252,7 +259,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         }
 
         swipes.clear()
-        lastSwipeDirection = null
+        lastSwipe = null
 
         sentLongUp = false
         sentLongDown = false
@@ -276,8 +283,6 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                 && swipes.size < 2)
             swipes.add(swipe)
     }
-
-    private var lastSwipeDirection: Swipe? = null
 
     private fun parseSwipe() {
         val distanceX = prevX - downX
