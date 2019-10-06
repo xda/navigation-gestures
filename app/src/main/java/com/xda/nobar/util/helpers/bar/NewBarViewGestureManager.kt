@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.util.Log
 import android.view.GestureDetector
 import android.view.IRotationWatcher
 import android.view.MotionEvent
@@ -370,7 +369,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
     private fun sendUp() {
         if (!sentLongUp && !bar.isHidden) {
-            Log.e("NoBar", "up")
+//            Log.e("NoBar", "up")
 
             sendAction(actionHolder.actionUp)
         }
@@ -378,7 +377,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
     private fun sendDown() {
         if (!sentLongDown && !bar.isHidden) {
-            Log.e("NoBar", "down")
+//            Log.e("NoBar", "down")
 
             sendAction(actionHolder.actionDown)
         }
@@ -386,7 +385,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
     private fun sendLeft() {
         if (!sentLongLeft && !bar.isHidden) {
-            Log.e("NoBar", "left")
+//            Log.e("NoBar", "left")
 
             sendAction(actionHolder.actionLeft)
         }
@@ -394,7 +393,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
     private fun sendRight() {
         if (!sentLongRight && !bar.isHidden) {
-            Log.e("NoBar", "right")
+//            Log.e("NoBar", "right")
 
             sendAction(actionHolder.actionRight)
         }
@@ -403,7 +402,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private fun sendLongUp() {
         if (!bar.isHidden) {
             sentLongUp = true
-            Log.e("NoBar", "longUp")
+//            Log.e("NoBar", "longUp")
 
             sendAction(actionHolder.actionUpHold)
         }
@@ -412,7 +411,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private fun sendLongDown() {
         if (!bar.isHidden) {
             sentLongDown = true
-            Log.e("NoBar", "longDown")
+//            Log.e("NoBar", "longDown")
 
             sendAction(actionHolder.actionDownHold)
         }
@@ -421,7 +420,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private fun sendLongLeft() {
         if (!bar.isHidden) {
             sentLongLeft = true
-            Log.e("NoBar", "longLeft")
+//            Log.e("NoBar", "longLeft")
 
             sendAction(actionHolder.actionLeftHold)
         }
@@ -430,7 +429,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private fun sendLongRight() {
         if (!bar.isHidden) {
             sentLongRight = false
-            Log.e("NoBar", "longRight")
+//            Log.e("NoBar", "longRight")
 
             sendAction(actionHolder.actionRightHold)
         }
@@ -440,7 +439,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         if (!bar.isHidden) {
             sentTap = true
 
-            Log.e("NoBar", "tap")
+//            Log.e("NoBar", "tap")
 
             sendAction(actionHolder.actionTap)
         }
@@ -448,7 +447,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
     private fun sendHold() {
         if (!bar.isHidden) {
-            Log.e("NoBar", "hold")
+//            Log.e("NoBar", "hold")
 
             sendAction(actionHolder.actionHold)
         }
@@ -457,7 +456,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private fun sendDouble() {
         if (!bar.isHidden) {
             if (!sentTap) {
-                Log.e("NoBar", "double")
+//                Log.e("NoBar", "double")
 
                 sendAction(actionHolder.actionDouble)
             }
