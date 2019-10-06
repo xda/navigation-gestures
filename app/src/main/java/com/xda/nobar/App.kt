@@ -834,15 +834,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         oldPName = pName
 
                         runNewNodeInfo(pName)
+
+                        if (hasUsage || (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                                || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
+                                || pName != systemUIPackage)) {
+                            processColor(pName)
+                        }
                     } else {
                         updateBlacklists()
                     }
-
-                    if (hasUsage
-                            || (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                                    || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                                    || pName != systemUIPackage)
-                    ) processColor(pName)
 
                     if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                             || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
