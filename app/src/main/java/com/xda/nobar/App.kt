@@ -858,17 +858,17 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     var pName = info.packageName?.toString()
                     val className = info.className?.toString()
 
-                    if (hasUsage) {
-                        val time = System.currentTimeMillis()
-                        val appStats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time)
-
-                        if (appStats != null && appStats.isNotEmpty()) {
-                            pName = Collections.max(appStats) { o1, o2 -> compareValues(o1.lastTimeUsed, o2.lastTimeUsed) }.packageName
-                        }
-                    }
-
                     if (pName != oldPName) {
                         oldPName = pName
+
+                        if (hasUsage) {
+                            val time = System.currentTimeMillis()
+                            val appStats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time)
+
+                            if (appStats != null && appStats.isNotEmpty()) {
+                                pName = Collections.max(appStats) { o1, o2 -> compareValues(o1.lastTimeUsed, o2.lastTimeUsed) }.packageName
+                            }
+                        }
 
                         runNewNodeInfo(pName)
 
