@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.util.Log
 import android.view.GestureDetector
 import android.view.IRotationWatcher
 import android.view.MotionEvent
@@ -21,12 +20,16 @@ import kotlin.math.absoluteValue
 
 class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.context.applicationContext) {
     companion object {
-        const val MSG_LONG_UP = 100
-        const val MSG_LONG_DOWN = 101
-        const val MSG_LONG_LEFT = 102
-        const val MSG_LONG_RIGHT = 103
-
         const val MSG_LONG = 104
+
+        private val patternLeftUp = arrayOf(Swipe.LEFT, Swipe.UP)
+        private val patternUpLeft = arrayOf(Swipe.UP, Swipe.LEFT)
+        private val patternRightUp = arrayOf(Swipe.RIGHT, Swipe.UP)
+        private val patternUpRight = arrayOf(Swipe.UP, Swipe.RIGHT)
+        private val patternLeftDown = arrayOf(Swipe.LEFT, Swipe.DOWN)
+        private val patternDownLeft = arrayOf(Swipe.DOWN, Swipe.LEFT)
+        private val patternRightDown = arrayOf(Swipe.RIGHT, Swipe.DOWN)
+        private val patternDownRight = arrayOf(Swipe.DOWN, Swipe.RIGHT)
     }
 
     private enum class Mode {
@@ -54,6 +57,10 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private var wasHidden = false
     private var isOverrideTap = false
 
+    private var xThresh = prefManager.xThresholdPx
+    private var yThreshUp = prefManager.yThresholdUpPx
+    private var yThreshDown = prefManager.yThresholdDownPx
+
     private val detector = GestureDetector(this, Listener())
     private val longHandler = LongHandler()
     private val actionHandler = actionManager.actionHandler
@@ -61,9 +68,16 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private val swipes = ArrayList<Swipe>()
     private var lastSwipe: Swipe? = null
 
-    private var xThresh = prefManager.xThresholdPx
-    private var yThreshUp = prefManager.yThresholdUpPx
-    private var yThreshDown = prefManager.yThresholdDownPx
+    private val adjCoord: Float
+        get() = when {
+            bar.is270Vertical || bar.is90Vertical -> {
+                downAdjY
+            }
+
+            else -> {
+                downAdjX
+            }
+        }
 
     private val rotationWatcher = object : IRotationWatcher.Stub() {
         override fun onRotationChanged(rotation: Int) {
@@ -362,15 +376,6 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 //        Log.e("NoBar", "distanceX: $distanceX, \ndistanceY: $distanceY, \nxThresh: $xThresh, \nyThreshUp: $yThreshUp, \nyThreshDown: $yThreshDown")
     }
 
-    private val patternLeftUp = arrayOf(Swipe.LEFT, Swipe.UP)
-    private val patternUpLeft = arrayOf(Swipe.UP, Swipe.LEFT)
-    private val patternRightUp = arrayOf(Swipe.RIGHT, Swipe.UP)
-    private val patternUpRight = arrayOf(Swipe.UP, Swipe.RIGHT)
-    private val patternLeftDown = arrayOf(Swipe.LEFT, Swipe.DOWN)
-    private val patternDownLeft = arrayOf(Swipe.DOWN, Swipe.LEFT)
-    private val patternRightDown = arrayOf(Swipe.RIGHT, Swipe.DOWN)
-    private val patternDownRight = arrayOf(Swipe.DOWN, Swipe.RIGHT)
-
     private fun handleSwipe() {
         longHandler.removeCallbacksAndMessages(null)
 
@@ -433,17 +438,6 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
             else -> Mode.LANDSCAPE_270
         }
     }
-
-    private val adjCoord: Float
-        get() = when {
-            bar.is270Vertical || bar.is90Vertical -> {
-                downAdjY
-            }
-
-            else -> {
-                downAdjX
-            }
-        }
 
     private fun sendAction(action: String) {
         if (action.isEligible()) {
@@ -656,22 +650,6 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     inner class LongHandler : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
-                MSG_LONG_UP -> {
-                    sendLongUp()
-                }
-
-                MSG_LONG_DOWN -> {
-                    sendLongDown()
-                }
-
-                MSG_LONG_LEFT -> {
-                    sendLongLeft()
-                }
-
-                MSG_LONG_RIGHT -> {
-                    sendLongRight()
-                }
-
                 MSG_LONG -> {
                     when (swipes.lastOrNull()) {
                         Swipe.UP -> sendLongUp()
@@ -680,46 +658,6 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                         Swipe.RIGHT -> sendLongRight()
                     }
                 }
-            }
-        }
-
-        fun postLongUp() {
-            removeMessages(MSG_LONG_LEFT)
-            removeMessages(MSG_LONG_RIGHT)
-            removeMessages(MSG_LONG_DOWN)
-
-            if (!hasMessages(MSG_LONG_UP)) {
-                sendEmptyMessageDelayed(MSG_LONG_UP, prefManager.holdTime.toLong())
-            }
-        }
-
-        fun postLongDown() {
-            removeMessages(MSG_LONG_LEFT)
-            removeMessages(MSG_LONG_RIGHT)
-            removeMessages(MSG_LONG_UP)
-
-            if (!hasMessages(MSG_LONG_DOWN)) {
-                sendEmptyMessageDelayed(MSG_LONG_DOWN, prefManager.holdTime.toLong())
-            }
-        }
-
-        fun postLongLeft() {
-            removeMessages(MSG_LONG_UP)
-            removeMessages(MSG_LONG_RIGHT)
-            removeMessages(MSG_LONG_DOWN)
-
-            if (!hasMessages(MSG_LONG_LEFT)) {
-                sendEmptyMessageDelayed(MSG_LONG_LEFT, prefManager.holdTime.toLong())
-            }
-        }
-
-        fun postLongRight() {
-            removeMessages(MSG_LONG_UP)
-            removeMessages(MSG_LONG_LEFT)
-            removeMessages(MSG_LONG_DOWN)
-
-            if (!hasMessages(MSG_LONG_RIGHT)) {
-                sendEmptyMessageDelayed(MSG_LONG_RIGHT, prefManager.holdTime.toLong())
             }
         }
 
