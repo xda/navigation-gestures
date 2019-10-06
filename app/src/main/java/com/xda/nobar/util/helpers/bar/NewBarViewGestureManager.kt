@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import android.view.GestureDetector
 import android.view.IRotationWatcher
 import android.view.MotionEvent
@@ -32,6 +33,13 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         LANDSCAPE_270,
     }
 
+    private enum class Swipe {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    }
+
     private var downX: Float = 0f
     private var downY: Float = 0f
     private var downAdjX: Float = 0f
@@ -47,6 +55,12 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private val detector = GestureDetector(this, Listener())
     private val longHandler = LongHandler()
     private val actionHandler = actionManager.actionHandler
+
+    private val swipes = ArrayList<Swipe>()
+
+    private var xThresh = prefManager.xThresholdPx
+    private var yThreshUp = prefManager.yThresholdUpPx
+    private var yThreshDown = prefManager.yThresholdDownPx
 
     private val rotationWatcher = object : IRotationWatcher.Stub() {
         override fun onRotationChanged(rotation: Int) {
@@ -69,6 +83,10 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         when (e?.action) {
             MotionEvent.ACTION_DOWN -> {
                 wasHidden = bar.isHidden
+
+                xThresh = prefManager.xThresholdPx
+                yThreshUp = prefManager.yThresholdUpPx
+                yThreshDown = prefManager.yThresholdDownPx
 
                 downX = e.rawX
                 downY = e.rawY
@@ -147,7 +165,6 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
                 wasHidden = bar.isHidden
                 bar.beingTouched = false
-                bar.isCarryingOutTouchAction = false
             }
         }
 
@@ -213,6 +230,9 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 //            }
 //        }
 
+        Log.e("NoBar", swipes.toString())
+        swipes.clear()
+
         if (!isForce) {
             parseSwipe(true)
         }
@@ -222,14 +242,29 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         sentLongLeft = false
         sentLongRight = false
         sentTap = false
+
+        downX = 0f
+        downY = 0f
+        prevX = 0f
+        prevY = 0f
+        downAdjX = 0f
+        downAdjY = 0f
+    }
+
+    private val swipeThresh = dpAsPx(32)
+
+    private fun addSwipe(swipe: Swipe, distance: Float, actionUp: Boolean) {
+        if ((swipes.isEmpty() || swipes.last() != swipe)
+                && distance.absoluteValue > swipeThresh
+                && !actionUp)
+            swipes.add(swipe)
     }
 
     private fun parseSwipe(isActionUp: Boolean = false) {
         val distanceX = prevX - downX
         val distanceY = prevY - downY
-        val xThresh = prefManager.xThresholdPx
-        val yThreshUp = prefManager.yThresholdUpPx
-        val yThreshDown = prefManager.yThresholdDownPx
+
+//        Log.e("NoBar", "$distanceX, $distanceY")
 
         if (isActionUp) longHandler.removeCallbacksAndMessages(null)
 
@@ -241,12 +276,24 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 //            Log.e("NoBar", "left")
 
             when {
-                bar.is90Vertical -> if (isActionUp) {
-                    sendUp()
-                    if (bar.isHidden) showPill()
-                } else longHandler.postLongUp()
-                bar.is270Vertical -> if (isActionUp) sendDown() else longHandler.postLongDown()
-                else -> if (isActionUp) sendLeft() else longHandler.postLongLeft()
+                bar.is90Vertical -> {
+                    addSwipe(Swipe.UP, distanceX, isActionUp)
+
+                    if (isActionUp) {
+                        sendUp()
+                        if (bar.isHidden) showPill()
+                    } else longHandler.postLongUp()
+                }
+                bar.is270Vertical -> {
+                    addSwipe(Swipe.DOWN, distanceX, isActionUp)
+
+                    if (isActionUp) sendDown() else longHandler.postLongDown()
+                }
+                else -> {
+                    addSwipe(Swipe.LEFT, distanceX, isActionUp)
+
+                    if (isActionUp) sendLeft() else longHandler.postLongLeft()
+                }
             }
         } else if ((actionHolder.hasAnyOfActions(actionHolder.actionRight, actionHolder.actionRightHold) || bar.isHidden)
                 && distanceX > 0
@@ -256,12 +303,24 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 //            Log.e("NoBar", "right")
 
             when {
-                bar.is90Vertical -> if (isActionUp) sendDown() else longHandler.postLongDown()
-                bar.is270Vertical -> if (isActionUp) {
-                    sendUp()
-                    if (bar.isHidden) showPill()
-                } else longHandler.postLongUp()
-                else -> if (isActionUp) sendRight() else longHandler.postLongRight()
+                bar.is90Vertical -> {
+                    addSwipe(Swipe.DOWN, distanceX, isActionUp)
+
+                    if (isActionUp) sendDown() else longHandler.postLongDown()
+                }
+                bar.is270Vertical -> {
+                    addSwipe(Swipe.UP, distanceX, isActionUp)
+
+                    if (isActionUp) {
+                        sendUp()
+                        if (bar.isHidden) showPill()
+                    } else longHandler.postLongUp()
+                }
+                else -> {
+                    addSwipe(Swipe.RIGHT, distanceX, isActionUp)
+
+                    if (isActionUp) sendRight() else longHandler.postLongRight()
+                }
             }
         } else if ((actionHolder.hasSomeUpAction() || bar.isHidden)
                 && distanceY < 0
@@ -270,12 +329,24 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 //            Log.e("NoBar", "up")
 
             when {
-                bar.is90Vertical -> if (isActionUp) sendRight() else longHandler.postLongRight()
-                bar.is270Vertical -> if (isActionUp) sendLeft() else longHandler.postLongLeft()
-                else -> if (isActionUp) {
-                    sendUp()
-                    if (bar.isHidden) showPill()
-                } else longHandler.postLongUp()
+                bar.is90Vertical -> {
+                    addSwipe(Swipe.RIGHT, distanceY, isActionUp)
+
+                    if (isActionUp) sendRight() else longHandler.postLongRight()
+                }
+                bar.is270Vertical -> {
+                    addSwipe(Swipe.LEFT, distanceY, isActionUp)
+
+                    if (isActionUp) sendLeft() else longHandler.postLongLeft()
+                }
+                else -> {
+                    addSwipe(Swipe.UP, distanceY, isActionUp)
+
+                    if (isActionUp) {
+                        sendUp()
+                        if (bar.isHidden) showPill()
+                    } else longHandler.postLongUp()
+                }
             }
         } else if (actionHolder.hasAnyOfActions(actionHolder.actionDown, actionHolder.actionDownHold)
                 && distanceY > 0
@@ -284,9 +355,21 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 //            Log.e("NoBar", "down")
 
             when {
-                bar.is90Vertical -> if (isActionUp) sendLeft() else longHandler.postLongLeft()
-                bar.is270Vertical -> if (isActionUp) sendRight() else longHandler.postLongRight()
-                else -> if (isActionUp) sendDown() else longHandler.postLongDown()
+                bar.is90Vertical -> {
+                    addSwipe(Swipe.LEFT, distanceY, isActionUp)
+
+                    if (isActionUp) sendLeft() else longHandler.postLongLeft()
+                }
+                bar.is270Vertical -> {
+                    addSwipe(Swipe.RIGHT, distanceY, isActionUp)
+
+                    if (isActionUp) sendRight() else longHandler.postLongRight()
+                }
+                else -> {
+                    addSwipe(Swipe.DOWN, distanceY, isActionUp)
+
+                    if (isActionUp) sendDown() else longHandler.postLongDown()
+                }
             }
         }
 
