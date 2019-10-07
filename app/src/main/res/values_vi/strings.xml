@@ -185,6 +185,7 @@ or
     <string name="swipe_long_left_down">Long Swipe Left &amp; Down or Down &amp; Left</string>
     <string name="swipe_long_right_down">Long Swipe Right &amp; Down or Down &amp; Right</string>
     <string name="complex_swipes">Complex Swipes</string>
+    <string name="switch_app_delay">Switch App Delay</string>
     <!--Descriptions-->
     <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
     <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
@@ -273,6 +274,7 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="restart_problems_desc">Sometimes, your best bet for fixing problems with Navigation Gestures is restarting the app. Tap here to give it a try.</string>
     <string name="hide_dialog_apps_desc">On certain devices, when the pill is shown, attempting to perform actions on dialogs in specific apps will result in an \"Overlay Detected\" error. Use this option to hide the pill in selected apps when a dialog is shown.</string>
     <string name="improved_app_change_detection_desc">(Tap to enable.) Enabling this option on certain devices will result in a smoother experience when using app-specific options, such as Per-App Pill Color.</string>
+    <string name="switch_app_delay_desc">Navigation Gestures\' Switch App gesture simulates a double-press of the Recents button. Different devices will respond best to different delays between the two presses. You can set that delay here.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Ứng dụng mang đến cử chỉ điều hướng tuyệt vời đến bất kì thiết bị Android. Tốt hơn cả, nó không cần có root! Trước khi bạn có thể sử dụng cử chỉ, có vài thứ cần làm để thiết lập ứng dụng.</string>
     <string name="draw_over_apps_desc">Để Navigation Gesture có thể hiểu thị lên viên điều hướng, bạn phải cho phép vẽ đè lên các ứng dụng khác. Ấn nút bên dưới để thực hiện điều này. Nếu ứng dụng được tải từ Play Store, quyền này sẽ được cho cấp sẵn.</string>
