@@ -1,148 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Actions-->
-    <string name="home">Home</string>
-    <string name="back">Back</string>
-    <string name="ohm">Toggle OHM</string>
-    <string name="recents">Recent Apps</string>
-    <string name="hide">Hide Pill</string>
-    <string name="assist">Assistant</string>
-    <string name="switch_apps">Previous App (Nougat+)</string>
-    <string name="nothing">No Action</string>
-    <string name="prem_notif">Notifications (Premium)</string>
-    <string name="prem_qs">Quick Settings (Premium)</string>
-    <string name="prem_power">Power Menu (Premium)</string>
-    <string name="split">Split Screen (Nougat+)</string>
-    <string name="prem_prev">Previous Track (Premium)</string>
-    <string name="prem_next">Next Track (Premium)</string>
-    <string name="prem_play_pause">Play/Pause (Premium)</string>
-    <string name="hold_back">Hold Back (Root)</string>
-    <string name="forward">Go Forward (Root)</string>
-    <string name="menu">Open Menu (Root)</string>
-    <string name="sleep">Sleep (Root)</string>
-    <string name="prem_vol_up">Volume Up (Premium)</string>
-    <string name="prem_vol_down">Volume Down (Premium)</string>
-    <string name="prem_screenshot">Screenshot (Premium)</string>
-    <string name="prem_switch_ime">Switch Keyboard (Premium)</string>
-    <string name="prem_launch_app">Launch App (Premium) (%s)</string>
-    <string name="prem_launch_app_no_format">Launch App (Premium)</string>
-    <string name="prem_lock_screen">Lock Screen (Premium)</string>
-    <string name="prem_launch_activity">Launch Activity (Premium) (%s)</string>
-    <string name="prem_launch_activity_no_format">Launch Activity (Premium)</string>
-    <string name="prem_rot">Rotate Screen (Premium)</string>
-    <string name="prem_tasker_event">Tasker Event (Premium)</string>
-    <string name="prem_flashlight">Toggle Flashlight (Premium)</string>
-    <string name="prem_volume_panel">Open Volume Panel (Premium)</string>
-    <string name="prem_bluetooth">Toggle Bluetooth (Premium)</string>
-    <string name="prem_wifi">Toggle WiFi (Premium)</string>
-    <string name="prem_intent">Send Intent (Premium) (%s)</string>
-    <string name="prem_intent_no_format">Send Intent (Premium)</string>
-    <string name="prem_toggle_battery_saver">Toggle Battery Saver (Premium)</string>
-    <string name="prem_toggle_screen_timeout">Toggle Screen Timeout (Premium)</string>
-    <string name="prem_launch_shortcut_no_format">Launch Shortcut (Premium)</string>
-    <string name="prem_launch_shortcut">Launch Shortcut (Premium) (%s)</string>
-    <string name="prem_kill_background">Kill All Background Apps (Premium)</string>
-    <string name="prem_cycle_ringer">Cycle Ringer Mode (Premium)</string>
-    <string name="prem_toggle_mute">Toggle Media Mute (Premium)</string>
-    <string name="prem_toggle_auto_brightness">Toggle Auto Brightness (Premium)</string>
-    <string name="prem_brightness_down">Brightness Down (Premium)</string>
-    <string name="prem_brightness_up">Brightness Up (Premium)</string>
-    <string name="root_send_keycode_no_format">Send Keycode (Root)</string>
-    <string name="root_send_keycode">Send Keycode (Root) (%s)</string>
-    <string name="root_send_long_keycode_no_format">Send Long-Press Keycode (Root)</string>
-    <string name="root_send_long_keycode">Send Long-Press Keycode (Root) (%s)</string>
-    <string name="root_send_double_keycode_no_format">Send Double-Press Keycode (Root)</string>
-    <string name="root_send_double_keycode">Send Double-Press Keycode (Root) (%s)</string>
-    <string name="root_kill_current_app">Kill Current App (Root)</string>
-    <string name="prem_app_drawer">App Drawer (Premium)</string>
-    <string name="prem_toggle_rotation_lock">Toggle Rotation Lock (Premium)</string>
-    <string name="open_accessibility_menu">Accessibility Button (Root, Oreo+)</string>
-    <string name="choose_accessibility_button">Choose Accessibility Button (Root, Oreo+)</string>
+    <string translatable="false" name="home">Home</string>
+    <string translatable="false" name="back">Back</string>
+    <string translatable="false" name="ohm">Toggle OHM</string>
+    <string translatable="false" name="recents">Recent Apps</string>
+    <string translatable="false" name="hide">Hide Pill</string>
+    <string translatable="false" name="assist">Assistant</string>
+    <string translatable="false" name="switch_apps">Previous App (Nougat+)</string>
+    <string translatable="false" name="nothing">No Action</string>
+    <string translatable="false" name="prem_notif">Notifications (Premium)</string>
+    <string translatable="false" name="prem_qs">Quick Settings (Premium)</string>
+    <string translatable="false" name="prem_power">Power Menu (Premium)</string>
+    <string translatable="false" name="split">Split Screen (Nougat+)</string>
+    <string translatable="false" name="prem_prev">Previous Track (Premium)</string>
+    <string translatable="false" name="prem_next">Next Track (Premium)</string>
+    <string translatable="false" name="prem_play_pause">Play/Pause (Premium)</string>
+    <string translatable="false" name="hold_back">Hold Back (Root)</string>
+    <string translatable="false" name="forward">Go Forward (Root)</string>
+    <string translatable="false" name="menu">Open Menu (Root)</string>
+    <string translatable="false" name="sleep">Sleep (Root)</string>
+    <string translatable="false" name="prem_vol_up">Volume Up (Premium)</string>
+    <string translatable="false" name="prem_vol_down">Volume Down (Premium)</string>
+    <string translatable="false" name="prem_screenshot">Screenshot (Premium)</string>
+    <string translatable="false" name="prem_switch_ime">Switch Keyboard (Premium)</string>
+    <string translatable="false" name="prem_launch_app">Launch App (Premium) (%s)</string>
+    <string translatable="false" name="prem_launch_app_no_format">Launch App (Premium)</string>
+    <string translatable="false" name="prem_lock_screen">Lock Screen (Premium)</string>
+    <string translatable="false" name="prem_launch_activity">Launch Activity (Premium) (%s)</string>
+    <string translatable="false" name="prem_launch_activity_no_format">Launch Activity (Premium)</string>
+    <string translatable="false" name="prem_rot">Rotate Screen (Premium)</string>
+    <string translatable="false" name="prem_tasker_event">Tasker Event (Premium)</string>
+    <string translatable="false" name="prem_flashlight">Toggle Flashlight (Premium)</string>
+    <string translatable="false" name="prem_volume_panel">Open Volume Panel (Premium)</string>
+    <string translatable="false" name="prem_bluetooth">Toggle Bluetooth (Premium)</string>
+    <string translatable="false" name="prem_wifi">Toggle WiFi (Premium)</string>
+    <string translatable="false" name="prem_intent">Send Intent (Premium) (%s)</string>
+    <string translatable="false" name="prem_intent_no_format">Send Intent (Premium)</string>
+    <string translatable="false" name="prem_toggle_battery_saver">Toggle Battery Saver (Premium)</string>
+    <string translatable="false" name="prem_toggle_screen_timeout">Toggle Screen Timeout (Premium)</string>
+    <string translatable="false" name="prem_launch_shortcut_no_format">Launch Shortcut (Premium)</string>
+    <string translatable="false" name="prem_launch_shortcut">Launch Shortcut (Premium) (%s)</string>
+    <string translatable="false" name="prem_kill_background">Kill All Background Apps (Premium)</string>
+    <string translatable="false" name="prem_cycle_ringer">Cycle Ringer Mode (Premium)</string>
+    <string translatable="false" name="prem_toggle_mute">Toggle Media Mute (Premium)</string>
+    <string translatable="false" name="prem_toggle_auto_brightness">Toggle Auto Brightness (Premium)</string>
+    <string translatable="false" name="prem_brightness_down">Brightness Down (Premium)</string>
+    <string translatable="false" name="prem_brightness_up">Brightness Up (Premium)</string>
+    <string translatable="false" name="root_send_keycode_no_format">Send Keycode (Root)</string>
+    <string translatable="false" name="root_send_keycode">Send Keycode (Root) (%s)</string>
+    <string translatable="false" name="root_send_long_keycode_no_format">Send Long-Press Keycode (Root)</string>
+    <string translatable="false" name="root_send_long_keycode">Send Long-Press Keycode (Root) (%s)</string>
+    <string translatable="false" name="root_send_double_keycode_no_format">Send Double-Press Keycode (Root)</string>
+    <string translatable="false" name="root_send_double_keycode">Send Double-Press Keycode (Root) (%s)</string>
+    <string translatable="false" name="root_kill_current_app">Kill Current App (Root)</string>
+    <string translatable="false" name="prem_app_drawer">App Drawer (Premium)</string>
+    <string translatable="false" name="prem_toggle_rotation_lock">Toggle Rotation Lock (Premium)</string>
+    <string translatable="false" name="open_accessibility_menu">Accessibility Button (Root, Oreo+)</string>
+    <string translatable="false" name="choose_accessibility_button">Choose Accessibility Button (Root, Oreo+)</string>
 
     <!--Action Values-->
-    <string name="type_no_action">-1</string>
-    <string name="type_back">0</string>
-    <string name="type_ohm">1</string>
-    <string name="type_recents">2</string>
-    <string name="type_hide">3</string>
-    <string name="type_switch">4</string>
-    <string name="type_assist">5</string>
-    <string name="type_home">6</string>
-    <string name="prem_type_notif">7</string>
-    <string name="prem_type_qs">8</string>
-    <string name="prem_type_power">9</string>
-    <string name="type_split">10</string>
-    <string name="prem_type_cycle_ringer">11</string>
-    <string name="prem_type_toggle_auto_brightness">12</string>
-    <string name="prem_type_mute">13</string>
-    <string name="prem_type_play_pause">14</string>
-    <string name="prem_type_prev">15</string>
-    <string name="prem_type_next">16</string>
-    <string name="type_hold_back">17</string>
-    <string name="type_forward">18</string>
-    <string name="type_menu">19</string>
-    <string name="prem_type_vol_up">21</string>
-    <string name="prem_type_vol_down">22</string>
-    <string name="prem_type_screenshot">23</string>
-    <string name="prem_type_switch_ime">24</string>
-    <string name="prem_type_launch_app">25</string>
-    <string name="prem_type_lock_screen">26</string>
-    <string name="prem_type_launch_activity">27</string>
-    <string name="prem_type_rot">28</string>
-    <string name="prem_type_tasker_event">29</string>
-    <string name="type_toggle_nav">30</string>
-    <string name="prem_type_flashlight">31</string>
-    <string name="prem_type_volume_panel">32</string>
-    <string name="prem_type_bluetooth">33</string>
-    <string name="prem_type_wifi">34</string>
-    <string name="prem_type_intent">35</string>
-    <string name="prem_type_battery_saver">36</string>
-    <string name="prem_type_screen_timeout">37</string>
-    <string name="prem_type_launch_shortcut">38</string>
-    <string name="prem_type_kill_background">39</string>
-    <string name="prem_type_brightness_down">40</string>
-    <string name="prem_type_brightness_up">41</string>
-    <string name="root_type_send_keycode">42</string>
-    <string name="root_type_send_long_keycode">43</string>
-    <string name="root_type_send_double_keycode">44</string>
-    <string name="root_type_kill_current_app">45</string>
-    <string name="prem_type_app_drawer">46</string>
-    <string name="prem_type_toggle_rotation_lock">47</string>
-    <string name="type_accessibility_button">48</string>
-    <string name="type_choose_accessibility_button">49</string>
+    <string translatable="false" name="type_no_action">-1</string>
+    <string translatable="false" name="type_back">0</string>
+    <string translatable="false" name="type_ohm">1</string>
+    <string translatable="false" name="type_recents">2</string>
+    <string translatable="false" name="type_hide">3</string>
+    <string translatable="false" name="type_switch">4</string>
+    <string translatable="false" name="type_assist">5</string>
+    <string translatable="false" name="type_home">6</string>
+    <string translatable="false" name="prem_type_notif">7</string>
+    <string translatable="false" name="prem_type_qs">8</string>
+    <string translatable="false" name="prem_type_power">9</string>
+    <string translatable="false" name="type_split">10</string>
+    <string translatable="false" name="prem_type_cycle_ringer">11</string>
+    <string translatable="false" name="prem_type_toggle_auto_brightness">12</string>
+    <string translatable="false" name="prem_type_mute">13</string>
+    <string translatable="false" name="prem_type_play_pause">14</string>
+    <string translatable="false" name="prem_type_prev">15</string>
+    <string translatable="false" name="prem_type_next">16</string>
+    <string translatable="false" name="type_hold_back">17</string>
+    <string translatable="false" name="type_forward">18</string>
+    <string translatable="false" name="type_menu">19</string>
+    <string translatable="false" name="prem_type_vol_up">21</string>
+    <string translatable="false" name="prem_type_vol_down">22</string>
+    <string translatable="false" name="prem_type_screenshot">23</string>
+    <string translatable="false" name="prem_type_switch_ime">24</string>
+    <string translatable="false" name="prem_type_launch_app">25</string>
+    <string translatable="false" name="prem_type_lock_screen">26</string>
+    <string translatable="false" name="prem_type_launch_activity">27</string>
+    <string translatable="false" name="prem_type_rot">28</string>
+    <string translatable="false" name="prem_type_tasker_event">29</string>
+    <string translatable="false" name="type_toggle_nav">30</string>
+    <string translatable="false" name="prem_type_flashlight">31</string>
+    <string translatable="false" name="prem_type_volume_panel">32</string>
+    <string translatable="false" name="prem_type_bluetooth">33</string>
+    <string translatable="false" name="prem_type_wifi">34</string>
+    <string translatable="false" name="prem_type_intent">35</string>
+    <string translatable="false" name="prem_type_battery_saver">36</string>
+    <string translatable="false" name="prem_type_screen_timeout">37</string>
+    <string translatable="false" name="prem_type_launch_shortcut">38</string>
+    <string translatable="false" name="prem_type_kill_background">39</string>
+    <string translatable="false" name="prem_type_brightness_down">40</string>
+    <string translatable="false" name="prem_type_brightness_up">41</string>
+    <string translatable="false" name="root_type_send_keycode">42</string>
+    <string translatable="false" name="root_type_send_long_keycode">43</string>
+    <string translatable="false" name="root_type_send_double_keycode">44</string>
+    <string translatable="false" name="root_type_kill_current_app">45</string>
+    <string translatable="false" name="prem_type_app_drawer">46</string>
+    <string translatable="false" name="prem_type_toggle_rotation_lock">47</string>
+    <string translatable="false" name="type_accessibility_button">48</string>
+    <string translatable="false" name="type_choose_accessibility_button">49</string>
 
     <!--Main Action Keys-->
-    <string name="action_left">left</string>
-    <string name="action_right">right</string>
-    <string name="action_up">up</string>
-    <string name="action_down">down</string>
-    <string name="action_double">double_tap</string>
-    <string name="action_hold">hold</string>
-    <string name="action_tap">tap</string>
-    <string name="action_up_hold">up_hold</string>
-    <string name="action_left_hold">left_hold</string>
-    <string name="action_right_hold">right_hold</string>
-    <string name="action_down_hold">down_hold</string>
+    <string translatable="false" name="action_left">left</string>
+    <string translatable="false" name="action_right">right</string>
+    <string translatable="false" name="action_up">up</string>
+    <string translatable="false" name="action_down">down</string>
+    <string translatable="false" name="action_double">double_tap</string>
+    <string translatable="false" name="action_hold">hold</string>
+    <string translatable="false" name="action_tap">tap</string>
+    <string translatable="false" name="action_up_hold">up_hold</string>
+    <string translatable="false" name="action_left_hold">left_hold</string>
+    <string translatable="false" name="action_right_hold">right_hold</string>
+    <string translatable="false" name="action_down_hold">down_hold</string>
 
     <!--Center Action Keys-->
-    <string name="action_up_center">up_center</string>
-    <string name="action_up_hold_center">up_hold_center</string>
+    <string translatable="false" name="action_up_center">up_center</string>
+    <string translatable="false" name="action_up_hold_center">up_hold_center</string>
 
     <!--Left Action Keys-->
-    <string name="action_up_left">up_left</string>
-    <string name="action_up_hold_left">up_hold_left</string>
+    <string translatable="false" name="action_up_left">up_left</string>
+    <string translatable="false" name="action_up_hold_left">up_hold_left</string>
 
     <!--Right Action Keys-->
-    <string name="action_up_right">up_right</string>
-    <string name="action_up_hold_right">up_hold_right</string>
+    <string translatable="false" name="action_up_right">up_right</string>
+    <string translatable="false" name="action_up_hold_right">up_hold_right</string>
 
     <!--Complex Action Keys-->
-    <string name="action_complex_left_up">complex_left_up</string>
-    <string name="action_complex_right_up">complex_right_up</string>
-    <string name="action_complex_left_down">complex_left_down</string>
-    <string name="action_complex_right_down">complex_right_down</string>
-    <string name="action_complex_long_left_up">complex_long_left_up</string>
-    <string name="action_complex_long_right_up">complex_long_right_up</string>
-    <string name="action_complex_long_left_down">complex_long_left_down</string>
-    <string name="action_complex_long_right_down">complex_long_right_down</string>
+    <string translatable="false" name="action_complex_left_up">complex_left_up</string>
+    <string translatable="false" name="action_complex_right_up">complex_right_up</string>
+    <string translatable="false" name="action_complex_left_down">complex_left_down</string>
+    <string translatable="false" name="action_complex_right_down">complex_right_down</string>
+    <string translatable="false" name="action_complex_long_left_up">complex_long_left_up</string>
+    <string translatable="false" name="action_complex_long_right_up">complex_long_right_up</string>
+    <string translatable="false" name="action_complex_long_left_down">complex_long_left_down</string>
+    <string translatable="false" name="action_complex_long_right_down">complex_long_right_down</string>
 </resources>
