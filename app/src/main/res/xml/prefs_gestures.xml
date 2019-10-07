@@ -14,6 +14,7 @@
         android:title="@string/allow_repeat_long"
         android:summary="@string/allow_repeat_long_desc"
         android:key="allow_repeat_long"
+        android:icon="@drawable/ic_repeat_24dp"
         android:defaultValue="@bool/allow_repeat_long_execute_default"
         />
 
