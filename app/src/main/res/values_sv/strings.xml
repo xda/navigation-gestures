@@ -183,6 +183,7 @@
     <string name="swipe_long_left_down">Long Swipe Left &amp; Down or Down &amp; Left</string>
     <string name="swipe_long_right_down">Long Swipe Right &amp; Down or Down &amp; Right</string>
     <string name="complex_swipes">Complex Swipes</string>
+    <string name="switch_app_delay">Switch App Delay</string>
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
     <string name="appearance_desc">Customize appearance of the navigation pill</string>
@@ -270,6 +271,7 @@
     <string name="restart_problems_desc">Sometimes, your best bet for fixing problems with Navigation Gestures is restarting the app. Tap here to give it a try.</string>
     <string name="hide_dialog_apps_desc">On certain devices, when the pill is shown, attempting to perform actions on dialogs in specific apps will result in an \"Overlay Detected\" error. Use this option to hide the pill in selected apps when a dialog is shown.</string>
     <string name="improved_app_change_detection_desc">(Tap to enable.) Enabling this option on certain devices will result in a smoother experience when using app-specific options, such as Per-App Pill Color.</string>
+    <string name="switch_app_delay_desc">Navigation Gestures\' Switch App gesture simulates a double-press of the Recents button. Different devices will respond best to different delays between the two presses. You can set that delay here.</string>
     <!--Paragraphs-->
     <string name="app_purpose">This app brings awesome navigation gestures to any Android device. Best of all, it doesn\’t need root! Before you can use the gestures, there are a few things we have to do to set the app up.</string>
     <string name="draw_over_apps_desc">In order for Navigation Gestures to show the pill-nav, you will need to grant permission for it to draw over other apps. Tap the button below to do so. If you installed from the Play Store, this permission will already be granted.</string>
