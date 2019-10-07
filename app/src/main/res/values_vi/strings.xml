@@ -207,7 +207,7 @@ or
     <string name="hide_nav_summary">Chỉ dùng nếu thiết bị có phím điều hướng ảo.</string>
     <string name="orig_nav_in_immersive_desc">Khi kích hoạt, thanh điều hướng gốc sẽ có thể truy cập bằng cách vuốt trong các ứng dụng toàn màn hình.</string>
     <string name="use_pixels_desc">Set %s using pixel count rather than percentages.</string>
-    <string name="sectioned_pill_desc">Chia viên điều hướng thành 3 phần, mỗi phần có tác vụ riêng.</string>
+    <string name="sectioned_pill_desc">Divide the pill into three sections, each with their own set of actions. It is recommended that you turn on Full Overscan in Experimental Settings when using Split Pill.</string>
     <string name="enable_in_car_mode_desc">Khi kích hoạt, Navigation Gestures sẽ ko bị vô hiệu trong chế độ xe ô tô. Không kích hoạt trên các thiết bị dùng TouchWiz nếu có thanh điều hướng ảo.</string>
     <string name="grant_write_settings_desc">Bấm OK để cho phép Navigation Gestures sửa các cài đặt hệ thống.</string>
     <string name="use_recommended_settings_desc">Split Pill đã kích hoạt! Bạn có muốn thử các cài đặt khuyến nghị cho chế độ này ko?</string>
