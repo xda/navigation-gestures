@@ -205,7 +205,7 @@
     <string name="hide_nav_summary">Solo utiliza esto si tu dispositivo tiene una barra de navegación de software.</string>
     <string name="orig_nav_in_immersive_desc">Cuando esté habilitado, se podrá acceder a la barra de navegación original con un deslizamiento en aplicaciones de pantalla completa.</string>
     <string name="use_pixels_desc">Set %s using pixel count rather than percentages.</string>
-    <string name="sectioned_pill_desc">Dividir la barra de gestos en tres secciones, cada una con su propio conjunto de acciones.</string>
+    <string name="sectioned_pill_desc">Divide the pill into three sections, each with their own set of actions. It is recommended that you turn on Full Overscan in Experimental Settings when using Split Pill.</string>
     <string name="enable_in_car_mode_desc">Cuando está habilitado, Navigation Gestures no se desactivará en el Modo Coche. No habilites esto en dispositivos TouchWiz si tienes una barra de navegación de software.</string>
     <string name="grant_write_settings_desc">Pulsa en Aceptar para permitir que Navigation Gestures escriba en la configuración del sistema.</string>
     <string name="use_recommended_settings_desc">Barra de gestos dividida activada! ¿Quieres seleccionar la configuración recomendada para este modo?</string>
