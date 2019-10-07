@@ -205,7 +205,7 @@
     <string name="hide_nav_summary">Используйте настройку, чтобы скрыть системную панель навигации.</string>
     <string name="orig_nav_in_immersive_desc">Включите, чтобы показывать системную панель навигации в полноэкранных приложениях.</string>
     <string name="use_pixels_desc">Set %s using pixel count rather than percentages.</string>
-    <string name="sectioned_pill_desc">Divide the pill into three sections, each with their own set of actions.</string>
+    <string name="sectioned_pill_desc">Divide the pill into three sections, each with their own set of actions. It is recommended that you turn on Full Overscan in Experimental Settings when using Split Pill.</string>
     <string name="enable_in_car_mode_desc">Включите, чтобы Жесты Навигации не отключались в режиме вождения. Не включайте на устройствах с TouchWiz и нефизической панелью навигации.</string>
     <string name="grant_write_settings_desc">Нажмите OK чтобы разрешить Жестам Навигации доступ к защищённым настройкам системы.</string>
     <string name="use_recommended_settings_desc">Split Pill enabled! Do you want to try our recommended settings for this mode?</string>
