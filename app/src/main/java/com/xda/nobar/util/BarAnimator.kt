@@ -337,20 +337,22 @@ class BarAnimator(private val bar: BarView) {
                                 .duration = bar.animationDurationMs
                     }
                     .apply {
-                        if (bar.isVertical) {
-                            scaleY(BarView.SCALE_SMALL)
-                            y((if (bar.is270Vertical) -1 else 1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                        } else {
-                            scaleX(BarView.SCALE_SMALL)
-                            x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                        when {
+                            bar.is90Vertical -> {
+                                x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                                y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                            }
+                            bar.is270Vertical -> {
+                                x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                                y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                            }
+                            else -> {
+                                x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                                y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)}
                         }
-                        if (bar.isVertical) {
-                            scaleX(BarView.SCALE_SMALL)
-                            x((if (bar.is270Vertical) -1 else 1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                        } else {
-                            scaleY(BarView.SCALE_SMALL)
-                            y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                        }
+
+                        scaleX(BarView.SCALE_SMALL)
+                        scaleY(BarView.SCALE_SMALL)
                     }
                     .start()
         }
@@ -371,20 +373,22 @@ class BarAnimator(private val bar: BarView) {
                                 .duration = bar.animationDurationMs
                     }
                     .apply {
-                        if (bar.isVertical) {
-                            scaleY(BarView.SCALE_SMALL)
-                            y((if (bar.is270Vertical) 1 else -1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                        } else {
-                            scaleX(BarView.SCALE_SMALL)
-                            x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                        when {
+                            bar.is90Vertical -> {
+                                x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                                y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                            }
+                            bar.is270Vertical -> {
+                                x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                                y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                            }
+                            else -> {
+                                x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                                y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)}
                         }
-                        if (bar.isVertical) {
-                            scaleX(BarView.SCALE_SMALL)
-                            x((if (bar.is270Vertical) -1 else 1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                        } else {
-                            scaleY(BarView.SCALE_SMALL)
-                            y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                        }
+
+                        scaleX(BarView.SCALE_SMALL)
+                        scaleY(BarView.SCALE_SMALL)
                     }
                     .start()
         }
@@ -405,20 +409,22 @@ class BarAnimator(private val bar: BarView) {
                                 .duration = bar.animationDurationMs
                     }
                     .apply {
-                        if (bar.isVertical) {
-                            scaleY(BarView.SCALE_SMALL)
-                            y((if (bar.is270Vertical) -1 else 1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                        } else {
-                            scaleX(BarView.SCALE_SMALL)
-                            x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                        when {
+                            bar.is90Vertical -> {
+                                x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                                y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                            }
+                            bar.is270Vertical -> {
+                                x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                                y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                            }
+                            else -> {
+                                x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                                y(bar.height * (1 - BarView.SCALE_SMALL) / 2)}
                         }
-                        if (bar.isVertical) {
-                            scaleX(BarView.SCALE_SMALL)
-                            x((if (bar.is270Vertical) 1 else -1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                        } else {
-                            scaleY(BarView.SCALE_SMALL)
-                            y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                        }
+
+                        scaleX(BarView.SCALE_SMALL)
+                        scaleY(BarView.SCALE_SMALL)
                     }
                     .start()
         }
@@ -439,20 +445,23 @@ class BarAnimator(private val bar: BarView) {
                                 .duration = bar.animationDurationMs
                     }
                     .apply {
-                        if (bar.isVertical) {
-                            scaleY(BarView.SCALE_SMALL)
-                            y((if (bar.is270Vertical) 1 else -1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                        } else {
-                            scaleX(BarView.SCALE_SMALL)
-                            x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                        when {
+                            bar.is90Vertical -> {
+                                x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                                y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                            }
+                            bar.is270Vertical -> {
+                                x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                                y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                            }
+                            else -> {
+                                x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                                y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                            }
                         }
-                        if (bar.isVertical) {
-                            scaleX(BarView.SCALE_SMALL)
-                            x((if (bar.is270Vertical) 1 else -1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                        } else {
-                            scaleY(BarView.SCALE_SMALL)
-                            y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
-                        }
+
+                        scaleX(BarView.SCALE_SMALL)
+                        scaleY(BarView.SCALE_SMALL)
                     }
                     .start()
         }
