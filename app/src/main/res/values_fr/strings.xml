@@ -205,7 +205,7 @@
     <string name="hide_nav_summary">Utiliser ce paramètre seulement si votre appareil est équipé d’une barre de navigation logicielle.</string>
     <string name="orig_nav_in_immersive_desc">Quand activé, la barre de navigation originale sera accessible via un balayage dans les applications plein-écran.</string>
     <string name="use_pixels_desc">Set %s using pixel count rather than percentages.</string>
-    <string name="sectioned_pill_desc">Diviser la pilule en trois sections, chacune avec leur propre ensemble d’actions.</string>
+    <string name="sectioned_pill_desc">Divide the pill into three sections, each with their own set of actions. It is recommended that you turn on Full Overscan in Experimental Settings when using Split Pill.</string>
     <string name="enable_in_car_mode_desc">Quand activée, Navigation Gestures ne sera pas désactivée en Mode Voiture. N’activez pas cette option sur les appareils TouchWiz si vous avez une barre de navigation logicielle.</string>
     <string name="grant_write_settings_desc">Appuyez sur OK pour que Navigation Gestures puisse modifier les paramètres du système.</string>
     <string name="use_recommended_settings_desc">Division de pilule activée ! Voulez-vous essayer nos réglages recommandés pour ce mode ?</string>
