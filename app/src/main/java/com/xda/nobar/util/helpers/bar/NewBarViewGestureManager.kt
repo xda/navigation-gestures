@@ -131,6 +131,8 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
                 val slop = bar.viewConfig.scaledTouchSlop
 
+                parseSwipe(newX, newY)
+
                 if ((newX - downX).absoluteValue > slop) {
                     prevX = newX
                 }
@@ -179,8 +181,6 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
                         bar.updateLayout()
                     }
-
-                    parseSwipe()
                 }
             }
 
@@ -284,14 +284,17 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
             swipes.add(swipe)
     }
 
-    private fun parseSwipe() {
-        val distanceX = prevX - downX
-        val distanceY = prevY - downY
+    private fun parseSwipe(newX: Float, newY: Float) {
+        val fullDistanceX = prevX - downX
+        val fullDistanceY = prevY - downY
+
+        val distanceX = newX - prevX
+        val distanceY = newY - prevY
 
 //        Log.e("NoBar", "$distanceX, $distanceY")
 
-        if (distanceX < 0
-                && distanceX < -xThresh
+        if (fullDistanceX < 0
+                && fullDistanceX < -xThresh
                 && distanceX.absoluteValue >= distanceY.absoluteValue) {
             //(long) left swipe
 //            Log.e("NoBar", "left")
@@ -299,21 +302,21 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
             when {
                 bar.is90Vertical -> {
                     lastSwipe = Swipe.UP
-                    addSwipe(Swipe.UP, distanceX)
+                    addSwipe(Swipe.UP, fullDistanceX)
                 }
                 bar.is270Vertical -> {
                     lastSwipe = Swipe.DOWN
-                    addSwipe(Swipe.DOWN, distanceX)
+                    addSwipe(Swipe.DOWN, fullDistanceX)
                 }
                 else -> {
                     lastSwipe = Swipe.LEFT
-                    addSwipe(Swipe.LEFT, distanceX)
+                    addSwipe(Swipe.LEFT, fullDistanceX)
                 }
             }
 
             longHandler.postLong()
-        } else if (distanceX > 0
-                && distanceX > xThresh
+        } else if (fullDistanceX > 0
+                && fullDistanceX > xThresh
                 && distanceX.absoluteValue >= distanceY.absoluteValue) {
             //(long) right swipe
 //            Log.e("NoBar", "right")
@@ -321,57 +324,57 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
             when {
                 bar.is90Vertical -> {
                     lastSwipe = Swipe.DOWN
-                    addSwipe(Swipe.DOWN, distanceX)
+                    addSwipe(Swipe.DOWN, fullDistanceX)
                 }
                 bar.is270Vertical -> {
                     lastSwipe = Swipe.UP
-                    addSwipe(Swipe.UP, distanceX)
+                    addSwipe(Swipe.UP, fullDistanceX)
                 }
                 else -> {
                     lastSwipe = Swipe.RIGHT
-                    addSwipe(Swipe.RIGHT, distanceX)
+                    addSwipe(Swipe.RIGHT, fullDistanceX)
                 }
             }
 
             longHandler.postLong()
-        } else if (distanceY < 0
-                && distanceY < -yThreshUp) {
+        } else if (fullDistanceY < 0
+                && fullDistanceY < -yThreshUp) {
             //(long) up swipes
 //            Log.e("NoBar", "up")
 
             when {
                 bar.is90Vertical -> {
                     lastSwipe = Swipe.RIGHT
-                    addSwipe(Swipe.RIGHT, distanceY)
+                    addSwipe(Swipe.RIGHT, fullDistanceY)
                 }
                 bar.is270Vertical -> {
                     lastSwipe = Swipe.LEFT
-                    addSwipe(Swipe.LEFT, distanceY)
+                    addSwipe(Swipe.LEFT, fullDistanceY)
                 }
                 else -> {
                     lastSwipe = Swipe.UP
-                    addSwipe(Swipe.UP, distanceY)
+                    addSwipe(Swipe.UP, fullDistanceY)
                 }
             }
 
             longHandler.postLong()
-        } else if (distanceY > 0
-                && distanceY > yThreshDown) {
+        } else if (fullDistanceY > 0
+                && fullDistanceY > yThreshDown) {
             //(long) down swipe
 //            Log.e("NoBar", "down")
 
             when {
                 bar.is90Vertical -> {
                     lastSwipe = Swipe.LEFT
-                    addSwipe(Swipe.LEFT, distanceY)
+                    addSwipe(Swipe.LEFT, fullDistanceY)
                 }
                 bar.is270Vertical -> {
                     lastSwipe = Swipe.RIGHT
-                    addSwipe(Swipe.RIGHT, distanceY)
+                    addSwipe(Swipe.RIGHT, fullDistanceY)
                 }
                 else -> {
                     lastSwipe = Swipe.DOWN
-                    addSwipe(Swipe.DOWN, distanceY)
+                    addSwipe(Swipe.DOWN, fullDistanceY)
                 }
             }
 
