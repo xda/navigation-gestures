@@ -14,7 +14,11 @@ import com.xda.nobar.views.BarView
  */
 @TargetApi(24)
 class GestureToggle : TileService(), OnGestureStateChangeListener {
+    private var isCreated = false
+
     override fun onCreate() {
+        isCreated = true
+
         app.addGestureActivationListener(this)
     }
 
@@ -23,6 +27,8 @@ class GestureToggle : TileService(), OnGestureStateChangeListener {
     }
 
     override fun onDestroy() {
+        isCreated = false
+
         super.onDestroy()
         app.removeGestureActivationListener(this)
     }
@@ -43,7 +49,14 @@ class GestureToggle : TileService(), OnGestureStateChangeListener {
         qsTile?.apply {
             state = if (active) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
             label = resources.getText(if (active) R.string.gestures_on else R.string.gestures_off)
-            updateTile()
+
+            if (isCreated) {
+                try {
+                    updateTile()
+                } catch (e: IllegalArgumentException) {
+                    e.printStackTrace()
+                }
+            }
         }
     }
 }

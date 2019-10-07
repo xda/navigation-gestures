@@ -15,7 +15,11 @@ import com.xda.nobar.util.checkNavHiddenAsync
  */
 @TargetApi(24)
 class NavBarToggle : TileService(), OnNavBarHideStateChangeListener {
+    private var isCreated = false
+
     override fun onCreate() {
+        isCreated = true
+
         app.addNavBarHideListener(this)
     }
 
@@ -24,6 +28,8 @@ class NavBarToggle : TileService(), OnNavBarHideStateChangeListener {
     }
 
     override fun onDestroy() {
+        isCreated = false
+
         super.onDestroy()
         app.removeNavBarHideListener(this)
     }
@@ -44,7 +50,14 @@ class NavBarToggle : TileService(), OnNavBarHideStateChangeListener {
                 state = if (active) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
                 icon = Icon.createWithResource(packageName, (if (active) R.drawable.border_clear else R.drawable.border_bottom))
                 label = resources.getText(if (active) R.string.nav_hidden else R.string.nav_shown)
-                updateTile()
+
+                if (isCreated) {
+                    try {
+                        updateTile()
+                    } catch (e: IllegalArgumentException) {
+                        e.printStackTrace()
+                    }
+                }
             }
         }
     }
