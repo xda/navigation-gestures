@@ -126,20 +126,23 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                 val newY = e.rawY
 
                 val origVX = newX - prevX
-                val velocityX = origVX * if (bar.is270Vertical) -1 else 1
-                val velocityY = prevY - newY
+                var velocityX = origVX * if (bar.is270Vertical) -1 else 1
+                var velocityY = prevY - newY
 
                 val slop = bar.viewConfig.scaledTouchSlop
 
                 parseSwipe(newX, newY)
 
-                if ((newX - downX).absoluteValue > slop) {
-                    prevX = newX
-                }
+                val xSlop = (downX - newX).absoluteValue > slop
+                val ySlop = (downY - newY).absoluteValue > slop
 
-                if ((newY - downY).absoluteValue > slop) {
-                    prevY = newY
-                }
+                if (!xSlop && !ySlop) return false
+
+                if (!xSlop) velocityX = 0f
+                if (!ySlop) velocityY = 0f
+
+                prevX = newX
+                prevY = newY
 
                 if (!bar.isHidden) {
                     if (bar.shouldAnimate) {
@@ -158,11 +161,11 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                                     bar.pill.translationY -= velocityY
                                 }
                                 else -> {
-                                    bar.params.y = bar.params.y - (velocityY / 2).toInt()
+                                    bar.params.y -= (velocityY / 2f).toInt()
                                 }
                             }
 
-                            bar.params.x += (velocityX / 2).toInt()
+                            bar.params.x += (velocityX / 2f).toInt()
                         } else {
                             when {
                                 leftParam <= -halfScreen && velocityX < 0 -> {
@@ -172,11 +175,11 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                                     bar.pill.translationX += velocityX
                                 }
                                 else -> {
-                                    bar.params.x = bar.params.x + (velocityX / 2).toInt()
+                                    bar.params.x += (velocityX / 2f).toInt()
                                 }
                             }
 
-                            bar.params.y -= (velocityY / 2).toInt()
+                            bar.params.y -= (velocityY / 2f).toInt()
                         }
 
                         bar.updateLayout()
