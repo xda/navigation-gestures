@@ -205,7 +205,7 @@
     <string name="hide_nav_summary">仅当设备具有虚拟导航栏时才可使用此功能。</string>
     <string name="orig_nav_in_immersive_desc">启用后, 原有导航栏将可在全屏应用程序中通过上滑显示。</string>
     <string name="use_pixels_desc">Set %s using pixel count rather than percentages.</string>
-    <string name="sectioned_pill_desc">将横条分成三部分，每个部分都有自己的一套动作。</string>
+    <string name="sectioned_pill_desc">Divide the pill into three sections, each with their own set of actions. It is recommended that you turn on Full Overscan in Experimental Settings when using Split Pill.</string>
     <string name="enable_in_car_mode_desc">启用后，导航手势将不会在车载模式下被禁用。请不要在具有虚拟导航栏的 TouchWiz 设备上启用此功能。</string>
     <string name="grant_write_settings_desc">点按 \"确定\" 以允许导航手势写入系统设置。</string>
     <string name="use_recommended_settings_desc">分裂式横条已启用！是否尝试使用此模式的建议设置？</string>
