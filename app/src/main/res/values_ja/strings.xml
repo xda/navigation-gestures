@@ -205,7 +205,7 @@
     <string name="hide_nav_summary">デバイスがソフトウェアのナビバーを持っている場合のみこれを有効にしてください</string>
     <string name="orig_nav_in_immersive_desc">有効にすると、元のナビバーがフルスクリーン時にスワイプすることで表示されます</string>
     <string name="use_pixels_desc">Set %s using pixel count rather than percentages.</string>
-    <string name="sectioned_pill_desc">ピルを3分割してそれぞれにアクションを割り当てます</string>
+    <string name="sectioned_pill_desc">Divide the pill into three sections, each with their own set of actions. It is recommended that you turn on Full Overscan in Experimental Settings when using Split Pill.</string>
     <string name="enable_in_car_mode_desc">有効にすると、ナビゲーションジェスチャーはカーモードでは無効になりません。ソフトウェアナビゲーションバーを持つTouchWizデバイスでこれを有効にしないでください。</string>
     <string name="grant_write_settings_desc">OKを押してナビゲーションジェスチャーにシステム設定を変更する権限を与えてください。</string>
     <string name="use_recommended_settings_desc">分割ピルが有効になりました! オススメ設定に切り替えますか?</string>
