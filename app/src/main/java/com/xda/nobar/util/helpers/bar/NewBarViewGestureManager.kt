@@ -391,22 +391,30 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
             actionHolder.run { hasAnyOfActions(complexActionLeftUp) }
                     && (patternMatches(patternLeftUp)
                     || patternMatches(patternUpLeft)) -> {
-                sendAction(actionHolder.complexActionLeftUp)
+                if (!sentLongLeft && !sentLongUp) {
+                    sendAction(actionHolder.complexActionLeftUp)
+                }
             }
             actionHolder.run { hasAnyOfActions(complexActionRightUp) }
                     && (patternMatches(patternRightUp)
                     || patternMatches(patternUpRight)) -> {
-                sendAction(actionHolder.complexActionRightUp)
+                if (!sentLongRight && !sentLongUp) {
+                    sendAction(actionHolder.complexActionRightUp)
+                }
             }
             actionHolder.run { hasAnyOfActions(complexActionLeftDown) }
                     && (patternMatches(patternLeftDown)
                     || patternMatches(patternDownLeft)) -> {
-                sendAction(actionHolder.complexActionLeftDown)
+                if (!sentLongLeft && !sentLongDown) {
+                    sendAction(actionHolder.complexActionLeftDown)
+                }
             }
             actionHolder.run { hasAnyOfActions(complexActionRightDown) }
                     && (patternMatches(patternRightDown)
                     || patternMatches(patternDownRight)) -> {
-                sendAction(actionHolder.complexActionRightDown)
+                if (!sentLongRight && !sentLongDown) {
+                    sendAction(actionHolder.complexActionRightDown)
+                }
             }
             else -> when (swipes.lastOrNull() ?: lastSwipe) {
                 Swipe.UP -> {
@@ -578,7 +586,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         if (!bar.isHidden
                 && !sentLongRight
                 && actionHolder.hasAnyOfActions(rightHold)) {
-            sentLongRight = false
+            sentLongRight = true
 //            Log.e("NoBar", "longRight")
 
             sendAction(rightHold)
