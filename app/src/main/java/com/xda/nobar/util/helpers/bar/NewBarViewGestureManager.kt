@@ -286,9 +286,10 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
     private fun addSwipe(swipe: Swipe, distance: Float) {
         if ((swipes.isEmpty() || swipes.last() != swipe)
-                && distance.absoluteValue > swipeThresh
-                && swipes.size < 2)
+                && distance.absoluteValue > swipeThresh) {
+            if (swipes.size >= 2) swipes.removeAt(swipes.lastIndex)
             swipes.add(swipe)
+        }
     }
 
     private fun parseSwipe(newX: Float, newY: Float) {
