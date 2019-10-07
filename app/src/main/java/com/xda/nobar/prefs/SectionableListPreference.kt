@@ -112,8 +112,15 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
         return getPersistedString(defaultValue.toString())
     }
 
-    fun removeSection(index: Int) {
+    fun removeSectionAt(index: Int) {
         sections.removeAt(index)
+    }
+
+    fun removeSection(key: String) {
+        val index = sections.map { it.key }
+                .indexOf(key)
+
+        if (index != -1) removeSectionAt(index)
     }
 
     fun removeItemByValue(value: String) {

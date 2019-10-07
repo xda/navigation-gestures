@@ -352,9 +352,13 @@ class GestureFragment : BasePrefFragment(), SharedPreferences.OnSharedPreference
 
     private fun removeRootActionsIfNeeded() {
         if (!isSu) {
+//            listPrefs.forEach {
+//                val actions = resources.getStringArray(R.array.root_action_values)
+//                it.removeItemsByValue(actions)
+//            }
+
             listPrefs.forEach {
-                val actions = resources.getStringArray(R.array.root_action_values)
-                it.removeItemsByValue(actions)
+                it.removeSection(resources.getString(R.string.root).toLowerCase(Locale.getDefault()))
             }
         }
     }
