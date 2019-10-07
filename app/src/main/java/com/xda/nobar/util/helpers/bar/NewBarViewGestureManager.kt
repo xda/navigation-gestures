@@ -259,6 +259,8 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
         if (!isForce) {
             handleSwipe()
+        } else {
+            longHandler.removeCallbacksAndMessages(null)
         }
 
         swipes.clear()
@@ -570,12 +572,13 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         val upHold = actionHolder.actionUpHold
 
         if (!bar.isHidden
-                && !sentLongUp
+                && (!sentLongUp || prefManager.allowRepeatLong)
                 && actionHolder.hasAnyOfActions(upHold)) {
             sentLongUp = true
 //            Log.e("NoBar", "longUp")
 
             sendAction(upHold)
+            longHandler.postRepeatLong()
         }
     }
 
@@ -583,12 +586,13 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         val downHold = actionHolder.actionDownHold
 
         if (!bar.isHidden
-                && !sentLongDown
+                && (!sentLongDown || prefManager.allowRepeatLong)
                 && actionHolder.hasAnyOfActions(downHold)) {
             sentLongDown = true
 //            Log.e("NoBar", "longDown")
 
             sendAction(downHold)
+            longHandler.postRepeatLong()
         }
     }
 
@@ -596,12 +600,13 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         val leftHold = actionHolder.actionLeftHold
 
         if (!bar.isHidden
-                && !sentLongLeft
+                && (!sentLongLeft || prefManager.allowRepeatLong)
                 && actionHolder.hasAnyOfActions(leftHold)) {
             sentLongLeft = true
 //            Log.e("NoBar", "longLeft")
 
             sendAction(leftHold)
+            longHandler.postRepeatLong()
         }
     }
 
@@ -609,12 +614,13 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         val rightHold = actionHolder.actionRightHold
 
         if (!bar.isHidden
-                && !sentLongRight
+                && (!sentLongRight || prefManager.allowRepeatLong)
                 && actionHolder.hasAnyOfActions(rightHold)) {
             sentLongRight = true
 //            Log.e("NoBar", "longRight")
 
             sendAction(rightHold)
+            longHandler.postRepeatLong()
         }
     }
 
@@ -647,34 +653,38 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     }
 
     private fun sendComplexLongLeftUp() {
-        if (!sentLongComplexLeftUp) {
+        if (!sentLongComplexLeftUp || prefManager.allowRepeatLong) {
             sentLongComplexLeftUp = true
 
             sendAction(actionHolder.complexActionLongLeftUp)
+            longHandler.postRepeatLong()
         }
     }
 
     private fun sendComplexLongRightUp() {
-        if (!sentLongComplexRightUp) {
+        if (!sentLongComplexRightUp || prefManager.allowRepeatLong) {
             sentLongComplexRightUp = true
 
             sendAction(actionHolder.complexActionLongRightUp)
+            longHandler.postRepeatLong()
         }
     }
 
     private fun sendComplexLongLeftDown() {
-        if (!sentLongComplexLeftDown) {
+        if (!sentLongComplexLeftDown || prefManager.allowRepeatLong) {
             sentLongComplexLeftDown = true
 
             sendAction(actionHolder.complexActionLongLeftDown)
+            longHandler.postRepeatLong()
         }
     }
 
     private fun sendComplexLongRightDown() {
-        if (!sentLongComplexRightDown) {
+        if (!sentLongComplexRightDown || prefManager.allowRepeatLong) {
             sentLongComplexRightDown = true
 
             sendAction(actionHolder.complexActionLongRightDown)
+            longHandler.postRepeatLong()
         }
     }
 
@@ -761,6 +771,12 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                         }
                     }
                 }
+            }
+        }
+
+        fun postRepeatLong() {
+            if (prefManager.allowRepeatLong) {
+                postLong()
             }
         }
 

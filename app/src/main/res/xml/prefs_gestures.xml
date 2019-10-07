@@ -10,6 +10,13 @@
         android:defaultValue="@bool/sectioned_pill_default"
         />
 
+    <SwitchPreference
+        android:title="@string/allow_repeat_long"
+        android:summary="@string/allow_repeat_long_desc"
+        android:key="allow_repeat_long"
+        android:defaultValue="@bool/allow_repeat_long_execute_default"
+        />
+
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
         android:title="@string/sections"
         android:key="section_gestures"

@@ -67,6 +67,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val KEEP_ALIVE = "keep_alive"
         const val OVERLAY_NAV_BLACKOUT = "overlay_nav_blackout"
         const val IMPROVED_APP_CHANGE_DETECTION = "improved_app_change_detection"
+        const val ALLOW_REPEAT_LONG = "allow_repeat_long"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
@@ -250,6 +251,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getBoolean(KEEP_ALIVE, resources.getBoolean(R.bool.keep_alive_default))
     val overlayNavBlackout: Boolean
         get() = getBoolean(OVERLAY_NAV_BLACKOUT, resources.getBoolean(R.bool.overlay_nav_blackout_default)) && overlayNav
+    val allowRepeatLong: Boolean
+        get() = getBoolean(ALLOW_REPEAT_LONG, resources.getBoolean(R.bool.allow_repeat_long_execute_default))
 
     /**
      * Get the user-defined or default pill color

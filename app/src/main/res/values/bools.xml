@@ -31,4 +31,5 @@
     <bool name="overlay_nav_default">false</bool>
     <bool name="keep_alive_default">false</bool>
     <bool name="overlay_nav_blackout_default">true</bool>
+    <bool name="allow_repeat_long_execute_default">false</bool>
 </resources>
