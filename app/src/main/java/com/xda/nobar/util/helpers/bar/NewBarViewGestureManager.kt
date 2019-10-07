@@ -536,7 +536,9 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private fun sendLongUp() {
         val upHold = actionHolder.actionUpHold
 
-        if (!bar.isHidden && actionHolder.hasAnyOfActions(upHold)) {
+        if (!bar.isHidden
+                && !sentLongUp
+                && actionHolder.hasAnyOfActions(upHold)) {
             sentLongUp = true
 //            Log.e("NoBar", "longUp")
 
@@ -547,7 +549,9 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private fun sendLongDown() {
         val downHold = actionHolder.actionDownHold
 
-        if (!bar.isHidden && actionHolder.hasAnyOfActions(downHold)) {
+        if (!bar.isHidden
+                && !sentLongDown
+                && actionHolder.hasAnyOfActions(downHold)) {
             sentLongDown = true
 //            Log.e("NoBar", "longDown")
 
@@ -558,7 +562,9 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private fun sendLongLeft() {
         val leftHold = actionHolder.actionLeftHold
 
-        if (!bar.isHidden && actionHolder.hasAnyOfActions(leftHold)) {
+        if (!bar.isHidden
+                && !sentLongLeft
+                && actionHolder.hasAnyOfActions(leftHold)) {
             sentLongLeft = true
 //            Log.e("NoBar", "longLeft")
 
@@ -569,7 +575,9 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private fun sendLongRight() {
         val rightHold = actionHolder.actionRightHold
 
-        if (!bar.isHidden && actionHolder.hasAnyOfActions(rightHold)) {
+        if (!bar.isHidden
+                && !sentLongRight
+                && actionHolder.hasAnyOfActions(rightHold)) {
             sentLongRight = false
 //            Log.e("NoBar", "longRight")
 
