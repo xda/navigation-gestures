@@ -178,6 +178,10 @@
     <string name="swipe_right_up">Swipe Right &amp; Up or Up &amp; Right</string>
     <string name="swipe_left_down">Swipe Left &amp; Down or Down &amp; Left</string>
     <string name="swipe_right_down">Swipe Right &amp; Down or Down &amp; Right</string>
+    <string name="swipe_long_left_up">Long Swipe Left &amp; Up or Up &amp; Left</string>
+    <string name="swipe_long_right_up">Long Swipe Right &amp; Up or Up &amp; Right</string>
+    <string name="swipe_long_left_down">Long Swipe Left &amp; Down or Down &amp; Left</string>
+    <string name="swipe_long_right_down">Long Swipe Right &amp; Down or Down &amp; Right</string>
     <string name="complex_swipes">Complex Swipes</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizar acciones de gestos</string>
