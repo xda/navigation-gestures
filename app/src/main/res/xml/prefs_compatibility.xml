@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.xda.nobar.prefs.RedTextWarningPref
         android:title="@string/warning"
@@ -43,6 +44,16 @@
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
         android:key="compat_misc"
         android:title="@string/miscellaneous">
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            android:title="@string/switch_app_delay"
+            android:summary="@string/switch_app_delay_desc"
+            android:key="switch_app_delay"
+            android:defaultValue="@integer/default_switch_app_delay"
+            app:units="ms"
+            app:minValue="@integer/min_switch_app_delay"
+            app:maxValue="@integer/max_switch_app_delay"
+            />
 
         <SwitchPreference
             android:title="@string/keep_alive"

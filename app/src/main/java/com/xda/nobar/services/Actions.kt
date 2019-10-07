@@ -143,7 +143,7 @@ class Actions : AccessibilityService(), ReceiverCallback {
             actionHolder.typeBack -> performGlobalAction(GLOBAL_ACTION_BACK)
             actionHolder.typeSwitch -> runNougatAction {
                 performGlobalAction(GLOBAL_ACTION_RECENTS)
-                mainHandler.postDelayed({ performGlobalAction(GLOBAL_ACTION_RECENTS) }, 100)
+                mainHandler.postDelayed({ performGlobalAction(GLOBAL_ACTION_RECENTS) }, prefManager.switchAppDelay.toLong())
             }
             actionHolder.typeSplit -> runNougatAction { performGlobalAction(GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN) }
             actionHolder.premTypePower -> runPremiumAction { performGlobalAction(GLOBAL_ACTION_POWER_DIALOG) }

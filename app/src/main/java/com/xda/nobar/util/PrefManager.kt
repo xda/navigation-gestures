@@ -98,6 +98,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val FADE_DURATION = "fade_duration"
         const val BRIGHTNESS_STEP_SIZE = "brightness_step_size"
         const val SAVED_MEDIA_VOLUME = "saved_media_volume"
+        const val SWITCH_APPS_DELAY = "switch_app_delay"
 
         /* Strings */
         const val CRASHLYTICS_ID = "crashlytics_id"
@@ -376,6 +377,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         set(value) {
             putInt(SAVED_MEDIA_VOLUME, value)
         }
+    val switchAppDelay: Int
+        get() = getInt(SWITCH_APPS_DELAY, resources.getInteger(R.integer.default_switch_app_delay))
 
     val crashlyticsId: String?
         get() {
