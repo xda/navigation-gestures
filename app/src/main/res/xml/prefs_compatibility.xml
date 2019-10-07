@@ -40,7 +40,8 @@
 
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
-    <PreferenceCategory
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:key="compat_misc"
         android:title="@string/miscellaneous">
 
         <SwitchPreference
@@ -78,6 +79,6 @@
             android:key="immersive_blacklist"
             />
 
-    </PreferenceCategory>
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
 </PreferenceScreen>
