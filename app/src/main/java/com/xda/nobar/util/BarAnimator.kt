@@ -322,6 +322,142 @@ class BarAnimator(private val bar: BarView) {
         }
     }
 
+    fun jiggleComplexLongLeftUp() {
+        if (bar.shouldAnimate) {
+            bar.animate()
+                    .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                    .setDuration(bar.animationDurationMs)
+                    .withEndAction {
+                        bar.animate()
+                                .scaleX(BarView.SCALE_NORMAL)
+                                .scaleY(BarView.SCALE_NORMAL)
+                                .x(0f)
+                                .y(0f)
+                                .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                                .duration = bar.animationDurationMs
+                    }
+                    .apply {
+                        if (bar.isVertical) {
+                            scaleY(BarView.SCALE_SMALL)
+                            y((if (bar.is270Vertical) -1 else 1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        } else {
+                            scaleX(BarView.SCALE_SMALL)
+                            x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                        }
+                        if (bar.isVertical) {
+                            scaleX(BarView.SCALE_SMALL)
+                            x((if (bar.is270Vertical) -1 else 1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        } else {
+                            scaleY(BarView.SCALE_SMALL)
+                            y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        }
+                    }
+                    .start()
+        }
+    }
+
+    fun jiggleComplexLongRightUp() {
+        if (bar.shouldAnimate) {
+            bar.animate()
+                    .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                    .setDuration(bar.animationDurationMs)
+                    .withEndAction {
+                        bar.animate()
+                                .scaleX(BarView.SCALE_NORMAL)
+                                .scaleY(BarView.SCALE_NORMAL)
+                                .x(0f)
+                                .y(0f)
+                                .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                                .duration = bar.animationDurationMs
+                    }
+                    .apply {
+                        if (bar.isVertical) {
+                            scaleY(BarView.SCALE_SMALL)
+                            y((if (bar.is270Vertical) 1 else -1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        } else {
+                            scaleX(BarView.SCALE_SMALL)
+                            x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                        }
+                        if (bar.isVertical) {
+                            scaleX(BarView.SCALE_SMALL)
+                            x((if (bar.is270Vertical) -1 else 1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        } else {
+                            scaleY(BarView.SCALE_SMALL)
+                            y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        }
+                    }
+                    .start()
+        }
+    }
+
+    fun jiggleComplexLongLeftDown() {
+        if (bar.shouldAnimate) {
+            bar.animate()
+                    .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                    .setDuration(bar.animationDurationMs)
+                    .withEndAction {
+                        bar.animate()
+                                .scaleX(BarView.SCALE_NORMAL)
+                                .scaleY(BarView.SCALE_NORMAL)
+                                .x(0f)
+                                .y(0f)
+                                .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                                .duration = bar.animationDurationMs
+                    }
+                    .apply {
+                        if (bar.isVertical) {
+                            scaleY(BarView.SCALE_SMALL)
+                            y((if (bar.is270Vertical) -1 else 1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        } else {
+                            scaleX(BarView.SCALE_SMALL)
+                            x(-bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                        }
+                        if (bar.isVertical) {
+                            scaleX(BarView.SCALE_SMALL)
+                            x((if (bar.is270Vertical) 1 else -1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        } else {
+                            scaleY(BarView.SCALE_SMALL)
+                            y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        }
+                    }
+                    .start()
+        }
+    }
+
+    fun jiggledComplexLongRightDown() {
+        if (bar.shouldAnimate) {
+            bar.animate()
+                    .setInterpolator(BarView.ENTER_INTERPOLATOR)
+                    .setDuration(bar.animationDurationMs)
+                    .withEndAction {
+                        bar.animate()
+                                .scaleX(BarView.SCALE_NORMAL)
+                                .scaleY(BarView.SCALE_NORMAL)
+                                .x(0f)
+                                .y(0f)
+                                .setInterpolator(BarView.EXIT_INTERPOLATOR)
+                                .duration = bar.animationDurationMs
+                    }
+                    .apply {
+                        if (bar.isVertical) {
+                            scaleY(BarView.SCALE_SMALL)
+                            y((if (bar.is270Vertical) 1 else -1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        } else {
+                            scaleX(BarView.SCALE_SMALL)
+                            x(bar.width * (1 - BarView.SCALE_SMALL) / 2)
+                        }
+                        if (bar.isVertical) {
+                            scaleX(BarView.SCALE_SMALL)
+                            x((if (bar.is270Vertical) 1 else -1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        } else {
+                            scaleY(BarView.SCALE_SMALL)
+                            y(bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                        }
+                    }
+                    .start()
+        }
+    }
+
     private fun cancelVertical() {
         verticalAnimator?.skipToEnd()
         verticalAnimator = null

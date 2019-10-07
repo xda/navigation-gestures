@@ -117,6 +117,10 @@ class BarViewActionHandler(private val context: Context) {
                 bar.actionHolder.actionLeftHold -> bar.animator.jiggleLeftHold()
                 bar.actionHolder.actionRightHold -> bar.animator.jiggleRightHold()
                 bar.actionHolder.actionDownHold -> bar.animator.jiggleDownHold()
+                bar.actionHolder.complexActionLongLeftUp -> bar.animator.jiggleComplexLongLeftUp()
+                bar.actionHolder.complexActionLongRightUp -> bar.animator.jiggleComplexLongRightUp()
+                bar.actionHolder.complexActionLongLeftDown -> bar.animator.jiggleComplexLongLeftDown()
+                bar.actionHolder.complexActionLongRightDown -> bar.animator.jiggledComplexLongRightDown()
             }
 
             if (key == bar.actionHolder.actionUp
