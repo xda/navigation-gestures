@@ -7,6 +7,7 @@ import android.service.quicksettings.TileService
 import com.xda.nobar.R
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.util.app
+import com.xda.nobar.util.prefManager
 import com.xda.nobar.views.BarView
 
 /**
@@ -44,7 +45,7 @@ class GestureToggle : TileService(), OnGestureStateChangeListener {
 
     @TargetApi(Build.VERSION_CODES.N)
     private fun updateState() {
-        val active = app.isPillShown()
+        val active = prefManager.isActive
 
         qsTile?.apply {
             state = if (active) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
