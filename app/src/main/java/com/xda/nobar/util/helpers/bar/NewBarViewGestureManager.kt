@@ -266,6 +266,10 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         sentLongLeft = false
         sentLongRight = false
         sentTap = false
+        sentLongComplexLeftUp = false
+        sentLongComplexRightUp = false
+        sentLongComplexLeftDown = false
+        sentLongComplexRightDown = false
 
         downX = 0f
         downY = 0f
@@ -391,28 +395,28 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
             actionHolder.run { hasAnyOfActions(complexActionLeftUp) }
                     && (patternMatches(patternLeftUp)
                     || patternMatches(patternUpLeft)) -> {
-                if (!sentLongLeft && !sentLongUp) {
+                if (!sentLongLeft && !sentLongUp && !sentLongComplexLeftUp) {
                     sendAction(actionHolder.complexActionLeftUp)
                 }
             }
             actionHolder.run { hasAnyOfActions(complexActionRightUp) }
                     && (patternMatches(patternRightUp)
                     || patternMatches(patternUpRight)) -> {
-                if (!sentLongRight && !sentLongUp) {
+                if (!sentLongRight && !sentLongUp && !sentLongComplexRightUp) {
                     sendAction(actionHolder.complexActionRightUp)
                 }
             }
             actionHolder.run { hasAnyOfActions(complexActionLeftDown) }
                     && (patternMatches(patternLeftDown)
                     || patternMatches(patternDownLeft)) -> {
-                if (!sentLongLeft && !sentLongDown) {
+                if (!sentLongLeft && !sentLongDown && !sentLongComplexLeftDown) {
                     sendAction(actionHolder.complexActionLeftDown)
                 }
             }
             actionHolder.run { hasAnyOfActions(complexActionRightDown) }
                     && (patternMatches(patternRightDown)
                     || patternMatches(patternDownRight)) -> {
-                if (!sentLongRight && !sentLongDown) {
+                if (!sentLongRight && !sentLongDown && !sentLongComplexRightDown) {
                     sendAction(actionHolder.complexActionRightDown)
                 }
             }
@@ -509,8 +513,16 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private var sentLongRight = false
     private var sentTap = false
 
+    private var sentLongComplexLeftUp = false
+    private var sentLongComplexRightUp = false
+    private var sentLongComplexLeftDown = false
+    private var sentLongComplexRightDown = false
+
     private fun sendUp() {
-        if (!sentLongUp && !bar.isHidden) {
+        if (!sentLongUp
+                && !sentLongComplexLeftUp
+                && !sentLongComplexRightUp
+                && !bar.isHidden) {
 //            Log.e("NoBar", "up")
 
             sendAction(actionHolder.actionUp)
@@ -518,7 +530,10 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     }
 
     private fun sendDown() {
-        if (!sentLongDown && !bar.isHidden) {
+        if (!sentLongDown
+                && !sentLongComplexLeftDown
+                && !sentLongComplexRightDown
+                && !bar.isHidden) {
 //            Log.e("NoBar", "down")
 
             sendAction(actionHolder.actionDown)
@@ -526,7 +541,10 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     }
 
     private fun sendLeft() {
-        if (!sentLongLeft && !bar.isHidden) {
+        if (!sentLongLeft
+                && !sentLongComplexLeftUp
+                && !sentLongComplexLeftDown
+                && !bar.isHidden) {
 //            Log.e("NoBar", "left")
 
             sendAction(actionHolder.actionLeft)
@@ -534,7 +552,10 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     }
 
     private fun sendRight() {
-        if (!sentLongRight && !bar.isHidden) {
+        if (!sentLongRight
+                && !sentLongComplexRightUp
+                && !sentLongComplexRightDown
+                && !bar.isHidden) {
 //            Log.e("NoBar", "right")
 
             sendAction(actionHolder.actionRight)
@@ -621,6 +642,38 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         }
     }
 
+    private fun sendComplexLongLeftUp() {
+        if (!sentLongComplexLeftUp) {
+            sentLongComplexLeftUp = true
+
+            sendAction(actionHolder.complexActionLongLeftUp)
+        }
+    }
+
+    private fun sendComplexLongRightUp() {
+        if (!sentLongComplexRightUp) {
+            sentLongComplexRightUp = true
+
+            sendAction(actionHolder.complexActionLongRightUp)
+        }
+    }
+
+    private fun sendComplexLongLeftDown() {
+        if (!sentLongComplexLeftDown) {
+            sentLongComplexLeftDown = true
+
+            sendAction(actionHolder.complexActionLongLeftDown)
+        }
+    }
+
+    private fun sendComplexLongRightDown() {
+        if (!sentLongComplexRightDown) {
+            sentLongComplexRightDown = true
+
+            sendAction(actionHolder.complexActionLongRightDown)
+        }
+    }
+
     private fun showPill() {
         bar.vibrate(prefManager.vibrationDuration.toLong())
         bar.showPill(HiddenPillReasonManagerNew.MANUAL, true)
@@ -675,11 +728,33 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
                 MSG_LONG -> {
-                    when (swipes.lastOrNull()) {
-                        Swipe.UP -> sendLongUp()
-                        Swipe.DOWN -> sendLongDown()
-                        Swipe.LEFT -> sendLongLeft()
-                        Swipe.RIGHT -> sendLongRight()
+                    when {
+                        actionHolder.run { hasAnyOfActions(complexActionLongLeftUp) }
+                                && (patternMatches(patternLeftUp)
+                                || patternMatches(patternUpLeft)) -> {
+                            sendComplexLongLeftUp()
+                        }
+                        actionHolder.run { hasAnyOfActions(complexActionLongRightUp) }
+                                && (patternMatches(patternRightUp)
+                                || patternMatches(patternUpRight)) -> {
+                            sendComplexLongRightUp()
+                        }
+                        actionHolder.run { hasAnyOfActions(complexActionLongLeftDown) }
+                                && (patternMatches(patternLeftDown)
+                                || patternMatches(patternDownLeft)) -> {
+                            sendComplexLongLeftDown()
+                        }
+                        actionHolder.run { hasAnyOfActions(complexActionLongRightDown) }
+                                && (patternMatches(patternRightDown)
+                                || patternMatches(patternDownRight)) -> {
+                            sendComplexLongRightDown()
+                        }
+                        else -> when (swipes.lastOrNull()) {
+                            Swipe.UP -> sendLongUp()
+                            Swipe.DOWN -> sendLongDown()
+                            Swipe.LEFT -> sendLongLeft()
+                            Swipe.RIGHT -> sendLongRight()
+                        }
                     }
                 }
             }

@@ -44,6 +44,10 @@ class ActionHolder private constructor(private val context: Context) {
     val complexActionRightUp: String by lazy { context.resources.getString(R.string.action_complex_right_up) }
     val complexActionLeftDown: String by lazy { context.resources.getString(R.string.action_complex_left_down) }
     val complexActionRightDown: String by lazy { context.resources.getString(R.string.action_complex_right_down) }
+    val complexActionLongLeftUp: String by lazy { context.resources.getString(R.string.action_complex_long_left_up) }
+    val complexActionLongRightUp: String by lazy { context.resources.getString(R.string.action_complex_long_right_up) }
+    val complexActionLongLeftDown: String by lazy { context.resources.getString(R.string.action_complex_long_left_down) }
+    val complexActionLongRightDown: String by lazy { context.resources.getString(R.string.action_complex_long_right_down) }
 
     val actionsList by lazy {
         arrayListOf(
@@ -67,7 +71,11 @@ class ActionHolder private constructor(private val context: Context) {
                 complexActionLeftUp,
                 complexActionRightUp,
                 complexActionLeftDown,
-                complexActionRightDown
+                complexActionRightDown,
+                complexActionLongLeftUp,
+                complexActionLongRightUp,
+                complexActionLongLeftDown,
+                complexActionLongRightDown
         )
     }
 
@@ -94,6 +102,10 @@ class ActionHolder private constructor(private val context: Context) {
             complexActionRightUp -> R.string.swipe_right_up
             complexActionLeftDown -> R.string.swipe_left_down
             complexActionRightDown -> R.string.swipe_right_down
+            complexActionLongLeftUp -> R.string.swipe_long_left_up
+            complexActionLongRightUp -> R.string.swipe_long_right_up
+            complexActionLongLeftDown -> R.string.swipe_long_left_down
+            complexActionLongRightDown -> R.string.swipe_long_right_down
             else -> 0
         }
         return if (res != 0) context.resources.getString(res)
