@@ -453,7 +453,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     }
 
     private fun patternMatches(pattern: Array<Swipe>): Boolean {
-        return swipes.toTypedArray().contentEquals(pattern)
+        return swipes.size > 1 && swipes.toTypedArray().contentEquals(pattern)
     }
 
     private fun setMode(rotation: Int) {
