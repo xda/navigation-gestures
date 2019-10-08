@@ -573,6 +573,8 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
         if (!bar.isHidden
                 && (!sentLongUp || prefManager.allowRepeatLong)
+                && !sentLongComplexRightUp
+                && !sentLongComplexLeftUp
                 && actionHolder.hasSomeUpHoldAction()) {
             sentLongUp = true
 //            Log.e("NoBar", "longUp")
@@ -587,6 +589,8 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
         if (!bar.isHidden
                 && (!sentLongDown || prefManager.allowRepeatLong)
+                && !sentLongComplexRightDown
+                && !sentLongComplexLeftDown
                 && actionHolder.hasAnyOfActions(downHold)) {
             sentLongDown = true
 //            Log.e("NoBar", "longDown")
@@ -601,6 +605,8 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
         if (!bar.isHidden
                 && (!sentLongLeft || prefManager.allowRepeatLong)
+                && !sentLongComplexLeftDown
+                && !sentLongComplexLeftUp
                 && actionHolder.hasAnyOfActions(leftHold)) {
             sentLongLeft = true
 //            Log.e("NoBar", "longLeft")
@@ -615,6 +621,8 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
         if (!bar.isHidden
                 && (!sentLongRight || prefManager.allowRepeatLong)
+                && !sentLongComplexRightDown
+                && !sentLongComplexRightUp
                 && actionHolder.hasAnyOfActions(rightHold)) {
             sentLongRight = true
 //            Log.e("NoBar", "longRight")
@@ -653,7 +661,9 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     }
 
     private fun sendComplexLongLeftUp() {
-        if (!sentLongComplexLeftUp || prefManager.allowRepeatLong) {
+        if ((!sentLongComplexLeftUp || prefManager.allowRepeatLong)
+                && !sentLongLeft
+                && !sentLongUp) {
             sentLongComplexLeftUp = true
 
             sendAction(actionHolder.complexActionLongLeftUp)
@@ -662,7 +672,9 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     }
 
     private fun sendComplexLongRightUp() {
-        if (!sentLongComplexRightUp || prefManager.allowRepeatLong) {
+        if ((!sentLongComplexRightUp || prefManager.allowRepeatLong)
+                && !sentLongRight
+                && !sentLongUp) {
             sentLongComplexRightUp = true
 
             sendAction(actionHolder.complexActionLongRightUp)
@@ -671,7 +683,9 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     }
 
     private fun sendComplexLongLeftDown() {
-        if (!sentLongComplexLeftDown || prefManager.allowRepeatLong) {
+        if ((!sentLongComplexLeftDown || prefManager.allowRepeatLong)
+                && !sentLongLeft
+                && !sentLongDown) {
             sentLongComplexLeftDown = true
 
             sendAction(actionHolder.complexActionLongLeftDown)
@@ -680,7 +694,9 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     }
 
     private fun sendComplexLongRightDown() {
-        if (!sentLongComplexRightDown || prefManager.allowRepeatLong) {
+        if ((!sentLongComplexRightDown || prefManager.allowRepeatLong)
+                && !sentLongRight
+                && !sentLongDown) {
             sentLongComplexRightDown = true
 
             sendAction(actionHolder.complexActionLongRightDown)
