@@ -28,7 +28,7 @@ class ImmersiveHelperManager(private val context: Context,
 
             updateHelperState()
         }
-
+    var isRemovingOrAdding = false
 
     private var oldImm: String? = null
     private var hasRunForcedImm = false
@@ -44,6 +44,7 @@ class ImmersiveHelperManager(private val context: Context,
     fun add(wm: WindowManager) {
         try {
             if (!helperAdded) {
+                isRemovingOrAdding = true
                 wm.addView(base, base.params)
             } else {
                 wm.updateViewLayout(base, base.params)
@@ -53,7 +54,10 @@ class ImmersiveHelperManager(private val context: Context,
 
     fun remove(wm: WindowManager) {
         try {
-            wm.removeView(base)
+            if (helperAdded) {
+                isRemovingOrAdding = true
+                wm.removeView(base)
+            }
         } catch (e: Exception) {}
     }
 

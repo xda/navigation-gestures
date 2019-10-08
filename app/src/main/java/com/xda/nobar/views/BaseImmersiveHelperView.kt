@@ -39,6 +39,7 @@ open class BaseImmersiveHelperView(context: Context,
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
+        context.app.immersiveHelperManager.helperAdded = true
         viewTreeObserver.addOnGlobalLayoutListener(this)
     }
 

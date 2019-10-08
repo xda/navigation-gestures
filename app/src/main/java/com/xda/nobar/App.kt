@@ -992,6 +992,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     }
                 } else if (isInOtherWindowApp) isInOtherWindowApp = false
 
+                updateBlacklists()
+
 //                try {
 //                    if (checkGoodPackage(pName, className)) {
 //                        val packageRes = packageManager.getResourcesForApplication(pName)
@@ -1043,8 +1045,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 //                        prefManager.autoPillBGColor = 0
 //                    }
 //                } catch (e: Exception) {}
-
-                updateBlacklists()
             }
         }
 
@@ -1127,9 +1127,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
 
             if (disabledBarReasonManager.isEmpty()) {
-                if (active
-                        && !pillShown) addBar(false)
-                if (!immersiveHelperManager.helperAdded) addImmersiveHelper()
+                if (active && !pillShown) addBar(false)
+                if (!helperAdded) addImmersiveHelper()
             } else {
                 removeBar(false)
                 if (disabledBarReasonManager.run {
@@ -1137,9 +1136,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                     || contains(DisabledReasonManager.PillReasons.PERMISSIONS)
                                     || contains(DisabledReasonManager.PillReasons.HIDE_DIALOG)
                         }) {
-                    removeImmersiveHelper()
+                    if (helperAdded && !immersiveHelperManager.isRemovingOrAdding) {
+                        removeImmersiveHelper()
+                    }
                 } else {
-                    addImmersiveHelper()
+                    if (!helperAdded && !immersiveHelperManager.isRemovingOrAdding) {
+                        addImmersiveHelper()
+                    }
                 }
             }
 
