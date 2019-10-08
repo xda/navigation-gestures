@@ -131,6 +131,14 @@ class ActionHolder private constructor(private val context: Context) {
             actionUpHoldCenter -> R.drawable.swipe_up_hold
             actionUpRight -> R.drawable.swipe_up
             actionUpHoldRight -> R.drawable.swipe_up_hold
+            complexActionLeftUp -> R.drawable.ic_complex_up_left
+            complexActionRightUp -> R.drawable.ic_complex_up_right
+            complexActionLeftDown -> R.drawable.ic_complex_down_left
+            complexActionRightDown -> R.drawable.ic_complex_down_right
+            complexActionLongLeftUp -> R.drawable.ic_complex_up_left_long
+            complexActionLongRightUp -> R.drawable.ic_complex_up_right_long
+            complexActionLongLeftDown -> R.drawable.ic_complex_down_left_long
+            complexActionLongRightDown -> R.drawable.ic_complex_down_right_long
             else -> 0
         }
     }
