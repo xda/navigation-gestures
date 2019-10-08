@@ -167,6 +167,14 @@ class ActionHolder private constructor(private val context: Context) {
                     actionUpHoldRight
             )
 
+    fun hasSomeUpHoldAction() =
+            hasAnyOfActions(
+                    actionUpHold,
+                    actionUpHoldLeft,
+                    actionUpHoldCenter,
+                    actionUpHoldRight
+            )
+
     val typeNoAction by lazy { context.resources.getString(R.string.type_no_action).toInt() }
     val typeBack by lazy { context.resources.getString(R.string.type_back).toInt() }
     val typeOhm by lazy { context.resources.getString(R.string.type_ohm).toInt() }

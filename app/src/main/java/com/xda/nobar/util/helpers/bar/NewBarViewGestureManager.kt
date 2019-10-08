@@ -573,7 +573,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
         if (!bar.isHidden
                 && (!sentLongUp || prefManager.allowRepeatLong)
-                && actionHolder.hasAnyOfActions(upHold)) {
+                && actionHolder.hasSomeUpHoldAction()) {
             sentLongUp = true
 //            Log.e("NoBar", "longUp")
 
