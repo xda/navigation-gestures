@@ -1,6 +1,5 @@
 package com.xda.nobar.util.helpers
 
-import android.util.Log
 import java.util.*
 
 class HiddenPillReasonManagerNew : TreeMap<Long, String>() {
