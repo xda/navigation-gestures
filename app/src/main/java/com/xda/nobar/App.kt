@@ -28,6 +28,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.xda.nobar.activities.helpers.RequestPermissionsActivity
 import com.xda.nobar.activities.ui.IntroActivity
 import com.xda.nobar.data.ColoredAppData
+import com.xda.nobar.data.SettingsIndex
 import com.xda.nobar.interfaces.OnGestureStateChangeListener
 import com.xda.nobar.interfaces.OnLicenseCheckResultListener
 import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
@@ -131,6 +132,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val disabledNavReasonManager = DisabledReasonManager()
     val disabledBarReasonManager = DisabledReasonManager()
     val disabledImmReasonManager = DisabledReasonManager()
+
+    val settingsIndex by lazy { SettingsIndex.getInstance(this) }
 
     private val isMainProcess: Boolean
         get() {
@@ -348,7 +351,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 BaseProvider.sendUpdate(this)
             }
             PrefManager.HIDE_PILL_ON_KEYBOARD -> {
-                uiHandler.onGlobalLayout()
+                uiHandler.updateKeyboardFlagState()
             }
             PrefManager.FULL_OVERSCAN -> {
                 if (prefManager.shouldUseOverscanMethod) hideNav(false)
@@ -1068,7 +1071,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             return true
         }
 
-        private fun updateKeyboardFlagState() {
+        fun updateKeyboardFlagState() {
             val kbHeight = try {
                 imm.inputMethodWindowVisibleHeight
             } catch (e: Exception) {
@@ -1112,6 +1115,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (prefManager.hidePillWhenKeyboardShown) {
                         if (keyboardShown) bar.scheduleHide(HiddenPillReasonManagerNew.KEYBOARD)
                         else bar.showPill(HiddenPillReasonManagerNew.KEYBOARD)
+                    } else {
+                        if (bar.isHidden) bar.showPill(HiddenPillReasonManagerNew.KEYBOARD)
                     }
                 } catch (e: NullPointerException) {}
             }

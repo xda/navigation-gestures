@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/search_graph"
+    app:startDestination="@id/searchFragment">
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.xda.nobar.fragments.settings.search.SearchFragment"
+        android:label="SearchFragment" >
+        <action
+            android:id="@+id/action_searchFragment_to_gesturesFragment"
+            app:destination="@id/gesturesFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_behaviorFragment"
+            app:destination="@id/behaviorFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_appearanceFragment"
+            app:destination="@id/appearanceFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_compatibilityFragment"
+            app:destination="@id/compatibilityFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_experimentalFragment"
+            app:destination="@id/experimentalFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_backupAndRestoreFragment"
+            app:destination="@id/backupAndRestoreFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gesturesFragment"
+        android:name="com.xda.nobar.fragments.settings.GestureFragment"
+        android:label="BehaviorFragment" />
+    <fragment
+        android:id="@+id/behaviorFragment"
+        android:name="com.xda.nobar.fragments.settings.BehaviorFragment"
+        android:label="BehaviorFragment" />
+    <fragment
+        android:id="@+id/appearanceFragment"
+        android:name="com.xda.nobar.fragments.settings.AppearanceFragment"
+        android:label="AppearanceFragment" />
+    <fragment
+        android:id="@+id/compatibilityFragment"
+        android:name="com.xda.nobar.fragments.settings.CompatibilityFragment"
+        android:label="CompatibilityFragment" />
+    <fragment
+        android:id="@+id/experimentalFragment"
+        android:name="com.xda.nobar.fragments.settings.ExperimentalFragment"
+        android:label="ExperimentalFragment" />
+    <fragment
+        android:id="@+id/backupAndRestoreFragment"
+        android:name="com.xda.nobar.fragments.settings.BackupRestoreFragment"
+        android:label="BackupAndRestoreFragment" />
+
+</navigation>

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.animation.Animation
 import androidx.annotation.CallSuper
 import androidx.preference.*
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xda.nobar.util.app
 import com.xda.nobar.util.prefManager
@@ -74,26 +75,43 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
                             val position = (listView.adapter as PreferenceGroup.PreferencePositionCallback)
                                     .getPreferenceAdapterPosition(it)
 
-                            listView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                            val lm = listView.layoutManager as LinearLayoutManager
+                            val scrollListener = object : RecyclerView.OnScrollListener() {
                                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                                         val view = findPreferenceView(it)
+                                        pressUnpressView(view)
 
-                                        view?.let { v ->
-                                            v.isPressed = true
-                                            v.postDelayed({ if (isCreated) v.isPressed = false }, 500)
-                                        }
+                                        listView.removeOnScrollListener(this)
                                     }
                                 }
 
                                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {}
-                            })
-                            listView.smoothScrollToPosition(position)
+                            }
+
+                            val first = lm.findFirstCompletelyVisibleItemPosition()
+                            val last = lm.findLastCompletelyVisibleItemPosition()
+
+
+                            if (position != RecyclerView.NO_POSITION && (position < first || position > last)) {
+                                listView.addOnScrollListener(scrollListener)
+                                listView.smoothScrollToPosition(position)
+                            } else {
+                                val view = findPreferenceView(it)
+                                pressUnpressView(view)
+                            }
                         }
                     }, 200)
                 }
             }
         }, 200)
+    }
+
+    private fun pressUnpressView(v: View?) {
+        if (v == null) return
+
+        v.isPressed = true
+        v.postDelayed({ if (isCreated) v.isPressed = false }, 500)
     }
 
     override fun onDestroy() {

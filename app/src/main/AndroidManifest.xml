@@ -169,6 +169,9 @@
         <activity android:name=".dev.PreferenceViewerActivity"
             android:exported="false"
             />
+        <activity android:name=".activities.ui.SettingsSearchActivity"
+            android:exported="false"
+            />
 
         <service
             android:name=".tiles.GestureToggle"

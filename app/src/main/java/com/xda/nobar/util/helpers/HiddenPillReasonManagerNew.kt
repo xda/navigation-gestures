@@ -1,5 +1,6 @@
 package com.xda.nobar.util.helpers
 
+import android.util.Log
 import java.util.*
 
 class HiddenPillReasonManagerNew : TreeMap<Long, String>() {
@@ -20,6 +21,7 @@ class HiddenPillReasonManagerNew : TreeMap<Long, String>() {
     }
 
     fun addReason(reason: String) {
+        Log.e("NoBar", reason)
         val time = System.currentTimeMillis()
 
         put(time, reason)
