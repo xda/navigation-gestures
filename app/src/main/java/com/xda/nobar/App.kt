@@ -735,6 +735,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      * Listens for TouchWiz navbar hiding and coloring and adjusts appropriately
      * //TODO: More work may be needed on immersive detection
      */
+    @SuppressLint("WrongConstant")
     inner class UIHandler : ContentObserver(logicHandler), ViewTreeObserver.OnGlobalLayoutListener, (Boolean) -> Unit, SharedPreferences.OnSharedPreferenceChangeListener {
         private var rotLock = Any()
 
@@ -855,6 +856,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private fun handleNewEvent(info: AccessibilityEvent) {
             logicScope.launch {
                 synchronized(eventLock) {
+                    val hasUsage = this@App.hasUsage
+
                     var pName = info.packageName?.toString()
                     val className = info.className?.toString()
 
@@ -883,6 +886,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                     if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                             || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
+
+                        if (origInFullscreen) {
+                            if (immersiveHelperManager.isFullImmersive()) {
+                                disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.FULLSCREEN)
+                            } else {
+                                disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.FULLSCREEN)
+                            }
+                        }
 
                         if (useOverscan
                                 && immersiveWhenNavHidden) {
@@ -920,6 +931,18 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         disabledBarReasonManager.add(DisabledReasonManager.PillReasons.LOCK_SCREEN)
                     } else {
                         disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.LOCK_SCREEN)
+                    }
+
+                    if (isTouchWiz) {
+                        try {
+                            if (edgeType == EDGE_TYPE_ACTIVE) {
+                                disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
+                            } else {
+                                disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
 
                     updateKeyboardFlagState()
@@ -1083,15 +1106,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             if (isPillShown()) {
                 try {
-                    if (!prefManager.useImmersiveWhenNavHidden)
+                    if (!immersiveWhenNavHidden)
                         immersiveHelperManager.exitNavImmersive()
 
                     if (prefManager.hidePillWhenKeyboardShown) {
                         if (keyboardShown) bar.scheduleHide(HiddenPillReasonManagerNew.KEYBOARD)
                         else bar.showPill(HiddenPillReasonManagerNew.KEYBOARD)
                     }
-                } catch (e: NullPointerException) {
-                }
+                } catch (e: NullPointerException) {}
             }
         }
 
@@ -1105,7 +1127,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
 
             if (disabledBarReasonManager.isEmpty()) {
-                if (prefManager.isActive
+                if (active
                         && !pillShown) addBar(false)
                 if (!immersiveHelperManager.helperAdded) addImmersiveHelper()
             } else {
@@ -1136,48 +1158,41 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             handleImmersiveChange(isImmersive)
         }
 
+        private val semCocktailBarManagerClass by lazy {
+            try {
+                Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
+            } catch (e: Exception) {
+                null
+            }
+        }
+
+        private val managerInstance by lazy {
+            try {
+                getSystemService("CocktailBarService")
+            } catch (e: Exception) {
+                null
+            }
+        }
+
+        private val getCocktailBarWindowType by lazy {
+            try {
+                semCocktailBarManagerClass?.getMethod("getCocktailBarWindowType")
+            } catch (e: Exception) {
+                null
+            }
+        }
+
+        private val edgeType: Int?
+            get() = try {
+                getCocktailBarWindowType?.invoke(managerInstance)?.toString()?.toInt()
+            } catch (e: Exception) {
+                null
+            }
+
         @SuppressLint("WrongConstant")
         override fun onGlobalLayout() {
             if (pillShown) {
                 bar.updatePositionAndDimens()
-            }
-
-            logicScope.launch {
-                synchronized(this) {
-                    if (!bar.isCarryingOutTouchAction) {
-                        updateKeyboardFlagState()
-
-                        if (isTouchWiz) {
-                            try {
-                                val semCocktailBarManagerClass = Class.forName("com.samsung.android.cocktailbar.SemCocktailBarManager")
-
-                                val manager = getSystemService("CocktailBarService")
-
-                                val getCocktailBarWindowType = semCocktailBarManagerClass.getMethod("getCocktailBarWindowType")
-
-                                val edgeType = getCocktailBarWindowType.invoke(manager).toString().toInt()
-
-                                if (edgeType == EDGE_TYPE_ACTIVE) {
-                                    disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
-                                } else {
-                                    disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        }
-
-                        if (origInFullscreen) {
-                            if (immersiveHelperManager.isFullImmersive()) {
-                                disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.FULLSCREEN)
-                            } else {
-                                disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.FULLSCREEN)
-                            }
-                        }
-
-                        updateBlacklists()
-                    }
-                }
             }
         }
 
