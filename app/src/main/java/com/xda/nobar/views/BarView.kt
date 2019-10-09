@@ -79,10 +79,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             else WindowManager.LayoutParams.TYPE_PRIORITY_PHONE
         }
         flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
         format = PixelFormat.TRANSLUCENT
-        softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+        softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
 
         if (context.prefManager.overlayNav) {
             flags = flags or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
@@ -694,7 +693,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     fun changePillMargins(margins: Rect) {
         mainScope.launch {
-            (pill.layoutParams as LinearLayout.LayoutParams).apply {
+            (pill.layoutParams as LayoutParams).apply {
                 bottomMargin = margins.bottom
                 topMargin = margins.top
                 leftMargin = margins.left
@@ -708,7 +707,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     fun getPillMargins(): Rect {
         val rect = Rect()
 
-        (pill.layoutParams as LinearLayout.LayoutParams).apply {
+        (pill.layoutParams as LayoutParams).apply {
             rect.bottom = bottomMargin
             rect.top = topMargin
             rect.left = leftMargin

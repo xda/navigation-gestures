@@ -1095,6 +1095,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         bar.params.flags = bar.params.flags and
                                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv() or
                                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                        bar.params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
                         changed = true
                     }
                 } else {
@@ -1102,6 +1103,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         bar.params.flags = bar.params.flags or
                                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
                                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
+                        bar.params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
                         changed = true
                     }
                 }

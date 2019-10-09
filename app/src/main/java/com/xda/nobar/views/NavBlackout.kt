@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.Surface
 import android.view.WindowManager
 import android.widget.LinearLayout
@@ -62,6 +63,11 @@ class NavBlackout : LinearLayout {
 
         if (context.prefManager.overlayNav)
             context.app.postAction { it.remBar() }
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+//        context.app.bar.onTouchEvent(event)
+        return super.onTouchEvent(event)
     }
 
     private val addLock = Any()
@@ -136,7 +142,8 @@ class NavBlackout : LinearLayout {
             flags = FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS or
                     FLAG_NOT_FOCUSABLE or
                     FLAG_LAYOUT_NO_LIMITS or
-                    FLAG_TRANSLUCENT_NAVIGATION
+                    FLAG_TRANSLUCENT_NAVIGATION or
+                    FLAG_SLIPPERY
         }
     }
 }
