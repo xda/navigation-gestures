@@ -40,8 +40,11 @@ class BehaviorFragment : BasePrefFragment() {
         activity?.title = resources.getText(R.string.behavior)
 
         if (prefManager.overlayNav) {
-            val dontMoveWithKb = findPreference<Preference>(PrefManager.STATIC_PILL)!!
-            dontMoveWithKb.isEnabled = false
+            val staticPill = findPreference<Preference>(PrefManager.STATIC_PILL)!!
+            staticPill.isEnabled = false
+
+            val showNavWithKb = findPreference<Preference>(PrefManager.SHOW_NAV_WITH_KEYBOARD)!!
+            showNavWithKb.isEnabled = false
         }
     }
 
