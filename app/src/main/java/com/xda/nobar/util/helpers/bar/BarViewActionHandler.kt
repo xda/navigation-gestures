@@ -34,6 +34,7 @@ import com.xda.nobar.tasker.updates.EventUpdate
 import com.xda.nobar.util.*
 import com.xda.nobar.util.flashlight.FlashlightControllerLollipop
 import com.xda.nobar.util.flashlight.FlashlightControllerMarshmallow
+import com.xda.nobar.util.helpers.HiddenPillReasonManagerNew
 import com.xda.nobar.views.BarView
 import kotlinx.coroutines.launch
 
@@ -105,7 +106,7 @@ class BarViewActionHandler(private val context: Context) {
                         context.prefManager.vibrationDuration.toLong())
 
             if (which == bar.actionHolder.typeHide) {
-                bar.hidePill(false, null, true)
+                bar.addHideReason(HiddenPillReasonManagerNew.MANUAL)
                 return@launch
             }
 

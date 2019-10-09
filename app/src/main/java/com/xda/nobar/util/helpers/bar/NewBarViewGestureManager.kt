@@ -20,7 +20,25 @@ import kotlin.math.absoluteValue
 
 class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.context.applicationContext) {
     companion object {
-        const val MSG_LONG = 104
+        internal const val FIRST_SECTION = 0
+        internal const val SECOND_SECTION = 1
+        internal const val THIRD_SECTION = 2
+
+        internal const val MSG_UP_HOLD = 0
+        internal const val MSG_LEFT_HOLD = 1
+        internal const val MSG_RIGHT_HOLD = 2
+        internal const val MSG_DOWN_HOLD = 3
+
+        internal const val MSG_UP = 4
+        internal const val MSG_LEFT = 5
+        internal const val MSG_RIGHT = 6
+        internal const val MSG_DOWN = 7
+
+        internal const val MSG_TAP = 8
+        internal const val MSG_DOUBLE_TAP = 9
+        internal const val MSG_HOLD = 10
+        
+        private const val MSG_LONG = 104
 
         private val patternLeftUp = arrayOf(Swipe.LEFT, Swipe.UP)
         private val patternUpLeft = arrayOf(Swipe.UP, Swipe.LEFT)
@@ -31,7 +49,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         private val patternRightDown = arrayOf(Swipe.RIGHT, Swipe.DOWN)
         private val patternDownRight = arrayOf(Swipe.DOWN, Swipe.RIGHT)
     }
-
+    
     private enum class Mode {
         PORTRAIT,
         LANDSCAPE_90,
@@ -215,6 +233,8 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                         if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
                     }
             )
+        } else {
+            bar.isCarryingOutTouchAction = false
         }
 
         if (bar.params.x != bar.adjustedHomeX || bar.params.y != bar.adjustedHomeY) {
@@ -468,9 +488,9 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     private fun sendAction(action: String) {
         if (action.isEligible()) {
             when (getSection(adjCoord)) {
-                BaseBarViewGestureManager.FIRST_SECTION -> actionHandler.sendActionInternal("${action}_left")
-                BaseBarViewGestureManager.SECOND_SECTION -> actionHandler.sendActionInternal("${action}_center")
-                BaseBarViewGestureManager.THIRD_SECTION -> actionHandler.sendActionInternal("${action}_right")
+                FIRST_SECTION -> actionHandler.sendActionInternal("${action}_left")
+                SECOND_SECTION -> actionHandler.sendActionInternal("${action}_center")
+                THIRD_SECTION -> actionHandler.sendActionInternal("${action}_right")
             }
         } else {
             actionHandler.sendActionInternal(action)
@@ -482,27 +502,27 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
             bar.is90Vertical -> {
                 val third = bar.adjustedHeight / 3f
                 when {
-                    coord < third -> BaseBarViewGestureManager.THIRD_SECTION
-                    coord <= (2f * third) -> BaseBarViewGestureManager.SECOND_SECTION
-                    else -> BaseBarViewGestureManager.FIRST_SECTION
+                    coord < third -> THIRD_SECTION
+                    coord <= (2f * third) -> SECOND_SECTION
+                    else -> FIRST_SECTION
                 }
             }
 
             bar.is270Vertical -> {
                 val third = bar.adjustedHeight / 3f
                 when {
-                    coord < third -> BaseBarViewGestureManager.FIRST_SECTION
-                    coord <= (2f * third) -> BaseBarViewGestureManager.SECOND_SECTION
-                    else -> BaseBarViewGestureManager.THIRD_SECTION
+                    coord < third -> FIRST_SECTION
+                    coord <= (2f * third) -> SECOND_SECTION
+                    else -> THIRD_SECTION
                 }
             }
 
             else -> {
                 val third = prefManager.customWidth / 3f
                 when {
-                    coord < third -> BaseBarViewGestureManager.FIRST_SECTION
-                    coord <= (2f * third) -> BaseBarViewGestureManager.SECOND_SECTION
-                    else -> BaseBarViewGestureManager.THIRD_SECTION
+                    coord < third -> FIRST_SECTION
+                    coord <= (2f * third) -> SECOND_SECTION
+                    else -> THIRD_SECTION
                 }
             }
         }
@@ -706,7 +726,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
     private fun showPill() {
         bar.vibrate(prefManager.vibrationDuration.toLong())
-        bar.showPill(HiddenPillReasonManagerNew.MANUAL, true)
+        bar.removeHideReason(HiddenPillReasonManagerNew.MANUAL, true)
     }
 
     inner class Listener : GestureDetector.SimpleOnGestureListener() {

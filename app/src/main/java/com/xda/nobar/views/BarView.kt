@@ -375,8 +375,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         show(null)
 
         if (context.prefManager.autoHide && !context.prefManager.autoFade) {
-            val reason = HiddenPillReasonManagerNew.AUTO
-            scheduleHide(reason)
+            addHideReason(HiddenPillReasonManagerNew.AUTO)
         }
 
         if (context.prefManager.autoFade && !context.prefManager.autoHide) {
@@ -452,9 +451,17 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             PrefManager.AUTO_HIDE_PILL -> {
                 if (context.prefManager.autoHide) {
-                    if (!isHidden) scheduleHide(HiddenPillReasonManagerNew.AUTO)
+                    addHideReason(HiddenPillReasonManagerNew.AUTO)
                 } else {
-                    if (isHidden) hideHandler.show(HiddenPillReasonManagerNew.AUTO)
+                    removeHideReason(HiddenPillReasonManagerNew.AUTO)
+                }
+            }
+
+            PrefManager.HIDE_IN_FULLSCREEN -> {
+                if (context.prefManager.hideInFullscreen && isImmersive) {
+                    addHideReason(HiddenPillReasonManagerNew.FULLSCREEN)
+                } else {
+                    removeHideReason(HiddenPillReasonManagerNew.FULLSCREEN)
                 }
             }
 
@@ -561,14 +568,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     /**
      * "Hide" the pill by moving it partially offscreen
      */
-    fun hidePill(auto: Boolean, autoReason: String?, overrideBeingTouched: Boolean = false) {
+    fun hidePill(overrideBeingTouched: Boolean = false) {
         mainScope.launch {
             synchronized(hideLock) {
-                require(!(auto && autoReason == null)) { "autoReason must not be null when auto is true" }
-                if (auto && autoReason != null) hiddenPillReasons.addReason(autoReason)
-
-                if (!auto) hiddenPillReasons.addReason(HiddenPillReasonManagerNew.MANUAL)
-
                 if (((!beingTouched && !isCarryingOutTouchAction) || overrideBeingTouched) && !isPillHidingOrShowing) {
                     if (context.app.isPillShown()) {
                         isPillHidingOrShowing = true
@@ -579,8 +581,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                         showHiddenToast()
                     }
-                } else {
-                    scheduleHide(autoReason ?: return@launch)
                 }
             }
         }
@@ -605,10 +605,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    fun scheduleHide(reason: String, time: Long = parseHideTime(reason)) {
-        hideHandler.hide(time, reason)
-    }
-
     fun scheduleFade(time: Long) {
         hideHandler.fade(time)
     }
@@ -617,16 +613,27 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         hideHandler.unfade()
     }
 
+    fun addHideReason(reason: String) {
+        hiddenPillReasons.addReason(reason)
+        hideHandler.updateHideStatus()
+    }
+
+    fun removeHideReason(reason: String, forceShow: Boolean = false) {
+        hiddenPillReasons.removeReason(reason)
+        hideHandler.updateHideStatus(forceShow)
+    }
+
     private fun parseHideTime(reason: String) =
             when (reason) {
                 HiddenPillReasonManagerNew.AUTO -> context.prefManager.autoHideTime.toLong()
                 HiddenPillReasonManagerNew.FULLSCREEN -> context.prefManager.hideInFullscreenTime.toLong()
                 HiddenPillReasonManagerNew.KEYBOARD -> context.prefManager.hideOnKeyboardTime.toLong()
+                HiddenPillReasonManagerNew.MANUAL -> 0
                 else -> throw IllegalArgumentException("$reason is not a valid hide reason")
             }
 
-    fun showPill(reason: String?, forceShow: Boolean = false) {
-        hideHandler.show(reason, forceShow)
+    fun showPill(forceShow: Boolean = false) {
+        hideHandler.show(forceShow)
     }
 
     private val showLock = Any()
@@ -634,10 +641,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     /**
      * "Show" the pill by moving it back to its normal position
      */
-    private fun showPillInternal(autoReasonToRemove: String?, forceShow: Boolean = false) {
+    private fun showPillInternal(forceShow: Boolean = false) {
         mainScope.launch {
             synchronized(showLock) {
-                if (autoReasonToRemove != null) hiddenPillReasons.removeReason(autoReasonToRemove)
                 if (!isPillHidingOrShowing) {
                     if (context.app.isPillShown()) {
                         isPillHidingOrShowing = true
@@ -654,7 +660,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                         .setInterpolator(EXIT_INTERPOLATOR)
                                         .setDuration(animationDurationMs)
                                         .withEndAction {
-                                            animateShow(!reallyForceNotAuto, autoReasonToRemove)
+                                            animateShow()
                                         }
                                         .apply {
                                             if (isVertical) translationX(0f)
@@ -669,16 +675,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    private fun animateShow(rehide: Boolean, reason: String?) {
-        animator.show(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+    private fun animateShow() {
+        animator.home(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
             mainHandler.postDelayed(Runnable {
                 isHidden = false
                 isPillHidingOrShowing = false
-
-                if (rehide && reason != null) {
-                    scheduleHide(if (reason == HiddenPillReasonManagerNew.MANUAL)
-                        hiddenPillReasons.getMostRecentReason() ?: return@Runnable else reason)
-                }
+                hideHandler.updateHideStatus()
             }, (if (animationDurationMs < 12) 12 else 0))
         })
     }
@@ -1021,12 +1023,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
                 MSG_HIDE -> {
-                    val reason = msg.obj?.toString()
-                    hidePill(reason != null, reason)
+                    hidePill(msg.arg1 == 1)
                 }
                 MSG_SHOW -> {
-                    val reason = msg.obj?.toString()
-                    showPillInternal(reason, msg.arg1 == 1)
+                    showPillInternal(msg.arg1 == 1)
                 }
 
                 MSG_FADE -> {
@@ -1063,19 +1063,30 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
 
-        fun hide(time: Long, reason: String? = null) {
+        fun updateHideStatus(forceShow: Boolean = false) {
+            if (hiddenPillReasons.isEmpty() || forceShow) {
+                show(true)
+
+                if (hiddenPillReasons.isEmpty()) removeMessages(MSG_HIDE)
+            } else {
+                val reason = hiddenPillReasons.getMostRecentReason()!!
+
+                hide(parseHideTime(reason), reason == HiddenPillReasonManagerNew.MANUAL)
+            }
+        }
+
+        fun hide(time: Long, overrideBeingTouched: Boolean) {
             val msg = Message.obtain(this)
             msg.what = MSG_HIDE
-            msg.obj = reason
+            msg.arg1 = if (overrideBeingTouched) 1 else 0
 
             if (!isHidden) sendMessageAtTime(msg, SystemClock.uptimeMillis() + time)
         }
 
-        fun show(reason: String?, forceShow: Boolean = false) {
+        fun show(forceShow: Boolean = false) {
             val msg = Message.obtain(this)
             msg.what = MSG_SHOW
             msg.arg1 = if (forceShow) 1 else 0
-            msg.obj = reason
 
             if (isHidden) sendMessage(msg)
         }
