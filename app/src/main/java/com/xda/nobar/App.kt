@@ -1090,16 +1090,18 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (!prefManager.dontMoveForKeyboard) {
                 var changed = false
 
-                if (keyboardShown) {
+                if (keyboardShown && !bar.isVertical) {
                     if (bar.params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN != 0) {
                         bar.params.flags = bar.params.flags and
-                                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv()
+                                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv() or
+                                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
                         changed = true
                     }
                 } else {
                     if (bar.params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN == 0) {
                         bar.params.flags = bar.params.flags or
-                                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
+                                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
                         changed = true
                     }
                 }

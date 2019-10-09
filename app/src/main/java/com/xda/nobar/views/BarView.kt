@@ -86,10 +86,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         if (context.prefManager.overlayNav) {
             flags = flags or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        } else if (context.prefManager.dontMoveForKeyboard) {
-            flags = flags and
-                    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-            softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
         }
     }
     private val hiddenPillReasons = HiddenPillReasonManagerNew()
@@ -434,10 +430,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             PrefManager.SHOW_SHADOW -> {
                 adjustPillShadowAndHitbox()
-            }
-
-            PrefManager.STATIC_PILL -> {
-                setMoveForKeyboard(!context.prefManager.dontMoveForKeyboard)
             }
 
             PrefManager.AUDIO_FEEDBACK -> {
@@ -941,16 +933,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 changed = true
             }
 
-            if (!context.prefManager.dontMoveForKeyboard) {
-                if (params.flags and WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM != 0) {
-                    params.flags = params.flags and
-                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                    params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
-
-                    changed = true
-                }
-            }
-
             if (isHidden && pill.translationX == 0f) {
                 mainHandler.post {
                     pill.translationX = pill.translationY * if (is270) -1 else 1
@@ -968,16 +950,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 params.gravity = newGrav
 
                 changed = true
-            }
-
-            if (!context.prefManager.dontMoveForKeyboard) {
-                if (params.flags and WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM == 0) {
-                    params.flags = params.flags or
-                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-                    params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-
-                    changed = true
-                }
             }
 
             if (isHidden && pill.translationY == 0f) {
