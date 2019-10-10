@@ -124,11 +124,11 @@ class BarViewActionHandler(private val context: Context) {
                 bar.actionHolder.complexActionLongRightDown -> bar.animator.jiggledComplexLongRightDown()
             }
 
-            if (key == bar.actionHolder.actionUp
-                    || key == bar.actionHolder.actionLeft
-                    || key == bar.actionHolder.actionRight) {
-                bar.animate(null, BarView.ALPHA_ACTIVE)
-            }
+//            if (key == bar.actionHolder.actionUp
+//                    || key == bar.actionHolder.actionLeft
+//                    || key == bar.actionHolder.actionRight) {
+//                bar.animate(null, BarView.ALPHA_ACTIVE)
+//            }
 
             if (bar.isAccessibilityAction(which)) {
                 if (which == bar.actionHolder.typeHome

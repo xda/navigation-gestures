@@ -207,6 +207,8 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
             MotionEvent.ACTION_UP -> {
                 handleActionUp()
+                bar.updateHideStatus()
+                bar.updateFadeStatus()
 
                 wasHidden = bar.isHidden
                 bar.beingTouched = false

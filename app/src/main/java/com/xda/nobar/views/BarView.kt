@@ -164,13 +164,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         get() = isVertical
                 && cachedRotation == Surface.ROTATION_270
 
-//    private val horizontalGestureManager = BarViewGestureManagerHorizontal(this)
-//    private val verticalGestureManager = BarViewGestureManagerVertical(this)
-//    private val vertical270GestureManager = BarViewGestureManagerVertical270(this)
-
-//    var currentGestureDetector: BaseBarViewGestureManager = horizontalGestureManager
-
-    val currentGestureDetector: NewBarViewGestureManager = NewBarViewGestureManager(this)
+    private val currentGestureDetector: NewBarViewGestureManager = NewBarViewGestureManager(this)
 
     private val wm: WindowManager = context.app.wm
     val animator = BarAnimator(this)
@@ -181,9 +175,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     var beingTouched = false
     var isCarryingOutTouchAction = false
     var isPillHidingOrShowing = false
-    val isImmersive: Boolean
+    private val isImmersive: Boolean
         get() = context.app.immersiveHelperManager.isFullImmersive()
-    val immersiveNav: Boolean
+    private val immersiveNav: Boolean
         get() = context.app.immersiveHelperManager.isNavImmersive()
 
     constructor(context: Context) : super(context)
@@ -555,52 +549,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 .start()
     }
 
-    val hideLock = Any()
-
-    /**
-     * "Hide" the pill by moving it partially offscreen
-     */
-    fun hidePill(overrideBeingTouched: Boolean = false) {
-        mainScope.launch {
-            synchronized(hideLock) {
-                if (((!beingTouched && !isCarryingOutTouchAction) || overrideBeingTouched) && !isPillHidingOrShowing) {
-                    if (context.app.isPillShown()) {
-                        isPillHidingOrShowing = true
-
-                        animator.hide(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
-                            animateHide()
-                        })
-
-                        showHiddenToast()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun animateHide() {
-        synchronized(this@BarView) {
-            pill.animate()
-                    .alpha(ALPHA_HIDDEN)
-                    .setInterpolator(ENTER_INTERPOLATOR)
-                    .setDuration(animationDurationMs)
-                    .withEndAction {
-                        isHidden = true
-
-                        isPillHidingOrShowing = false
-                    }
-                    .apply {
-                        if (isVertical) translationX((if (is270Vertical) -1 else 1) * pill.width.toFloat() / 2f)
-                        else translationY(pill.height.toFloat() / 2f)
-                    }
-                    .start()
-        }
-    }
-
-    fun scheduleUnfade() {
-        hideHandler.unfade()
-    }
-
     fun addHideReason(reason: String) {
         hiddenPillReasons.addReason(reason)
         hideHandler.updateHideStatus()
@@ -637,55 +585,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 HiddenPillReasonManagerNew.MANUAL -> 0
                 else -> throw java.lang.IllegalArgumentException("$reason is not a valid fade reason")
             }
-
-    private val showLock = Any()
-
-    /**
-     * "Show" the pill by moving it back to its normal position
-     */
-    private fun showPillInternal(forceShow: Boolean = false) {
-        mainScope.launch {
-            synchronized(showLock) {
-                if (!isPillHidingOrShowing) {
-                    if (context.app.isPillShown()) {
-                        isPillHidingOrShowing = true
-                        val reallyForceNotAuto = hiddenPillReasons.isEmpty()
-
-                        if (reallyForceNotAuto) {
-                            hideHandler.removeMessages(MSG_HIDE)
-                        }
-
-                        if (reallyForceNotAuto || forceShow) {
-                            synchronized(this@BarView) {
-                                pill.animate()
-                                        .alpha(ALPHA_ACTIVE)
-                                        .setInterpolator(EXIT_INTERPOLATOR)
-                                        .setDuration(animationDurationMs)
-                                        .withEndAction {
-                                            animateShow()
-                                        }
-                                        .apply {
-                                            if (isVertical) translationX(0f)
-                                            else translationY(0f)
-                                        }
-                                        .start()
-                            }
-                        } else isPillHidingOrShowing = false
-                    }
-                }
-            }
-        }
-    }
-
-    private fun animateShow() {
-        animator.home(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
-            mainHandler.postDelayed(Runnable {
-                isHidden = false
-                isPillHidingOrShowing = false
-                hideHandler.updateHideStatus()
-            }, (if (animationDurationMs < 12) 12 else 0))
-        })
-    }
 
     fun animatePillToHome(xCompletionListener: () -> Unit, yCompletionListener: () -> Unit) {
         val xAnim = SpringAnimation(pill, SpringAnimation.TRANSLATION_X, 0f)
@@ -839,26 +738,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    fun setMoveForKeyboard(move: Boolean) {
-        val wasMoving = params.flags and WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM != 0
-
-        if (move != wasMoving) {
-            mainScope.launch {
-                if (move) {
-                    params.flags = params.flags or
-                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-                    params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-                } else {
-                    params.flags = params.flags and
-                            WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                    params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
-                }
-
-                updateLayout()
-            }
-        }
-    }
-
     fun setOverlayNav(overlay: Boolean) {
         val old = params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS != 0
 
@@ -931,9 +810,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         if (enabled) {
             val is270 = is270Vertical
 
-//            currentGestureDetector =
-//                    if (is270) vertical270GestureManager else verticalGestureManager
-
             val newGrav = Gravity.CENTER or
                     if (!is270) Gravity.LEFT else Gravity.RIGHT
 
@@ -952,8 +828,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 changed = true
             }
         } else {
-//            currentGestureDetector = horizontalGestureManager
-
             val newGrav = Gravity.TOP or Gravity.CENTER
 
             if (params.gravity != newGrav) {
@@ -999,42 +873,103 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
+    fun updateHideStatus() {
+        hideHandler.updateHideStatus()
+    }
+
+    fun updateFadeStatus() {
+        hideHandler.updateFadeStatus()
+    }
+
     inner class HideHandler(looper: Looper) : Handler(looper) {
         private var isFaded = false
 
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
                 MSG_HIDE -> {
-                    hidePill(msg.arg1 == 1)
+                    if (((!beingTouched && !isCarryingOutTouchAction) || msg.arg1 == 1) && !isPillHidingOrShowing) {
+                        if (context.app.isPillShown()) {
+                            isPillHidingOrShowing = true
+
+                            animator.hide(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                                pill.animate()
+                                        .alpha(ALPHA_HIDDEN)
+                                        .setInterpolator(ENTER_INTERPOLATOR)
+                                        .setDuration(animationDurationMs)
+                                        .withEndAction {
+                                            isHidden = true
+
+                                            isPillHidingOrShowing = false
+                                        }
+                                        .apply {
+                                            if (isVertical) translationX((if (is270Vertical) -1 else 1) * pill.width.toFloat() / 2f)
+                                            else translationY(pill.height.toFloat() / 2f)
+                                        }
+                                        .start()
+                            })
+
+                            showHiddenToast()
+                        }
+                    }
                 }
                 MSG_SHOW -> {
-                    showPillInternal(msg.arg1 == 1)
+                    if (!isPillHidingOrShowing) {
+                        if (context.app.isPillShown()) {
+                            isPillHidingOrShowing = true
+                            val reallyForceNotAuto = hiddenPillReasons.isEmpty()
+
+                            if (reallyForceNotAuto) {
+                                hideHandler.removeMessages(MSG_HIDE)
+                            }
+
+                            if (reallyForceNotAuto || msg.arg1 == 1) {
+                                synchronized(this@BarView) {
+                                    pill.animate()
+                                            .alpha(ALPHA_ACTIVE)
+                                            .setInterpolator(EXIT_INTERPOLATOR)
+                                            .setDuration(animationDurationMs)
+                                            .withEndAction {
+                                                animator.home(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                                                    mainHandler.postDelayed(Runnable {
+                                                        isHidden = false
+                                                        isPillHidingOrShowing = false
+                                                        hideHandler.updateHideStatus()
+                                                    }, (if (animationDurationMs < 12) 12 else 0))
+                                                })
+                                            }
+                                            .apply {
+                                                if (isVertical) translationX(0f)
+                                                else translationY(0f)
+                                            }
+                                            .start()
+                                }
+                            } else isPillHidingOrShowing = false
+                        }
+                    }
                 }
 
                 MSG_FADE -> {
-                    if (!isHidden && !isFaded) {
-                        synchronized(this@BarView) {
-                            animate()
-                                    .alpha(context.prefManager.fadeOpacity / 100f)
-                                    .withEndAction {
-                                        isFaded = true
-                                    }
-                                    .duration = context.prefManager.fadeDuration
-                        }
+                    if (!isHidden && !isFaded && !beingTouched) {
+                        animate()
+                                .alpha(context.prefManager.fadeOpacity / 100f)
+                                .setDuration(context.prefManager.fadeDuration)
+                                .withEndAction {
+                                    isFaded = true
+                                }
+                                .start()
                     }
                 }
 
                 MSG_UNFADE -> {
                     if (!isHidden && isFaded) {
-                        synchronized(this@BarView) {
-                            animate()
-                                    .alpha(ALPHA_ACTIVE)
-                                    .setDuration(context.prefManager.fadeDuration)
-                                    .withEndAction {
-                                        isFaded = false
-                                        updateFadeStatus()
-                                    }
-                        }
+                        animate()
+                                .alpha(ALPHA_ACTIVE)
+                                .setDuration(context.prefManager.fadeDuration)
+                                .withEndAction {
+                                    isFaded = false
+                                    updateFadeStatus()
+                                }
+                                .start()
                     }
                 }
             }
@@ -1055,6 +990,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         fun updateFadeStatus(forceUnfade: Boolean = false) {
             if (fadedPillReasons.isEmpty() || forceUnfade) {
                 unfade()
+
+                if (fadedPillReasons.isEmpty()) removeMessages(MSG_FADE)
             } else {
                 val reason = fadedPillReasons.getMostRecentReason()!!
 
@@ -1062,7 +999,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
 
-        fun hide(time: Long, overrideBeingTouched: Boolean) {
+        private fun hide(time: Long, overrideBeingTouched: Boolean) {
             val msg = Message.obtain(this)
             msg.what = MSG_HIDE
             msg.arg1 = if (overrideBeingTouched) 1 else 0
@@ -1070,7 +1007,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if (!isHidden) sendMessageAtTime(msg, SystemClock.uptimeMillis() + time)
         }
 
-        fun show(forceShow: Boolean = false) {
+        private fun show(forceShow: Boolean = false) {
             val msg = Message.obtain(this)
             msg.what = MSG_SHOW
             msg.arg1 = if (forceShow) 1 else 0
@@ -1078,23 +1015,23 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if (isHidden) sendMessage(msg)
         }
 
-        fun fade(time: Long) {
+        private fun fade(time: Long) {
             val msg = Message.obtain(this)
             msg.what = MSG_FADE
 
             removeMessages(MSG_UNFADE)
 
-            sendMessageAtTime(msg, SystemClock.uptimeMillis() + time)
+            if (!isFaded && !hasMessages(MSG_FADE)) sendMessageAtTime(msg, SystemClock.uptimeMillis() + time)
         }
 
-        fun unfade(forceUnfade: Boolean = false) {
+        private fun unfade(forceUnfade: Boolean = false) {
             val msg = Message.obtain(this)
             msg.what = MSG_UNFADE
             msg.arg1 = if (forceUnfade) 1 else 0
 
             removeMessages(MSG_FADE)
 
-            sendMessage(msg)
+            if (isFaded && !hasMessages(MSG_UNFADE)) sendMessage(msg)
         }
     }
 }
