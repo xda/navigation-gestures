@@ -1247,10 +1247,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                 if (hideInFullScreen && !fadeInFullScreen) {
                                     bar.addHideReason(HiddenPillReasonManagerNew.FULLSCREEN)
                                 }
-                                if (fadeInFullScreen && !hideInFullScreen) bar.scheduleFade(prefManager.fullscreenFadeTime)
+                                if (fadeInFullScreen && !hideInFullScreen) {
+                                    bar.addFadeReason(HiddenPillReasonManagerNew.FULLSCREEN)
+                                }
                             } else {
                                 bar.removeHideReason(HiddenPillReasonManagerNew.FULLSCREEN)
-                                bar.scheduleUnfade()
+                                bar.removeFadeReason(HiddenPillReasonManagerNew.FULLSCREEN)
                             }
                         }
                     }

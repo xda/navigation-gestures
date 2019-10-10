@@ -136,7 +136,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                 bar.beingTouched = true
                 bar.isCarryingOutTouchAction = true
 
-                bar.scheduleUnfade()
+                bar.removeFadeReason(HiddenPillReasonManagerNew.MANUAL, true)
             }
 
             MotionEvent.ACTION_MOVE -> {

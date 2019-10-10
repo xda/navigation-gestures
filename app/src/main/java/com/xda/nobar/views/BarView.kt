@@ -88,6 +88,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
     private val hiddenPillReasons = HiddenPillReasonManagerNew()
+    private val fadedPillReasons = HiddenPillReasonManagerNew()
 
     /**
      * Get the user-defined or default duration of the pill animations
@@ -374,7 +375,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         if (context.prefManager.autoFade && !context.prefManager.autoHide) {
-            scheduleFade(context.prefManager.autoFadeTime)
+            addFadeReason(HiddenPillReasonManagerNew.AUTO)
         }
 
         handleRotationOrAnchorUpdate()
@@ -458,9 +459,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             PrefManager.FADE_AFTER_SPECIFIED_DELAY -> {
                 if (context.prefManager.autoFade) {
-                    scheduleFade(context.prefManager.autoFadeTime)
+                    addFadeReason(HiddenPillReasonManagerNew.AUTO)
                 } else {
-                    scheduleUnfade()
+                    removeFadeReason(HiddenPillReasonManagerNew.AUTO)
                 }
             }
 
@@ -596,10 +597,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    fun scheduleFade(time: Long) {
-        hideHandler.fade(time)
-    }
-
     fun scheduleUnfade() {
         hideHandler.unfade()
     }
@@ -614,6 +611,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         hideHandler.updateHideStatus(forceShow)
     }
 
+    fun addFadeReason(reason: String) {
+        fadedPillReasons.addReason(reason)
+        hideHandler.updateFadeStatus()
+    }
+
+    fun removeFadeReason(reason: String, forceUnfade: Boolean = false) {
+        fadedPillReasons.removeReason(reason)
+        hideHandler.updateFadeStatus(forceUnfade)
+    }
+
     private fun parseHideTime(reason: String) =
             when (reason) {
                 HiddenPillReasonManagerNew.AUTO -> context.prefManager.autoHideTime.toLong()
@@ -623,9 +630,13 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 else -> throw IllegalArgumentException("$reason is not a valid hide reason")
             }
 
-    fun showPill(forceShow: Boolean = false) {
-        hideHandler.show(forceShow)
-    }
+    private fun parseFadeTime(reason: String) =
+            when (reason) {
+                HiddenPillReasonManagerNew.AUTO -> context.prefManager.autoFadeTime
+                HiddenPillReasonManagerNew.FULLSCREEN -> context.prefManager.fullscreenFadeTime
+                HiddenPillReasonManagerNew.MANUAL -> 0
+                else -> throw java.lang.IllegalArgumentException("$reason is not a valid fade reason")
+            }
 
     private val showLock = Any()
 
@@ -1016,17 +1027,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 MSG_UNFADE -> {
                     if (!isHidden && isFaded) {
                         synchronized(this@BarView) {
-                            val fadeDelay =
-                                    if (isImmersive && context.prefManager.fullscreenFade) context.prefManager.fullscreenFadeTime
-                                    else if (context.prefManager.autoFade) context.prefManager.autoFadeTime
-                                    else -1
-
                             animate()
                                     .alpha(ALPHA_ACTIVE)
                                     .setDuration(context.prefManager.fadeDuration)
                                     .withEndAction {
                                         isFaded = false
-                                        if (fadeDelay != -1L) scheduleFade(fadeDelay)
+                                        updateFadeStatus()
                                     }
                         }
                     }
@@ -1043,6 +1049,16 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 val reason = hiddenPillReasons.getMostRecentReason()!!
 
                 hide(parseHideTime(reason), reason == HiddenPillReasonManagerNew.MANUAL)
+            }
+        }
+
+        fun updateFadeStatus(forceUnfade: Boolean = false) {
+            if (fadedPillReasons.isEmpty() || forceUnfade) {
+                unfade()
+            } else {
+                val reason = fadedPillReasons.getMostRecentReason()!!
+
+                fade(parseFadeTime(reason))
             }
         }
 
@@ -1071,9 +1087,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             sendMessageAtTime(msg, SystemClock.uptimeMillis() + time)
         }
 
-        fun unfade() {
+        fun unfade(forceUnfade: Boolean = false) {
             val msg = Message.obtain(this)
             msg.what = MSG_UNFADE
+            msg.arg1 = if (forceUnfade) 1 else 0
 
             removeMessages(MSG_FADE)
 
