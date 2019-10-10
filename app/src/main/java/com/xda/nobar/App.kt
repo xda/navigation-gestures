@@ -9,7 +9,6 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.ContentObserver
-import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -144,50 +143,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     ?.map { it.processName }
                     ?.any { it == packageName } == true
         }
-
-    private val uncolorable = mapOf(
-            "android" to arrayOf(),
-            "com.google.android.apps.nexuslauncher" to arrayOf("android.widget"),
-            "com.facebook.orca" to arrayOf("android.", "com.facebook.messaging.chatheads", "com.facebook.ui"),
-            "com.android.systemui" to arrayOf(),
-            "com.google.android.googlequicksearchbox" to arrayOf("android.widget.FrameLayout", "android.inputmethodservice.SoftInputWindow"),
-            "com.teslacoilsw.launcher" to arrayOf("android.widget"),
-            "com.actionlauncher.playstore" to arrayOf("android.widget"),
-            "com.android.launcher" to arrayOf("android.widget"),
-            "com.sonymobile.runtimeskinning.effects" to arrayOf(),
-            "pl.damianpiwowarski.navbarapps" to arrayOf("android."),
-            "pl.damianpiwowarski.keyboardetection" to arrayOf("android."),
-            "com.motorola.frameworks.singlehand" to arrayOf(),
-            "com.motorola.motodisplay" to arrayOf(),
-            "com.motorola.aon" to arrayOf(),
-            "com.motorola.actions" to arrayOf(),
-            "com.motorola.audiomonitor" to arrayOf(),
-            "com.google.android.apps.walletnfcrel" to arrayOf("!com.google.commerce.tapandpay.android.cardlist.CardListActivity"),
-            "com.samsung.android.MtpApplication" to arrayOf(),
-            "com.google.android.gms" to arrayOf(),
-            "com.samsung.android.app.aodservice" to arrayOf(),
-            "com.android.systemui.navigationbar" to arrayOf(),
-            "com.sec.android.easyonehand" to arrayOf(),
-            "com.samsung.android.server.iris" to arrayOf(),
-            "com.samsung.android.bio.face.service" to arrayOf(),
-            "com.samsung.android.spay" to arrayOf(),
-            "com.samsung.android.app.spage" to arrayOf(),
-            "com.samsung.android.app.multiwindow" to arrayOf(),
-            "com.samsung.android.app.cocktailbarservice" to arrayOf(),
-            "com.samsung.android.app.smartcapture" to arrayOf(),
-            "com.sec.android.app.clockpackage" to arrayOf("android."),
-            "com.sec.android.inputmethod" to arrayOf(),
-            "com.android.stk" to arrayOf()
-    )
-
-    private val badColors = arrayOf(
-            Color.parseColor("#212121"),
-            Color.parseColor("#222222"),
-            Color.parseColor("#f5f5f5"),
-            -1,
-            0,
-            -16777216
-    )
 
     override fun onCreate() {
         super.onCreate()
@@ -996,79 +951,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 } else if (isInOtherWindowApp) isInOtherWindowApp = false
 
                 updateBlacklists()
-
-//                try {
-//                    if (checkGoodPackage(pName, className)) {
-//                        val packageRes = packageManager.getResourcesForApplication(pName)
-//                        val theme = packageRes.newTheme()
-//                        val arr = intArrayOf(packageRes.getIdentifier("colorPrimary", "attr", pName), android.R.attr.colorPrimary)
-//
-//                        var color = 0
-//
-//                        try {
-//                            theme.applyStyle(
-//                                    packageManager.getActivityInfo(
-//                                            ComponentName(pName, className),
-//                                            0
-//                                    ).theme,
-//                                    true
-//                            )
-//
-//                            val attrs = theme.obtainStyledAttributes(arr)
-//                            color = attrs.getColor(0, attrs.getColor(1, 0))
-//
-//                            attrs.recycle()
-//                        } catch (e: Exception) {}
-//
-//                        val luminance = ColorUtils.calculateLuminance(color)
-//
-//                        Log.e("NoBar", "luminance: $luminance")
-//
-//                        prefManager.autoPillBGColor = Color.parseColor(if (luminance < 0.5) "#f5f5f5" else "#212121")
-//
-//                        if (badColors.contains(color)) {
-//                            val icon = packageManager.getApplicationIcon(pName)
-//                            val bmp = Bitmap.createBitmap(icon.intrinsicWidth, icon.intrinsicHeight, Bitmap.Config.ARGB_8888)
-//                            val canvas = Canvas(bmp)
-//
-//                            icon.setBounds(0, 0, canvas.width, canvas.height)
-//                            icon.draw(canvas)
-//
-//                            val palette = Palette.from(bmp).generate()
-//                            bmp.recycle()
-//
-//                            val vibrant = palette.getVibrantColor(0)
-//                            val darkVibrant = palette.getDarkVibrantColor(0)
-//
-//                            prefManager.autoPillBGColor = if (vibrant != 0) vibrant else darkVibrant
-//                        } else {
-//                            prefManager.autoPillBGColor = color
-//                        }
-//                    } else {
-//                        prefManager.autoPillBGColor = 0
-//                    }
-//                } catch (e: Exception) {}
             }
-        }
-
-        private fun checkGoodPackage(pName: String, className: String?): Boolean {
-            uncolorable.forEach { (badPkg, classes) ->
-                if (badPkg == pName) {
-                    if (classes.isEmpty())
-                        return false
-                    classes.forEach {
-                        if (it.startsWith("!")) {
-                            val parsed = it.substring(1)
-
-                            if (className?.startsWith(parsed) == false)
-                                return false
-                        } else if (className?.startsWith(it) == true)
-                            return false
-                    }
-                }
-            }
-
-            return true
         }
 
         fun updateKeyboardFlagState() {
