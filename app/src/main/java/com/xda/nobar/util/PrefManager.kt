@@ -219,7 +219,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
             putBoolean(SHOW_HIDDEN_TOAST, value)
         }
     var showNavWithKeyboard: Boolean
-        get() = getBoolean(SHOW_NAV_WITH_KEYBOARD, false)
+        get() = getBoolean(SHOW_NAV_WITH_KEYBOARD, false) && !overlayNav
         set(value) {
             putBoolean(SHOW_NAV_WITH_KEYBOARD, value)
         }
