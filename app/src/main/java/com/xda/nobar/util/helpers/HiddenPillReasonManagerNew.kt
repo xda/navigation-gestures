@@ -11,17 +11,23 @@ class HiddenPillReasonManagerNew : TreeMap<Long, String>() {
     }
 
     fun getMostRecentReason(): String? {
-        return lastEntry()?.value
+        synchronized(this) {
+            return lastEntry()?.value
+        }
     }
 
     fun removeReason(reason: String) {
-        //Singleton collection to remove all
-        values.removeAll(Collections.singleton(reason))
+        synchronized(this) {
+            //Singleton collection to remove all
+            values.removeAll(Collections.singleton(reason))
+        }
     }
 
     fun addReason(reason: String) {
-        val time = System.currentTimeMillis()
+        synchronized(this) {
+            val time = System.currentTimeMillis()
 
-        put(time, reason)
+            put(time, reason)
+        }
     }
 }
