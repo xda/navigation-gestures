@@ -3,12 +3,12 @@ package com.xda.nobar.activities.selectors
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.os.Binder
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.xda.nobar.IActionSelectedCallback
 import com.xda.nobar.R
 import com.xda.nobar.adapters.ActionSelectAdapter
 import com.xda.nobar.adapters.info.ActionInfo
@@ -33,7 +33,13 @@ class ActionSelectorActivity : BaseAppSelectActivity<ActionInfo, ActionInfo>() {
         bundle?.getParcelableArrayList<SectionableListPreference.Section>(EXTRA_SECTIONS)
     }
     private val callback by lazy {
-        bundle?.getBinder(EXTRA_CALLBACK) as IActionSelectedCallback?
+        val binder = bundle?.getBinder(EXTRA_CALLBACK)
+
+        if (binder != null) {
+            IActionSelectedCallback.Stub.asInterface(binder)
+        } else {
+            null
+        }
     }
     private val gesture by lazy {
         bundle?.getString(EXTRA_GESTURE)
@@ -106,10 +112,6 @@ class ActionSelectorActivity : BaseAppSelectActivity<ActionInfo, ActionInfo>() {
         return ArrayList(origAppSet).filter {
             it.isHeader || it.label.toString().toLowerCase(Locale.getDefault()).contains(query.toLowerCase(Locale.getDefault()))
         }
-    }
-
-    abstract class IActionSelectedCallback : Binder() {
-        abstract fun onActionInfoSelected(info: ActionInfo)
     }
 
     class CategoryDividerDecoration(context: Context) : DividerItemDecoration(context, RecyclerView.VERTICAL) {

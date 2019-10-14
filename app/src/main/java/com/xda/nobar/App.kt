@@ -389,7 +389,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
     }
 
-    private val addHelperAction: (Actions.IActionsBinderImpl) -> Unit = {
+    private val addHelperAction: (IActionsBinder) -> Unit = {
         it.addImmersiveHelper()
     }
 
@@ -553,7 +553,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
     }
 
-    fun postAction(action: (Actions.IActionsBinderImpl) -> Unit) {
+    fun postAction(action: (IActionsBinder) -> Unit) {
         actionsBinder.post(action)
     }
 
@@ -1382,9 +1382,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     }
 
     inner class ActionsInterface : BroadcastReceiver() {
-        private val queuedPosts = ArrayList<(Actions.IActionsBinderImpl) -> Unit>()
+        private val queuedPosts = ArrayList<(IActionsBinder) -> Unit>()
 
-        private var binder: Actions.IActionsBinderImpl? = null
+        private var binder: IActionsBinder? = null
 
         fun register() {
             val filter = IntentFilter()
@@ -1394,9 +1394,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             LocalBroadcastManager.getInstance(this@App).registerReceiver(this, filter)
         }
 
-        fun post(action: (Actions.IActionsBinderImpl) -> Unit) {
+        fun post(action: (IActionsBinder) -> Unit) {
             synchronized(queuedPosts) {
-                if (binder != null && binder!!.isBinderAlive) {
+                if (binder != null && binder!!.asBinder().isBinderAlive) {
                     action.invoke(binder!!)
                 } else {
                     queuedPosts.add(action)
@@ -1404,26 +1404,26 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
-        fun contains(action: (Actions.IActionsBinderImpl) -> Unit) = queuedPosts.contains(action)
+        fun contains(action: (IActionsBinder) -> Unit) = queuedPosts.contains(action)
 
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 Actions.ACTIONS_STARTED -> {
                     val bundle = intent.getBundleExtra(Actions.EXTRA_BUNDLE)
-                    val binder = bundle.getBinder(Actions.EXTRA_BINDER) as Actions.IActionsBinderImpl
+                    val binder = IActionsBinder.Stub.asInterface(bundle.getBinder(Actions.EXTRA_BINDER))
                     onBound(binder)
                 }
                 Actions.ACTIONS_STOPPED -> {
                     val bundle = intent.getBundleExtra(Actions.EXTRA_BUNDLE)
-                    val binder = bundle.getBinder(Actions.EXTRA_BINDER) as Actions.IActionsBinderImpl
+                    val binder = IActionsBinder.Stub.asInterface(bundle.getBinder(Actions.EXTRA_BINDER))
                     onUnbound(binder)
                 }
             }
         }
 
-        private fun onBound(binder: Actions.IActionsBinderImpl) {
+        private fun onBound(binder: IActionsBinder) {
             synchronized(queuedPosts) {
-                if (binder.isBinderAlive) {
+                if (binder.asBinder().isBinderAlive) {
                     this.binder = binder
                     accessibilityConnected = true
 
@@ -1432,7 +1432,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
-        private fun onUnbound(binder: Actions.IActionsBinderImpl) {
+        private fun onUnbound(binder: IActionsBinder) {
             synchronized(queuedPosts) {
                 this.binder = null
                 accessibilityConnected = false

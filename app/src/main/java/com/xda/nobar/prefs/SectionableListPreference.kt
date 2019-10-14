@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
 import androidx.preference.Preference
+import com.xda.nobar.IActionSelectedCallback
 import com.xda.nobar.R
 import com.xda.nobar.activities.selectors.ActionSelectorActivity
 import com.xda.nobar.adapters.info.ActionInfo
@@ -169,7 +170,7 @@ class SectionableListPreference(context: Context, attributeSet: AttributeSet) : 
     }
 
     override fun onClick() {
-        val callback = object : ActionSelectorActivity.IActionSelectedCallback() {
+        val callback = object : IActionSelectedCallback.Stub() {
             override fun onActionInfoSelected(info: ActionInfo) {
                 saveValue(info.res?.toString())
             }

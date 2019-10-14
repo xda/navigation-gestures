@@ -5,11 +5,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Binder
 import android.os.Bundle
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.xda.nobar.IActionsBinder
 import com.xda.nobar.interfaces.ReceiverCallback
 import com.xda.nobar.util.*
 
@@ -214,12 +214,12 @@ class Actions : AccessibilityService(), ReceiverCallback {
         }
     }
 
-    inner class IActionsBinderImpl : Binder() {
-        fun addBar() {
+    inner class IActionsBinderImpl : IActionsBinder.Stub() {
+        override fun addBar() {
             this@Actions.addBar()
         }
 
-        fun addBlackout() {
+        override fun addBlackout() {
             val ovsc = (prefManager.shouldUseOverscanMethod && !prefManager.useFullOverscan)
             if ((prefManager.isActive && prefManager.overlayNav) || ovsc) {
                 if (prefManager.overlayNavBlackout || ovsc) {
@@ -230,27 +230,27 @@ class Actions : AccessibilityService(), ReceiverCallback {
             }
         }
 
-        fun remBar() {
+        override fun remBar() {
             this@Actions.removeBar()
         }
 
-        fun remBlackout() {
+        override fun remBlackout() {
             this@Actions.remBlackout()
         }
 
-        fun addImmersiveHelper() {
+        override fun addImmersiveHelper() {
             this@Actions.addImmersiveHelper()
         }
 
-        fun removeImmersiveHelper() {
+        override fun removeImmersiveHelper() {
             this@Actions.removeImmersiveHelper()
         }
 
-        fun sendAction(action: Int) {
+        override fun sendAction(action: Int) {
             this@Actions.sendAction(action)
         }
 
-        fun addBarAndBlackout() {
+        override fun addBarAndBlackout() {
             remBlackout()
             addBlackout()
             if (!prefManager.overlayNav) {
@@ -258,7 +258,7 @@ class Actions : AccessibilityService(), ReceiverCallback {
             }
         }
 
-        fun remBarAndBlackout() {
+        override fun remBarAndBlackout() {
             remBlackout()
             remBar()
         }
