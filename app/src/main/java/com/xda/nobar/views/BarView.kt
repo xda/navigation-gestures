@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
@@ -473,11 +472,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-
-        forceActionUp()
-    }
+//    override fun onConfigurationChanged(newConfig: Configuration?) {
+//        super.onConfigurationChanged(newConfig)
+//
+//        forceActionUp()
+//    }
 
     /**
      * Perform cleanup
@@ -861,9 +860,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             if ((newX != params.x
                             || newY != params.y
                             || newW != params.width
-                            || newH != params.height)
-                    && !beingTouched
-                    && !isCarryingOutTouchAction) {
+                            || newH != params.height)) {
                 params.x = newX
                 params.y = newY
                 params.width = newW

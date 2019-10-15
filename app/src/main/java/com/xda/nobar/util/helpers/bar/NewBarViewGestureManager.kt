@@ -81,6 +81,9 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
     private var slop = bar.viewConfig.scaledTouchSlop
 
+    @Volatile
+    private var forcedUp = false
+
     private val detector = GestureDetector(this, Listener())
     private val longHandler = LongHandler()
     private val actionHandler = actionManager.actionHandler
@@ -119,6 +122,7 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
         when (e?.action) {
             MotionEvent.ACTION_DOWN -> {
+                forcedUp = false
                 wasHidden = bar.isHidden
 
                 xThresh = prefManager.xThresholdPx
@@ -140,67 +144,69 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
             }
 
             MotionEvent.ACTION_MOVE -> {
-                val newX = e.rawX
-                val newY = e.rawY
+                if (!forcedUp) {
+                    val newX = e.rawX
+                    val newY = e.rawY
 
-                val origVX = newX - prevX
-                var velocityX = origVX * if (bar.is270Vertical) -1 else 1
-                var velocityY = prevY - newY
+                    val origVX = newX - prevX
+                    var velocityX = origVX * if (bar.is270Vertical) -1 else 1
+                    var velocityY = prevY - newY
 
-                val slop = bar.viewConfig.scaledTouchSlop
+                    val slop = bar.viewConfig.scaledTouchSlop
 
-                parseSwipe(newX, newY)
+                    parseSwipe(newX, newY)
 
-                val xSlop = (downX - newX).absoluteValue > slop
-                val ySlop = (downY - newY).absoluteValue > slop
+                    val xSlop = (downX - newX).absoluteValue > slop
+                    val ySlop = (downY - newY).absoluteValue > slop
 
-                if (!xSlop && !ySlop) return false
+                    if (!xSlop && !ySlop) return false
 
-                if (!xSlop) velocityX = 0f
-                if (!ySlop) velocityY = 0f
+                    if (!xSlop) velocityX = 0f
+                    if (!ySlop) velocityY = 0f
 
-                prevX = newX
-                prevY = newY
+                    prevX = newX
+                    prevY = newY
 
-                if (!bar.isHidden) {
-                    if (bar.shouldAnimate) {
-                        val halfScreen = realScreenSize.x / 2f
-                        val leftParam = bar.params.x - prefManager.customWidth.toFloat() / 2f
-                        val rightParam = bar.params.x + prefManager.customWidth.toFloat() / 2f
-                        val topParam = bar.params.y - prefManager.customWidth.toFloat() / 2f
-                        val bottomParam = bar.params.y + prefManager.customWidth.toFloat() / 2f
+                    if (!bar.isHidden) {
+                        if (bar.shouldAnimate) {
+                            val halfScreen = realScreenSize.x / 2f
+                            val leftParam = bar.params.x - prefManager.customWidth.toFloat() / 2f
+                            val rightParam = bar.params.x + prefManager.customWidth.toFloat() / 2f
+                            val topParam = bar.params.y - prefManager.customWidth.toFloat() / 2f
+                            val bottomParam = bar.params.y + prefManager.customWidth.toFloat() / 2f
 
-                        if (bar.isVertical) {
-                            when {
-                                topParam <= -halfScreen && velocityY > 0 -> {
-                                    bar.pill.translationY -= velocityY
+                            if (bar.isVertical) {
+                                when {
+                                    topParam <= -halfScreen && velocityY > 0 -> {
+                                        bar.pill.translationY -= velocityY
+                                    }
+                                    bottomParam >= halfScreen && velocityY < 0 -> {
+                                        bar.pill.translationY -= velocityY
+                                    }
+                                    else -> {
+                                        bar.params.y -= (velocityY / 2f).toInt()
+                                    }
                                 }
-                                bottomParam >= halfScreen && velocityY < 0 -> {
-                                    bar.pill.translationY -= velocityY
+
+                                bar.params.x += (velocityX / 2f).toInt()
+                            } else {
+                                when {
+                                    leftParam <= -halfScreen && velocityX < 0 -> {
+                                        bar.pill.translationX += velocityX
+                                    }
+                                    rightParam >= halfScreen && velocityX > 0 -> {
+                                        bar.pill.translationX += velocityX
+                                    }
+                                    else -> {
+                                        bar.params.x += (velocityX / 2f).toInt()
+                                    }
                                 }
-                                else -> {
-                                    bar.params.y -= (velocityY / 2f).toInt()
-                                }
+
+                                bar.params.y -= (velocityY / 2f).toInt()
                             }
 
-                            bar.params.x += (velocityX / 2f).toInt()
-                        } else {
-                            when {
-                                leftParam <= -halfScreen && velocityX < 0 -> {
-                                    bar.pill.translationX += velocityX
-                                }
-                                rightParam >= halfScreen && velocityX > 0 -> {
-                                    bar.pill.translationX += velocityX
-                                }
-                                else -> {
-                                    bar.params.x += (velocityX / 2f).toInt()
-                                }
-                            }
-
-                            bar.params.y -= (velocityY / 2f).toInt()
+                            bar.updateLayout()
                         }
-
-                        bar.updateLayout()
                     }
                 }
             }
@@ -211,7 +217,6 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                 bar.updateFadeStatus()
 
                 wasHidden = bar.isHidden
-                bar.beingTouched = false
             }
         }
 
@@ -219,47 +224,13 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
     }
 
     fun handleActionUp(isForce: Boolean = false) {
+        if (isForce) forcedUp = true
+
+        bar.beingTouched = false
         var isXDone = false
         var isYDone = false
 
         var isParamDone = false
-
-        if (!bar.isHidden) {
-            bar.animatePillToHome(
-                    {
-                        isXDone = true
-                        if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
-                    },
-                    {
-                        isYDone = true
-                        if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
-                    }
-            )
-        } else {
-            bar.isCarryingOutTouchAction = false
-        }
-
-        if (bar.params.x != bar.adjustedHomeX || bar.params.y != bar.adjustedHomeY) {
-            if (bar.isVertical && (bar.isHidden || bar.isPillHidingOrShowing)) {
-                bar.animator.horizontalHomeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
-                    isParamDone = true
-                    if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
-                })
-            } else if (!bar.isVertical && (bar.isHidden || bar.isPillHidingOrShowing)) {
-                bar.animator.horizontalHomeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
-                    isParamDone = true
-                    if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
-                })
-            } else {
-                bar.animator.home(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
-                    isParamDone = true
-                    if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
-                })
-            }
-        } else {
-            isParamDone = true
-            if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
-        }
 
 //        when {
 //            bar.params.x != bar.adjustedHomeX && (!bar.isVertical || (!bar.isHidden && !bar.isPillHidingOrShowing)) -> {
@@ -280,8 +251,46 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 //        }
 
         if (!isForce) {
+            if (!bar.isHidden) {
+                bar.animatePillToHome(
+                        {
+                            isXDone = true
+                            if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
+                        },
+                        {
+                            isYDone = true
+                            if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
+                        }
+                )
+            } else {
+                bar.isCarryingOutTouchAction = false
+            }
+
+            if (bar.params.x != bar.adjustedHomeX || bar.params.y != bar.adjustedHomeY) {
+                if (bar.isVertical && (bar.isHidden || bar.isPillHidingOrShowing)) {
+                    bar.animator.horizontalHomeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                        isParamDone = true
+                        if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
+                    })
+                } else if (!bar.isVertical && (bar.isHidden || bar.isPillHidingOrShowing)) {
+                    bar.animator.horizontalHomeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                        isParamDone = true
+                        if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
+                    })
+                } else {
+                    bar.animator.home(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
+                        isParamDone = true
+                        if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
+                    })
+                }
+            } else {
+                isParamDone = true
+                if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
+            }
+
             handleSwipe()
         } else {
+            bar.isCarryingOutTouchAction = false
             longHandler.removeCallbacksAndMessages(null)
         }
 

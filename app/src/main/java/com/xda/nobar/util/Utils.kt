@@ -229,6 +229,7 @@ val Context.navBarHeight: Int
 val Context.prefManager: PrefManager
     get() = PrefManager.getInstance(applicationContext)
 
+@Volatile
 private var cachedScreenSize: Point? = null
 
 /**
@@ -261,6 +262,7 @@ val Context.realScreenSize: Point
 val Context.unadjustedRealScreenSize: Point
     get() = Point(cachedScreenSize ?: refreshScreenSize())
 
+@Volatile
 var cachedRotation = Integer.MIN_VALUE
 
 val Context.rotation: Int
