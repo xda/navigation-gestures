@@ -276,7 +276,7 @@ class BarAnimator(private val bar: BarView) {
                     .apply {
                         if (bar.isVertical) {
                             scaleX(BarView.SCALE_SMALL)
-                            x((if (bar.is270Vertical) -1 else 1) * bar.height * (1 - BarView.SCALE_SMALL) / 2)
+                            x((if (bar.is270Vertical) 1 else -1) * bar.width * (1 - BarView.SCALE_SMALL) / 2)
                         } else {
                             scaleY(BarView.SCALE_SMALL)
                             y(-bar.height * (1 - BarView.SCALE_SMALL) / 2)
