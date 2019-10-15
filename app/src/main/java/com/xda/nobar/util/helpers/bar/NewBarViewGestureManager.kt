@@ -232,6 +232,23 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
         var isParamDone = false
 
+        if (!bar.isHidden) {
+            bar.animatePillToHome(
+                    {
+                        isXDone = true
+                        if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
+                    },
+                    {
+                        isYDone = true
+                        if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
+                    }
+            )
+        } else {
+            isXDone = true
+            isYDone = true
+            if (isParamDone) bar.isCarryingOutTouchAction = false
+        }
+
 //        when {
 //            bar.params.x != bar.adjustedHomeX && (!bar.isVertical || (!bar.isHidden && !bar.isPillHidingOrShowing)) -> {
 //                bar.animator.horizontalHomeX(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
@@ -251,21 +268,6 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 //        }
 
         if (!isForce) {
-            if (!bar.isHidden) {
-                bar.animatePillToHome(
-                        {
-                            isXDone = true
-                            if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
-                        },
-                        {
-                            isYDone = true
-                            if (isXDone && isYDone && isParamDone) bar.isCarryingOutTouchAction = false
-                        }
-                )
-            } else {
-                bar.isCarryingOutTouchAction = false
-            }
-
             if (bar.params.x != bar.adjustedHomeX || bar.params.y != bar.adjustedHomeY) {
                 if (bar.isVertical && (bar.isHidden || bar.isPillHidingOrShowing)) {
                     bar.animator.horizontalHomeY(DynamicAnimation.OnAnimationEndListener { _, _, _, _ ->
@@ -290,7 +292,6 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
 
             handleSwipe()
         } else {
-            bar.isCarryingOutTouchAction = false
             longHandler.removeCallbacksAndMessages(null)
         }
 
