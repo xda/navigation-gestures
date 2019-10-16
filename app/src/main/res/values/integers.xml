@@ -19,6 +19,7 @@
     <integer name="default_fade_opacity_percent">100</integer>
     <integer name="default_fade_duration">@integer/default_anim_duration</integer>
     <integer name="default_switch_app_delay">100</integer>
+    <integer name="default_accessibility_delay">500</integer>
 
     <integer name="min_pill_width_percent">1</integer>
     <integer name="min_pill_height_percent">1</integer>
@@ -40,6 +41,7 @@
     <integer name="min_fade_opacity_percent">0</integer>
     <integer name="min_fade_duration">@integer/min_anim_duration</integer>
     <integer name="min_switch_app_delay">0</integer>
+    <integer name="min_accessibility_delay">100</integer>
 
     <integer name="max_pill_width_percent">1000</integer>
     <integer name="max_pill_height_percent">200</integer>
@@ -59,6 +61,7 @@
     <integer name="max_fade_opacity_percent">1000</integer>
     <integer name="max_fade_duration">@integer/max_anim_duration</integer>
     <integer name="max_switch_app_delay">1000</integer>
+    <integer name="max_accessibility_delay">2000</integer>
 
     <integer name="pill_margin_top_normal_dp">4</integer>
     <integer name="pill_margin_top_large_hitbox_dp">12</integer>

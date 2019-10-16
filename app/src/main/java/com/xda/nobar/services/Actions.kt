@@ -1,10 +1,7 @@
 package com.xda.nobar.services
 
 import android.accessibilityservice.AccessibilityService
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.os.Bundle
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -14,7 +11,7 @@ import com.xda.nobar.interfaces.ReceiverCallback
 import com.xda.nobar.util.*
 
 
-class Actions : AccessibilityService(), ReceiverCallback {
+class Actions : AccessibilityService(), ReceiverCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     companion object {
         const val BASE = "com.xda.nobar.action"
         const val ACTION = "$BASE.ACTION"
@@ -56,9 +53,15 @@ class Actions : AccessibilityService(), ReceiverCallback {
         get() = getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val binder by lazy { IActionsBinderImpl() }
 
+    override fun onCreate() {
+        super.onCreate()
+        prefManager.registerOnSharedPreferenceChangeListener(this)
+    }
+
     override fun onServiceConnected() {
         receiver.register(this)
         sendBound()
+        loadInfo()
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -92,12 +95,21 @@ class Actions : AccessibilityService(), ReceiverCallback {
     override fun onDestroy() {
         super.onDestroy()
         handleDestroy()
+        prefManager.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
         handleDestroy()
 
         return super.onUnbind(intent)
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        when (key) {
+            PrefManager.ACCESSIBILITY_DELAY -> {
+                loadInfo()
+            }
+        }
     }
 
     private fun handleDestroy() {
@@ -190,6 +202,13 @@ class Actions : AccessibilityService(), ReceiverCallback {
 
     private fun removeImmersiveHelper() {
         app.immersiveHelperManager.remove(accWm)
+    }
+
+    private fun loadInfo() {
+        val info = serviceInfo
+        info.notificationTimeout = prefManager.accessibilityDelay.toLong()
+
+        serviceInfo = info
     }
 
     /**

@@ -100,6 +100,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val BRIGHTNESS_STEP_SIZE = "brightness_step_size"
         const val SAVED_MEDIA_VOLUME = "saved_media_volume"
         const val SWITCH_APPS_DELAY = "switch_app_delay"
+        const val ACCESSIBILITY_DELAY = "accessibility_delay"
 
         /* Strings */
         const val CRASHLYTICS_ID = "crashlytics_id"
@@ -382,6 +383,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         }
     val switchAppDelay: Int
         get() = getInt(SWITCH_APPS_DELAY, resources.getInteger(R.integer.default_switch_app_delay))
+    val accessibilityDelay: Int
+        get() = getInt(ACCESSIBILITY_DELAY, resources.getInteger(R.integer.default_accessibility_delay))
 
     val crashlyticsId: String?
         get() {

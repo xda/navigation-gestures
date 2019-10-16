@@ -46,6 +46,16 @@
         android:title="@string/miscellaneous">
 
         <tk.zwander.seekbarpreference.SeekBarPreference
+            android:title="@string/accessibility_delay"
+            android:summary="@string/accessibility_delay_desc"
+            android:key="accessibility_delay"
+            android:defaultValue="@integer/default_accessibility_delay"
+            app:units="ms"
+            app:minValue="@integer/min_accessibility_delay"
+            app:maxValue="@integer/max_accessibility_delay"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
             android:title="@string/switch_app_delay"
             android:summary="@string/switch_app_delay_desc"
             android:key="switch_app_delay"
