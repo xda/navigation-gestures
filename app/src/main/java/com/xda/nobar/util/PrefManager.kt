@@ -94,7 +94,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val HIDE_PILL_ON_KEYBOARD_PROGRESS = "hide_pill_on_keyboard_progress"
         const val VIBRATION_STRENGTH = "vibration_strength"
         const val FADE_AFTER_SPECIFIED_DELAY_PROGRESS = "fade_after_specified_delay_progress"
-        const val FADE_IN_FULSCREEN_APPS_PROGRESS = "fade_in_fullscreen_apps_progress"
+        const val FADE_IN_FULLSCREEN_APPS_PROGRESS = "fade_in_fullscreen_apps_progress"
         const val FADE_OPACITY = "fade_opacity"
         const val FADE_DURATION = "fade_duration"
         const val BRIGHTNESS_STEP_SIZE = "brightness_step_size"
@@ -300,7 +300,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
     val autoFadeTime: Long
         get() = getInt(FADE_AFTER_SPECIFIED_DELAY_PROGRESS, resources.getInteger(R.integer.default_fade_time)).toLong()
     val fullscreenFadeTime: Long
-        get() = getInt(FADE_IN_FULSCREEN_APPS_PROGRESS, resources.getInteger(R.integer.default_fade_time)).toLong()
+        get() = getInt(FADE_IN_FULLSCREEN_APPS_PROGRESS, resources.getInteger(R.integer.default_fade_time)).toLong()
     val fadeOpacity: Float
         get() = getInt(FADE_OPACITY, resources.getInteger(R.integer.default_fade_opacity_percent)) / 10f
     val hideOnKeyboardTime: Int

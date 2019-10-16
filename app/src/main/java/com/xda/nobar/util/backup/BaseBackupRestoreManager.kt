@@ -5,6 +5,9 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.preference.Preference
+import androidx.preference.PreferenceGroup
+import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.xda.nobar.R
 import com.xda.nobar.util.prefManager
@@ -15,10 +18,16 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 abstract class BaseBackupRestoreManager(context: Context) : ContextWrapper(context) {
     internal abstract val type: String
     internal abstract val name: String
+    internal abstract val prefsRes: Int
+
+    internal val preferenceManager = PreferenceManager(context)
+    internal val screen by lazy { preferenceManager.inflateFromResource(this, prefsRes, null) }
 
     internal val dateFormat = SimpleDateFormat("yyyy_MM_dd-HH_mm_ss", Locale.getDefault())
 
@@ -42,7 +51,9 @@ abstract class BaseBackupRestoreManager(context: Context) : ContextWrapper(conte
             ))
         }
 
-    abstract fun saveBackup(dest: Uri)
+    open fun saveBackup(dest: Uri) {
+        serialize(dest, buildData())
+    }
 
     open fun applyBackup(src: Uri) {
         val deserialize = deserialize(src)
@@ -81,6 +92,28 @@ abstract class BaseBackupRestoreManager(context: Context) : ContextWrapper(conte
         } catch (e: Exception) {}
 
         return null
+    }
+
+    internal fun buildData(): HashMap<String, Any?> {
+        val prefs = ArrayList<Preference>().apply { findPreferences(this, screen) }
+        val map = HashMap<String, Any?>()
+
+        prefs.forEach {
+            prefManager.get(it.key)?.let { value ->
+                map[it.key] = value
+            }
+        }
+
+        return map
+    }
+
+    internal fun findPreferences(prefs: ArrayList<Preference>, group: PreferenceGroup) {
+        for (i in 0 until group.preferenceCount) {
+            val child = group.getPreference(i)
+
+            if (child is PreferenceGroup) findPreferences(prefs, child)
+            else prefs.add(child)
+        }
     }
 
     private fun toastInvalid() {

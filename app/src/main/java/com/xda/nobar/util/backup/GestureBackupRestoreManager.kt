@@ -8,6 +8,7 @@ import com.xda.nobar.util.prefManager
 class GestureBackupRestoreManager(context: Context) : BaseBackupRestoreManager(context) {
     override val type = "gesture"
     override val name = "Gesture"
+    override val prefsRes = 0
 
     override fun saveBackup(dest: Uri) {
         val data = HashMap<String, Any?>()
