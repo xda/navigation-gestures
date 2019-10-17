@@ -186,6 +186,7 @@
     <string name="switch_app_delay">Switch App Delay</string>
     <string name="allow_repeat_long">Allow Repeat Long-Swipes</string>
     <string name="accessibility_delay">Accessibility Delay</string>
+    <string name="show_nav_with_volume_dialog_fullscreen">Show NavBar when Volume Dialog is Active in Fullscreen</string>
     <!--Descriptions-->
     <string name="gestures_desc">Gestenaktionen anpassen</string>
     <string name="appearance_desc">Aussehen der Navigation-Pille anpassen</string>
@@ -276,6 +277,7 @@
     <string name="switch_app_delay_desc">Navigation Gestures\' Switch App gesture simulates a double-press of the Recents button. Different devices will respond best to different delays between the two presses. You can set that delay here.</string>
     <string name="allow_repeat_long_desc">Allow long swipes to be executed multiple times without letting go of the pill.</string>
     <string name="accessibility_delay_desc">Lower values allow Navigation Gestures to respond to screen content changes faster, at the cost of battery life. Higher values will cause Navigation Gesture to react slower, but will have less impact on battery life.</string>
+    <string name="show_nav_with_volume_dialog_fullscreen_desc">Android Pie\'s volume dialog is cut off in landscape fullscreen when the navigation bar is hidden. Enable this option to temporarily unhide the navigation bar in landscape fullscreen when the volume dialog is showing.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Diese App bringt großartige Gestennavigation auf jedes Android Gerät. Und das Beste ist, man benötigt hierfür keinen Root-Zugriff. Bevor du die Gestennavigation nutzen kann gibt es ein paar Sachen, die noch eingestellt werden müssen.</string>
     <string name="draw_over_apps_desc">Damit Navigation Gestures den Pill-Nav anzeigen kann, musst du der App Berechtigung geben, damit es über anderen Apps angezeigt werden kann. Tippe den unteren Knopf um dies zu tun. Wenn du die App über den Play Store installiert hat, wurde die berechtigung schon gewährt.</string>
