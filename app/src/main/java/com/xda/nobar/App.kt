@@ -16,7 +16,6 @@ import android.os.Process
 import android.provider.Settings
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityWindowInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -739,8 +738,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             registerOnSharedPreferenceChangeListener(this)
         }
 
-        fun setNodeInfoAndUpdate(info: AccessibilityEvent?, windows: List<AccessibilityWindowInfo>) {
-            handleNewEvent(info ?: return, windows)
+        fun setNodeInfoAndUpdate(info: AccessibilityEvent?, service: Actions) {
+            handleNewEvent(info ?: return, service)
         }
 
         private var oldPName: String? = null
@@ -814,7 +813,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private var volumeWindowId = 0
 
         @SuppressLint("WrongConstant")
-        private fun handleNewEvent(info: AccessibilityEvent, windows: List<AccessibilityWindowInfo>) {
+        private fun handleNewEvent(info: AccessibilityEvent, service: Actions) {
             logicScope.launch {
                 synchronized(eventLock) {
                     val hasUsage = this@App.hasUsage
@@ -830,7 +829,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             val id = info.windowId
                             volumeWindowId = id
                             disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
-                        } else  if (volumeWindowId == 0 || windows.find { it.id == volumeWindowId } == null) {
+                        } else  if (volumeWindowId == 0 || service.windows.find { it.id == volumeWindowId } == null) {
                             volumeWindowId = 0
                             disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
                         }

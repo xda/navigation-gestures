@@ -41,9 +41,8 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         val newEvent = AccessibilityEvent.obtain(event)
-        val windows = this.windows
 
-        app.uiHandler.setNodeInfoAndUpdate(newEvent, windows)
+        app.uiHandler.setNodeInfoAndUpdate(newEvent, this)
     }
 
     override fun onInterrupt() {}
