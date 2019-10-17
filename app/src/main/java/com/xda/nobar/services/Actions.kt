@@ -1,17 +1,18 @@
 package com.xda.nobar.services
 
 import android.accessibilityservice.AccessibilityService
-import android.content.*
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.xda.nobar.IActionsBinder
-import com.xda.nobar.interfaces.ReceiverCallback
 import com.xda.nobar.util.*
 
 
-class Actions : AccessibilityService(), ReceiverCallback, SharedPreferences.OnSharedPreferenceChangeListener {
+class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChangeListener {
     companion object {
         const val BASE = "com.xda.nobar.action"
         const val ACTION = "$BASE.ACTION"
@@ -26,29 +27,8 @@ class Actions : AccessibilityService(), ReceiverCallback, SharedPreferences.OnSh
         const val EXTRA_GESTURE = "gesture"
         const val EXTRA_BINDER = "actions_binder"
         const val EXTRA_BUNDLE = "bundle"
-
-        fun sendAction(context: Context, action: String, options: Bundle) {
-            val intent = Intent(action)
-            intent.putExtras(options)
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-        }
-
-        fun addBar(context: Context) {
-            val intent = Intent(context, Actions::class.java)
-            intent.action = ADD_BAR
-
-            context.startService(intent)
-        }
-
-        fun remBar(context: Context) {
-            val intent = Intent(context, Actions::class.java)
-            intent.action = REM_BAR
-
-            context.startService(intent)
-        }
     }
 
-    private val receiver = ActionHandler(this)
     private val accWm: WindowManager
         get() = getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val binder by lazy { IActionsBinderImpl() }
@@ -59,7 +39,6 @@ class Actions : AccessibilityService(), ReceiverCallback, SharedPreferences.OnSh
     }
 
     override fun onServiceConnected() {
-        receiver.register(this)
         sendBound()
         loadInfo()
     }
@@ -69,26 +48,6 @@ class Actions : AccessibilityService(), ReceiverCallback, SharedPreferences.OnSh
         val windows = this.windows
 
         app.uiHandler.setNodeInfoAndUpdate(newEvent, windows)
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        receiver.onReceive(this, intent)
-
-        return super.onStartCommand(intent, flags, startId)
-    }
-
-    override fun onActionReceived(intent: Intent?) {
-        when(intent?.action) {
-            ACTION -> {
-                sendAction(intent.getIntExtra(EXTRA_ACTION, actionHolder.typeNoAction))
-            }
-            ADD_BAR -> {
-                addBar()
-            }
-            REM_BAR -> {
-                removeBar()
-            }
-        }
     }
 
     override fun onInterrupt() {}
@@ -115,7 +74,6 @@ class Actions : AccessibilityService(), ReceiverCallback, SharedPreferences.OnSh
 
     private fun handleDestroy() {
         sendUnbound()
-        receiver.destroy(this)
 
         removeBar()
 
@@ -210,28 +168,6 @@ class Actions : AccessibilityService(), ReceiverCallback, SharedPreferences.OnSh
         info.notificationTimeout = prefManager.accessibilityDelay.toLong()
 
         serviceInfo = info
-    }
-
-    /**
-     * Special BroadcastReceiver to handle actions sent to this service by {@link com.xda.nobar.views.BarView}
-     */
-    class ActionHandler(private val callback: ReceiverCallback) : BroadcastReceiver() {
-        fun register(context: Context) {
-            val filter = IntentFilter()
-            filter.addAction(ACTION)
-            filter.addAction(ADD_BAR)
-            filter.addAction(REM_BAR)
-
-            LocalBroadcastManager.getInstance(context.applicationContext).registerReceiver(this, filter)
-        }
-
-        override fun onReceive(context: Context?, intent: Intent?) {
-            callback.onActionReceived(intent)
-        }
-
-        fun destroy(context: Context) {
-            LocalBroadcastManager.getInstance(context.applicationContext).unregisterReceiver(this)
-        }
     }
 
     inner class IActionsBinderImpl : IActionsBinder.Stub() {
