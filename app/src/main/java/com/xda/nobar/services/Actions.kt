@@ -15,10 +15,6 @@ import com.xda.nobar.util.*
 class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChangeListener {
     companion object {
         const val BASE = "com.xda.nobar.action"
-        const val ACTION = "$BASE.ACTION"
-
-        const val ADD_BAR = "$BASE.ADD_BAR"
-        const val REM_BAR = "$BASE.REM_BAR"
 
         const val ACTIONS_STARTED = "$BASE.STARTED"
         const val ACTIONS_STOPPED = "$BASE.STOPPED"
