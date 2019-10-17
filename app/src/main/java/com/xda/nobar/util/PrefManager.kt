@@ -101,6 +101,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val SAVED_MEDIA_VOLUME = "saved_media_volume"
         const val SWITCH_APPS_DELAY = "switch_app_delay"
         const val ACCESSIBILITY_DELAY = "accessibility_delay"
+        const val NAV_WITH_VOLUME = "show_nav_with_volume_dialog_fullscreen"
 
         /* Strings */
         const val CRASHLYTICS_ID = "crashlytics_id"
@@ -254,6 +255,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getBoolean(OVERLAY_NAV_BLACKOUT, resources.getBoolean(R.bool.overlay_nav_blackout_default)) && overlayNav
     val allowRepeatLong: Boolean
         get() = getBoolean(ALLOW_REPEAT_LONG, resources.getBoolean(R.bool.allow_repeat_long_execute_default))
+    val showNavWithVolume: Boolean
+        get() = getBoolean(NAV_WITH_VOLUME, resources.getBoolean(R.bool.show_nav_with_volume_dialog_fullscreen_default))
 
     /**
      * Get the user-defined or default pill color

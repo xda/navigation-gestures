@@ -4,7 +4,7 @@
     android:canRetrieveWindowContent="true"
     android:notificationTimeout="500"
     android:accessibilityFeedbackType="feedbackGeneric"
-    android:accessibilityFlags="flagDefault"
+    android:accessibilityFlags="flagRetrieveInteractiveWindows"
     android:description="@string/accessibility_screen_text"
     android:settingsActivity="com.xda.nobar.activities.MainActivity"
     android:canRequestTouchExplorationMode="false"

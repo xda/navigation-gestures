@@ -14,9 +14,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityWindowInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -739,8 +739,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             registerOnSharedPreferenceChangeListener(this)
         }
 
-        fun setNodeInfoAndUpdate(info: AccessibilityEvent?) {
-            handleNewEvent(info ?: return)
+        fun setNodeInfoAndUpdate(info: AccessibilityEvent?, windows: List<AccessibilityWindowInfo>) {
+            handleNewEvent(info ?: return, windows)
         }
 
         private var oldPName: String? = null
@@ -811,8 +811,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private val grantPermissionsActivity = "GrantPermissionsActivity"
         private val packageInstallerActivity = "PackageInstallerActivity"
 
+        private var volumeWindowId = 0
+
         @SuppressLint("WrongConstant")
-        private fun handleNewEvent(info: AccessibilityEvent) {
+        private fun handleNewEvent(info: AccessibilityEvent, windows: List<AccessibilityWindowInfo>) {
             logicScope.launch {
                 synchronized(eventLock) {
                     val hasUsage = this@App.hasUsage
@@ -820,27 +822,21 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     var pName = info.packageName?.toString()
                     val className = info.className?.toString()
 
-                    if (pName != oldPName) {
-                        oldPName = pName
-
-                        if (hasUsage) {
-                            val time = System.currentTimeMillis()
-                            val appStats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time)
-
-                            if (appStats != null && appStats.isNotEmpty()) {
-                                pName = Collections.max(appStats) { o1, o2 -> compareValues(o1.lastTimeUsed, o2.lastTimeUsed) }.packageName
-                            }
-                        }
-
-                        runNewNodeInfo(pName)
-
-                        if (hasUsage || (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                                || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                                || pName != systemUIPackage)) {
-                            processColor(pName)
+                    if (isLandscape
+                            && immersiveHelperManager.isNavImmersive()
+                            && prefManager.run { shouldUseOverscanMethod && showNavWithVolume }) {
+                        if (pName == "com.android.systemui"
+                                && className?.contains("com.android.systemui.volume.VolumeDialog") == true) {
+                            val id = info.windowId
+                            volumeWindowId = id
+                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
+                        } else  if (volumeWindowId == 0 || windows.find { it.id == volumeWindowId } == null) {
+                            volumeWindowId = 0
+                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
                         }
                     } else {
-                        updateBlacklists()
+                        volumeWindowId = 0
+                        disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
                     }
 
                     if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
@@ -902,6 +898,29 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
+                    }
+
+                    if (pName != oldPName) {
+                        oldPName = pName
+
+                        if (hasUsage) {
+                            val time = System.currentTimeMillis()
+                            val appStats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time)
+
+                            if (appStats != null && appStats.isNotEmpty()) {
+                                pName = Collections.max(appStats) { o1, o2 -> compareValues(o1.lastTimeUsed, o2.lastTimeUsed) }.packageName
+                            }
+                        }
+
+                        runNewNodeInfo(pName)
+
+                        if (hasUsage || (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                                || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
+                                || pName != systemUIPackage)) {
+                            processColor(pName)
+                        }
+                    } else {
+                        updateBlacklists()
                     }
 
                     updateKeyboardFlagState()

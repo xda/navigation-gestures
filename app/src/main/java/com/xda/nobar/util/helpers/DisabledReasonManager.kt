@@ -10,6 +10,7 @@ open class DisabledReasonManager : HashSet<String>() {
         const val KEYGUARD = "keyguard"
         const val KEYBOARD = "keyboard"
         const val FULLSCREEN = "fullscreen"
+        const val VOLUME_LANDSCAPE = "volume"
     }
 
     object PillReasons {

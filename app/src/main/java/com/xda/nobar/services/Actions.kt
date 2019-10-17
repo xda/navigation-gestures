@@ -66,8 +66,9 @@ class Actions : AccessibilityService(), ReceiverCallback, SharedPreferences.OnSh
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         val newEvent = AccessibilityEvent.obtain(event)
+        val windows = this.windows
 
-        app.uiHandler.setNodeInfoAndUpdate(newEvent)
+        app.uiHandler.setNodeInfoAndUpdate(newEvent, windows)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

@@ -66,6 +66,13 @@
             />
 
         <SwitchPreference
+            android:title="@string/show_nav_with_volume_dialog_fullscreen"
+            android:summary="@string/show_nav_with_volume_dialog_fullscreen_desc"
+            android:key="show_nav_with_volume_dialog_fullscreen"
+            android:defaultValue="@bool/show_nav_with_volume_dialog_fullscreen_default"
+            />
+
+        <SwitchPreference
             android:title="@string/keep_alive"
             android:summary="@string/keep_alive_desc"
             android:key="keep_alive"
