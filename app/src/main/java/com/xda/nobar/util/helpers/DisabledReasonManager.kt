@@ -11,6 +11,7 @@ open class DisabledReasonManager : HashSet<String>() {
         const val KEYBOARD = "keyboard"
         const val FULLSCREEN = "fullscreen"
         const val VOLUME_LANDSCAPE = "volume"
+        const val APP_PINNED = "app_pinned"
     }
 
     object PillReasons {

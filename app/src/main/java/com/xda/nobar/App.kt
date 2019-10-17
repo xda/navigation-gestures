@@ -841,6 +841,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                             || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
 
+                        if (!isPinned) {
+                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.APP_PINNED)
+                        }
+
                         if (origInFullscreen) {
                             if (immersiveHelperManager.isFullImmersive()) {
                                 disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.FULLSCREEN)

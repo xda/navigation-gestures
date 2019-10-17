@@ -1,9 +1,6 @@
 package com.xda.nobar.util.helpers.bar
 
-import android.app.ActivityManager
-import android.content.Context
 import android.content.ContextWrapper
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
@@ -13,6 +10,7 @@ import android.view.MotionEvent
 import android.view.Surface
 import androidx.dynamicanimation.animation.DynamicAnimation
 import com.xda.nobar.util.*
+import com.xda.nobar.util.helpers.DisabledReasonManager
 import com.xda.nobar.util.helpers.HiddenPillReasonManagerNew
 import com.xda.nobar.views.BarView
 import kotlinx.android.synthetic.main.pill.view.*
@@ -752,12 +750,9 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         }
 
         override fun onLongPress(ev: MotionEvent) {
-            val am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            val isPinned = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 && am.lockTaskModeState != ActivityManager.LOCK_TASK_MODE_NONE
-
             if (!bar.isHidden) {
                 if (isPinned) {
-                    if (prefManager.shouldUseOverscanMethod) app.showNav()
+                    app.disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.APP_PINNED)
                 } else {
                     sendHold()
                 }

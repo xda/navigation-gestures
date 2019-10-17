@@ -3,10 +3,7 @@
 package com.xda.nobar.util
 
 import android.annotation.SuppressLint
-import android.app.AlarmManager
-import android.app.AppOpsManager
-import android.app.KeyguardManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -630,4 +627,10 @@ val Context.hasUsage: Boolean
                                 PackageManager.PERMISSION_GRANTED
 
         return hasAppOps || hasPerm
+    }
+
+val Context.isPinned: Boolean
+    get() {
+        val am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        return Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 && am.lockTaskModeState != ActivityManager.LOCK_TASK_MODE_NONE
     }
