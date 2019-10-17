@@ -187,6 +187,8 @@ or
     <string name="complex_swipes">Complex Swipes</string>
     <string name="switch_app_delay">Switch App Delay</string>
     <string name="allow_repeat_long">Allow Repeat Long-Swipes</string>
+    <string name="accessibility_delay">Accessibility Delay</string>
+    <string name="show_nav_with_volume_dialog_fullscreen">Show NavBar when Volume Dialog is Active in Fullscreen</string>
     <!--Descriptions-->
     <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
     <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
@@ -277,6 +279,8 @@ Bong bóng chát Facebook Messenger, Drupe, vv.</string>
     <string name="improved_app_change_detection_desc">(Tap to enable.) Enabling this option on certain devices will result in a smoother experience when using app-specific options, such as Per-App Pill Color.</string>
     <string name="switch_app_delay_desc">Navigation Gestures\' Switch App gesture simulates a double-press of the Recents button. Different devices will respond best to different delays between the two presses. You can set that delay here.</string>
     <string name="allow_repeat_long_desc">Allow long swipes to be executed multiple times without letting go of the pill.</string>
+    <string name="accessibility_delay_desc">Lower values allow Navigation Gestures to respond to screen content changes faster, at the cost of battery life. Higher values will cause Navigation Gesture to react slower, but will have less impact on battery life.</string>
+    <string name="show_nav_with_volume_dialog_fullscreen_desc">Android Pie\'s volume dialog is cut off in landscape fullscreen when the navigation bar is hidden. Enable this option to temporarily unhide the navigation bar in landscape fullscreen when the volume dialog is showing.</string>
     <!--Paragraphs-->
     <string name="app_purpose">Ứng dụng mang đến cử chỉ điều hướng tuyệt vời đến bất kì thiết bị Android. Tốt hơn cả, nó không cần có root! Trước khi bạn có thể sử dụng cử chỉ, có vài thứ cần làm để thiết lập ứng dụng.</string>
     <string name="draw_over_apps_desc">Để Navigation Gesture có thể hiểu thị lên viên điều hướng, bạn phải cho phép vẽ đè lên các ứng dụng khác. Ấn nút bên dưới để thực hiện điều này. Nếu ứng dụng được tải từ Play Store, quyền này sẽ được cho cấp sẵn.</string>
