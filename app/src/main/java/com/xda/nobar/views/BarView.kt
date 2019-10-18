@@ -363,11 +363,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         show(null)
 
-        if (context.prefManager.autoHide && !context.prefManager.autoFade) {
+        if (context.prefManager.autoHide) {
             addHideReason(HiddenPillReasonManagerNew.AUTO)
         }
 
-        if (context.prefManager.autoFade && !context.prefManager.autoHide) {
+        if (context.prefManager.autoFade) {
             addFadeReason(HiddenPillReasonManagerNew.AUTO)
         }
 
@@ -948,7 +948,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
 
                 MSG_FADE -> {
-                    if (!isHidden && !isFaded && !beingTouched) {
+                    if (!isFaded && !beingTouched) {
                         animate()
                                 .alpha(context.prefManager.fadeOpacity / 100f)
                                 .setDuration(context.prefManager.fadeDuration)
@@ -960,7 +960,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 }
 
                 MSG_UNFADE -> {
-                    if (!isHidden && isFaded) {
+                    if (isFaded) {
                         animate()
                                 .alpha(ALPHA_ACTIVE)
                                 .setDuration(context.prefManager.fadeDuration)

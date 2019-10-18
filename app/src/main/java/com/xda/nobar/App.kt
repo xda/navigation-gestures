@@ -1150,10 +1150,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             val fadeInFullScreen = prefManager.fullscreenFade
 
                             if (isImmersive) {
-                                if (hideInFullScreen && !fadeInFullScreen) {
+                                if (hideInFullScreen) {
                                     bar.addHideReason(HiddenPillReasonManagerNew.FULLSCREEN)
                                 }
-                                if (fadeInFullScreen && !hideInFullScreen) {
+                                if (fadeInFullScreen) {
                                     bar.addFadeReason(HiddenPillReasonManagerNew.FULLSCREEN)
                                 }
                             } else {
