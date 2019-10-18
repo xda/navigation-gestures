@@ -865,6 +865,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 params.y = newY
                 params.width = newW
                 params.height = newH
+                hideHandler.updateFadeStatus()
+                hideHandler.updateHideStatus()
                 updateLayout()
             }
         }
