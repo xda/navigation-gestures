@@ -42,8 +42,7 @@ import com.xda.nobar.views.BarView
 import com.xda.nobar.views.NavBlackout
 import io.fabric.sdk.android.Fabric
 import io.fabric.sdk.android.InitializationCallback
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.lang.reflect.Method
@@ -801,7 +800,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
-        private val eventLock = Any()
+        private val eventMutex = Mutex()
 
         private val systemUIPackage = "com.android.systemui"
         private val dialog = "dialog"
@@ -813,46 +812,53 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private var volumeWindowId = 0
 
         @SuppressLint("WrongConstant")
-        private fun handleNewEvent(info: AccessibilityEvent, service: Actions) {
-            logicScope.launch {
-                synchronized(eventLock) {
-                    val hasUsage = this@App.hasUsage
+        private fun handleNewEvent(info: AccessibilityEvent, service: Actions) = logicScope.launch {
+            eventMutex.withLock {
+                val hasUsage = this@App.hasUsage
 
-                    var pName = info.packageName?.toString()
-                    val className = info.className?.toString()
+                var pName = info.packageName?.toString()
+                val className = info.className?.toString()
 
-                    if (isLandscape
-                            && immersiveHelperManager.isNavImmersive()
-                            && prefManager.run { shouldUseOverscanMethod && showNavWithVolume }) {
-                        if (pName == "com.android.systemui"
-                                && className?.contains("com.android.systemui.volume.VolumeDialog") == true) {
-                            val id = info.windowId
-                            volumeWindowId = id
-                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
-                        } else  if (volumeWindowId == 0 || service.windows.find { it.id == volumeWindowId } == null) {
-                            volumeWindowId = 0
-                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
+                val deferred = arrayListOf<Deferred<Any?>>(
+                        async {
+                            if (isLandscape
+                                    && immersiveHelperManager.isNavImmersive()
+                                    && prefManager.run { shouldUseOverscanMethod && showNavWithVolume }) {
+                                if (pName == "com.android.systemui"
+                                        && className?.contains("com.android.systemui.volume.VolumeDialog") == true) {
+                                    val id = info.windowId
+                                    volumeWindowId = id
+                                    disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
+                                } else  if (volumeWindowId == 0 || service.windows.find { it.id == volumeWindowId } == null) {
+                                    volumeWindowId = 0
+                                    disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
+                                }
+                            } else {
+                                volumeWindowId = 0
+                                disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
+                            }
+
+                            null
                         }
-                    } else {
-                        volumeWindowId = 0
-                        disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
+
+                )
+
+                if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                        || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
+
+                    if (!isPinned) {
+                        disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.APP_PINNED)
                     }
 
-                    if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                            || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
-
-                        if (!isPinned) {
-                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.APP_PINNED)
+                    if (origInFullscreen) {
+                        if (immersiveHelperManager.isFullImmersive()) {
+                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.FULLSCREEN)
+                        } else {
+                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.FULLSCREEN)
                         }
+                    }
 
-                        if (origInFullscreen) {
-                            if (immersiveHelperManager.isFullImmersive()) {
-                                disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.FULLSCREEN)
-                            } else {
-                                disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.FULLSCREEN)
-                            }
-                        }
-
+                    deferred.add(async {
                         if (useOverscan
                                 && immersiveWhenNavHidden) {
                             if (pName == systemUIPackage && className?.contains(recentsActivity) == true) {
@@ -861,7 +867,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                                 immersiveHelperManager.putBackOldImmersive()
                             }
                         }
+                    })
 
+                    deferred.add(async {
                         if (hidePermissions
                                 && isPackageInstaller(pName)
                                 && (className?.contains(managePermissionsActivity) == true
@@ -870,27 +878,35 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         } else {
                             disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
                         }
+                    })
 
+                    deferred.add(async {
                         if (hideInstaller
                                 && isPackageInstaller(pName) && className?.contains(packageInstallerActivity) == true) {
                             disabledBarReasonManager.add(DisabledReasonManager.PillReasons.INSTALLER)
                         } else {
                             disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.INSTALLER)
                         }
+                    })
 
+                    deferred.add(async {
                         if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains(dialog) == true) {
                             disabledBarReasonManager.add(DisabledReasonManager.PillReasons.HIDE_DIALOG)
                         } else {
                             disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.HIDE_DIALOG)
                         }
-                    }
+                    })
+                }
 
+                deferred.add(async {
                     if (hideLockscreen && isOnKeyguard) {
                         disabledBarReasonManager.add(DisabledReasonManager.PillReasons.LOCK_SCREEN)
                     } else {
                         disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.LOCK_SCREEN)
                     }
+                })
 
+                deferred.add(async {
                     if (isTouchWiz) {
                         try {
                             if (edgeType == EDGE_TYPE_ACTIVE) {
@@ -902,7 +918,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             e.printStackTrace()
                         }
                     }
+                })
 
+                deferred.add(async {
                     if (pName != oldPName) {
                         oldPName = pName
 
@@ -918,16 +936,20 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         runNewNodeInfo(pName)
 
                         if (hasUsage || (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                                || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                                || pName != systemUIPackage)) {
+                                        || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
+                                        || pName != systemUIPackage)) {
                             processColor(pName)
                         }
                     } else {
                         updateBlacklists()
                     }
+                })
 
+                deferred.add(async {
                     updateKeyboardFlagState()
-                }
+                })
+
+                deferred.awaitAll()
             }
         }
 
@@ -1134,32 +1156,30 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
-        private val immersiveLock = Any()
+        private val immersiveMutex = Mutex()
         private var oldImmersive = false
 
-        private fun handleImmersiveChange(isImmersive: Boolean) {
-            logicScope.launch {
-                synchronized(immersiveLock) {
-                    if (isImmersive != oldImmersive) {
-                        oldImmersive = isImmersive
+        private fun handleImmersiveChange(isImmersive: Boolean) = logicScope.launch {
+            immersiveMutex.withLock {
+                if (isImmersive != oldImmersive) {
+                    oldImmersive = isImmersive
 
-                        if (!IntroActivity.needsToRun(this@App)) {
-                            bar.updatePositionAndDimens()
+                    if (!IntroActivity.needsToRun(this@App)) {
+                        bar.updatePositionAndDimens()
 
-                            val hideInFullScreen = prefManager.hideInFullscreen
-                            val fadeInFullScreen = prefManager.fullscreenFade
+                        val hideInFullScreen = prefManager.hideInFullscreen
+                        val fadeInFullScreen = prefManager.fullscreenFade
 
-                            if (isImmersive) {
-                                if (hideInFullScreen) {
-                                    bar.addHideReason(HiddenPillReasonManagerNew.FULLSCREEN)
-                                }
-                                if (fadeInFullScreen) {
-                                    bar.addFadeReason(HiddenPillReasonManagerNew.FULLSCREEN)
-                                }
-                            } else {
-                                bar.removeHideReason(HiddenPillReasonManagerNew.FULLSCREEN)
-                                bar.removeFadeReason(HiddenPillReasonManagerNew.FULLSCREEN)
+                        if (isImmersive) {
+                            if (hideInFullScreen) {
+                                bar.addHideReason(HiddenPillReasonManagerNew.FULLSCREEN)
                             }
+                            if (fadeInFullScreen) {
+                                bar.addFadeReason(HiddenPillReasonManagerNew.FULLSCREEN)
+                            }
+                        } else {
+                            bar.removeHideReason(HiddenPillReasonManagerNew.FULLSCREEN)
+                            bar.removeFadeReason(HiddenPillReasonManagerNew.FULLSCREEN)
                         }
                     }
                 }
@@ -1168,30 +1188,28 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         private var prevRot = cachedRotation
 
-        fun handleRot(rot: Int = cachedRotation) {
-            logicScope.launch {
-                Mutex().withLock(rotLock) {
-                    delay(100L)
+        fun handleRot(rot: Int = cachedRotation) = logicScope.launch {
+            Mutex().withLock(rotLock) {
+                delay(100L)
 
-                    if (prefManager.shouldUseOverscanMethod) {
-                        when {
-                            prefManager.useRot270Fix ||
-                                    prefManager.useRot180Fix -> handle180AndOr270(rot)
-                            prefManager.useTabletMode -> handleTablet(rot)
-                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie(rot)
-                            else -> handle0()
-                        }
+                if (prefManager.shouldUseOverscanMethod) {
+                    when {
+                        prefManager.useRot270Fix ||
+                                prefManager.useRot180Fix -> handle180AndOr270(rot)
+                        prefManager.useTabletMode -> handleTablet(rot)
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> handlePie(rot)
+                        else -> handle0()
                     }
+                }
 
-                    postAction { it.addBlackout() }
+                postAction { it.addBlackout() }
 
-                    if (prevRot != rot) {
-                        prevRot = rot
+                if (prevRot != rot) {
+                    prevRot = rot
 
-                        if (pillShown) {
-                            bar.forceActionUp()
-                            bar.handleRotationOrAnchorUpdate()
-                        }
+                    if (pillShown) {
+                        bar.forceActionUp()
+                        bar.handleRotationOrAnchorUpdate()
                     }
                 }
             }

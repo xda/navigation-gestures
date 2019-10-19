@@ -5,12 +5,14 @@ import android.graphics.Color
 import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
-import android.view.MotionEvent
 import android.view.Surface
 import android.view.WindowManager
 import android.widget.LinearLayout
 import com.xda.nobar.util.*
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class NavBlackout : LinearLayout {
     constructor(context: Context) : super(context)
@@ -65,41 +67,38 @@ class NavBlackout : LinearLayout {
             context.app.postAction { it.remBar() }
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-//        context.app.bar.onTouchEvent(event)
-        return super.onTouchEvent(event)
-    }
-
-    private val addLock = Any()
-
     private var oldParams: WindowManager.LayoutParams? = null
 
-    fun add(wm: WindowManager) {
-        logicScope.launch {
-            synchronized(addLock) {
+    private val addMutex = Mutex()
+
+    fun add(wm: WindowManager) = mainScope.launch {
+        addMutex.withLock {
+            val result = async {
                 val params = if (context.prefManager.useTabletMode) bottomParams
                 else when (cachedRotation) {
                     Surface.ROTATION_0 -> bottomParams
                     Surface.ROTATION_180 -> bottomParams
                     Surface.ROTATION_90 -> rightParams
                     Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) rightParams else leftParams
-                    else -> return@launch
+                    else -> return@async null
                 }
 
                 if (!isAdded || !params.same(oldParams)) {
                     oldParams = params
 
-                    mainHandler.post {
-                        try {
-                            if (isAdded) wm.updateViewLayout(this@NavBlackout, params)
-                            else if (!waitingToAdd) {
-                                waitingToAdd = true
-                                wm.addView(this@NavBlackout, params)
-                            }
-                        } catch (e: Exception) {
-                            e.logStack()
-                        }
+                    return@async params
+                } else return@async null
+            }.await()
+
+            if (result != null) {
+                try {
+                    if (isAdded) wm.updateViewLayout(this@NavBlackout, result)
+                    else if (!waitingToAdd) {
+                        waitingToAdd = true
+                        wm.addView(this@NavBlackout, result)
                     }
+                } catch (e: Exception) {
+                    e.logStack()
                 }
             }
         }
@@ -107,20 +106,18 @@ class NavBlackout : LinearLayout {
 
     private var isTryingToRemove = false
 
-    fun remove(wm: WindowManager) {
+    fun remove(wm: WindowManager) = mainScope.launch {
         synchronized(isTryingToRemove) {
             if (!isTryingToRemove && isAdded) {
                 isTryingToRemove = true
 
-                mainHandler.post {
-                    try {
-                        wm.removeView(this@NavBlackout)
-                    } catch (e: Exception) {
-                        isAdded = false
-                    }
-
-                    isTryingToRemove = false
+                try {
+                    wm.removeView(this@NavBlackout)
+                } catch (e: Exception) {
+                    isAdded = false
                 }
+
+                isTryingToRemove = false
             }
         }
     }

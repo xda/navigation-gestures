@@ -9,7 +9,9 @@ import android.os.IBinder
 import android.view.Display
 import android.view.IRotationWatcher
 import eu.chainfire.libsuperuser.Shell
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 /**
@@ -37,20 +39,20 @@ object IWindowManager {
         stubClass.getMethod("asInterface", IBinder::class.java).invoke(null, binder)
     }
 
-    fun setOverscanAsync(left: Int, top: Int, right: Int, bottom: Int, listener: ((Boolean) -> Unit)? = null) {
-        logicScope.launch {
-            synchronized(queuedOverscanActions) {
-                val ret = setOverscan(
-                        left,
-                        top,
-                        right,
-                        bottom
-                )
+    fun setOverscanAsync(left: Int, top: Int, right: Int, bottom: Int, listener: ((Boolean) -> Unit)? = null) = mainScope.launch {
+        val ret = setOverscanAsyncInternal(left, top, right, bottom)
 
-                mainScope.launch {
-                    listener?.invoke(ret)
-                }
-            }
+        listener?.invoke(ret)
+    }
+
+    private suspend fun setOverscanAsyncInternal(left: Int, top: Int, right: Int, bottom: Int) = withContext(Dispatchers.IO) {
+        synchronized(queuedOverscanActions) {
+            setOverscan(
+                    left,
+                    top,
+                    right,
+                    bottom
+            )
         }
     }
 
@@ -122,7 +124,8 @@ object IWindowManager {
             iWindowManagerClass
                     .getMethod("removeRotationWatcher", IRotationWatcher::class.java)
                     .invoke(iWindowManager, watcher)
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.P)

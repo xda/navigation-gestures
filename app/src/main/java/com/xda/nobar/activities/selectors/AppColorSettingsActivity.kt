@@ -24,19 +24,21 @@ import com.jaredrummler.android.colorpicker.ColorPickerDialog
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
 import com.xda.nobar.R
 import com.xda.nobar.data.ColoredAppData
-import com.xda.nobar.util.logicScope
 import com.xda.nobar.util.mainScope
 import com.xda.nobar.util.prefManager
 import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_app_color_settings.*
 import kotlinx.android.synthetic.main.colored_app_item.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 
-class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener {
+class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener, CoroutineScope by mainScope {
     companion object {
         const val REQ_COLOR = 1001
     }
@@ -71,17 +73,19 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener 
                     REQ_COLOR)
         }
 
-        logicScope.launch {
-            val items = ArrayList<ColoredAppData>()
-                    .apply { prefManager.loadColoredApps(this) }
+        launch {
+            val items = loadItems()
 
-            mainScope.launch {
-                progress.visibility = View.GONE
-                app_list.visibility = View.VISIBLE
-                add.visibility = View.VISIBLE
-                adapter.addItems(items)
-            }
+            progress.visibility = View.GONE
+            app_list.visibility = View.VISIBLE
+            add.visibility = View.VISIBLE
+            adapter.addItems(items)
         }
+    }
+
+    private suspend fun loadItems() = withContext(Dispatchers.IO) {
+        ArrayList<ColoredAppData>()
+                .apply { prefManager.loadColoredApps(this) }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
