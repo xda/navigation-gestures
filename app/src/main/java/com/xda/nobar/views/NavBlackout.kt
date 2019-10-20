@@ -11,8 +11,8 @@ import android.widget.LinearLayout
 import com.xda.nobar.util.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 class NavBlackout : LinearLayout {
     constructor(context: Context) : super(context)
@@ -69,10 +69,10 @@ class NavBlackout : LinearLayout {
 
     private var oldParams: WindowManager.LayoutParams? = null
 
-    private val addMutex = Mutex()
+    private val addLock = ReentrantLock()
 
     fun add(wm: WindowManager) = mainScope.launch {
-        addMutex.withLock {
+        addLock.withLock {
             val result = async {
                 val params = if (context.prefManager.useTabletMode) bottomParams
                 else when (cachedRotation) {
@@ -88,17 +88,21 @@ class NavBlackout : LinearLayout {
 
                     return@async params
                 } else return@async null
-            }.await()
+            }
 
-            if (result != null) {
-                try {
-                    if (isAdded) wm.updateViewLayout(this@NavBlackout, result)
-                    else if (!waitingToAdd) {
-                        waitingToAdd = true
-                        wm.addView(this@NavBlackout, result)
+            suspend {
+                val await = result.await()
+
+                if (await != null) {
+                    try {
+                        if (isAdded) wm.updateViewLayout(this@NavBlackout, await)
+                        else if (!waitingToAdd) {
+                            waitingToAdd = true
+                            wm.addView(this@NavBlackout, await)
+                        }
+                    } catch (e: Exception) {
+                        e.logStack()
                     }
-                } catch (e: Exception) {
-                    e.logStack()
                 }
             }
         }

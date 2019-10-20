@@ -42,12 +42,17 @@ import com.xda.nobar.views.BarView
 import com.xda.nobar.views.NavBlackout
 import io.fabric.sdk.android.Fabric
 import io.fabric.sdk.android.InitializationCallback
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.lang.reflect.Method
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
+import kotlin.concurrent.withLock
 
 
 /**
@@ -694,8 +699,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      */
     @SuppressLint("WrongConstant")
     inner class UIHandler : ContentObserver(logicHandler), ViewTreeObserver.OnGlobalLayoutListener, (Boolean) -> Unit, SharedPreferences.OnSharedPreferenceChangeListener {
-        private var rotLock = Any()
-
         private val navArray = ArrayList<String>()
         private val barArray = ArrayList<String>()
         private val immArray = ArrayList<String>()
@@ -800,7 +803,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
-        private val eventMutex = Mutex()
+        private val eventLock = Mutex()
 
         private val systemUIPackage = "com.android.systemui"
         private val dialog = "dialog"
@@ -813,10 +816,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         @SuppressLint("WrongConstant")
         private fun handleNewEvent(info: AccessibilityEvent, service: Actions) = logicScope.launch {
-            eventMutex.withLock {
+            eventLock.withLock {
                 val hasUsage = this@App.hasUsage
 
-                var pName = info.packageName?.toString()
+                var pName = info.packageName?.toString() ?: return@withLock
                 val className = info.className?.toString()
 
                 val deferred = arrayListOf<Deferred<Any?>>(
@@ -935,9 +938,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                         runNewNodeInfo(pName)
 
-                        if (hasUsage || (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                        if (hasUsage || info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                                         || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                                        || pName != systemUIPackage)) {
+                                        || pName != systemUIPackage) {
                             processColor(pName)
                         }
                     } else {
@@ -1131,9 +1134,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         @SuppressLint("WrongConstant")
         override fun onGlobalLayout() {
-            if (pillShown) {
-                bar.updatePositionAndDimens()
-            }
         }
 
         override fun onChange(selfChange: Boolean, uri: Uri?) {
@@ -1156,11 +1156,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
         }
 
-        private val immersiveMutex = Mutex()
+        private val immersiveLock = ReentrantLock()
         private var oldImmersive = false
 
         private fun handleImmersiveChange(isImmersive: Boolean) = logicScope.launch {
-            immersiveMutex.withLock {
+            immersiveLock.withLock {
                 if (isImmersive != oldImmersive) {
                     oldImmersive = isImmersive
 
@@ -1187,11 +1187,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
 
         private var prevRot = cachedRotation
+        private val rotLock = Mutex()
 
         fun handleRot(rot: Int = cachedRotation) = logicScope.launch {
-            Mutex().withLock(rotLock) {
-                delay(100L)
-
+            rotLock.withLock {
                 if (prefManager.shouldUseOverscanMethod) {
                     when {
                         prefManager.useRot270Fix ||

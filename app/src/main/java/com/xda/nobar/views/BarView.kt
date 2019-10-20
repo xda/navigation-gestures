@@ -30,10 +30,9 @@ import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.util.helpers.HiddenPillReasonManagerNew
 import com.xda.nobar.util.helpers.bar.NewBarViewGestureManager
 import kotlinx.android.synthetic.main.pill.view.*
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 import kotlin.math.absoluteValue
 
 /**
@@ -785,20 +784,18 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    private val anchorMutex = Mutex()
+    private val anchorLock = ReentrantLock()
 
-    fun handleRotationOrAnchorUpdate() = mainScope.launch {
-        val await = async {
-            anchorMutex.withLock {
-                verticalMode(isVertical)
-                adjustPillShadowAndHitbox()
-                updatePositionAndDimens()
-            }
+    fun handleRotationOrAnchorUpdate() = logicScope.launch {
+        anchorLock.withLock {
+            verticalMode(isVertical)
+            adjustPillShadowAndHitbox()
+            updatePositionAndDimens()
         }
 
-        await.await()
-
-        updateDividers()
+        post {
+            updateDividers()
+        }
     }
 
     private fun verticalMode(enabled: Boolean) {
@@ -848,10 +845,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    private val positionMutex = Mutex()
+    private val positionLock = ReentrantLock()
 
     fun updatePositionAndDimens() = logicScope.launch {
-        positionMutex.withLock {
+        positionLock.withLock {
             val newX = if (isVertical && isHidden) zeroX else adjustedHomeX
             val newY = if (!isVertical && isHidden) zeroY else adjustedHomeY
             val newW = adjustedWidth
@@ -975,26 +972,30 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         fun updateHideStatus(forceShow: Boolean = false) {
-            if (hiddenPillReasons.isEmpty() || forceShow) {
-                show(true)
+            post {
+                if (hiddenPillReasons.isEmpty() || forceShow) {
+                    show(true)
 
-                if (hiddenPillReasons.isEmpty()) removeMessages(MSG_HIDE)
-            } else {
-                val reason = hiddenPillReasons.getMostRecentReason()!!
+                    if (hiddenPillReasons.isEmpty()) removeMessages(MSG_HIDE)
+                } else {
+                    val reason = hiddenPillReasons.getMostRecentReason()!!
 
-                hide(parseHideTime(reason), reason == HiddenPillReasonManagerNew.MANUAL)
+                    hide(parseHideTime(reason), reason == HiddenPillReasonManagerNew.MANUAL)
+                }
             }
         }
 
         fun updateFadeStatus(forceUnfade: Boolean = false) {
-            if (fadedPillReasons.isEmpty() || forceUnfade) {
-                unfade()
+            post {
+                if (fadedPillReasons.isEmpty() || forceUnfade) {
+                    unfade()
 
-                if (fadedPillReasons.isEmpty()) removeMessages(MSG_FADE)
-            } else {
-                val reason = fadedPillReasons.getMostRecentReason()!!
+                    if (fadedPillReasons.isEmpty()) removeMessages(MSG_FADE)
+                } else {
+                    val reason = fadedPillReasons.getMostRecentReason()!!
 
-                fade(parseFadeTime(reason))
+                    fade(parseFadeTime(reason))
+                }
             }
         }
 
