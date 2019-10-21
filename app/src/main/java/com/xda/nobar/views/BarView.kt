@@ -31,8 +31,8 @@ import com.xda.nobar.util.helpers.HiddenPillReasonManagerNew
 import com.xda.nobar.util.helpers.bar.NewBarViewGestureManager
 import kotlinx.android.synthetic.main.pill.view.*
 import kotlinx.coroutines.launch
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.math.absoluteValue
 
 /**
@@ -357,8 +357,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
         updatePillColorsAndRadii()
         updateDividers()
-
-        adjustPillShadowAndHitbox()
 
         super.onAttachedToWindow()
 
@@ -729,7 +727,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             }
         }
 
-        updatePositionAndDimens()
+        updatePositionAndDimens().join()
     }
 
     fun setOverlayNav(overlay: Boolean) {
@@ -782,14 +780,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    private val anchorLock = ReentrantLock()
-
     fun handleRotationOrAnchorUpdate() = logicScope.launch {
-        anchorLock.withLock {
-            verticalMode(isVertical)
-            adjustPillShadowAndHitbox()
-            updatePositionAndDimens()
-        }
+        verticalMode(isVertical)
+        adjustPillShadowAndHitbox().join()
 
         post {
             updateDividers()
@@ -843,7 +836,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
     }
 
-    private val positionLock = ReentrantLock()
+    private val positionLock = Mutex()
 
     fun updatePositionAndDimens() = logicScope.launch {
         positionLock.withLock {
@@ -860,7 +853,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 params.y = newY
                 params.width = newW
                 params.height = newH
-                updateLayout()
+                updateLayout().join()
             }
         }
     }

@@ -655,7 +655,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (prefManager.enableInCarMode) {
                         if (pillShown) {
                             bar.params.height = prefManager.customHeight * 2
-                            bar.updateLayout()
                         }
                     } else {
                         disabledBarReasonManager.add(DisabledReasonManager.PillReasons.CAR_MODE)
@@ -672,7 +671,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (prefManager.enableInCarMode) {
                         if (pillShown) {
                             bar.params.height = prefManager.customHeight
-                            bar.updateLayout()
                         }
                     } else {
                         disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.CAR_MODE)
@@ -1101,6 +1099,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 showNav()
             }
 
+            updateBarBlacklists()
+        }
+
+        private fun updateBarBlacklists() {
             if (pillShown) {
                 bar.updateHideStatus()
                 bar.updateFadeStatus()
@@ -1191,6 +1193,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                             bar.removeHideReason(HiddenPillReasonManagerNew.FULLSCREEN)
                             bar.removeFadeReason(HiddenPillReasonManagerNew.FULLSCREEN)
                         }
+
+                        updateBarBlacklists()
                     }
                 }
             }
@@ -1201,6 +1205,15 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         fun handleRot(rot: Int = cachedRotation) = logicScope.launch {
             rotLock.withLock {
+                if (prevRot != rot) {
+                    prevRot = rot
+
+                    if (pillShown) {
+                        bar.forceActionUp()
+                        bar.handleRotationOrAnchorUpdate().join()
+                    }
+                }
+
                 if (prefManager.shouldUseOverscanMethod) {
                     when {
                         prefManager.useRot270Fix ||
@@ -1212,15 +1225,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
 
                 postAction { it.addBlackout() }
-
-                if (prevRot != rot) {
-                    prevRot = rot
-
-                    if (pillShown) {
-                        bar.forceActionUp()
-                        bar.handleRotationOrAnchorUpdate()
-                    }
-                }
             }
         }
 
@@ -1401,11 +1405,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     inner class DisplayChangeListener : IRotationWatcher.Stub() {
         override fun onRotationChanged(rotation: Int) {
+            handleDisplayChange()
             cachedRotation = rotation
 
             rotationWatchers.forEach { it.onRotationChanged(rotation) }
             uiHandler.handleRot(rotation)
-            handleDisplayChange()
         }
 
         private fun handleDisplayChange() {
