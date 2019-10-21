@@ -11,8 +11,6 @@ import android.widget.LinearLayout
 import com.xda.nobar.util.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
 
 class NavBlackout : LinearLayout {
     constructor(context: Context) : super(context)
@@ -69,41 +67,35 @@ class NavBlackout : LinearLayout {
 
     private var oldParams: WindowManager.LayoutParams? = null
 
-    private val addLock = ReentrantLock()
-
     fun add(wm: WindowManager) = mainScope.launch {
-        addLock.withLock {
-            val result = async {
-                val params = if (context.prefManager.useTabletMode) bottomParams
-                else when (cachedRotation) {
-                    Surface.ROTATION_0 -> bottomParams
-                    Surface.ROTATION_180 -> bottomParams
-                    Surface.ROTATION_90 -> rightParams
-                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) rightParams else leftParams
-                    else -> return@async null
-                }
-
-                if (!isAdded || !params.same(oldParams)) {
-                    oldParams = params
-
-                    return@async params
-                } else return@async null
+        val result = async {
+            val params = if (context.prefManager.useTabletMode) bottomParams
+            else when (cachedRotation) {
+                Surface.ROTATION_0 -> bottomParams
+                Surface.ROTATION_180 -> bottomParams
+                Surface.ROTATION_90 -> rightParams
+                Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) rightParams else leftParams
+                else -> return@async null
             }
 
-            suspend {
-                val await = result.await()
+            if (!isAdded || !params.same(oldParams)) {
+                oldParams = params
 
-                if (await != null) {
-                    try {
-                        if (isAdded) wm.updateViewLayout(this@NavBlackout, await)
-                        else if (!waitingToAdd) {
-                            waitingToAdd = true
-                            wm.addView(this@NavBlackout, await)
-                        }
-                    } catch (e: Exception) {
-                        e.logStack()
-                    }
+                return@async params
+            } else return@async null
+        }
+
+        val await = result.await()
+
+        if (await != null) {
+            try {
+                if (isAdded) wm.updateViewLayout(this@NavBlackout, await)
+                else if (!waitingToAdd) {
+                    waitingToAdd = true
+                    wm.addView(this@NavBlackout, await)
                 }
+            } catch (e: Exception) {
+                e.logStack()
             }
         }
     }
