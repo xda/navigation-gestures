@@ -551,22 +551,20 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     fun addHideReason(reason: String) {
         hiddenPillReasons.addReason(reason)
-        hideHandler.updateHideStatus()
     }
 
     fun removeHideReason(reason: String, forceShow: Boolean = false) {
         hiddenPillReasons.removeReason(reason)
-        hideHandler.updateHideStatus(forceShow)
+        if (forceShow) hideHandler.updateHideStatus(forceShow)
     }
 
     fun addFadeReason(reason: String) {
         fadedPillReasons.addReason(reason)
-        hideHandler.updateFadeStatus()
     }
 
     fun removeFadeReason(reason: String, forceUnfade: Boolean = false) {
         fadedPillReasons.removeReason(reason)
-        hideHandler.updateFadeStatus(forceUnfade)
+        if (forceUnfade) hideHandler.updateFadeStatus(forceUnfade)
     }
 
     private fun parseHideTime(reason: String) =
@@ -862,8 +860,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 params.y = newY
                 params.width = newW
                 params.height = newH
-                hideHandler.updateFadeStatus()
-                hideHandler.updateHideStatus()
                 updateLayout()
             }
         }
@@ -972,7 +968,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         fun updateHideStatus(forceShow: Boolean = false) {
-            post {
+            synchronized(hiddenPillReasons) {
                 if (hiddenPillReasons.isEmpty() || forceShow) {
                     show(true)
 
@@ -986,7 +982,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         }
 
         fun updateFadeStatus(forceUnfade: Boolean = false) {
-            post {
+            synchronized(fadedPillReasons) {
                 if (fadedPillReasons.isEmpty() || forceUnfade) {
                     unfade()
 

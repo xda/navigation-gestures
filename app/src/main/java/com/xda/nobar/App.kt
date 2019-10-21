@@ -819,32 +819,35 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             eventLock.withLock {
                 val hasUsage = this@App.hasUsage
 
-                var pName = info.packageName?.toString() ?: return@withLock
+                var pName = info.packageName?.toString()
                 val className = info.className?.toString()
 
-                val deferred = arrayListOf<Deferred<Any?>>(
-                        async {
-                            if (isLandscape
-                                    && immersiveHelperManager.isNavImmersive()
-                                    && prefManager.run { shouldUseOverscanMethod && showNavWithVolume }) {
-                                if (pName == "com.android.systemui"
-                                        && className?.contains("com.android.systemui.volume.VolumeDialog") == true) {
-                                    val id = info.windowId
-                                    volumeWindowId = id
-                                    disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
-                                } else  if (volumeWindowId == 0 || service.windows.find { it.id == volumeWindowId } == null) {
-                                    volumeWindowId = 0
-                                    disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
-                                }
-                            } else {
+                val nullPName = pName == null
+
+                val deferred = arrayListOf<Deferred<Any?>>()
+
+                if (!nullPName) {
+                    deferred.add(async {
+                        if (isLandscape
+                                && immersiveHelperManager.isNavImmersive()
+                                && prefManager.run { shouldUseOverscanMethod && showNavWithVolume }) {
+                            if (pName == systemUIPackage
+                                    && className?.contains("com.android.systemui.volume.VolumeDialog") == true) {
+                                val id = info.windowId
+                                volumeWindowId = id
+                                disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
+                            } else  if (volumeWindowId == 0 || service.windows.find { it.id == volumeWindowId } == null) {
                                 volumeWindowId = 0
                                 disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
                             }
-
-                            null
+                        } else {
+                            volumeWindowId = 0
+                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
                         }
 
-                )
+                        null
+                    })
+                }
 
                 if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                         || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
@@ -861,44 +864,46 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         }
                     }
 
-                    deferred.add(async {
-                        if (useOverscan
-                                && immersiveWhenNavHidden) {
-                            if (pName == systemUIPackage && className?.contains(recentsActivity) == true) {
-                                immersiveHelperManager.tempForcePolicyControlForRecents()
-                            } else {
-                                immersiveHelperManager.putBackOldImmersive()
+                    if (!nullPName) {
+                        deferred.add(async {
+                            if (useOverscan
+                                    && immersiveWhenNavHidden) {
+                                if (pName == systemUIPackage && className?.contains(recentsActivity) == true) {
+                                    immersiveHelperManager.tempForcePolicyControlForRecents()
+                                } else {
+                                    immersiveHelperManager.putBackOldImmersive()
+                                }
                             }
-                        }
-                    })
+                        })
 
-                    deferred.add(async {
-                        if (hidePermissions
-                                && isPackageInstaller(pName)
-                                && (className?.contains(managePermissionsActivity) == true
-                                        || className?.contains(grantPermissionsActivity) == true)) {
-                            disabledBarReasonManager.add(DisabledReasonManager.PillReasons.PERMISSIONS)
-                        } else {
-                            disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
-                        }
-                    })
+                        deferred.add(async {
+                            if (hidePermissions
+                                    && isPackageInstaller(pName)
+                                    && (className?.contains(managePermissionsActivity) == true
+                                            || className?.contains(grantPermissionsActivity) == true)) {
+                                disabledBarReasonManager.add(DisabledReasonManager.PillReasons.PERMISSIONS)
+                            } else {
+                                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
+                            }
+                        })
 
-                    deferred.add(async {
-                        if (hideInstaller
-                                && isPackageInstaller(pName) && className?.contains(packageInstallerActivity) == true) {
-                            disabledBarReasonManager.add(DisabledReasonManager.PillReasons.INSTALLER)
-                        } else {
-                            disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.INSTALLER)
-                        }
-                    })
+                        deferred.add(async {
+                            if (hideInstaller
+                                    && isPackageInstaller(pName) && className?.contains(packageInstallerActivity) == true) {
+                                disabledBarReasonManager.add(DisabledReasonManager.PillReasons.INSTALLER)
+                            } else {
+                                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.INSTALLER)
+                            }
+                        })
 
-                    deferred.add(async {
-                        if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains(dialog) == true) {
-                            disabledBarReasonManager.add(DisabledReasonManager.PillReasons.HIDE_DIALOG)
-                        } else {
-                            disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.HIDE_DIALOG)
-                        }
-                    })
+                        deferred.add(async {
+                            if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains(dialog) == true) {
+                                disabledBarReasonManager.add(DisabledReasonManager.PillReasons.HIDE_DIALOG)
+                            } else {
+                                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.HIDE_DIALOG)
+                            }
+                        })
+                    }
                 }
 
                 deferred.add(async {
@@ -923,36 +928,38 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     }
                 })
 
-                deferred.add(async {
-                    if (pName != oldPName) {
-                        oldPName = pName
+                if (!nullPName) {
+                    deferred.add(async {
+                        if (pName != oldPName) {
+                            oldPName = pName
 
-                        if (hasUsage) {
-                            val time = System.currentTimeMillis()
-                            val appStats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time)
+                            if (hasUsage) {
+                                val time = System.currentTimeMillis()
+                                val appStats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time)
 
-                            if (appStats != null && appStats.isNotEmpty()) {
-                                pName = Collections.max(appStats) { o1, o2 -> compareValues(o1.lastTimeUsed, o2.lastTimeUsed) }.packageName
+                                if (appStats != null && appStats.isNotEmpty()) {
+                                    pName = Collections.max(appStats) { o1, o2 -> compareValues(o1.lastTimeUsed, o2.lastTimeUsed) }.packageName
+                                }
+                            }
+
+                            runNewNodeInfo(pName)
+
+                            if (hasUsage || info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                                    || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
+                                    || pName != systemUIPackage) {
+                                processColor(pName)
                             }
                         }
-
-                        runNewNodeInfo(pName)
-
-                        if (hasUsage || info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                                        || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                                        || pName != systemUIPackage) {
-                            processColor(pName)
-                        }
-                    } else {
-                        updateBlacklists()
-                    }
-                })
+                    })
+                }
 
                 deferred.add(async {
                     updateKeyboardFlagState()
                 })
 
                 deferred.awaitAll()
+
+                updateBlacklists()
             }
         }
 
@@ -997,8 +1004,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         isInOtherWindowApp = true
                     }
                 } else if (isInOtherWindowApp) isInOtherWindowApp = false
-
-                updateBlacklists()
             }
         }
 
@@ -1094,6 +1099,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
             } else {
                 showNav()
+            }
+
+            if (pillShown) {
+                bar.updateHideStatus()
+                bar.updateFadeStatus()
             }
         }
 
