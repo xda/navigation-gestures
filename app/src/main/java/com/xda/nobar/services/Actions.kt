@@ -29,12 +29,8 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
         get() = getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val binder by lazy { IActionsBinderImpl() }
 
-    override fun onCreate() {
-        super.onCreate()
-        prefManager.registerOnSharedPreferenceChangeListener(this)
-    }
-
     override fun onServiceConnected() {
+        prefManager.registerOnSharedPreferenceChangeListener(this)
         sendBound()
         loadInfo()
     }
