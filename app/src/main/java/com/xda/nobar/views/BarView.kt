@@ -33,6 +33,7 @@ import kotlinx.android.synthetic.main.pill.view.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.math.absoluteValue
 
 /**
  * The Pill™©® (not really copyrighted)
@@ -162,12 +163,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     val is270Vertical: Boolean
         get() = isVertical
                 && cachedRotation == Surface.ROTATION_270
-
-    private val verticalHideTranslationX: Float
-        get() = ((if (is270Vertical) -1f else 1f) * pill.width.toFloat() / 2f)
-
-    private val horizontalHideTranslationY: Float
-        get() = pill.height.toFloat() / 2f
 
     private val currentGestureDetector: NewBarViewGestureManager = NewBarViewGestureManager(this)
 
@@ -808,11 +803,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 changed = true
             }
 
-            val translation = verticalHideTranslationX
-
-            if (isHidden && pill.translationX != translation) {
+            if (isHidden && !isPillHidingOrShowing && pill.translationX == 0f) {
                 mainHandler.post {
-                    pill.translationX = translation
+                    pill.translationX = pill.translationY * if (is270) -1 else 1
                     pill.translationY = 0f
                 }
 
@@ -827,11 +820,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 changed = true
             }
 
-            val translation = horizontalHideTranslationY
-
-            if (isHidden && pill.translationY != translation) {
+            if (isHidden && !isPillHidingOrShowing && pill.translationY == 0f) {
                 mainHandler.post {
-                    pill.translationY = translation
+                    pill.translationY = pill.translationX.absoluteValue
                     pill.translationX = 0f
                 }
 
@@ -895,8 +886,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                             isPillHidingOrShowing = false
                                         }
                                         .apply {
-                                            if (isVertical) translationX(verticalHideTranslationX)
-                                            else translationY(horizontalHideTranslationY)
+                                            if (isVertical) translationX((if (is270Vertical) -1 else 1) * pill.width.toFloat() / 2f)
+                                            else translationY(pill.height.toFloat() / 2f)
                                         }
                                         .start()
                             })
