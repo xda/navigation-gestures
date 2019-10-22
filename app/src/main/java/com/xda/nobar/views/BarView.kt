@@ -33,7 +33,6 @@ import kotlinx.android.synthetic.main.pill.view.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.math.absoluteValue
 
 /**
  * The Pill™©® (not really copyrighted)
@@ -163,6 +162,12 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     val is270Vertical: Boolean
         get() = isVertical
                 && cachedRotation == Surface.ROTATION_270
+
+    private val verticalHideTranslationX: Float
+        get() = ((if (is270Vertical) -1f else 1f) * pill.width.toFloat() / 2f)
+
+    private val horizontalHideTranslationY: Float
+        get() = pill.height.toFloat() / 2f
 
     private val currentGestureDetector: NewBarViewGestureManager = NewBarViewGestureManager(this)
 
@@ -791,7 +796,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     private fun verticalMode(enabled: Boolean) {
         var changed = false
-
         if (enabled) {
             val is270 = is270Vertical
 
@@ -804,9 +808,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 changed = true
             }
 
-            if (isHidden && pill.translationX == 0f) {
+            val translation = verticalHideTranslationX
+
+            if (isHidden && pill.translationX != translation) {
                 mainHandler.post {
-                    pill.translationX = pill.translationY * if (is270) -1 else 1
+                    pill.translationX = translation
                     pill.translationY = 0f
                 }
 
@@ -821,9 +827,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 changed = true
             }
 
-            if (isHidden && pill.translationY == 0f) {
+            val translation = horizontalHideTranslationY
+
+            if (isHidden && pill.translationY != translation) {
                 mainHandler.post {
-                    pill.translationY = pill.translationX.absoluteValue
+                    pill.translationY = translation
                     pill.translationX = 0f
                 }
 
@@ -887,8 +895,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                             isPillHidingOrShowing = false
                                         }
                                         .apply {
-                                            if (isVertical) translationX((if (is270Vertical) -1 else 1) * pill.width.toFloat() / 2f)
-                                            else translationY(pill.height.toFloat() / 2f)
+                                            if (isVertical) translationX(verticalHideTranslationX)
+                                            else translationY(horizontalHideTranslationY)
                                         }
                                         .start()
                             })
@@ -923,8 +931,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                                 })
                                             }
                                             .apply {
-                                                if (isVertical) translationX(0f)
-                                                else translationY(0f)
+                                                translationX(0f)
+                                                translationY(0f)
                                             }
                                             .start()
                                 }
