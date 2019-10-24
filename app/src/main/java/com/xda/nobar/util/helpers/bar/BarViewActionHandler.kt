@@ -91,13 +91,13 @@ class BarViewActionHandler(private val context: Context) {
         }
     }
 
-    fun sendActionInternal(key: String) {
+    fun sendActionInternal(key: String, force: Boolean = false) {
         mainScope.launch {
             val which = context.actionManager.getAction(key) ?: return@launch
 
             if (which == bar.actionHolder.typeNoAction) return@launch
 
-            if (bar.isHidden || bar.isPillHidingOrShowing) return@launch
+            if ((bar.isHidden || bar.isPillHidingOrShowing) && !force) return@launch
 
             bar.vibrate(context.prefManager.vibrationDuration.toLong())
 
