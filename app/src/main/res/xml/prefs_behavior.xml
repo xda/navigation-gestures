@@ -118,6 +118,7 @@
             android:key="fade_after_specified_delay"
             android:icon="@drawable/ic_gradient"
             android:defaultValue="@bool/fade_after_delay_default"
+            android:disableDependentsState="true"
             app:view_defaultValue="@integer/default_fade_time"
             app:minValue="@integer/min_fade_time"
             app:maxValue="@integer/max_fade_time"
@@ -125,6 +126,7 @@
             />
 
         <com.xda.nobar.prefs.SeekBarSwitchPreference
+            android:dependency="fade_after_specified_delay"
             android:title="@string/fade_in_fullscreen_apps"
             android:summaryOff="@string/fade_in_fullscreen_apps_desc"
             android:key="fade_in_fullscreen_apps"
