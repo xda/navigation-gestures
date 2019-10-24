@@ -6,9 +6,11 @@ import android.graphics.Color
 import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import com.xda.nobar.util.*
+import com.xda.nobar.util.helpers.SideSwipeGestureManager
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -41,6 +43,10 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
     internal abstract val side: Side
     internal abstract val keysToListenFor: Array<String>
 
+    private val gestureManager = SideSwipeGestureManager(this)
+
+    var isAttached = false
+
     private val heightPercent: Int
         get() = context.prefManager.run {
             when (side) {
@@ -56,7 +62,7 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
             }
         }
     private val windowWidth: Int
-        get() = context.dpAsPx(2)
+        get() = context.dpAsPx(8)
 
     private val params: WindowManager.LayoutParams
         get() = BaseParams().apply {
@@ -86,6 +92,8 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
+        isAttached = true
+
         context.app.registerOnSharedPreferenceChangeListener(this)
 
         //debug
@@ -100,6 +108,8 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
+        isAttached = false
+
         context.app.unregisterOnSharedPreferenceChangeListener(this)
     }
 
@@ -107,19 +117,29 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
         if (keysToListenFor.contains(key)) update(context.app.wm)
     }
 
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return super.onTouchEvent(event) or gestureManager.onTouchEvent(event)
+    }
+
+    fun onCreate() {}
+
     fun add(wm: WindowManager) {
-        try {
-            wm.addView(this, params)
-        } catch (e: Exception) {
-            e.logStack()
+        if (!isAttached) {
+            try {
+                wm.addView(this, params)
+            } catch (e: Exception) {
+                e.logStack()
+            }
         }
     }
 
     fun remove(wm: WindowManager) {
-        try {
-            wm.removeView(this)
-        } catch (e: Exception) {
-            e.logStack()
+        if (isAttached) {
+            try {
+                wm.removeView(this)
+            } catch (e: Exception) {
+                e.logStack()
+            }
         }
     }
 

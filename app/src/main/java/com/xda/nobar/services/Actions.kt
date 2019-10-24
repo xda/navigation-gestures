@@ -122,8 +122,6 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
             try {
                 accWm.addView(app.bar, app.bar.params)
             } catch (e: Exception) {}
-            app.leftSide.add(accWm)
-            app.rightSide.add(accWm)
             waitingToAdd = false
         }
     }
@@ -140,8 +138,6 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
             try {
                 accWm.removeView(app.bar)
             } catch (e: Exception) {}
-            app.leftSide.remove(accWm)
-            app.rightSide.remove(accWm)
             waitingToRemove = false
         }
     }
@@ -212,6 +208,22 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
         override fun remBarAndBlackout() {
             remBlackout()
             remBar()
+        }
+
+        override fun addLeftSide() {
+            app.leftSide.add(accWm)
+        }
+
+        override fun addRightSide() {
+            app.rightSide.add(accWm)
+        }
+
+        override fun remLeftSide() {
+            app.leftSide.remove(accWm)
+        }
+
+        override fun remRightSide() {
+            app.rightSide.remove(accWm)
         }
     }
 }

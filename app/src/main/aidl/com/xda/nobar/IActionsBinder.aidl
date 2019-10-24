@@ -10,4 +10,8 @@ interface IActionsBinder {
     void sendAction(int action);
     void addBarAndBlackout();
     void remBarAndBlackout();
+    void addLeftSide();
+    void addRightSide();
+    void remLeftSide();
+    void remRightSide();
 }

@@ -49,33 +49,38 @@ class ActionHolder private constructor(private val context: Context) {
     val complexActionLongLeftDown: String by lazy { context.resources.getString(R.string.action_complex_long_left_down) }
     val complexActionLongRightDown: String by lazy { context.resources.getString(R.string.action_complex_long_right_down) }
 
+    val sideLeftIn: String by lazy { context.resources.getString(R.string.action_side_left_in) }
+    val sideRightIn: String by lazy { context.resources.getString(R.string.action_side_right_in) }
+
     val actionsList by lazy {
         arrayListOf(
-                actionLeft,
-                actionRight,
-                actionUp,
-                actionDown,
-                actionDouble,
-                actionHold,
-                actionTap,
-                actionUpHold,
-                actionLeftHold,
-                actionRightHold,
-                actionDownHold,
-                actionUpLeft,
-                actionUpHoldLeft,
-                actionUpCenter,
-                actionUpHoldCenter,
-                actionUpRight,
-                actionUpHoldRight,
-                complexActionLeftUp,
-                complexActionRightUp,
-                complexActionLeftDown,
-                complexActionRightDown,
-                complexActionLongLeftUp,
-                complexActionLongRightUp,
-                complexActionLongLeftDown,
-                complexActionLongRightDown
+            actionLeft,
+            actionRight,
+            actionUp,
+            actionDown,
+            actionDouble,
+            actionHold,
+            actionTap,
+            actionUpHold,
+            actionLeftHold,
+            actionRightHold,
+            actionDownHold,
+            actionUpLeft,
+            actionUpHoldLeft,
+            actionUpCenter,
+            actionUpHoldCenter,
+            actionUpRight,
+            actionUpHoldRight,
+            complexActionLeftUp,
+            complexActionRightUp,
+            complexActionLeftDown,
+            complexActionRightDown,
+            complexActionLongLeftUp,
+            complexActionLongRightUp,
+            complexActionLongLeftDown,
+            complexActionLongRightDown,
+            sideLeftIn,
+            sideRightIn
         )
     }
 
@@ -106,6 +111,8 @@ class ActionHolder private constructor(private val context: Context) {
             complexActionLongRightUp -> R.string.swipe_long_right_up
             complexActionLongLeftDown -> R.string.swipe_long_left_down
             complexActionLongRightDown -> R.string.swipe_long_right_down
+            sideLeftIn -> R.string.swipe_in_from_left
+            sideRightIn -> R.string.swipe_in_from_right
             else -> 0
         }
         return if (res != 0) context.resources.getString(res)
@@ -164,24 +171,24 @@ class ActionHolder private constructor(private val context: Context) {
     }
 
     fun hasSomeUpAction() =
-            hasAnyOfActions(
-                    actionUp,
-                    actionUpHold,
-                    actionUpLeft,
-                    actionUpHoldLeft,
-                    actionUpCenter,
-                    actionUpHoldCenter,
-                    actionUpRight,
-                    actionUpHoldRight
-            )
+        hasAnyOfActions(
+            actionUp,
+            actionUpHold,
+            actionUpLeft,
+            actionUpHoldLeft,
+            actionUpCenter,
+            actionUpHoldCenter,
+            actionUpRight,
+            actionUpHoldRight
+        )
 
     fun hasSomeUpHoldAction() =
-            hasAnyOfActions(
-                    actionUpHold,
-                    actionUpHoldLeft,
-                    actionUpHoldCenter,
-                    actionUpHoldRight
-            )
+        hasAnyOfActions(
+            actionUpHold,
+            actionUpHoldLeft,
+            actionUpHoldCenter,
+            actionUpHoldRight
+        )
 
     val typeNoAction by lazy { context.resources.getString(R.string.type_no_action).toInt() }
     val typeBack by lazy { context.resources.getString(R.string.type_back).toInt() }
@@ -195,43 +202,97 @@ class ActionHolder private constructor(private val context: Context) {
     val premTypeQs by lazy { context.resources.getString(R.string.prem_type_qs).toInt() }
     val premTypePower by lazy { context.resources.getString(R.string.prem_type_power).toInt() }
     val typeSplit by lazy { context.resources.getString(R.string.type_split).toInt() }
-    val premTypeCycleRinger by lazy { context.resources.getString(R.string.prem_type_cycle_ringer).toInt() }
-    val premTypeToggleAutoBrightness by lazy { context.resources.getString(R.string.prem_type_toggle_auto_brightness).toInt() }
+    val premTypeCycleRinger by lazy {
+        context.resources.getString(R.string.prem_type_cycle_ringer).toInt()
+    }
+    val premTypeToggleAutoBrightness by lazy {
+        context.resources.getString(R.string.prem_type_toggle_auto_brightness).toInt()
+    }
     val premTypeMute by lazy { context.resources.getString(R.string.prem_type_mute).toInt() }
-    val premTypePlayPause by lazy { context.resources.getString(R.string.prem_type_play_pause).toInt() }
+    val premTypePlayPause by lazy {
+        context.resources.getString(R.string.prem_type_play_pause).toInt()
+    }
     val premTypePrev by lazy { context.resources.getString(R.string.prem_type_prev).toInt() }
     val premTypeNext by lazy { context.resources.getString(R.string.prem_type_next).toInt() }
-    val premTypeSwitchIme by lazy { context.resources.getString(R.string.prem_type_switch_ime).toInt() }
-    val premTypeLaunchApp by lazy { context.resources.getString(R.string.prem_type_launch_app).toInt() }
-    val premTypeLockScreen by lazy { context.resources.getString(R.string.prem_type_lock_screen).toInt() }
-    val premTypeScreenshot by lazy { context.resources.getString(R.string.prem_type_screenshot).toInt() }
-    val premTypeLaunchActivity by lazy { context.resources.getString(R.string.prem_type_launch_activity).toInt() }
+    val premTypeSwitchIme by lazy {
+        context.resources.getString(R.string.prem_type_switch_ime).toInt()
+    }
+    val premTypeLaunchApp by lazy {
+        context.resources.getString(R.string.prem_type_launch_app).toInt()
+    }
+    val premTypeLockScreen by lazy {
+        context.resources.getString(R.string.prem_type_lock_screen).toInt()
+    }
+    val premTypeScreenshot by lazy {
+        context.resources.getString(R.string.prem_type_screenshot).toInt()
+    }
+    val premTypeLaunchActivity by lazy {
+        context.resources.getString(R.string.prem_type_launch_activity).toInt()
+    }
     val premTypeRot by lazy { context.resources.getString(R.string.prem_type_rot).toInt() }
-    val premTypeTaskerEvent by lazy { context.resources.getString(R.string.prem_type_tasker_event).toInt() }
+    val premTypeTaskerEvent by lazy {
+        context.resources.getString(R.string.prem_type_tasker_event).toInt()
+    }
     val typeToggleNav by lazy { context.resources.getString(R.string.type_toggle_nav).toInt() }
-    val premTypeFlashlight by lazy { context.resources.getString(R.string.prem_type_flashlight).toInt() }
-    val premTypeVolumePanel by lazy { context.resources.getString(R.string.prem_type_volume_panel).toInt() }
-    val premTypeBluetooth by lazy { context.resources.getString(R.string.prem_type_bluetooth).toInt() }
+    val premTypeFlashlight by lazy {
+        context.resources.getString(R.string.prem_type_flashlight).toInt()
+    }
+    val premTypeVolumePanel by lazy {
+        context.resources.getString(R.string.prem_type_volume_panel).toInt()
+    }
+    val premTypeBluetooth by lazy {
+        context.resources.getString(R.string.prem_type_bluetooth).toInt()
+    }
     val premTypeWiFi by lazy { context.resources.getString(R.string.prem_type_wifi).toInt() }
     val premTypeIntent by lazy { context.resources.getString(R.string.prem_type_intent).toInt() }
-    val premTypeBatterySaver by lazy { context.resources.getString(R.string.prem_type_battery_saver).toInt() }
-    val premTypeScreenTimeout by lazy { context.resources.getString(R.string.prem_type_screen_timeout).toInt() }
-    val premTypeLaunchShortcut by lazy { context.resources.getString(R.string.prem_type_launch_shortcut).toInt() }
-    val premTypeKillBackground by lazy { context.resources.getString(R.string.prem_type_kill_background).toInt() }
-    val premTypeVolumeDown by lazy { context.resources.getString(R.string.prem_type_vol_down).toInt() }
+    val premTypeBatterySaver by lazy {
+        context.resources.getString(R.string.prem_type_battery_saver).toInt()
+    }
+    val premTypeScreenTimeout by lazy {
+        context.resources.getString(R.string.prem_type_screen_timeout).toInt()
+    }
+    val premTypeLaunchShortcut by lazy {
+        context.resources.getString(R.string.prem_type_launch_shortcut).toInt()
+    }
+    val premTypeKillBackground by lazy {
+        context.resources.getString(R.string.prem_type_kill_background).toInt()
+    }
+    val premTypeVolumeDown by lazy {
+        context.resources.getString(R.string.prem_type_vol_down).toInt()
+    }
     val premTypeVolumeUp by lazy { context.resources.getString(R.string.prem_type_vol_up).toInt() }
-    val premTypeBrightnessDown by lazy { context.resources.getString(R.string.prem_type_brightness_down).toInt() }
-    val premTypeBrightnessUp by lazy { context.resources.getString(R.string.prem_type_brightness_up).toInt() }
-    val premTypeAppDrawer by lazy { context.resources.getString(R.string.prem_type_app_drawer).toInt() }
-    val premTypeToggleRotationLock by lazy { context.resources.getString(R.string.prem_type_toggle_rotation_lock).toInt() }
-    val typeRootAccessibilityMenu by lazy { context.resources.getString(R.string.type_accessibility_button).toInt() }
-    val typeRootChooseAccessibilityMenu by lazy { context.resources.getString(R.string.type_choose_accessibility_button).toInt() }
+    val premTypeBrightnessDown by lazy {
+        context.resources.getString(R.string.prem_type_brightness_down).toInt()
+    }
+    val premTypeBrightnessUp by lazy {
+        context.resources.getString(R.string.prem_type_brightness_up).toInt()
+    }
+    val premTypeAppDrawer by lazy {
+        context.resources.getString(R.string.prem_type_app_drawer).toInt()
+    }
+    val premTypeToggleRotationLock by lazy {
+        context.resources.getString(R.string.prem_type_toggle_rotation_lock).toInt()
+    }
+    val typeRootAccessibilityMenu by lazy {
+        context.resources.getString(R.string.type_accessibility_button).toInt()
+    }
+    val typeRootChooseAccessibilityMenu by lazy {
+        context.resources.getString(R.string.type_choose_accessibility_button).toInt()
+    }
 
     val typeRootHoldBack by lazy { context.resources.getString(R.string.type_hold_back).toInt() }
     val typeRootForward by lazy { context.resources.getString(R.string.type_forward).toInt() }
     val typeRootMenu by lazy { context.resources.getString(R.string.type_menu).toInt() }
-    val typeRootKillCurrentApp by lazy { context.resources.getString(R.string.root_type_kill_current_app).toInt() }
-    val typeRootKeycode by lazy { context.resources.getString(R.string.root_type_send_keycode).toInt() }
-    val typeRootDoubleKeycode by lazy { context.resources.getString(R.string.root_type_send_double_keycode).toInt() }
-    val typeRootLongKeycode by lazy { context.resources.getString(R.string.root_type_send_long_keycode).toInt() }
+    val typeRootKillCurrentApp by lazy {
+        context.resources.getString(R.string.root_type_kill_current_app).toInt()
+    }
+    val typeRootKeycode by lazy {
+        context.resources.getString(R.string.root_type_send_keycode).toInt()
+    }
+    val typeRootDoubleKeycode by lazy {
+        context.resources.getString(R.string.root_type_send_double_keycode).toInt()
+    }
+    val typeRootLongKeycode by lazy {
+        context.resources.getString(R.string.root_type_send_long_keycode).toInt()
+    }
 }

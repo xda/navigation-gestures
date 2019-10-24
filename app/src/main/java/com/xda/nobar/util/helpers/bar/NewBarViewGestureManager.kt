@@ -150,8 +150,6 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
                     var velocityX = origVX * if (bar.is270Vertical) -1 else 1
                     var velocityY = prevY - newY
 
-                    val slop = bar.viewConfig.scaledTouchSlop
-
                     parseSwipe(newX, newY)
 
                     val xSlop = (downX - newX).absoluteValue > slop

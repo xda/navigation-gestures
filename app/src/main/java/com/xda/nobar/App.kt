@@ -233,6 +233,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             //Make sure lazy init happens in main Thread
             bar.onCreate()
+            leftSide.onCreate()
+            rightSide.onCreate()
 
             mainHandler.post {
                 refreshScreenSize()
@@ -247,6 +249,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             if (prefManager.isActive
                     && !IntroActivity.needsToRun(this)) {
+                postAction {
+                    if (prefManager.leftSideGesture) it.addLeftSide()
+                    if (prefManager.rightSideGesture) it.addRightSide()
+                }
                 addBar()
 
                 if (wm.defaultDisplay.state != Display.STATE_ON) {
@@ -324,6 +330,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
             PrefManager.KEEP_ALIVE -> {
                 handleKeepAlive()
+            }
+            PrefManager.LEFT_SIDE_GESTURE -> {
+                postAction {
+                    if (prefManager.leftSideGesture) it.addLeftSide()
+                    else it.remLeftSide()
+                }
+            }
+
+            PrefManager.RIGHT_SIDE_GESTURE -> {
+                postAction {
+                    if (prefManager.rightSideGesture) it.addRightSide()
+                    else it.remRightSide()
+                }
             }
         }
 
@@ -1075,9 +1094,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
             if (disabledBarReasonManager.isEmpty()) {
                 if (active && !pillShown) addBar(false)
+                if (prefManager.leftSideGesture) postAction { it.addLeftSide() }
+                if (prefManager.rightSideGesture) postAction { it.addRightSide() }
                 if (!helperAdded) addImmersiveHelper()
             } else {
                 removeBar(false)
+                postAction {
+                    it.remLeftSide()
+                    it.remRightSide()
+                }
+
                 if (disabledBarReasonManager.run {
                             contains(DisabledReasonManager.PillReasons.INSTALLER)
                                     || contains(DisabledReasonManager.PillReasons.PERMISSIONS)
@@ -1215,9 +1241,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (pillShown) {
                         bar.forceActionUp()
                         bar.handleRotationOrAnchorUpdate().join()
-                        leftSide.update(wm)
-                        rightSide.update(wm)
                     }
+
+                    if (leftSide.isAttached) leftSide.update(wm)
+                    if (rightSide.isAttached) rightSide.update(wm)
                 }
 
                 if (prefManager.shouldUseOverscanMethod) {
