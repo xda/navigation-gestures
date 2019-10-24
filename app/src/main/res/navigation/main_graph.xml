@@ -1,53 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_graph"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/mainFragment"
-        android:name="com.xda.nobar.fragments.settings.MainFragment"
-        android:label="MainFragment" >
+        android:id="@+id/homeFragment"
+        android:name="com.xda.nobar.fragments.main.HomeFragment"
+        android:label="HomeFragment" >
         <action
-            android:id="@+id/action_mainFragment_to_appearanceFragment"
-            app:destination="@id/appearanceFragment" />
+            android:id="@+id/action_homeFragment_to_settingsActivity2"
+            app:destination="@id/settingsActivity2" />
         <action
-            android:id="@+id/action_mainFragment_to_backupRestoreFragment"
-            app:destination="@id/backupRestoreFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_behaviorFragment"
-            app:destination="@id/behaviorFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_compatibilityFragment"
-            app:destination="@id/compatibilityFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_experimentalFragment"
-            app:destination="@id/experimentalFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_gestureFragment"
-            app:destination="@id/gestureFragment" />
+            android:id="@+id/action_homeFragment_to_helpAboutActivity"
+            app:destination="@id/helpAboutActivity" />
     </fragment>
-    <fragment
-        android:id="@+id/appearanceFragment"
-        android:name="com.xda.nobar.fragments.settings.AppearanceFragment"
-        android:label="AppearanceFragment" />
-    <fragment
-        android:id="@+id/backupRestoreFragment"
-        android:name="com.xda.nobar.fragments.settings.BackupRestoreFragment"
-        android:label="BackupRestoreFragment" />
-    <fragment
-        android:id="@+id/behaviorFragment"
-        android:name="com.xda.nobar.fragments.settings.BehaviorFragment"
-        android:label="BehaviorFragment" />
-    <fragment
-        android:id="@+id/compatibilityFragment"
-        android:name="com.xda.nobar.fragments.settings.CompatibilityFragment"
-        android:label="CompatibilityFragment" />
-    <fragment
-        android:id="@+id/experimentalFragment"
-        android:name="com.xda.nobar.fragments.settings.ExperimentalFragment"
-        android:label="ExperimentalFragment" />
-    <fragment
-        android:id="@+id/gestureFragment"
-        android:name="com.xda.nobar.fragments.settings.GestureFragment"
-        android:label="GestureFragment" />
+    <activity
+        android:id="@+id/settingsActivity2"
+        android:name="com.xda.nobar.activities.ui.SettingsActivity"
+        android:label="SettingsActivity" />
+    <activity
+        android:id="@+id/helpAboutActivity"
+        android:name="com.xda.nobar.activities.ui.HelpAboutActivity"
+        android:label="HelpAboutActivity" />
 </navigation>
