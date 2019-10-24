@@ -64,12 +64,12 @@ class SideSwipeGestureManager(private val swipeView: SideSwipeView) : ContextWra
                     }
                     Swipe.LEFT -> {
                         if (swipeView.side == SideSwipeView.Side.RIGHT) {
-                            actionHandler.sendActionInternal(actionHolder.sideRightIn, true)
+                            send(actionHolder.sideRightIn)
                         }
                     }
                     Swipe.RIGHT -> {
                         if (swipeView.side == SideSwipeView.Side.LEFT) {
-                            actionHandler.sendActionInternal(actionHolder.sideLeftIn, true)
+                            send(actionHolder.sideLeftIn)
                         }
                     }
                 }
@@ -77,6 +77,10 @@ class SideSwipeGestureManager(private val swipeView: SideSwipeView) : ContextWra
         }
 
         return true
+    }
+
+    private fun send(gesture: String) {
+        actionHandler.sendActionInternal(gesture, force = true, isBar = false)
     }
 
     private fun parseSwipe(newX: Float, newY: Float) {

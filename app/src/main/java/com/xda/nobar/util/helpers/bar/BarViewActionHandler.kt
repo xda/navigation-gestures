@@ -91,7 +91,7 @@ class BarViewActionHandler(private val context: Context) {
         }
     }
 
-    fun sendActionInternal(key: String, force: Boolean = false) {
+    fun sendActionInternal(key: String, force: Boolean = false, isBar: Boolean = true) {
         mainScope.launch {
             val which = context.actionManager.getAction(key) ?: return@launch
 
@@ -110,18 +110,20 @@ class BarViewActionHandler(private val context: Context) {
                 return@launch
             }
 
-            when (key) {
-                bar.actionHolder.actionDouble -> bar.animator.jiggleDoubleTap()
-                bar.actionHolder.actionHold -> bar.animator.jiggleHold()
-                bar.actionHolder.actionTap -> bar.animator.jiggleTap()
-                bar.actionHolder.actionUpHold -> bar.animator.jiggleHoldUp()
-                bar.actionHolder.actionLeftHold -> bar.animator.jiggleLeftHold()
-                bar.actionHolder.actionRightHold -> bar.animator.jiggleRightHold()
-                bar.actionHolder.actionDownHold -> bar.animator.jiggleDownHold()
-                bar.actionHolder.complexActionLongLeftUp -> bar.animator.jiggleComplexLongLeftUp()
-                bar.actionHolder.complexActionLongRightUp -> bar.animator.jiggleComplexLongRightUp()
-                bar.actionHolder.complexActionLongLeftDown -> bar.animator.jiggleComplexLongLeftDown()
-                bar.actionHolder.complexActionLongRightDown -> bar.animator.jiggledComplexLongRightDown()
+            if (isBar) {
+                when (key) {
+                    bar.actionHolder.actionDouble -> bar.animator.jiggleDoubleTap()
+                    bar.actionHolder.actionHold -> bar.animator.jiggleHold()
+                    bar.actionHolder.actionTap -> bar.animator.jiggleTap()
+                    bar.actionHolder.actionUpHold -> bar.animator.jiggleHoldUp()
+                    bar.actionHolder.actionLeftHold -> bar.animator.jiggleLeftHold()
+                    bar.actionHolder.actionRightHold -> bar.animator.jiggleRightHold()
+                    bar.actionHolder.actionDownHold -> bar.animator.jiggleDownHold()
+                    bar.actionHolder.complexActionLongLeftUp -> bar.animator.jiggleComplexLongLeftUp()
+                    bar.actionHolder.complexActionLongRightUp -> bar.animator.jiggleComplexLongRightUp()
+                    bar.actionHolder.complexActionLongLeftDown -> bar.animator.jiggleComplexLongLeftDown()
+                    bar.actionHolder.complexActionLongRightDown -> bar.animator.jiggledComplexLongRightDown()
+                }
             }
 
 //            if (key == bar.actionHolder.actionUp
