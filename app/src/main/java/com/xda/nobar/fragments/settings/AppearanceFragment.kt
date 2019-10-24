@@ -26,6 +26,20 @@ class AppearanceFragment : BasePrefFragment() {
 
         setListeners()
         setup()
+
+        requireContext().app.apply {
+            leftSide.isShowing = true
+            rightSide.isShowing = true
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        requireContext().app.apply {
+            leftSide.isShowing = false
+            rightSide.isShowing = false
+        }
     }
 
     private fun setListeners() {

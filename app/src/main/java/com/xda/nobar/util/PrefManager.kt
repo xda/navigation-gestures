@@ -108,6 +108,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val RIGHT_SIDE_GESTURE_HEIGHT = "right_side_gesture_height"
         const val LEFT_SIDE_GESTURE_POSITION = "left_side_gesture_position"
         const val RIGHT_SIDE_GESTURE_POSITION = "right_side_gesture_position"
+        const val LEFT_SIDE_GESTURE_WIDTH = "left_side_gesture_width"
+        const val RIGHT_SIDE_GESTURE_WIDTH = "right_side_gesture_width"
 
         /* Strings */
         const val CRASHLYTICS_ID = "crashlytics_id"
@@ -406,6 +408,10 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getInt(LEFT_SIDE_GESTURE_POSITION, resources.getInteger(R.integer.default_left_side_gesture_position))
     val rightSideGesturePosition: Int
         get() = getInt(RIGHT_SIDE_GESTURE_POSITION, resources.getInteger(R.integer.default_right_side_gesture_position))
+    val leftSideGestureWidth: Int
+        get() = getInt(LEFT_SIDE_GESTURE_WIDTH, resources.getInteger(R.integer.default_left_side_gesture_width))
+    val rightSideGestureWidth: Int
+        get() = getInt(RIGHT_SIDE_GESTURE_WIDTH, resources.getInteger(R.integer.default_right_side_gesture_width))
 
     val crashlyticsId: String?
         get() {

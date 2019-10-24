@@ -21,7 +21,8 @@ class LeftSideSwipeView : SideSwipeView {
     override val side = Side.LEFT
     override val keysToListenFor = arrayOf(
         PrefManager.LEFT_SIDE_GESTURE_POSITION,
-        PrefManager.LEFT_SIDE_GESTURE_HEIGHT
+        PrefManager.LEFT_SIDE_GESTURE_HEIGHT,
+        PrefManager.LEFT_SIDE_GESTURE_WIDTH
     )
 }
 
@@ -32,7 +33,8 @@ class RightSideSwipeView : SideSwipeView {
     override val side = Side.RIGHT
     override val keysToListenFor = arrayOf(
         PrefManager.RIGHT_SIDE_GESTURE_POSITION,
-        PrefManager.RIGHT_SIDE_GESTURE_HEIGHT
+        PrefManager.RIGHT_SIDE_GESTURE_HEIGHT,
+        PrefManager.RIGHT_SIDE_GESTURE_WIDTH
     )
 }
 
@@ -43,9 +45,19 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
     internal abstract val side: Side
     internal abstract val keysToListenFor: Array<String>
 
-    private val gestureManager = SideSwipeGestureManager(this)
+    private val gestureManager by lazy { SideSwipeGestureManager(this) }
+    private val shownColor = Color.argb(100, 255, 255, 255)
 
     var isAttached = false
+
+    var isShowing = false
+        set(value) {
+            mainScope.launch {
+                field = value
+
+                setBackgroundColor(if (value) shownColor else Color.TRANSPARENT)
+            }
+        }
 
     private val heightPercent: Int
         get() = context.prefManager.run {
@@ -62,7 +74,12 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
             }
         }
     private val windowWidth: Int
-        get() = context.dpAsPx(8)
+        get() = context.prefManager.run {
+            dpAsPx(when (side) {
+                Side.LEFT -> leftSideGestureWidth
+                Side.RIGHT -> rightSideGestureWidth
+            } / 10f)
+        }
 
     private val params: WindowManager.LayoutParams
         get() = BaseParams().apply {
@@ -95,14 +112,6 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
         isAttached = true
 
         context.app.registerOnSharedPreferenceChangeListener(this)
-
-        //debug
-        setBackgroundColor(
-            when (side) {
-                Side.LEFT -> Color.RED
-                Side.RIGHT -> Color.GREEN
-            }
-        )
     }
 
     override fun onDetachedFromWindow() {

@@ -24,6 +24,8 @@
     <integer name="default_right_side_gesture_height">500</integer>
     <integer name="default_left_side_gesture_position">0</integer>
     <integer name="default_right_side_gesture_position">0</integer>
+    <integer name="default_left_side_gesture_width">40</integer>
+    <integer name="default_right_side_gesture_width">40</integer>
 
     <integer name="min_pill_width_percent">1</integer>
     <integer name="min_pill_height_percent">1</integer>
@@ -50,6 +52,8 @@
     <integer name="min_right_side_gesture_height">50</integer>
     <integer name="min_left_side_gesture_position">-500</integer>
     <integer name="min_right_side_gesture_position">-500</integer>
+    <integer name="min_left_side_gesture_width">10</integer>
+    <integer name="min_right_side_gesture_width">10</integer>
 
     <integer name="max_pill_width_percent">1000</integer>
     <integer name="max_pill_height_percent">200</integer>
@@ -74,6 +78,8 @@
     <integer name="max_right_side_gesture_height">1000</integer>
     <integer name="max_left_side_gesture_position">500</integer>
     <integer name="max_right_side_gesture_position">500</integer>
+    <integer name="max_left_side_gesture_width">160</integer>
+    <integer name="max_right_side_gesture_width">160</integer>
 
     <integer name="pill_margin_top_normal_dp">4</integer>
     <integer name="pill_margin_top_large_hitbox_dp">12</integer>

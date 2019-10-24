@@ -124,6 +124,16 @@
             />
 
         <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="dp"
+            app:minValue="@integer/min_left_side_gesture_width"
+            app:maxValue="@integer/max_left_side_gesture_width"
+            app:scale="0.1"
+            android:defaultValue="@integer/default_left_side_gesture_width"
+            android:title="@string/left_side_gesture_width"
+            android:key="left_side_gesture_width"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
             app:units="%"
             app:minValue="@integer/min_right_side_gesture_height"
             app:maxValue="@integer/max_right_side_gesture_height"
@@ -132,6 +142,16 @@
             android:title="@string/right_side_gesture_height"
             android:icon="@drawable/expand_horizontal"
             android:key="right_side_gesture_height"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="dp"
+            app:minValue="@integer/min_right_side_gesture_width"
+            app:maxValue="@integer/max_right_side_gesture_width"
+            app:scale="0.1"
+            android:defaultValue="@integer/default_right_side_gesture_width"
+            android:title="@string/right_side_gesture_width"
+            android:key="right_side_gesture_width"
             />
 
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
