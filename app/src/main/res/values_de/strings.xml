@@ -187,6 +187,15 @@
     <string name="allow_repeat_long">Allow Repeat Long-Swipes</string>
     <string name="accessibility_delay">Accessibility Delay</string>
     <string name="show_nav_with_volume_dialog_fullscreen">Show NavBar when Volume Dialog is Active in Fullscreen</string>
+    <string name="enable_left_side_gesture">Enable Left Side Gesture</string>
+    <string name="enable_right_side_gesture">Enable Right Side Gesture</string>
+    <string name="left_side_gesture_height">Left Side Gesture Height</string>
+    <string name="right_side_gesture_height">Right Side Gesture Height</string>
+    <string name="left_side_gesture_position">Left Side Gesture Position</string>
+    <string name="right_side_gesture_position">Right Side Gesture Position</string>
+    <string name="swipe_in_from_left">Swipe in from Left</string>
+    <string name="swipe_in_from_right">Swipe in from Right</string>
+    <string name="side_gestures">Side Gestures</string>
     <!--Descriptions-->
     <string name="gestures_desc">Gestenaktionen anpassen</string>
     <string name="appearance_desc">Aussehen der Navigation-Pille anpassen</string>
