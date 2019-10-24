@@ -198,6 +198,8 @@ or
     <string name="swipe_in_from_left">Swipe in from Left</string>
     <string name="swipe_in_from_right">Swipe in from Right</string>
     <string name="side_gestures">Side Gestures</string>
+    <string name="left_side_gesture_width">Left Side Gesture Width</string>
+    <string name="right_side_gesture_width">Right Side Gesture Width</string>
     <!--Descriptions-->
     <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
     <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
