@@ -3,6 +3,7 @@ package com.xda.nobar.views
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.graphics.PixelFormat
 import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
@@ -181,6 +182,7 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
             type = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) TYPE_ACCESSIBILITY_OVERLAY else TYPE_PRIORITY_PHONE
             flags = FLAG_NOT_FOCUSABLE or
                     FLAG_LAYOUT_IN_SCREEN
+            format = PixelFormat.TRANSLUCENT
         }
     }
 

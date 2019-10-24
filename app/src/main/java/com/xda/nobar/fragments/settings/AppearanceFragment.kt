@@ -19,13 +19,6 @@ class AppearanceFragment : BasePrefFragment() {
         super.onResume()
 
         activity?.title = resources.getText(R.string.appearance)
-    }
-
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        super.onCreatePreferences(savedInstanceState, rootKey)
-
-        setListeners()
-        setup()
 
         requireContext().app.apply {
             leftSide.isShowing = true
@@ -33,8 +26,15 @@ class AppearanceFragment : BasePrefFragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        super.onCreatePreferences(savedInstanceState, rootKey)
+
+        setListeners()
+        setup()
+    }
+
+    override fun onPause() {
+        super.onPause()
 
         requireContext().app.apply {
             leftSide.isShowing = false
