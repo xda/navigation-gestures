@@ -33,4 +33,6 @@
     <bool name="overlay_nav_blackout_default">true</bool>
     <bool name="allow_repeat_long_execute_default">false</bool>
     <bool name="show_nav_with_volume_dialog_fullscreen_default">false</bool>
+    <bool name="enable_left_side_gesture_default">false</bool>
+    <bool name="enable_right_side_gesture_default">false</bool>
 </resources>

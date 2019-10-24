@@ -39,7 +39,9 @@ import com.xda.nobar.util.*
 import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.util.helpers.*
 import com.xda.nobar.views.BarView
+import com.xda.nobar.views.LeftSideSwipeView
 import com.xda.nobar.views.NavBlackout
+import com.xda.nobar.views.RightSideSwipeView
 import io.fabric.sdk.android.Fabric
 import io.fabric.sdk.android.InitializationCallback
 import kotlinx.coroutines.Deferred
@@ -131,6 +133,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     val uiHandler = UIHandler()
 
     val bar by lazy { BarView(this) }
+    val leftSide by lazy { LeftSideSwipeView(this) }
+    val rightSide by lazy { RightSideSwipeView(this) }
 
     val disabledNavReasonManager = DisabledReasonManager()
     val disabledBarReasonManager = DisabledReasonManager()
@@ -1211,6 +1215,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (pillShown) {
                         bar.forceActionUp()
                         bar.handleRotationOrAnchorUpdate().join()
+                        leftSide.update(wm)
+                        rightSide.update(wm)
                     }
                 }
 

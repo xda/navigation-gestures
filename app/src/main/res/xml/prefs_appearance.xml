@@ -112,6 +112,28 @@
             android:key="custom_height"
             />
 
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="%"
+            app:minValue="@integer/min_left_side_gesture_height"
+            app:maxValue="@integer/max_left_side_gesture_height"
+            app:scale="0.1"
+            android:defaultValue="@integer/default_left_side_gesture_height"
+            android:title="@string/left_side_gesture_height"
+            android:icon="@drawable/expand_vertical"
+            android:key="left_side_gesture_height"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="%"
+            app:minValue="@integer/min_right_side_gesture_height"
+            app:maxValue="@integer/max_right_side_gesture_height"
+            app:scale="0.1"
+            android:defaultValue="@integer/default_right_side_gesture_height"
+            android:title="@string/right_side_gesture_height"
+            android:icon="@drawable/expand_horizontal"
+            android:key="right_side_gesture_height"
+            />
+
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
 
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
@@ -172,6 +194,28 @@
             android:title="@string/position_y"
             android:icon="@drawable/swap_vertical"
             android:key="custom_y"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="%"
+            app:minValue="@integer/min_left_side_gesture_position"
+            app:maxValue="@integer/max_left_side_gesture_position"
+            app:scale="0.1"
+            android:defaultValue="@integer/default_left_side_gesture_position"
+            android:title="@string/left_side_gesture_position"
+            android:icon="@drawable/swap_vertical"
+            android:key="left_side_gesture_position"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="%"
+            app:minValue="@integer/min_right_side_gesture_position"
+            app:maxValue="@integer/max_right_side_gesture_position"
+            app:scale="0.1"
+            android:defaultValue="@integer/default_right_side_gesture_position"
+            android:title="@string/right_side_gesture_position"
+            android:icon="@drawable/swap_vertical"
+            android:key="right_side_gesture_position"
             />
 
     </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>

@@ -68,6 +68,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val OVERLAY_NAV_BLACKOUT = "overlay_nav_blackout"
         const val IMPROVED_APP_CHANGE_DETECTION = "improved_app_change_detection"
         const val ALLOW_REPEAT_LONG = "allow_repeat_long"
+        const val LEFT_SIDE_GESTURE = "left_side_gesture"
+        const val RIGHT_SIDE_GESTURE = "right_side_gesture"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
@@ -102,6 +104,10 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val SWITCH_APPS_DELAY = "switch_app_delay"
         const val ACCESSIBILITY_DELAY = "accessibility_delay"
         const val NAV_WITH_VOLUME = "show_nav_with_volume_dialog_fullscreen"
+        const val LEFT_SIDE_GESTURE_HEIGHT = "left_side_gesture_height"
+        const val RIGHT_SIDE_GESTURE_HEIGHT = "right_side_gesture_height"
+        const val LEFT_SIDE_GESTURE_POSITION = "left_side_gesture_position"
+        const val RIGHT_SIDE_GESTURE_POSITION = "right_side_gesture_position"
 
         /* Strings */
         const val CRASHLYTICS_ID = "crashlytics_id"
@@ -257,6 +263,10 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getBoolean(ALLOW_REPEAT_LONG, resources.getBoolean(R.bool.allow_repeat_long_execute_default))
     val showNavWithVolume: Boolean
         get() = getBoolean(NAV_WITH_VOLUME, resources.getBoolean(R.bool.show_nav_with_volume_dialog_fullscreen_default))
+    val leftSideGesture: Boolean
+        get() = getBoolean(LEFT_SIDE_GESTURE, resources.getBoolean(R.bool.enable_left_side_gesture_default))
+    val rightSideGesture: Boolean
+        get() = getBoolean(RIGHT_SIDE_GESTURE, resources.getBoolean(R.bool.enable_right_side_gesture_default))
 
     /**
      * Get the user-defined or default pill color
@@ -388,6 +398,14 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getInt(SWITCH_APPS_DELAY, resources.getInteger(R.integer.default_switch_app_delay))
     val accessibilityDelay: Int
         get() = getInt(ACCESSIBILITY_DELAY, resources.getInteger(R.integer.default_accessibility_delay))
+    val leftSideGestureHeight: Int
+        get() = getInt(LEFT_SIDE_GESTURE_HEIGHT, resources.getInteger(R.integer.default_left_side_gesture_height))
+    val rightSideGestureHeight: Int
+        get() = getInt(RIGHT_SIDE_GESTURE_HEIGHT, resources.getInteger(R.integer.default_right_side_gesture_height))
+    val leftSideGesturePosition: Int
+        get() = getInt(LEFT_SIDE_GESTURE_POSITION, resources.getInteger(R.integer.default_left_side_gesture_position))
+    val rightSideGesturePosition: Int
+        get() = getInt(RIGHT_SIDE_GESTURE_POSITION, resources.getInteger(R.integer.default_right_side_gesture_position))
 
     val crashlyticsId: String?
         get() {

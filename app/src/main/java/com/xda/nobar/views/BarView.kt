@@ -154,7 +154,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
     val isVertical: Boolean
         get() = context.prefManager.anchorPill
-                && cachedRotation.run { this == Surface.ROTATION_270 || this == Surface.ROTATION_90 }
+                && isLandscape
 
     val is90Vertical: Boolean
         get() = isVertical
