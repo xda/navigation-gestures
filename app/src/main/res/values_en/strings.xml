@@ -198,6 +198,9 @@
     <string name="side_gestures">Side Gestures</string>
     <string name="left_side_gesture_width">Left Side Gesture Width</string>
     <string name="right_side_gesture_width">Right Side Gesture Width</string>
+    <string name="pill_gestures">Pill Gestures</string>
+    <string name="pill_appearance">Pill Appearance</string>
+    <string name="side_appearance">Side Appearance</string>
     <!--Descriptions-->
     <string name="gestures_desc">Customize gesture actions</string>
     <string name="appearance_desc">Customize appearance of the navigation pill</string>
