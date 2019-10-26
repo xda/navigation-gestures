@@ -200,6 +200,9 @@ or
     <string name="side_gestures">Side Gestures</string>
     <string name="left_side_gesture_width">Left Side Gesture Width</string>
     <string name="right_side_gesture_width">Right Side Gesture Width</string>
+    <string name="pill_gestures">Pill Gestures</string>
+    <string name="pill_appearance">Pill Appearance</string>
+    <string name="side_appearance">Side Appearance</string>
     <!--Descriptions-->
     <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
     <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
