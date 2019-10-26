@@ -198,6 +198,9 @@
     <string name="side_gestures">Side Gestures</string>
     <string name="left_side_gesture_width">Left Side Gesture Width</string>
     <string name="right_side_gesture_width">Right Side Gesture Width</string>
+    <string name="pill_gestures">Pill Gestures</string>
+    <string name="pill_appearance">Pill Appearance</string>
+    <string name="side_appearance">Side Appearance</string>
     <!--Descriptions-->
     <string name="gestures_desc">Personalizar acciones de gestos</string>
     <string name="appearance_desc">Personalizar el aspecto de la barra de gestos</string>
