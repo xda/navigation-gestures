@@ -9,7 +9,9 @@ import androidx.annotation.CallSuper
 import androidx.preference.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.xda.nobar.prefs.NavControllerPreference
 import com.xda.nobar.util.app
+import com.xda.nobar.util.navigateTo
 import com.xda.nobar.util.prefManager
 import tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
 import tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceGroupAdapter
@@ -23,6 +25,7 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
     internal val prefToHighlight by lazy { arguments?.getString(PREF_KEY_TO_HIGHLIGHT) }
 
     abstract val resId: Int
+    abstract val activityTitle: CharSequence
 
     internal var isCreated = false
 
@@ -58,6 +61,26 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
         }
 
         return anim
+    }
+
+    override fun onPreferenceTreeClick(preference: Preference?): Boolean {
+        return when (preference) {
+            is NavControllerPreference -> {
+                if (preference.action != 0) {
+                    navigateTo(preference.action)
+                    true
+                } else {
+                    false
+                }
+            }
+            else -> super.onPreferenceTreeClick(preference)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        activity?.title = activityTitle
     }
 
     private fun highlight() {

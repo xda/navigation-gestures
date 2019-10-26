@@ -18,11 +18,10 @@ class ExperimentalFragment : BasePrefFragment() {
     }
 
     override val resId = R.xml.prefs_experimental
+    override val activityTitle by lazy { resources.getText(R.string.experimental_prefs) }
 
     override fun onResume() {
         super.onResume()
-
-        activity?.title = resources.getText(R.string.experimental_prefs)
 
         setListeners()
     }

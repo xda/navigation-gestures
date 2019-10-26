@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/appearanceFragment"
-        android:name="com.xda.nobar.fragments.settings.AppearanceFragment"
+        android:name="com.xda.nobar.fragments.settings.appearance.AppearanceFragment"
         android:label="AppearanceFragment" />
     <fragment
         android:id="@+id/backupRestoreFragment"
@@ -48,6 +48,22 @@
         android:label="ExperimentalFragment" />
     <fragment
         android:id="@+id/gestureFragment"
-        android:name="com.xda.nobar.fragments.settings.GestureFragment"
+        android:name="com.xda.nobar.fragments.settings.gestures.GestureFragment"
         android:label="GestureFragment" />
+    <fragment
+        android:id="@+id/pillGestureFragment"
+        android:name="com.xda.nobar.fragments.settings.gestures.PillGestureFragment"
+        android:label="PillGestureFragment" />
+    <fragment
+        android:id="@+id/sideGestureFragment"
+        android:name="com.xda.nobar.fragments.settings.gestures.SideGestureFragment"
+        android:label="SideGestureFragment" />
+    <fragment
+        android:id="@+id/pillAppearanceFragment"
+        android:name="com.xda.nobar.fragments.settings.appearance.PillAppearanceFragment"
+        android:label="PillAppearanceFragment" />
+    <fragment
+        android:id="@+id/sideAppearanceFragment"
+        android:name="com.xda.nobar.fragments.settings.appearance.SideAppearanceFragment"
+        android:label="SideAppearanceFragment" />
 </navigation>

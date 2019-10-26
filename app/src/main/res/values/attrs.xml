@@ -16,4 +16,8 @@
     <declare-styleable name="PixelDPSwitch">
         <attr name="dimension_name" format="string|reference" />
     </declare-styleable>
+
+    <declare-styleable name="NavControllerPreference">
+        <attr name="preference_action" format="reference" />
+    </declare-styleable>
 </resources>

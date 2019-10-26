@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:key="appearance_colors"
+        android:title="@string/color_prefs">
+
+        <SwitchPreference
+            android:title="@string/show_pill_shadow"
+            android:key="show_shadow"
+            android:icon="@drawable/shadow"
+            android:defaultValue="@bool/show_shadow_default"
+            />
+
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
+            android:title="@string/pill_color"
+            android:key="pill_bg"
+            android:icon="@drawable/color_lens"
+            app:cpv_showAlphaSlider="true"
+            app:cpv_allowCustom="true"
+            />
+
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
+            android:title="@string/pill_border_color"
+            android:key="pill_fg"
+            android:icon="@drawable/color_lens"
+            app:cpv_showAlphaSlider="true"
+            app:cpv_allowCustom="true"
+            />
+
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
+            android:title="@string/section_divider_color"
+            android:summary="@string/section_divider_color_desc"
+            android:key="section_divider_color"
+            android:icon="@drawable/color_lens"
+            android:defaultValue="@color/pill_divider_color"
+            app:isPreferenceVisible="false"
+            app:cpv_showAlphaSlider="true"
+            app:cpv_allowCustom="true"
+            />
+
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
+
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:title="@string/dimension_prefs"
+        android:key="dimens">
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="dp"
+            app:minValue="@integer/min_corner_radius_dp"
+            app:maxValue="@integer/max_corner_radius_dp"
+            android:defaultValue="@integer/default_corner_radius_dp"
+            android:title="@string/pill_corner_radius"
+            android:icon="@drawable/rounded_corner"
+            android:key="pill_corner_radius"
+            />
+
+        <com.xda.nobar.prefs.PixelDPSwitch
+            android:defaultValue="@bool/use_pixels_width_default"
+            android:title="@string/use_pixels"
+            android:summary="@string/use_pixels_desc"
+            android:key="use_pixels_width"
+            app:dimension_name="@string/width"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:minValue="@integer/min_pill_width_percent"
+            app:maxValue="@integer/max_pill_width_percent"
+            app:scale="0.1"
+            app:units="%"
+            android:defaultValue="@integer/default_pill_width_percent"
+            android:title="@string/width"
+            android:icon="@drawable/expand_horizontal"
+            android:key="custom_width_percent"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="px"
+            app:minValue="-10000"
+            app:maxValue="10000"
+            android:title="@string/width"
+            android:icon="@drawable/expand_horizontal"
+            android:key="custom_width"
+            />
+
+        <com.xda.nobar.prefs.PixelDPSwitch
+            android:defaultValue="@bool/use_pixels_height_default"
+            android:title="@string/use_pixels"
+            android:summary="@string/use_pixels_desc"
+            android:key="use_pixels_height"
+            app:dimension_name="@string/height"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="%"
+            app:minValue="@integer/min_pill_height_percent"
+            app:maxValue="@integer/max_pill_height_percent"
+            app:scale="0.1"
+            android:defaultValue="@integer/default_pill_height_percent"
+            android:title="@string/height"
+            android:icon="@drawable/expand_vertical"
+            android:key="custom_height_percent"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="px"
+            app:minValue="-10000"
+            app:maxValue="10000"
+            android:title="@string/height"
+            android:icon="@drawable/expand_vertical"
+            android:key="custom_height"
+            />
+
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
+
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:title="@string/position_prefs"
+        android:key="position">
+
+        <com.xda.nobar.prefs.PixelDPSwitch
+            android:defaultValue="@bool/use_pixels_x_default"
+            android:title="@string/use_pixels"
+            android:summary="@string/use_pixels_desc"
+            android:key="use_pixels_x"
+            app:dimension_name="@string/position_x"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:minValue="@integer/min_pill_x_percent"
+            app:maxValue="@integer/max_pill_x_percent"
+            app:scale="0.1"
+            app:units="%"
+            android:defaultValue="@integer/default_pill_x_pos_percent"
+            android:title="@string/position_x"
+            android:icon="@drawable/swap_horizontal"
+            android:key="custom_x_percent"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="px"
+            app:minValue="-10000"
+            app:maxValue="10000"
+            android:defaultValue="0"
+            android:title="@string/position_x"
+            android:icon="@drawable/swap_horizontal"
+            android:key="custom_x"
+            />
+
+        <com.xda.nobar.prefs.PixelDPSwitch
+            android:defaultValue="@bool/use_pixels_y_default"
+            android:title="@string/use_pixels"
+            android:summary="@string/use_pixels_desc"
+            android:key="use_pixels_y"
+            app:dimension_name="@string/position_y"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="%"
+            app:minValue="@integer/min_pill_y_percent"
+            app:maxValue="@integer/max_pill_y_percent"
+            app:scale="0.05"
+            android:title="@string/position_y"
+            android:icon="@drawable/swap_vertical"
+            android:key="custom_y_percent"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="px"
+            app:minValue="-10000"
+            app:maxValue="10000"
+            android:title="@string/position_y"
+            android:icon="@drawable/swap_vertical"
+            android:key="custom_y"
+            />
+
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
+
+</PreferenceScreen>

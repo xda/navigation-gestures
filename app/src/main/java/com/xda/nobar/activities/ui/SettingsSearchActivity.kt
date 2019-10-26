@@ -1,10 +1,8 @@
 package com.xda.nobar.activities.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.navigation.NavController
@@ -18,7 +16,6 @@ class SettingsSearchActivity : AppCompatActivity(), SearchView.OnQueryTextListen
     private lateinit var searchItem: MenuItem
 
     private val listUpdateListeners = ArrayList<ListUpdateListener>()
-    private val imm by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

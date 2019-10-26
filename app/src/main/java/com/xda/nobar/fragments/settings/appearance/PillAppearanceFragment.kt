@@ -1,56 +1,24 @@
-package com.xda.nobar.fragments.settings
+package com.xda.nobar.fragments.settings.appearance
 
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.preference.Preference
 import com.jaredrummler.android.colorpicker.ColorPreferenceCompat
 import com.xda.nobar.R
+import com.xda.nobar.fragments.settings.BasePrefFragment
 import com.xda.nobar.prefs.PixelDPSwitch
 import com.xda.nobar.util.*
 import tk.zwander.seekbarpreference.SeekBarPreference
 
-/**
- * Appearance settings
- */
-class AppearanceFragment : BasePrefFragment() {
-    override val resId = R.xml.prefs_appearance
-
-    override fun onResume() {
-        super.onResume()
-
-        activity?.title = resources.getText(R.string.appearance)
-
-        requireContext().app.apply {
-            leftSide.isShowing = true
-            rightSide.isShowing = true
-        }
-    }
+class PillAppearanceFragment : BasePrefFragment() {
+    override val resId = R.xml.prefs_pill_appearance
+    override val activityTitle by lazy { resources.getText(R.string.pill_appearance) }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
 
         setListeners()
         setup()
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        requireContext().app.apply {
-            leftSide.isShowing = false
-            rightSide.isShowing = false
-        }
-    }
-
-    private fun setListeners() {
-        val pillColor = findPreference<ColorPreferenceCompat>(PrefManager.PILL_BG)!!
-        val pillBorderColor = findPreference<ColorPreferenceCompat>(PrefManager.PILL_FG)!!
-
-        pillColor.setDefaultValue(activity!!.defaultPillBGColor)
-        pillBorderColor.setDefaultValue(activity!!.defaultPillFGColor)
-
-        pillColor.saveValue(prefManager.pillBGColor)
-        pillBorderColor.saveValue(prefManager.pillFGColor)
     }
 
     @SuppressLint("RestrictedApi")
@@ -132,5 +100,16 @@ class AppearanceFragment : BasePrefFragment() {
 
         val dividerColor = findPreference<ColorPreferenceCompat>(PrefManager.PILL_DIVIDER_COLOR)!!
         dividerColor.isVisible = prefManager.sectionedPill
+    }
+
+    private fun setListeners() {
+        val pillColor = findPreference<ColorPreferenceCompat>(PrefManager.PILL_BG)!!
+        val pillBorderColor = findPreference<ColorPreferenceCompat>(PrefManager.PILL_FG)!!
+
+        pillColor.setDefaultValue(activity!!.defaultPillBGColor)
+        pillBorderColor.setDefaultValue(activity!!.defaultPillFGColor)
+
+        pillColor.saveValue(prefManager.pillBGColor)
+        pillBorderColor.saveValue(prefManager.pillFGColor)
     }
 }

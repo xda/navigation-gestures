@@ -7,7 +7,7 @@ import com.xda.nobar.util.prefManager
 class OmniBackupRestoreManager(context: Context) : BaseBackupRestoreManager(context) {
     override val type = "omni"
     override val name = "Omni"
-    override val prefsRes = 0
+    override val prefsRes = arrayOf<Int>()
 
     override fun saveBackup(dest: Uri) {
         val data = HashMap<String, Any?>()

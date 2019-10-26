@@ -30,12 +30,7 @@ class TroubleshootingFragment : BasePrefFragment() {
     }
 
     override val resId = R.xml.prefs_troubleshooting
-
-    override fun onResume() {
-        super.onResume()
-
-        activity?.title = resources.getString(R.string.troubleshooting)
-    }
+    override val activityTitle by lazy { resources.getText(R.string.troubleshooting) }
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
         return when(preference?.key) {

@@ -18,6 +18,7 @@ class CompatibilityFragment : BasePrefFragment() {
     }
 
     override val resId = R.xml.prefs_compatibility
+    override val activityTitle by lazy { resources.getText(R.string.compatibility) }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
@@ -49,8 +50,6 @@ class CompatibilityFragment : BasePrefFragment() {
 
     override fun onResume() {
         super.onResume()
-
-        activity?.title = resources.getText(R.string.compatibility)
 
         updateEnabledStates()
         setUpImmersiveListeners()

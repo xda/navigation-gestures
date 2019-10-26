@@ -29,7 +29,7 @@
         android:label="BehaviorFragment" />
     <fragment
         android:id="@+id/appearanceFragment"
-        android:name="com.xda.nobar.fragments.settings.AppearanceFragment"
+        android:name="com.xda.nobar.fragments.settings.appearance.AppearanceFragment"
         android:label="AppearanceFragment" />
     <fragment
         android:id="@+id/compatibilityFragment"

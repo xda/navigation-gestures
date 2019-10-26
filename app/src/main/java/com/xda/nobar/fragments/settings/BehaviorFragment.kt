@@ -26,6 +26,7 @@ class BehaviorFragment : BasePrefFragment() {
     }
 
     override val resId = R.xml.prefs_behavior
+    override val activityTitle by lazy { resources.getText(R.string.behavior) }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -35,8 +36,6 @@ class BehaviorFragment : BasePrefFragment() {
 
     override fun onResume() {
         super.onResume()
-
-        activity?.title = resources.getText(R.string.behavior)
 
         if (prefManager.overlayNav) {
             val staticPill = findPreference<Preference>(PrefManager.STATIC_PILL)!!

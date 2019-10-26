@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:title="@string/enable_left_side_gesture"
+        android:key="left_side_gesture"
+        android:defaultValue="@bool/enable_left_side_gesture_default"
+        />
+
+    <SwitchPreference
+        android:title="@string/enable_right_side_gesture"
+        android:key="right_side_gesture"
+        android:defaultValue="@bool/enable_right_side_gesture_default"
+        />
+
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:title="@string/swipes"
+        android:key="side_gestures_swipes">
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_in_from_left"
+            android:key="@string/action_side_left_in"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_in_from_right"
+            android:key="@string/action_side_right_in"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
+
+</PreferenceScreen>

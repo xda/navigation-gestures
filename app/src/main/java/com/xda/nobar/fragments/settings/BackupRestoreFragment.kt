@@ -34,17 +34,12 @@ class BackupRestoreFragment : BasePrefFragment() {
     }
 
     override val resId = R.xml.prefs_backup_restore
+    override val activityTitle by lazy { resources.getText(R.string.backup_and_restore) }
 
     private val gesture by lazy { GestureBackupRestoreManager(context!!) }
     private val appearance by lazy { AppearanceBackupRestoreManager(context!!) }
     private val behavior by lazy { BehaviorBackupRestoreManager(context!!) }
     private val omni by lazy { OmniBackupRestoreManager(context!!) }
-
-    override fun onResume() {
-        super.onResume()
-
-        activity?.setTitle(R.string.backup_and_restore)
-    }
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
         return when(preference?.key) {

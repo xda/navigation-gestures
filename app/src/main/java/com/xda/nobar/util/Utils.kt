@@ -558,14 +558,16 @@ fun Throwable.logStack() {
 
 fun Fragment.navigateTo(action: Int, highlightKey: String? = null) {
     findNavController().run {
-        if (currentDestination?.getAction(action) != null) {
+        try {
             navigate(
-                    action,
-                    Bundle().apply {
-                        putString(BasePrefFragment.PREF_KEY_TO_HIGHLIGHT, highlightKey ?: return@apply)
-                    },
-                    navOptions
+                action,
+                Bundle().apply {
+                    putString(BasePrefFragment.PREF_KEY_TO_HIGHLIGHT, highlightKey ?: return@apply)
+                },
+                navOptions
             )
+        } catch (e: Exception) {
+            e.logStack()
         }
     }
 }

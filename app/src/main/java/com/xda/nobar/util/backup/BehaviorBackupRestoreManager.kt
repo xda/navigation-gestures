@@ -9,7 +9,7 @@ import com.xda.nobar.util.prefManager
 class BehaviorBackupRestoreManager(context: Context) : BaseBackupRestoreManager(context) {
     override val type = "behavior"
     override val name = "Behavior"
-    override val prefsRes = R.xml.prefs_behavior
+    override val prefsRes = arrayOf(R.xml.prefs_behavior)
 
     override fun saveBackup(dest: Uri) {
         val data = buildData()

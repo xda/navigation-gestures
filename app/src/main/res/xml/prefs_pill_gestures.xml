@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:title="@string/sectioned_pill"
+        android:summary="@string/sectioned_pill_desc"
+        android:icon="@drawable/pill_div"
+        android:key="sectioned_pill"
+        android:defaultValue="@bool/sectioned_pill_default"
+        />
+
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:title="@string/sections"
+        android:key="section_gestures"
+        app:isPreferenceVisible="false">
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_back"
+            android:title="@string/swipe_up_left"
+            android:key="@string/action_up_left"
+            android:icon="@drawable/swipe_up"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_up_hold_left"
+            android:key="@string/action_up_hold_left"
+            android:icon="@drawable/swipe_up_hold"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_home"
+            android:title="@string/swipe_up_center"
+            android:key="@string/action_up_center"
+            android:icon="@drawable/swipe_up"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_recents"
+            android:title="@string/swipe_up_hold_center"
+            android:key="@string/action_up_hold_center"
+            android:icon="@drawable/swipe_up_hold"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_back"
+            android:title="@string/swipe_up_right"
+            android:key="@string/action_up_right"
+            android:icon="@drawable/swipe_up"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_up_hold_right"
+            android:key="@string/action_up_hold_right"
+            android:icon="@drawable/swipe_up_hold"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
+
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:title="@string/taps"
+        android:key="taps">
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_home"
+            android:title="@string/tap"
+            android:key="@string/action_tap"
+            android:icon="@drawable/tap"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:icon="@drawable/double_tap"
+            android:key="@string/action_double"
+            android:title="@string/double_tap"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_assist"
+            android:icon="@drawable/tap_hold"
+            android:key="@string/action_hold"
+            android:title="@string/hold"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
+
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:title="@string/swipes"
+        android:key="swipes">
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_back"
+            android:title="@string/left"
+            android:key="@string/action_left"
+            android:icon="@drawable/swipe_left"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/left_hold"
+            android:key="@string/action_left_hold"
+            android:icon="@drawable/swipe_left"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_recents"
+            android:title="@string/right"
+            android:key="@string/action_right"
+            android:icon="@drawable/swipe_right"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/right_hold"
+            android:key="@string/action_right_hold"
+            android:icon="@drawable/swipe_right"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/up"
+            android:key="@string/action_up"
+            android:icon="@drawable/swipe_up"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_up_hold"
+            android:key="@string/action_up_hold"
+            android:icon="@drawable/swipe_up_hold"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_hide"
+            android:title="@string/down"
+            android:key="@string/action_down"
+            android:icon="@drawable/swipe_down"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/down_hold"
+            android:key="@string/action_down_hold"
+            android:icon="@drawable/swipe_down"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
+
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:title="@string/complex_swipes"
+        android:key="complex_swipes">
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_left_up"
+            android:key="@string/action_complex_left_up"
+            android:icon="@drawable/ic_complex_up_left"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_long_left_up"
+            android:key="@string/action_complex_long_left_up"
+            android:icon="@drawable/ic_complex_up_left_long"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_right_up"
+            android:key="@string/action_complex_right_up"
+            android:icon="@drawable/ic_complex_up_right"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_long_right_up"
+            android:key="@string/action_complex_long_right_up"
+            android:icon="@drawable/ic_complex_up_right_long"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_left_down"
+            android:key="@string/action_complex_left_down"
+            android:icon="@drawable/ic_complex_down_left"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_long_left_down"
+            android:key="@string/action_complex_long_left_down"
+            android:icon="@drawable/ic_complex_down_left_long"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_right_down"
+            android:key="@string/action_complex_right_down"
+            android:icon="@drawable/ic_complex_down_right"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            android:title="@string/swipe_long_right_down"
+            android:key="@string/action_complex_long_right_down"
+            android:icon="@drawable/ic_complex_down_right_long"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
+
+</PreferenceScreen>

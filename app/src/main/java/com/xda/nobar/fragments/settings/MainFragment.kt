@@ -18,12 +18,7 @@ class MainFragment : BasePrefFragment() {
     }
 
     override val resId = R.xml.prefs_main
-
-    override fun onResume() {
-        super.onResume()
-
-        activity?.title = resources.getText(R.string.settings)
-    }
+    override val activityTitle by lazy { resources.getText(R.string.settings) }
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
         val (action, ret) = when (preference?.key) {

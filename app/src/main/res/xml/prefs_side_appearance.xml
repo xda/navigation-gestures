@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:title="@string/dimension_prefs"
+        android:key="dimens_side">
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="%"
+            app:minValue="@integer/min_left_side_gesture_height"
+            app:maxValue="@integer/max_left_side_gesture_height"
+            app:scale="0.1"
+            android:defaultValue="@integer/default_left_side_gesture_height"
+            android:title="@string/left_side_gesture_height"
+            android:icon="@drawable/expand_vertical"
+            android:key="left_side_gesture_height"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="dp"
+            app:minValue="@integer/min_left_side_gesture_width"
+            app:maxValue="@integer/max_left_side_gesture_width"
+            app:scale="0.1"
+            android:defaultValue="@integer/default_left_side_gesture_width"
+            android:title="@string/left_side_gesture_width"
+            android:key="left_side_gesture_width"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="%"
+            app:minValue="@integer/min_right_side_gesture_height"
+            app:maxValue="@integer/max_right_side_gesture_height"
+            app:scale="0.1"
+            android:defaultValue="@integer/default_right_side_gesture_height"
+            android:title="@string/right_side_gesture_height"
+            android:icon="@drawable/expand_horizontal"
+            android:key="right_side_gesture_height"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="dp"
+            app:minValue="@integer/min_right_side_gesture_width"
+            app:maxValue="@integer/max_right_side_gesture_width"
+            app:scale="0.1"
+            android:defaultValue="@integer/default_right_side_gesture_width"
+            android:title="@string/right_side_gesture_width"
+            android:key="right_side_gesture_width"
+            />
+
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
+
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:title="@string/position_prefs"
+        android:key="position_side">
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="%"
+            app:minValue="@integer/min_left_side_gesture_position"
+            app:maxValue="@integer/max_left_side_gesture_position"
+            app:scale="0.1"
+            android:defaultValue="@integer/default_left_side_gesture_position"
+            android:title="@string/left_side_gesture_position"
+            android:icon="@drawable/swap_vertical"
+            android:key="left_side_gesture_position"
+            />
+
+        <tk.zwander.seekbarpreference.SeekBarPreference
+            app:units="%"
+            app:minValue="@integer/min_right_side_gesture_position"
+            app:maxValue="@integer/max_right_side_gesture_position"
+            app:scale="0.1"
+            android:defaultValue="@integer/default_right_side_gesture_position"
+            android:title="@string/right_side_gesture_position"
+            android:icon="@drawable/swap_vertical"
+            android:key="right_side_gesture_position"
+            />
+
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
+
+</PreferenceScreen>

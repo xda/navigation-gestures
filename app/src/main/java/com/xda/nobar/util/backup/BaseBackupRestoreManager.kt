@@ -24,10 +24,12 @@ import kotlin.collections.HashMap
 abstract class BaseBackupRestoreManager(context: Context) : ContextWrapper(context) {
     internal abstract val type: String
     internal abstract val name: String
-    internal abstract val prefsRes: Int
+    internal abstract val prefsRes: Array<Int>
 
     internal val preferenceManager = PreferenceManager(context)
-    internal val screen by lazy { preferenceManager.inflateFromResource(this, prefsRes, null) }
+    internal val screens by lazy { preferenceManager.run {
+        prefsRes.map { inflateFromResource(this@BaseBackupRestoreManager, it, null) }
+    } }
 
     internal val dateFormat = SimpleDateFormat("yyyy_MM_dd-HH_mm_ss", Locale.getDefault())
 
@@ -95,7 +97,11 @@ abstract class BaseBackupRestoreManager(context: Context) : ContextWrapper(conte
     }
 
     internal fun buildData(): HashMap<String, Any?> {
-        val prefs = ArrayList<Preference>().apply { findPreferences(this, screen) }
+        val prefs = ArrayList<Preference>()
+        screens.forEach {
+            findPreferences(prefs, it)
+        }
+
         val map = HashMap<String, Any?>()
 
         prefs.forEach {
