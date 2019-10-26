@@ -104,9 +104,9 @@ class HomeFragment : Fragment(R.layout.layout_main_activity), OnGestureStateChan
     }
 
     override fun onNavStateChange(hidden: Boolean) {
-        hide_nav.onCheckedChangeListener = null
-        hide_nav.isChecked = hidden
-        hide_nav.onCheckedChangeListener = navListener
+        hide_nav?.onCheckedChangeListener = null
+        hide_nav?.isChecked = hidden
+        hide_nav?.onCheckedChangeListener = navListener
     }
 
     override fun onResult(valid: Boolean, reason: String?) {
