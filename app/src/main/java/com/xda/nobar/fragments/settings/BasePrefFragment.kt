@@ -82,7 +82,7 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
                                         val view = findPreferenceView(it)
                                         pressUnpressView(view)
 
-                                        listView.removeOnScrollListener(this)
+                                        listView?.removeOnScrollListener(this)
                                     }
                                 }
 
@@ -94,8 +94,8 @@ abstract class BasePrefFragment : PreferenceFragmentCompat(), SharedPreferences.
 
 
                             if (position != RecyclerView.NO_POSITION && (position < first || position > last)) {
-                                listView.addOnScrollListener(scrollListener)
-                                listView.smoothScrollToPosition(position)
+                                listView?.addOnScrollListener(scrollListener)
+                                listView?.smoothScrollToPosition(position)
                             } else {
                                 val view = findPreferenceView(it)
                                 pressUnpressView(view)
