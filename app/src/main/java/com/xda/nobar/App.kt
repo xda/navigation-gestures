@@ -61,11 +61,13 @@ import kotlin.concurrent.withLock
  * Centralize important stuff in the App class, so we can be sure to have an instance of it
  */
 @Suppress("DEPRECATION")
-class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, AppOpsManager.OnOpChangedListener {
+class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
+    AppOpsManager.OnOpChangedListener {
     companion object {
         const val EDGE_TYPE_ACTIVE = 2
 
-        private const val ACTION_MINIVIEW_SETTINGS_CHANGED = "com.lge.android.intent.action.MINIVIEW_SETTINGS_CHANGED"
+        private const val ACTION_MINIVIEW_SETTINGS_CHANGED =
+            "com.lge.android.intent.action.MINIVIEW_SETTINGS_CHANGED"
     }
 
     val wm by lazy { getSystemService(Context.WINDOW_SERVICE) as WindowManager }
@@ -83,8 +85,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     val accessibilityEnabled: Boolean
         get() = run {
-            val services = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
-                    ?: ""
+            val services = Settings.Secure.getString(
+                contentResolver,
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+            )
+                ?: ""
             services.contains(packageName)
         }
     var introRunning = false
@@ -112,7 +117,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
     private val displayChangeListener = DisplayChangeListener()
     private val miniViewListener = MiniViewListener()
 
-    private val prefChangeListeners = ArrayList<SharedPreferences.OnSharedPreferenceChangeListener>()
+    private val prefChangeListeners =
+        ArrayList<SharedPreferences.OnSharedPreferenceChangeListener>()
 
     val screenOffHelper by lazy { ScreenOffHelper(this) }
 
@@ -147,9 +153,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             val myPid = Process.myPid()
 
             return am.runningAppProcesses
-                    ?.filter { it.pid == myPid }
-                    ?.map { it.processName }
-                    ?.any { it == packageName } == true
+                ?.filter { it.pid == myPid }
+                ?.map { it.processName }
+                ?.any { it == packageName } == true
         }
 
     override fun onCreate() {
@@ -157,11 +163,19 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val forName = Class::class.java.getDeclaredMethod("forName", String::class.java)
-            val getDeclaredMethod = Class::class.java.getDeclaredMethod("getDeclaredMethod", String::class.java, arrayOf<Class<*>>()::class.java)
+            val getDeclaredMethod = Class::class.java.getDeclaredMethod(
+                "getDeclaredMethod",
+                String::class.java,
+                arrayOf<Class<*>>()::class.java
+            )
 
             val vmRuntimeClass = forName.invoke(null, "dalvik.system.VMRuntime") as Class<*>
             val getRuntime = getDeclaredMethod.invoke(vmRuntimeClass, "getRuntime", null) as Method
-            val setHiddenApiExemptions = getDeclaredMethod.invoke(vmRuntimeClass, "setHiddenApiExemptions", arrayOf(arrayOf<String>()::class.java)) as Method
+            val setHiddenApiExemptions = getDeclaredMethod.invoke(
+                vmRuntimeClass,
+                "setHiddenApiExemptions",
+                arrayOf(arrayOf<String>()::class.java)
+            ) as Method
 
             val vmRuntime = getRuntime.invoke(null)
 
@@ -177,22 +191,23 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             handleKeepAlive()
 
             val core = CrashlyticsCore.Builder()
-                    .disabled(BuildConfig.DEBUG)
-                    .build()
+                .disabled(BuildConfig.DEBUG)
+                .build()
 
             Fabric.with(
-                    Fabric.Builder(this).kits(
-                            Crashlytics.Builder()
-                                    .core(core)
-                                    .build()
-                    ).initializationCallback(object : InitializationCallback<Fabric> {
-                        override fun success(p0: Fabric?) {
-                            val crashHandler = CrashHandler(Thread.getDefaultUncaughtExceptionHandler(), this@App)
-                            Thread.setDefaultUncaughtExceptionHandler(crashHandler)
-                        }
+                Fabric.Builder(this).kits(
+                    Crashlytics.Builder()
+                        .core(core)
+                        .build()
+                ).initializationCallback(object : InitializationCallback<Fabric> {
+                    override fun success(p0: Fabric?) {
+                        val crashHandler =
+                            CrashHandler(Thread.getDefaultUncaughtExceptionHandler(), this@App)
+                        Thread.setDefaultUncaughtExceptionHandler(crashHandler)
+                    }
 
-                        override fun failure(p0: Exception?) {}
-                    }).build()
+                    override fun failure(p0: Exception?) {}
+                }).build()
             )
 
             analytics.setAnalyticsCollectionEnabled(prefManager.enableAnalytics)
@@ -248,7 +263,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             refreshPremium()
 
             if (prefManager.isActive
-                    && !IntroActivity.needsToRun(this)) {
+                && !IntroActivity.needsToRun(this)
+            ) {
                 postAction {
                     if (prefManager.leftSideGesture) it.addLeftSide()
                     if (prefManager.rightSideGesture) it.addRightSide()
@@ -262,9 +278,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             }
 
             if (prefManager.useRot270Fix
-                    || prefManager.useRot180Fix
-                    || prefManager.useTabletMode
-                    || Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+                || prefManager.useRot180Fix
+                || prefManager.useTabletMode
+                || Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+            )
                 uiHandler.handleRot()
 
             if (!IntroActivity.needsToRun(this)) {
@@ -355,9 +372,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW -> {
                     val mode = appOps.checkOpNoThrow(op, Process.myUid(), packageName)
                     if ((Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1
-                                    && mode == AppOpsManager.MODE_DEFAULT
-                                    && checkSelfPermission(Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_GRANTED)
-                            || mode == AppOpsManager.MODE_ALLOWED)
+                                && mode == AppOpsManager.MODE_DEFAULT
+                                && checkSelfPermission(Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_GRANTED)
+                        || mode == AppOpsManager.MODE_ALLOWED
+                    )
                         IntroActivity.start(this)
                 }
             }
@@ -372,20 +390,26 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      * Add an activation listener
      * Notifies caller when a change in activation occurs
      */
-    fun addGestureActivationListener(listener: OnGestureStateChangeListener) = gestureListeners.add(listener)
+    fun addGestureActivationListener(listener: OnGestureStateChangeListener) =
+        gestureListeners.add(listener)
 
     /**
      * Remove an activation listener
      */
-    fun removeGestureActivationListener(listener: OnGestureStateChangeListener) = gestureListeners.remove(listener)
+    fun removeGestureActivationListener(listener: OnGestureStateChangeListener) =
+        gestureListeners.remove(listener)
 
-    fun addNavBarHideListener(listener: OnNavBarHideStateChangeListener) = navbarListeners.add(listener)
+    fun addNavBarHideListener(listener: OnNavBarHideStateChangeListener) =
+        navbarListeners.add(listener)
 
-    fun removeNavBarHideListener(listener: OnNavBarHideStateChangeListener) = navbarListeners.remove(listener)
+    fun removeNavBarHideListener(listener: OnNavBarHideStateChangeListener) =
+        navbarListeners.remove(listener)
 
-    fun addLicenseCheckListener(listener: OnLicenseCheckResultListener) = licenseCheckListeners.add(listener)
+    fun addLicenseCheckListener(listener: OnLicenseCheckResultListener) =
+        licenseCheckListeners.add(listener)
 
-    fun removeLicenseCheckListener(listener: OnLicenseCheckResultListener) = licenseCheckListeners.remove(listener)
+    fun removeLicenseCheckListener(listener: OnLicenseCheckResultListener) =
+        licenseCheckListeners.remove(listener)
 
     fun registerOnSharedPreferenceChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
         prefChangeListeners.add(listener)
@@ -488,8 +512,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      */
     fun hideNav(callListeners: Boolean = true) {
         if (prefManager.shouldUseOverscanMethod
-                && disabledNavReasonManager.isEmpty()
-                && hasWss) {
+            && disabledNavReasonManager.isEmpty()
+            && hasWss
+        ) {
             addImmersiveHelper()
 
             uiHandler.handleRot()
@@ -518,7 +543,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             if (removeImmersive && prefManager.useImmersiveWhenNavHidden)
                 immersiveHelperManager.exitNavImmersive()
 
-            mainScope.launch { if (callListeners) navbarListeners.forEach { it.onNavStateChange(false) } }
+            mainScope.launch {
+                if (callListeners) navbarListeners.forEach {
+                    it.onNavStateChange(
+                        false
+                    )
+                }
+            }
 
             IWindowManager.setOverscanAsync(0, 0, 0, 0)
 
@@ -559,11 +590,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
     private val screenOnNotif by lazy {
         NotificationCompat.Builder(this, "nobar-screen-on")
-                .setContentTitle(resources.getText(R.string.screen_timeout))
-                .setContentText(resources.getText(R.string.screen_timeout_msg))
-                .setSmallIcon(R.drawable.ic_navgest)
-                .setPriority(if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) NotificationCompat.PRIORITY_MIN else NotificationCompat.PRIORITY_LOW)
-                .setOngoing(true)
+            .setContentTitle(resources.getText(R.string.screen_timeout))
+            .setContentText(resources.getText(R.string.screen_timeout_msg))
+            .setSmallIcon(R.drawable.ic_navgest)
+            .setPriority(if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) NotificationCompat.PRIORITY_MIN else NotificationCompat.PRIORITY_LOW)
+            .setOngoing(true)
     }
 
     fun toggleScreenOn() {
@@ -571,7 +602,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         if (hasScreenOn) {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-                nm.createNotificationChannel(NotificationChannel("nobar-screen-on", resources.getString(R.string.screen_timeout), NotificationManager.IMPORTANCE_LOW))
+                nm.createNotificationChannel(
+                    NotificationChannel(
+                        "nobar-screen-on",
+                        resources.getString(R.string.screen_timeout),
+                        NotificationManager.IMPORTANCE_LOW
+                    )
+                )
             }
 
             nm.notify(100, screenOnNotif.build())
@@ -580,7 +617,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         }
     }
 
-    fun postAction(action: (IActionsBinder) -> Unit) {
+    fun postAction(action: (IActionsBinder) -> Unit) = mainScope.launch {
         actionsBinder.post(action)
     }
 
@@ -626,7 +663,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         Intent.ACTION_REBOOT,
                         Intent.ACTION_SHUTDOWN,
                         Intent.ACTION_SCREEN_OFF -> {
-                            if (prefManager.shouldntKeepOverscanOnLock) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
+                            if (prefManager.shouldntKeepOverscanOnLock) disabledNavReasonManager.add(
+                                DisabledReasonManager.NavBarReasons.KEYGUARD
+                            )
                             disabledBarReasonManager.add(DisabledReasonManager.PillReasons.SCREEN_OFF)
                             bar.forceActionUp()
 
@@ -637,8 +676,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         Intent.ACTION_LOCKED_BOOT_COMPLETED -> {
                             disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.SCREEN_OFF)
                             if (isOnKeyguard) {
-                                if (prefManager.shouldntKeepOverscanOnLock) disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYGUARD)
-                                if (prefManager.hideOnLockscreen) disabledBarReasonManager.add(DisabledReasonManager.PillReasons.LOCK_SCREEN)
+                                if (prefManager.shouldntKeepOverscanOnLock) disabledNavReasonManager.add(
+                                    DisabledReasonManager.NavBarReasons.KEYGUARD
+                                )
+                                if (prefManager.hideOnLockscreen) disabledBarReasonManager.add(
+                                    DisabledReasonManager.PillReasons.LOCK_SCREEN
+                                )
                             } else {
                                 disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
                                 disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.LOCK_SCREEN)
@@ -719,7 +762,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
      * //TODO: More work may be needed on immersive detection
      */
     @SuppressLint("WrongConstant")
-    inner class UIHandler : ContentObserver(logicHandler), ViewTreeObserver.OnGlobalLayoutListener, (Boolean) -> Unit, SharedPreferences.OnSharedPreferenceChangeListener {
+    inner class UIHandler : ContentObserver(logicHandler), ViewTreeObserver.OnGlobalLayoutListener,
+            (Boolean) -> Unit, SharedPreferences.OnSharedPreferenceChangeListener {
         private val navArray = ArrayList<String>()
         private val barArray = ArrayList<String>()
         private val immArray = ArrayList<String>()
@@ -736,10 +780,26 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private var origInFullscreen = false
 
         fun register() {
-            contentResolver.registerContentObserver(Settings.Global.getUriFor(POLICY_CONTROL), true, this)
-            contentResolver.registerContentObserver(Settings.Global.getUriFor("navigationbar_hide_bar_enabled"), true, this)
-            contentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, this)
-            contentResolver.registerContentObserver(Settings.Secure.getUriFor("navigation_mode"), true, this)
+            contentResolver.registerContentObserver(
+                Settings.Global.getUriFor(POLICY_CONTROL),
+                true,
+                this
+            )
+            contentResolver.registerContentObserver(
+                Settings.Global.getUriFor("navigationbar_hide_bar_enabled"),
+                true,
+                this
+            )
+            contentResolver.registerContentObserver(
+                Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES),
+                true,
+                this
+            )
+            contentResolver.registerContentObserver(
+                Settings.Secure.getUriFor("navigation_mode"),
+                true,
+                this
+            )
 
             prefManager.apply {
                 loadBlacklistedNavPackages(navArray)
@@ -768,13 +828,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private var oldPName: String? = null
 
         private val installers = arrayOf(
-                "com.google.android.packageinstaller",
-                "com.android.packageinstaller"
+            "com.google.android.packageinstaller",
+            "com.android.packageinstaller"
         )
 
         private fun isPackageInstaller(pName: String?) = installers.contains(pName)
 
-        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        override fun onSharedPreferenceChanged(
+            sharedPreferences: SharedPreferences?,
+            key: String?
+        ) {
             when (key) {
                 PrefManager.BLACKLISTED_NAV_APPS -> {
                     navArray.clear()
@@ -834,6 +897,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
         private val packageInstallerActivity = "PackageInstallerActivity"
 
         private var volumeWindowId = 0
+        private var managePermissionsWindowId = 0
+        private var grantPermissionsWindowId = 0
 
         @SuppressLint("WrongConstant")
         private fun handleNewEvent(info: AccessibilityEvent, service: Actions) = logicScope.launch {
@@ -850,14 +915,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 if (!nullPName) {
                     deferred.add(async {
                         if (isLandscape
-                                && immersiveHelperManager.isNavImmersive()
-                                && prefManager.run { shouldUseOverscanMethod && showNavWithVolume }) {
+                            && immersiveHelperManager.isNavImmersive()
+                            && prefManager.run { shouldUseOverscanMethod && showNavWithVolume }
+                        ) {
                             if (pName == systemUIPackage
-                                    && className?.contains("com.android.systemui.volume.VolumeDialog") == true) {
+                                && className?.contains("com.android.systemui.volume.VolumeDialog") == true
+                            ) {
                                 val id = info.windowId
                                 volumeWindowId = id
                                 disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
-                            } else  if (volumeWindowId == 0 || service.windows.find { it.id == volumeWindowId } == null) {
+                            } else if (volumeWindowId == 0 || service.windows.find { it.id == volumeWindowId } == null) {
                                 volumeWindowId = 0
                                 disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
                             }
@@ -868,10 +935,34 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                         null
                     })
+
+                    deferred.add(async {
+                        if (hidePermissions) {
+                            val isManage = className?.contains(managePermissionsActivity) == true
+                            val isGrant = className?.contains(grantPermissionsActivity) == true
+                            if (isPackageInstaller(pName) && (isManage || isGrant)) {
+                                if (isManage) managePermissionsWindowId = info.windowId
+                                if (isGrant) grantPermissionsWindowId = info.windowId
+                                disabledBarReasonManager.add(DisabledReasonManager.PillReasons.PERMISSIONS)
+                            } else if ((grantPermissionsWindowId == 0 && managePermissionsWindowId == 0)
+                                || service.windows.find { it.id == grantPermissionsWindowId || it.id == managePermissionsWindowId } == null) {
+                                managePermissionsWindowId = 0
+                                grantPermissionsWindowId = 0
+                                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
+                            }
+                        } else {
+                            managePermissionsWindowId = 0
+                            grantPermissionsWindowId = 0
+                            disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
+                        }
+
+                        null
+                    })
                 }
 
                 if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                        || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
+                    || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
+                ) {
 
                     if (!isPinned) {
                         disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.APP_PINNED)
@@ -888,7 +979,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     if (!nullPName) {
                         deferred.add(async {
                             if (useOverscan
-                                    && immersiveWhenNavHidden) {
+                                && immersiveWhenNavHidden
+                            ) {
                                 if (pName == systemUIPackage && className?.contains(recentsActivity) == true) {
                                     immersiveHelperManager.tempForcePolicyControlForRecents()
                                 } else {
@@ -898,19 +990,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         })
 
                         deferred.add(async {
-                            if (hidePermissions
-                                    && isPackageInstaller(pName)
-                                    && (className?.contains(managePermissionsActivity) == true
-                                            || className?.contains(grantPermissionsActivity) == true)) {
-                                disabledBarReasonManager.add(DisabledReasonManager.PillReasons.PERMISSIONS)
-                            } else {
-                                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
-                            }
-                        })
-
-                        deferred.add(async {
                             if (hideInstaller
-                                    && isPackageInstaller(pName) && className?.contains(packageInstallerActivity) == true) {
+                                && isPackageInstaller(pName) && className?.contains(
+                                    packageInstallerActivity
+                                ) == true
+                            ) {
                                 disabledBarReasonManager.add(DisabledReasonManager.PillReasons.INSTALLER)
                             } else {
                                 disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.INSTALLER)
@@ -918,7 +1002,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         })
 
                         deferred.add(async {
-                            if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains(dialog) == true) {
+                            if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains(
+                                    dialog
+                                ) == true
+                            ) {
                                 disabledBarReasonManager.add(DisabledReasonManager.PillReasons.HIDE_DIALOG)
                             } else {
                                 disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.HIDE_DIALOG)
@@ -956,18 +1043,28 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
                             if (hasUsage) {
                                 val time = System.currentTimeMillis()
-                                val appStats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time)
+                                val appStats = usm.queryUsageStats(
+                                    UsageStatsManager.INTERVAL_DAILY,
+                                    time - 1000 * 1000,
+                                    time
+                                )
 
                                 if (appStats != null && appStats.isNotEmpty()) {
-                                    pName = Collections.max(appStats) { o1, o2 -> compareValues(o1.lastTimeUsed, o2.lastTimeUsed) }.packageName
+                                    pName = Collections.max(appStats) { o1, o2 ->
+                                        compareValues(
+                                            o1.lastTimeUsed,
+                                            o2.lastTimeUsed
+                                        )
+                                    }.packageName
                                 }
                             }
 
                             runNewNodeInfo(pName)
 
                             if (hasUsage || info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                                    || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                                    || pName != systemUIPackage) {
+                                || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
+                                || pName != systemUIPackage
+                            ) {
                                 processColor(pName)
                             }
                         }
@@ -1052,7 +1149,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         bar.params.flags = bar.params.flags and
                                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN.inv() or
                                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-                        bar.params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                        bar.params.softInputMode =
+                            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
                         changed = true
                     }
                 } else {
@@ -1060,7 +1158,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                         bar.params.flags = bar.params.flags or
                                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN and
                                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                        bar.params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
+                        bar.params.softInputMode =
+                            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
                         changed = true
                     }
                 }
@@ -1079,14 +1178,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                     } else {
                         if (bar.isHidden) bar.removeHideReason(HiddenPillReasonManagerNew.KEYBOARD)
                     }
-                } catch (e: NullPointerException) {}
+                } catch (e: NullPointerException) {
+                }
             }
         }
 
         fun updateBlacklists() {
             if (disabledImmReasonManager.isEmpty()) {
                 if (useOverscan
-                        && immersiveWhenNavHidden)
+                    && immersiveWhenNavHidden
+                )
                     immersiveHelperManager.enterNavImmersive()
             } else {
                 immersiveHelperManager.exitNavImmersive()
@@ -1105,10 +1206,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
                 }
 
                 if (disabledBarReasonManager.run {
-                            contains(DisabledReasonManager.PillReasons.INSTALLER)
-                                    || contains(DisabledReasonManager.PillReasons.PERMISSIONS)
-                                    || contains(DisabledReasonManager.PillReasons.HIDE_DIALOG)
-                        }) {
+                        contains(DisabledReasonManager.PillReasons.INSTALLER)
+                                || contains(DisabledReasonManager.PillReasons.PERMISSIONS)
+                                || contains(DisabledReasonManager.PillReasons.HIDE_DIALOG)
+                    }) {
                     if (helperAdded && !immersiveHelperManager.isRemovingOrAdding) {
                         removeImmersiveHelper()
                     }
@@ -1265,7 +1366,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             mainHandler.post {
                 if (enabled && prefManager.isActive) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
-                            || Settings.canDrawOverlays(this@App)) {
+                        || Settings.canDrawOverlays(this@App)
+                    ) {
                         addBar(false)
                     }
                 }
@@ -1400,9 +1502,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
 
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == Intent.ACTION_PACKAGE_ADDED
-                    || intent?.action == Intent.ACTION_PACKAGE_CHANGED
-                    || intent?.action == Intent.ACTION_PACKAGE_REPLACED
-                    || intent?.action == Intent.ACTION_PACKAGE_REMOVED) {
+                || intent?.action == Intent.ACTION_PACKAGE_CHANGED
+                || intent?.action == Intent.ACTION_PACKAGE_REPLACED
+                || intent?.action == Intent.ACTION_PACKAGE_REMOVED
+            ) {
                 if (intent.dataString?.contains("com.xda.nobar.premium") == true) {
                     refreshPremium()
                 }
@@ -1415,13 +1518,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             val filter = IntentFilter()
             filter.addAction(RequestPermissionsActivity.ACTION_RESULT)
             LocalBroadcastManager.getInstance(this@App)
-                    .registerReceiver(this, filter)
+                .registerReceiver(this, filter)
         }
 
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 RequestPermissionsActivity.ACTION_RESULT -> {
-                    val className = intent.getParcelableExtra<ComponentName>(RequestPermissionsActivity.EXTRA_CLASS_NAME)
+                    val className =
+                        intent.getParcelableExtra<ComponentName>(RequestPermissionsActivity.EXTRA_CLASS_NAME)
 
                     when (className) {
                         ComponentName(this@App, BarView::class.java) -> {
@@ -1497,12 +1601,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, A
             when (intent?.action) {
                 Actions.ACTIONS_STARTED -> {
                     val bundle = intent.getBundleExtra(Actions.EXTRA_BUNDLE)
-                    val binder = IActionsBinder.Stub.asInterface(bundle.getBinder(Actions.EXTRA_BINDER))
+                    val binder =
+                        IActionsBinder.Stub.asInterface(bundle.getBinder(Actions.EXTRA_BINDER))
                     onBound(binder)
                 }
                 Actions.ACTIONS_STOPPED -> {
                     val bundle = intent.getBundleExtra(Actions.EXTRA_BUNDLE)
-                    val binder = IActionsBinder.Stub.asInterface(bundle.getBinder(Actions.EXTRA_BINDER))
+                    val binder =
+                        IActionsBinder.Stub.asInterface(bundle.getBinder(Actions.EXTRA_BINDER))
                     onUnbound(binder)
                 }
             }
