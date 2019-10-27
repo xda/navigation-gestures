@@ -45,6 +45,7 @@
             android:defaultValue="@integer/default_left_side_gesture_width"
             android:title="@string/left_side_gesture_width"
             android:key="left_side_gesture_width"
+            android:icon="@drawable/expand_horizontal"
             />
 
         <tk.zwander.seekbarpreference.SeekBarPreference
@@ -54,7 +55,7 @@
             app:scale="0.1"
             android:defaultValue="@integer/default_right_side_gesture_height"
             android:title="@string/right_side_gesture_height"
-            android:icon="@drawable/expand_horizontal"
+            android:icon="@drawable/expand_vertical"
             android:key="right_side_gesture_height"
             />
 
@@ -65,6 +66,7 @@
             app:scale="0.1"
             android:defaultValue="@integer/default_right_side_gesture_width"
             android:title="@string/right_side_gesture_width"
+            android:icon="@drawable/expand_horizontal"
             android:key="right_side_gesture_width"
             />
 
