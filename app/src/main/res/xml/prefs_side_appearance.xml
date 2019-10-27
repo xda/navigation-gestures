@@ -3,6 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
+        android:key="appearance_colors_side"
+        android:title="@string/color_prefs">
+
+        <SwitchPreference
+            android:title="@string/side_gesture_use_pill_color"
+            android:key="side_gesture_use_pill_color"
+            />
+
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
+            android:title="@string/side_gesture_color"
+            android:key="side_gesture_color"
+            android:icon="@drawable/color_lens"
+            android:defaultValue="@color/default_side_gesture_color"
+            app:cpv_showAlphaSlider="true"
+            app:cpv_allowCustom="true"
+            />
+
+    </tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory>
+
+    <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
         android:title="@string/dimension_prefs"
         android:key="dimens_side">
 

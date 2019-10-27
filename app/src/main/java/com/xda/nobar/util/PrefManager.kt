@@ -70,6 +70,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val ALLOW_REPEAT_LONG = "allow_repeat_long"
         const val LEFT_SIDE_GESTURE = "left_side_gesture"
         const val RIGHT_SIDE_GESTURE = "right_side_gesture"
+        const val SIDE_GESTURE_USE_PILL_COLOR = "side_gesture_use_pill_color"
 
         /* Numbers */
         const val CUSTOM_WIDTH_PERCENT = "custom_width_percent"
@@ -110,6 +111,7 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         const val RIGHT_SIDE_GESTURE_POSITION = "right_side_gesture_position"
         const val LEFT_SIDE_GESTURE_WIDTH = "left_side_gesture_width"
         const val RIGHT_SIDE_GESTURE_WIDTH = "right_side_gesture_width"
+        const val SIDE_GESTURE_COLOR = "side_gesture_color"
 
         /* Strings */
         const val CRASHLYTICS_ID = "crashlytics_id"
@@ -269,6 +271,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getBoolean(LEFT_SIDE_GESTURE, resources.getBoolean(R.bool.enable_left_side_gesture_default))
     val rightSideGesture: Boolean
         get() = getBoolean(RIGHT_SIDE_GESTURE, resources.getBoolean(R.bool.enable_right_side_gesture_default))
+    val sideGestureUsePillColor: Boolean
+        get() = getBoolean(SIDE_GESTURE_USE_PILL_COLOR, resources.getBoolean(R.bool.side_gesture_use_pill_color_default))
 
     /**
      * Get the user-defined or default pill color
@@ -412,6 +416,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getInt(LEFT_SIDE_GESTURE_WIDTH, resources.getInteger(R.integer.default_left_side_gesture_width))
     val rightSideGestureWidth: Int
         get() = getInt(RIGHT_SIDE_GESTURE_WIDTH, resources.getInteger(R.integer.default_right_side_gesture_width))
+    val sideGestureColor: Int
+        get() = getInt(SIDE_GESTURE_COLOR, defaultSideGestureColor)
 
     val crashlyticsId: String?
         get() {

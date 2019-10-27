@@ -206,7 +206,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                 val auto = context.prefManager.autoPillBGColor
                 val new = if (auto != 0) auto else context.prefManager.pillBGColor
 
-                if (colorAnimation != null) colorAnimation?.cancel()
+                colorAnimation?.cancel()
 
                 colorAnimation = ValueAnimator.ofArgb(previousColor, new)
                 colorAnimation?.duration = animationDurationMs

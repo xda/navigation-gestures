@@ -35,4 +35,5 @@
     <bool name="show_nav_with_volume_dialog_fullscreen_default">false</bool>
     <bool name="enable_left_side_gesture_default">false</bool>
     <bool name="enable_right_side_gesture_default">false</bool>
+    <bool name="side_gesture_use_pill_color_default">false</bool>
 </resources>

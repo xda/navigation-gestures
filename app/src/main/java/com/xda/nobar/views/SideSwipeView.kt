@@ -1,9 +1,11 @@
 package com.xda.nobar.views
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.PixelFormat
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
@@ -47,18 +49,8 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
     internal abstract val keysToListenFor: Array<String>
 
     private val gestureManager by lazy { SideSwipeGestureManager(this) }
-    private val shownColor = Color.argb(100, 255, 255, 255)
 
     var isAttached = false
-
-    var isShowing = false
-        set(value) {
-            mainScope.launch {
-                field = value
-
-                setBackgroundColor(if (value) shownColor else Color.TRANSPARENT)
-            }
-        }
 
     private val heightPercent: Int
         get() = context.prefManager.run {
@@ -111,6 +103,7 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
         super.onAttachedToWindow()
 
         isAttached = true
+        updateBackgroundColor()
 
         context.app.registerOnSharedPreferenceChangeListener(this)
     }
@@ -125,6 +118,13 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (keysToListenFor.contains(key)) update(context.app.wm)
+        when (key) {
+            PrefManager.SIDE_GESTURE_USE_PILL_COLOR,
+                PrefManager.SIDE_GESTURE_COLOR,
+                PrefManager.AUTO_PILL_BG -> {
+                updateBackgroundColor()
+            }
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -161,6 +161,42 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
         } catch (e: Exception) {
             e.logStack()
         }
+    }
+
+    private var colorAnimation: ValueAnimator? = null
+
+    private var color: Int
+        get() = synchronized(background) {
+            if (background is ColorDrawable)
+                (background as ColorDrawable).color
+            else Color.TRANSPARENT
+        }
+        set(value) {
+            if (background is ColorDrawable) {
+                (background as ColorDrawable).color = value
+            } else {
+                background = ColorDrawable(value)
+            }
+        }
+
+    private fun updateBackgroundColor() {
+        if (background !is ColorDrawable) background = ColorDrawable(Color.TRANSPARENT)
+
+        val color = if (context.prefManager.sideGestureUsePillColor) {
+            val auto = context.prefManager.autoPillBGColor
+            if (auto != 0) auto else context.prefManager.pillBGColor
+        } else context.prefManager.sideGestureColor
+
+        colorAnimation?.cancel()
+
+        colorAnimation = ValueAnimator.ofArgb(this.color, color)
+        colorAnimation?.duration = context.prefManager.animationDurationMs.toLong()
+        colorAnimation?.addUpdateListener {
+            val new = it.animatedValue.toString().toInt()
+
+            this.color = new
+        }
+        colorAnimation?.start()
     }
 
     private fun parseHeight(): Int {
