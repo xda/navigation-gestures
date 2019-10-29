@@ -11,6 +11,7 @@ import com.xda.nobar.R
 import com.xda.nobar.activities.MainActivity
 import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.IntroSlideHolder
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 /**
@@ -40,12 +41,9 @@ class IntroActivity : IntroActivity() {
             start(context, Bundle().apply { putBoolean(EXTRA_WSS_ONLY, true) })
         }
 
-        fun needsToRunAsync(context: Context, listener: (Boolean) -> Unit) {
-            logicScope.launch {
-                val needsToRun = needsToRun(context)
-
-                mainScope.launch { listener.invoke(needsToRun) }
-            }
+        fun needsToRunAsync(context: Context, listener: (Boolean) -> Unit) = mainScope.launch {
+            val needsToRun = async { needsToRun(context) }
+            listener.invoke(needsToRun.await())
         }
     }
 

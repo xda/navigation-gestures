@@ -30,7 +30,9 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.xda.nobar.util.mainHandler
-import com.xda.nobar.util.mainScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
@@ -51,7 +53,7 @@ import java.util.*
  * Since this isn't the native screenshot method, it won't trigger any screenshot tools, such as Samsung's Smart Capture.
  * It also may not work on every device.
  */
-class ScreenshotActivity : AppCompatActivity() {
+class ScreenshotActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     companion object {
         private const val REQ = 100
         private const val PERM_REQ = 1000
@@ -109,6 +111,8 @@ class ScreenshotActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
+        cancel()
+
         handlerThread.quitSafely()
     }
 
@@ -141,7 +145,7 @@ class ScreenshotActivity : AppCompatActivity() {
     }
 
     private fun stop() {
-        mainScope.launch {
+        launch {
             projection.stop()
         }
 
@@ -263,7 +267,7 @@ class ScreenshotActivity : AppCompatActivity() {
 
     private inner class MediaProjectionStopCallback : MediaProjection.Callback() {
         override fun onStop() {
-            mainScope.launch {
+            launch {
                 virtualDisplay.release()
                 imageReader.setOnImageAvailableListener(null, null)
                 projection.unregisterCallback(this@MediaProjectionStopCallback)

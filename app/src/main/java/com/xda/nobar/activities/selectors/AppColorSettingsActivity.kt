@@ -24,21 +24,17 @@ import com.jaredrummler.android.colorpicker.ColorPickerDialog
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
 import com.xda.nobar.R
 import com.xda.nobar.data.ColoredAppData
-import com.xda.nobar.util.mainScope
 import com.xda.nobar.util.prefManager
 import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_app_color_settings.*
 import kotlinx.android.synthetic.main.colored_app_item.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 
-class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener, CoroutineScope by mainScope {
+class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener, CoroutineScope by MainScope() {
     companion object {
         const val REQ_COLOR = 1001
     }
@@ -130,6 +126,12 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener,
         super.onPause()
 
         adapter.persistItems()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        cancel()
     }
 
     inner class SwipeToDeleteCallback :

@@ -20,10 +20,13 @@ import com.xda.nobar.interfaces.OnNavBarHideStateChangeListener
 import com.xda.nobar.util.*
 import com.xda.nobar.views.BarView
 import kotlinx.android.synthetic.main.layout_main_activity.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(R.layout.layout_main_activity), OnGestureStateChangeListener,
-    OnNavBarHideStateChangeListener, OnLicenseCheckResultListener {
+    OnNavBarHideStateChangeListener, OnLicenseCheckResultListener, CoroutineScope by MainScope() {
     private val app: App
         get() = requireContext().app
     private val prefManager: PrefManager
@@ -111,7 +114,7 @@ class HomeFragment : Fragment(R.layout.layout_main_activity), OnGestureStateChan
 
     override fun onResult(valid: Boolean, reason: String?) {
         currentPremReason = reason
-        mainScope.launch {
+        launch {
             prem_stat.setTextColor(if (valid) Color.GREEN else Color.RED)
             prem_stat.text = resources.getText(if (valid) R.string.installed else R.string.not_found)
         }
@@ -119,6 +122,8 @@ class HomeFragment : Fragment(R.layout.layout_main_activity), OnGestureStateChan
 
     override fun onDestroy() {
         super.onDestroy()
+
+        cancel()
 
         app.removeLicenseCheckListener(this)
         app.removeGestureActivationListener(this)
