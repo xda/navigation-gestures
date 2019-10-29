@@ -6,12 +6,12 @@ import android.provider.Settings
 import android.view.Surface
 import android.view.WindowManager
 import com.xda.nobar.util.*
-import com.xda.nobar.views.BaseImmersiveHelperView
+import com.xda.nobar.views.ImmersiveHelperView
 
 class ImmersiveHelperManager(private val context: Context,
                              private val immersiveListener: (Boolean) -> Unit)
     : IImersiveHelperManager() {
-    val base = BaseImmersiveHelperView(context) { left, top, right, bottom ->
+    private val view = ImmersiveHelperView(context) { left, top, right, bottom ->
         layout = Rect(left, top, right, bottom)
     }
 
@@ -45,9 +45,9 @@ class ImmersiveHelperManager(private val context: Context,
         try {
             if (!helperAdded) {
                 isRemovingOrAdding = true
-                wm.addView(base, base.params)
+                wm.addView(view, view.params)
             } else {
-                wm.updateViewLayout(base, base.params)
+                wm.updateViewLayout(view, view.params)
             }
         } catch (e: Exception) {}
     }
@@ -56,17 +56,17 @@ class ImmersiveHelperManager(private val context: Context,
         try {
             if (helperAdded) {
                 isRemovingOrAdding = true
-                wm.removeView(base)
+                wm.removeView(view)
             }
         } catch (e: Exception) {}
     }
 
     override fun enterNavImmersive() {
-        base.enterNavImmersive()
+        view.enterNavImmersive()
     }
 
     override fun exitNavImmersive() {
-        base.exitNavImmersive()
+        view.exitNavImmersive()
     }
 
     override fun isStatusImmersive() = run {

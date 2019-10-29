@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
@@ -14,8 +15,8 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("ViewConstructor")
 @Suppress("DEPRECATION")
-open class BaseImmersiveHelperView(context: Context,
-                                   private val immersiveListener: (left: Int, top: Int, right: Int, bottom: Int) -> Unit) : View(context), ViewTreeObserver.OnGlobalLayoutListener {
+class ImmersiveHelperView(context: Context,
+                          private val immersiveListener: (left: Int, top: Int, right: Int, bottom: Int) -> Unit) : View(context), ViewTreeObserver.OnGlobalLayoutListener {
     val params = WindowManager.LayoutParams().apply {
         width = WindowManager.LayoutParams.MATCH_PARENT
         height = WindowManager.LayoutParams.MATCH_PARENT
@@ -50,13 +51,16 @@ open class BaseImmersiveHelperView(context: Context,
     }
 
     override fun onGlobalLayout() {
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+
         synchronized(rect) {
             rect.apply { getBoundsOnScreen(this) }
 
             immersiveListener.invoke(rect.left, rect.top, rect.right, rect.bottom)
         }
-
-        context.app.uiHandler.onGlobalLayout()
     }
 
     fun enterNavImmersive() {

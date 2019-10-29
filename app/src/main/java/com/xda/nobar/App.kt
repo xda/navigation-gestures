@@ -14,8 +14,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
-import android.util.Log
-import android.view.*
+import android.view.Display
+import android.view.IRotationWatcher
+import android.view.Surface
+import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.NotificationCompat
@@ -37,7 +39,6 @@ import com.xda.nobar.root.RootWrapper
 import com.xda.nobar.services.Actions
 import com.xda.nobar.services.KeepAliveService
 import com.xda.nobar.util.*
-import com.xda.nobar.util.IWindowManager
 import com.xda.nobar.util.helpers.*
 import com.xda.nobar.views.BarView
 import com.xda.nobar.views.LeftSideSwipeView
@@ -287,7 +288,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
 
             if (!IntroActivity.needsToRun(this)) {
                 addImmersiveHelper()
-                uiHandler.onGlobalLayout()
             }
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -766,7 +766,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
      * //TODO: More work may be needed on immersive detection
      */
     @SuppressLint("WrongConstant")
-    inner class UIHandler : ContentObserver(logicHandler), ViewTreeObserver.OnGlobalLayoutListener,
+    inner class UIHandler : ContentObserver(logicHandler),
             (Boolean) -> Unit, SharedPreferences.OnSharedPreferenceChangeListener {
         private val navArray = ArrayList<String>()
         private val barArray = ArrayList<String>()
@@ -1230,10 +1230,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
             } catch (e: Exception) {
                 null
             }
-
-        @SuppressLint("WrongConstant")
-        override fun onGlobalLayout() {
-        }
 
         override fun onChange(selfChange: Boolean, uri: Uri?) {
             logicScope.launch {
