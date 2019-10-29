@@ -103,18 +103,16 @@ class NavBlackout : LinearLayout {
     private var isTryingToRemove = false
 
     fun remove(wm: WindowManager) = mainScope.launch {
-        synchronized(isTryingToRemove) {
-            if (!isTryingToRemove && isAdded) {
-                isTryingToRemove = true
+        if (!isTryingToRemove && isAdded) {
+            isTryingToRemove = true
 
-                try {
-                    wm.removeView(this@NavBlackout)
-                } catch (e: Exception) {
-                    isAdded = false
-                }
-
-                isTryingToRemove = false
+            try {
+                wm.removeView(this@NavBlackout)
+            } catch (e: Exception) {
+                isAdded = false
             }
+
+            isTryingToRemove = false
         }
     }
 
