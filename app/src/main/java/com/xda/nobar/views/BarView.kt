@@ -33,7 +33,6 @@ import kotlinx.android.synthetic.main.pill.view.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.math.absoluteValue
 
 /**
  * The Pill™©® (not really copyrighted)
@@ -195,6 +194,11 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     private var colorAnimation: ValueAnimator? = null
     private var previousColor = ContextCompat.getColor(context, R.color.pill_color)
 
+    private val hiddenX: Float
+        get() = (if (is270Vertical) -1 else 1) * pill.width.toFloat() / 2f
+    private val hiddenY: Float
+        get() = pill.height.toFloat() / 2f
+
     private fun updatePillColorsAndRadii() {
         val fgColor = context.prefManager.pillFGColor
 
@@ -238,7 +242,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 //        }
     }
 
-    private fun updateDividers() {
+    private fun updateDividers() = mainScope.launch {
         val dividerColor = context.prefManager.pillDividerColor
 
         val dp = context.resources.getDimensionPixelSize(R.dimen.pill_border_stroke_width)
@@ -781,15 +785,21 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     fun handleRotationOrAnchorUpdate() = logicScope.launch {
-        verticalMode(isVertical)
+        verticalMode(isVertical).join()
         adjustPillShadowAndHitbox().join()
+        updateDividers().join()
+    }
 
-        post {
-            updateDividers()
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        super.onLayout(changed, l, t, r, b)
+
+        if (isHidden && !isPillHidingOrShowing) {
+            if (isVertical) pill.translationX = hiddenX
+            else pill.translationY = hiddenY
         }
     }
 
-    private fun verticalMode(enabled: Boolean) {
+    private fun verticalMode(enabled: Boolean) = logicScope.launch {
         var changed = false
         if (enabled) {
             val is270 = is270Vertical
@@ -802,15 +812,6 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                 changed = true
             }
-
-            if (isHidden && !isPillHidingOrShowing && pill.translationX == 0f) {
-                mainHandler.post {
-                    pill.translationX = pill.translationY * if (is270) -1 else 1
-                    pill.translationY = 0f
-                }
-
-                changed = true
-            }
         } else {
             val newGrav = Gravity.TOP or Gravity.CENTER
 
@@ -819,19 +820,10 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
                 changed = true
             }
-
-            if (isHidden && !isPillHidingOrShowing && pill.translationY == 0f) {
-                mainHandler.post {
-                    pill.translationY = pill.translationX.absoluteValue
-                    pill.translationX = 0f
-                }
-
-                changed = true
-            }
         }
 
         if (changed) {
-            updateLayout()
+            updateLayout().join()
         }
     }
 
@@ -886,8 +878,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
                                             isPillHidingOrShowing = false
                                         }
                                         .apply {
-                                            if (isVertical) translationX((if (is270Vertical) -1 else 1) * pill.width.toFloat() / 2f)
-                                            else translationY(pill.height.toFloat() / 2f)
+                                            if (isVertical) translationX(hiddenX)
+                                            else translationY(hiddenY)
                                         }
                                         .start()
                             })
