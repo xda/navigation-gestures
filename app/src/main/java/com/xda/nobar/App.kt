@@ -1034,13 +1034,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                             }
 
                             runNewNodeInfo(pName)
+                        }
 
-                            if (hasUsage || info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                                || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                                || pName != systemUIPackage
-                            ) {
-                                processColor(pName)
-                            }
+                        if (hasUsage || info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                            || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
+                            || pName != systemUIPackage
+                        ) {
+                            processColor(pName)
                         }
                     })
                 }
