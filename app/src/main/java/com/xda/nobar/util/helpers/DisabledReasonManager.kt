@@ -29,6 +29,13 @@ open class DisabledReasonManager : HashSet<String>() {
         const val EDGE_SCREEN = "edge"
     }
 
+    fun setConditional(reason: String, condition: (reason: String) -> Boolean) {
+        synchronized(this) {
+            if (condition(reason)) add(reason)
+            else remove(reason)
+        }
+    }
+
     override fun add(element: String): Boolean {
         synchronized(this) {
             return super.add(element)

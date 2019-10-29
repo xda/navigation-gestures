@@ -321,15 +321,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
             PrefManager.ENABLE_IN_CAR_MODE -> {
                 val enabled = prefManager.enableInCarMode
                 if (um.currentModeType == Configuration.UI_MODE_TYPE_CAR) {
-                    if (enabled) {
-                        disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                        disabledImmReasonManager.remove(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                        disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.CAR_MODE)
-                    } else {
-                        disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                        disabledImmReasonManager.add(DisabledReasonManager.NavBarReasons.CAR_MODE)
-                        disabledBarReasonManager.add(DisabledReasonManager.PillReasons.CAR_MODE)
-                    }
+                    disabledNavReasonManager.setConditional(DisabledReasonManager.NavBarReasons.CAR_MODE) { !enabled }
+                    disabledImmReasonManager.setConditional(DisabledReasonManager.NavBarReasons.CAR_MODE) { !enabled }
+                    disabledBarReasonManager.setConditional(DisabledReasonManager.PillReasons.CAR_MODE) { !enabled }
+
                     uiHandler.updateBlacklists()
                 }
             }
@@ -968,13 +963,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                         disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.APP_PINNED)
                     }
 
-                    if (origInFullscreen) {
-                        if (immersiveHelperManager.isFullImmersive()) {
-                            disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.FULLSCREEN)
-                        } else {
-                            disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.FULLSCREEN)
-                        }
-                    }
+                    disabledNavReasonManager.setConditional(DisabledReasonManager.NavBarReasons.FULLSCREEN) { origInFullscreen && immersiveHelperManager.isFullImmersive() }
 
                     if (!nullPName) {
                         deferred.add(async {
@@ -990,50 +979,26 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                         })
 
                         deferred.add(async {
-                            if (hideInstaller
-                                && isPackageInstaller(pName) && className?.contains(
-                                    packageInstallerActivity
-                                ) == true
-                            ) {
-                                disabledBarReasonManager.add(DisabledReasonManager.PillReasons.INSTALLER)
-                            } else {
-                                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.INSTALLER)
+                            disabledBarReasonManager.setConditional(DisabledReasonManager.PillReasons.INSTALLER) {
+                                hideInstaller && isPackageInstaller(pName) && className?.contains(packageInstallerActivity) == true
                             }
                         })
 
                         deferred.add(async {
-                            if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains(
-                                    dialog
-                                ) == true
-                            ) {
-                                disabledBarReasonManager.add(DisabledReasonManager.PillReasons.HIDE_DIALOG)
-                            } else {
-                                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.HIDE_DIALOG)
+                            disabledBarReasonManager.setConditional(DisabledReasonManager.PillReasons.HIDE_DIALOG) {
+                                hideDialogApps.contains(pName) &&
+                                        className?.toLowerCase(Locale.getDefault())?.contains(dialog) == true
                             }
                         })
                     }
                 }
 
                 deferred.add(async {
-                    if (hideLockscreen && isOnKeyguard) {
-                        disabledBarReasonManager.add(DisabledReasonManager.PillReasons.LOCK_SCREEN)
-                    } else {
-                        disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.LOCK_SCREEN)
-                    }
+                    disabledBarReasonManager.setConditional(DisabledReasonManager.PillReasons.LOCK_SCREEN) { hideLockscreen && isOnKeyguard }
                 })
 
                 deferred.add(async {
-                    if (isTouchWiz) {
-                        try {
-                            if (edgeType == EDGE_TYPE_ACTIVE) {
-                                disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
-                            } else {
-                                disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.EDGE_SCREEN)
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
+                    disabledImmReasonManager.setConditional(DisabledReasonManager.ImmReasons.EDGE_SCREEN) { isTouchWiz && edgeType == EDGE_TYPE_ACTIVE }
                 })
 
                 if (!nullPName) {
@@ -1098,23 +1063,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
         @SuppressLint("ResourceType")
         private fun runNewNodeInfo(pName: String?) {
             if (pName != null) {
-                if (navArray.contains(pName)) {
-                    disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
-                } else {
-                    disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST)
-                }
-
-                if (barArray.contains(pName)) {
-                    disabledBarReasonManager.add(DisabledReasonManager.PillReasons.BLACKLIST)
-                } else {
-                    disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.BLACKLIST)
-                }
-
-                if (immArray.contains(pName)) {
-                    disabledImmReasonManager.add(DisabledReasonManager.ImmReasons.BLACKLIST)
-                } else {
-                    disabledImmReasonManager.remove(DisabledReasonManager.ImmReasons.BLACKLIST)
-                }
+                disabledNavReasonManager.setConditional(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST) { navArray.contains(pName) }
+                disabledBarReasonManager.setConditional(DisabledReasonManager.PillReasons.BLACKLIST) { barArray.contains(pName) }
+                disabledImmReasonManager.setConditional(DisabledReasonManager.ImmReasons.BLACKLIST) { immArray.contains(pName) }
 
                 if (windowArray.contains(pName)) {
                     if (!isInOtherWindowApp && active) {
@@ -1133,12 +1084,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
             }
             keyboardShown = kbHeight > 0
 
-            if (prefManager.showNavWithKeyboard) {
-                if (keyboardShown) {
-                    disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.KEYBOARD)
-                } else if (prefManager.shouldUseOverscanMethod) {
-                    disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYBOARD)
-                }
+            disabledNavReasonManager.setConditional(DisabledReasonManager.NavBarReasons.KEYBOARD) {
+                prefManager.showNavWithKeyboard && keyboardShown
             }
 
             if (!prefManager.dontMoveForKeyboard) {
