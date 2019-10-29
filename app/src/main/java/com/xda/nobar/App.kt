@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
+import android.util.Log
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
@@ -307,7 +308,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                 gestureListeners.forEach { it.onGestureStateChange(bar, prefManager.isActive) }
             }
             PrefManager.HIDE_NAV -> {
-                navbarListeners.forEach { it.onNavStateChange(prefManager.shouldUseOverscanMethod) }
+                val enabled = prefManager.shouldUseOverscanMethod
+
+                navbarListeners.forEach { it.onNavStateChange(enabled) }
+                if (prefManager.shouldUseOverscanMethod) prefManager.overlayNav = false
             }
             PrefManager.ROT270_FIX -> {
                 uiHandler.handleRot()
@@ -349,11 +353,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                     else it.remLeftSide()
                 }
             }
-
             PrefManager.RIGHT_SIDE_GESTURE -> {
                 postAction {
                     if (prefManager.rightSideGesture) it.addRightSide()
                     else it.remRightSide()
+                }
+            }
+            PrefManager.OVERLAY_NAV -> {
+                if (prefManager.overlayNav) {
+                    prefManager.shouldUseOverscanMethod = false
+                    showNav(true)
                 }
             }
         }

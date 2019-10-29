@@ -36,9 +36,6 @@ class ExperimentalFragment : BasePrefFragment() {
             true
         }
 
-        val overlayNav = findPreference<Preference>(PrefManager.OVERLAY_NAV)!!
-        overlayNav.isEnabled = !prefManager.shouldUseOverscanMethod
-
         val improvedAppChangeDetection = findPreference<Preference>(PrefManager.IMPROVED_APP_CHANGE_DETECTION)
         improvedAppChangeDetection?.setOnPreferenceClickListener {
             Toast.makeText(

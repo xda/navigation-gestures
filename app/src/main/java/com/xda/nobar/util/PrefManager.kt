@@ -257,8 +257,11 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getBoolean(HIDE_ON_PERMISSIONS, resources.getBoolean(R.bool.hide_on_permissions_default))
     val hideOnInstaller: Boolean
         get() = getBoolean(HIDE_ON_INSTALLER, resources.getBoolean(R.bool.hide_on_installer_default))
-    val overlayNav: Boolean
-        get() = getBoolean(OVERLAY_NAV, resources.getBoolean(R.bool.overlay_nav_default)) && !shouldUseOverscanMethod
+    var overlayNav: Boolean
+        get() = getBoolean(OVERLAY_NAV, resources.getBoolean(R.bool.overlay_nav_default))
+        set(value) {
+            putBoolean(OVERLAY_NAV, value)
+        }
     val keepAlive: Boolean
         get() = getBoolean(KEEP_ALIVE, resources.getBoolean(R.bool.keep_alive_default))
     val overlayNavBlackout: Boolean
