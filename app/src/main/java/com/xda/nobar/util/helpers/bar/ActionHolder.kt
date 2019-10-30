@@ -51,6 +51,8 @@ class ActionHolder private constructor(private val context: Context) {
 
     val sideLeftIn: String by lazy { context.resources.getString(R.string.action_side_left_in) }
     val sideRightIn: String by lazy { context.resources.getString(R.string.action_side_right_in) }
+    val sideLeftInLong: String by lazy { context.resources.getString(R.string.action_side_left_in_long) }
+    val sideRightInLong: String by lazy { context.resources.getString(R.string.action_side_right_in_long) }
 
     val actionsList by lazy {
         arrayListOf(
@@ -80,7 +82,9 @@ class ActionHolder private constructor(private val context: Context) {
             complexActionLongLeftDown,
             complexActionLongRightDown,
             sideLeftIn,
-            sideRightIn
+            sideRightIn,
+            sideLeftInLong,
+            sideRightInLong
         )
     }
 
@@ -113,6 +117,8 @@ class ActionHolder private constructor(private val context: Context) {
             complexActionLongRightDown -> R.string.swipe_long_right_down
             sideLeftIn -> R.string.swipe_in_from_left
             sideRightIn -> R.string.swipe_in_from_right
+            sideLeftInLong -> R.string.long_swipe_in_from_left
+            sideRightInLong -> R.string.long_swipe_in_from_right
             else -> 0
         }
         return if (res != 0) context.resources.getString(res)
@@ -146,6 +152,7 @@ class ActionHolder private constructor(private val context: Context) {
             complexActionLongRightUp -> R.drawable.ic_complex_up_right_long
             complexActionLongLeftDown -> R.drawable.ic_complex_down_left_long
             complexActionLongRightDown -> R.drawable.ic_complex_down_right_long
+            //TODO add icons for side swipes
             else -> 0
         }
     }

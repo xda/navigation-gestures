@@ -1,20 +1,30 @@
 package com.xda.nobar.util.helpers
 
+import android.annotation.SuppressLint
 import android.content.ContextWrapper
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ViewConfiguration
 import com.xda.nobar.util.actionHolder
 import com.xda.nobar.util.actionManager
 import com.xda.nobar.util.app
+import com.xda.nobar.util.prefManager
 import com.xda.nobar.views.SideSwipeView
 import kotlin.math.absoluteValue
 
 class SideSwipeGestureManager(private val swipeView: SideSwipeView) : ContextWrapper(swipeView.context) {
+    companion object {
+        private const val MSG_LONG = 100
+    }
+
     private val detector = GestureDetector(this, Listener())
     private val viewConfig = ViewConfiguration.get(this)!!
     private val bar = app.bar
     private val actionHandler = actionManager.actionHandler
+    private val longHandler = LongHandler()
 
     private var downRawX = 0f
     private var downRawY = 0f
@@ -24,6 +34,7 @@ class SideSwipeGestureManager(private val swipeView: SideSwipeView) : ContextWra
     private var slop = viewConfig.scaledTouchSlop
 
     private var lastSwipe: Swipe? = null
+    private var performedLong = false
 
     fun onTouchEvent(e: MotionEvent?): Boolean {
         return handleTouchEvent(e) or detector.onTouchEvent(e)
@@ -45,34 +56,40 @@ class SideSwipeGestureManager(private val swipeView: SideSwipeView) : ContextWra
                 val newX = e.rawX
                 val newY = e.rawY
 
-                parseSwipe(newX, newY)
-
-                prevRawX = newX
-                prevRawY = newY
-
                 val xSlop = (downRawX - newX).absoluteValue > slop
                 val ySlop = (downRawY - newY).absoluteValue > slop
 
                 if (!xSlop && !ySlop) return false
+
+                parseSwipe(newX, newY)
+
+                prevRawX = newX
+                prevRawY = newY
             }
 
             MotionEvent.ACTION_UP -> {
-                when (lastSwipe) {
-                    Swipe.UP -> {
-                    }
-                    Swipe.DOWN -> {
-                    }
-                    Swipe.LEFT -> {
-                        if (swipeView.side == SideSwipeView.Side.RIGHT) {
-                            send(actionHolder.sideRightIn)
+                longHandler.removeCallbacksAndMessages(null)
+
+                if (!performedLong) {
+                    when (lastSwipe) {
+                        Swipe.UP -> {
                         }
-                    }
-                    Swipe.RIGHT -> {
-                        if (swipeView.side == SideSwipeView.Side.LEFT) {
-                            send(actionHolder.sideLeftIn)
+                        Swipe.DOWN -> {
+                        }
+                        Swipe.LEFT -> {
+                            if (swipeView.side == SideSwipeView.Side.RIGHT) {
+                                send(actionHolder.sideRightIn)
+                            }
+                        }
+                        Swipe.RIGHT -> {
+                            if (swipeView.side == SideSwipeView.Side.LEFT) {
+                                send(actionHolder.sideLeftIn)
+                            }
                         }
                     }
                 }
+
+                performedLong = false
             }
         }
 
@@ -104,6 +121,7 @@ class SideSwipeGestureManager(private val swipeView: SideSwipeView) : ContextWra
                     Swipe.LEFT
                 }
             }
+            longHandler.scheduleLong()
         } else if (fullDistanceX > 0
             && distanceX.absoluteValue >= distanceY.absoluteValue) {
             lastSwipe = when {
@@ -117,6 +135,7 @@ class SideSwipeGestureManager(private val swipeView: SideSwipeView) : ContextWra
                     Swipe.RIGHT
                 }
             }
+            longHandler.scheduleLong()
         } else if (fullDistanceY < 0) {
             lastSwipe = when {
                 bar.is90Vertical -> {
@@ -129,6 +148,7 @@ class SideSwipeGestureManager(private val swipeView: SideSwipeView) : ContextWra
                     Swipe.UP
                 }
             }
+            longHandler.scheduleLong()
         } else if (fullDistanceY > 0) {
             lastSwipe = when {
                 bar.is90Vertical -> {
@@ -141,10 +161,53 @@ class SideSwipeGestureManager(private val swipeView: SideSwipeView) : ContextWra
                     Swipe.DOWN
                 }
             }
+            longHandler.scheduleLong()
         }
     }
 
     inner class Listener : GestureDetector.SimpleOnGestureListener()
+
+    @SuppressLint("HandlerLeak")
+    private inner class LongHandler : Handler(Looper.getMainLooper()) {
+        override fun handleMessage(msg: Message?) {
+            when (msg?.what) {
+                MSG_LONG -> {
+                    when (lastSwipe) {
+                        Swipe.UP -> {
+                        }
+                        Swipe.DOWN -> {
+                        }
+                        Swipe.LEFT -> {
+                            if (swipeView.side == SideSwipeView.Side.RIGHT && actionHolder.hasAnyOfActions(actionHolder.sideRightInLong)) {
+                                performedLong = true
+                                send(actionHolder.sideRightInLong)
+                            }
+                        }
+                        Swipe.RIGHT -> {
+                            if (swipeView.side == SideSwipeView.Side.LEFT && actionHolder.hasAnyOfActions(actionHolder.sideLeftInLong)) {
+                                performedLong = true
+                                send(actionHolder.sideLeftInLong)
+                            }
+                        }
+                    }
+
+                    postRepeat()
+                }
+            }
+        }
+
+        fun postRepeat() {
+            if (prefManager.allowRepeatLong) {
+                scheduleLong()
+            }
+        }
+
+        fun scheduleLong() {
+            if (!hasMessages(MSG_LONG)) {
+                sendEmptyMessageDelayed(MSG_LONG, prefManager.holdTime.toLong())
+            }
+        }
+    }
 
     private enum class Swipe {
         UP,

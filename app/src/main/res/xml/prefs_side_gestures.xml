@@ -29,8 +29,26 @@
 
         <com.xda.nobar.prefs.SectionableListPreference
             android:defaultValue="@string/type_no_action"
+            app:title="@string/long_swipe_in_from_left"
+            android:key="@string/action_side_left_in_long"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
             android:title="@string/swipe_in_from_right"
             android:key="@string/action_side_right_in"
+            app:section_names="@array/action_section_names"
+            app:section_data_names="@array/action_section_data_names"
+            app:section_data_values="@array/action_section_data_values"
+            />
+
+        <com.xda.nobar.prefs.SectionableListPreference
+            android:defaultValue="@string/type_no_action"
+            app:title="@string/long_swipe_in_from_right"
+            android:key="@string/action_side_right_in_long"
             app:section_names="@array/action_section_names"
             app:section_data_names="@array/action_section_data_names"
             app:section_data_values="@array/action_section_data_values"

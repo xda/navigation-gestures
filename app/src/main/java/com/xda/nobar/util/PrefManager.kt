@@ -518,6 +518,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
 
             val sideLeftIn = getString(actionHolder.sideLeftIn, actionHolder.typeNoAction.toString())!!.toInt()
             val sideRightIn = getString(actionHolder.sideRightIn, actionHolder.typeNoAction.toString())!!.toInt()
+            val sideLeftInLong = getString(actionHolder.sideLeftInLong, actionHolder.typeNoAction.toString())!!.toInt()
+            val sideRightInLong = getString(actionHolder.sideRightInLong, actionHolder.typeNoAction.toString())!!.toInt()
 
             map[actionHolder.actionLeft] = left
             map[actionHolder.actionRight] = right
@@ -549,6 +551,8 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
 
             map[actionHolder.sideLeftIn] = sideLeftIn
             map[actionHolder.sideRightIn] = sideRightIn
+            map[actionHolder.sideLeftInLong] = sideLeftInLong
+            map[actionHolder.sideRightInLong] = sideRightInLong
         } catch (e: Exception) {}
     }
 

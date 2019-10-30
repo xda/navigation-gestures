@@ -21,20 +21,6 @@ class NewBarViewGestureManager(private val bar: BarView) : ContextWrapper(bar.co
         internal const val FIRST_SECTION = 0
         internal const val SECOND_SECTION = 1
         internal const val THIRD_SECTION = 2
-
-        internal const val MSG_UP_HOLD = 0
-        internal const val MSG_LEFT_HOLD = 1
-        internal const val MSG_RIGHT_HOLD = 2
-        internal const val MSG_DOWN_HOLD = 3
-
-        internal const val MSG_UP = 4
-        internal const val MSG_LEFT = 5
-        internal const val MSG_RIGHT = 6
-        internal const val MSG_DOWN = 7
-
-        internal const val MSG_TAP = 8
-        internal const val MSG_DOUBLE_TAP = 9
-        internal const val MSG_HOLD = 10
         
         private const val MSG_LONG = 104
 

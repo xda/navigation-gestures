@@ -149,4 +149,6 @@
     <!--Side Action Keys-->
     <string translatable="false" name="action_side_left_in">side_left_in</string>
     <string translatable="false" name="action_side_right_in">side_right_in</string>
+    <string translatable="false" name="action_side_left_in_long">side_left_in_long</string>
+    <string translatable="false" name="action_side_right_in_long">side_right_in_long</string>
 </resources>
