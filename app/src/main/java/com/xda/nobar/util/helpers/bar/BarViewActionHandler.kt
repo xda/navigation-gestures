@@ -106,7 +106,12 @@ class BarViewActionHandler(private val context: Context) {
                         context.prefManager.vibrationDuration.toLong())
 
             if (which == bar.actionHolder.typeHide) {
-                bar.addHideReason(HiddenPillReasonManagerNew.MANUAL)
+                if (bar.isHidden) {
+                    bar.removeHideReason(HiddenPillReasonManagerNew.MANUAL)
+                } else {
+                    bar.addHideReason(HiddenPillReasonManagerNew.MANUAL)
+                }
+                bar.updateHideStatus()
                 return@launch
             }
 
