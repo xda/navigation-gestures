@@ -205,6 +205,8 @@ or
     <string name="side_appearance">Side Appearance</string>
     <string name="side_gesture_color">Side Gesture Color</string>
     <string name="side_gesture_use_pill_color">Use Pill Color</string>
+    <string name="long_swipe_in_from_left">Swipe in from Left and Hold</string>
+    <string name="long_swipe_in_from_right">Swipe in from Right and Hold</string>
     <!--Descriptions-->
     <string name="gestures_desc">Tùy chỉnh các hoạt động cử chỉ</string>
     <string name="appearance_desc">Tùy chỉnh giao diện viên điều hướng</string>
