@@ -557,7 +557,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
 
             IWindowManager.setOverscanAsync(0, 0, 0, 0)
 
-            if (!prefManager.overlayNavBlackout) {
+            if (!prefManager.overlayNav || !prefManager.overlayNavBlackout) {
                 postAction { it.remBlackout() }
             }
 
