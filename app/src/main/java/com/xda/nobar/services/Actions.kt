@@ -10,6 +10,7 @@ import android.view.accessibility.AccessibilityEvent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.xda.nobar.IActionsBinder
 import com.xda.nobar.util.*
+import kotlinx.coroutines.launch
 
 
 class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -116,8 +117,8 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
 
     private var waitingToAdd = false
 
-    private fun addBar() {
-        if (!waitingToAdd) {
+    private fun addBar() = mainScope.launch {
+        if (!waitingToAdd && !app.bar.isAttachedToWindow) {
             waitingToAdd = true
             try {
                 accWm.addView(app.bar, app.bar.params)
@@ -126,14 +127,24 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
         }
     }
 
-    private fun addBlackout() {
-        app.blackout.add(accWm)
+    private fun addBlackout() = mainScope.launch {
+        val ovsc = (prefManager.shouldUseOverscanMethod && !prefManager.useFullOverscan)
+        if ((prefManager.isActive && prefManager.overlayNav) || ovsc) {
+            if (prefManager.overlayNavBlackout || ovsc) {
+                if (!app.blackout.isAttachedToWindow) {
+                    app.blackout.add(accWm).join()
+                    app.blackout.setGone(accWm, false).join()
+                }
+            } else {
+                addBar().join()
+            }
+        }
     }
 
     private var waitingToRemove = false
 
-    private fun removeBar() {
-        if (app.pillShown && !waitingToRemove) {
+    private fun removeBar() = mainScope.launch {
+        if (app.bar.isAttachedToWindow && !waitingToRemove) {
             waitingToRemove = true
             try {
                 accWm.removeView(app.bar)
@@ -142,8 +153,11 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
         }
     }
 
-    private fun remBlackout() {
-        app.blackout.remove(accWm)
+    private fun remBlackout(forRefresh: Boolean = false) = mainScope.launch {
+        if (app.bar.isAttachedToWindow) {
+            app.blackout.setGone(accWm, gone = true, instant = forRefresh).join()
+            app.blackout.remove(accWm, forRefresh).join()
+        }
     }
 
     private fun addImmersiveHelper() {
@@ -167,14 +181,7 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
         }
 
         override fun addBlackout() {
-            val ovsc = (prefManager.shouldUseOverscanMethod && !prefManager.useFullOverscan)
-            if ((prefManager.isActive && prefManager.overlayNav) || ovsc) {
-                if (prefManager.overlayNavBlackout || ovsc) {
-                    this@Actions.addBlackout()
-                } else {
-                    this@Actions.addBar()
-                }
-            }
+            this@Actions.addBlackout()
         }
 
         override fun remBar() {
@@ -197,17 +204,30 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
             this@Actions.sendAction(action)
         }
 
+        private var alreadyAdding = false
+
         override fun addBarAndBlackout() {
-            remBlackout()
-            addBlackout()
-            if (!prefManager.overlayNav) {
-                addBar()
+            mainScope.launch {
+                if (!alreadyAdding) {
+                    alreadyAdding = true
+                    if (app.blackout.isAdded) {
+                        this@Actions.remBlackout(true).join()
+                    } else {
+                        this@Actions.addBlackout().join()
+                    }
+                    if (!prefManager.overlayNav) {
+                        this@Actions.addBar().join()
+                    }
+                    alreadyAdding = false
+                }
             }
         }
 
         override fun remBarAndBlackout() {
-            remBlackout()
-            remBar()
+            mainScope.launch {
+                this@Actions.remBlackout().join()
+                this@Actions.removeBar().join()
+            }
         }
 
         override fun addLeftSide() {

@@ -20,8 +20,10 @@ class NavBlackout : LinearLayout {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     init {
-        updateColor(Color.BLACK)
+        updateColor(Color.TRANSPARENT)
     }
+
+    var isColorGone = false
 
     var isAdded = false
         set(value) {
@@ -70,7 +72,7 @@ class NavBlackout : LinearLayout {
 
     private var oldParams: WindowManager.LayoutParams? = null
 
-    fun setGone(wm: WindowManager, gone: Boolean) = mainScope.launch {
+    fun setGone(wm: WindowManager, gone: Boolean, instant: Boolean = false) = mainScope.launch {
         var newFlags = BaseParams.baseFlags
         var newColor = Color.BLACK
         if (gone) {
@@ -78,48 +80,57 @@ class NavBlackout : LinearLayout {
             newColor = Color.TRANSPARENT
         }
 
-        updateColor(newColor)
+        updateColor(newColor, instant).join()
         add(wm, newFlags).join()
+
+        isColorGone = gone
     }
 
+    private var runningAdd = false
+
     fun add(wm: WindowManager, flags: Int = BaseParams.baseFlags) = mainScope.launch {
-        val result = async {
-            val params = if (context.prefManager.useTabletMode) bottomParams
-            else when (cachedRotation) {
-                Surface.ROTATION_0 -> bottomParams
-                Surface.ROTATION_180 -> bottomParams
-                Surface.ROTATION_90 -> rightParams
-                Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) rightParams else leftParams
-                else -> return@async null
-            }
-
-            params.flags = flags
-
-            if (!isAdded || !params.same(oldParams)) {
-                oldParams = params
-
-                return@async params
-            } else return@async null
-        }
-
-        val await = result.await()
-
-        if (await != null) {
-            try {
-                if (isAdded) wm.updateViewLayout(this@NavBlackout, await)
-                else if (!waitingToAdd) {
-                    waitingToAdd = true
-                    wm.addView(this@NavBlackout, await)
+        if (!runningAdd) {
+            runningAdd = true
+            val result = async {
+                val params = if (context.prefManager.useTabletMode) bottomParams
+                else when (cachedRotation) {
+                    Surface.ROTATION_0 -> bottomParams
+                    Surface.ROTATION_180 -> bottomParams
+                    Surface.ROTATION_90 -> rightParams
+                    Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) rightParams else leftParams
+                    else -> return@async null
                 }
-            } catch (e: Exception) {
-                e.logStack()
+
+                params.flags = flags
+
+                if (!isAdded || !params.same(oldParams)) {
+                    oldParams = params
+
+                    return@async params
+                } else return@async null
             }
+
+            val await = result.await()
+
+            if (await != null) {
+                try {
+                    if (isAdded) wm.updateViewLayout(this@NavBlackout, await)
+                    else if (context.prefManager.isActive && !waitingToAdd) {
+                        waitingToAdd = true
+                        wm.addView(this@NavBlackout, await)
+                    }
+                } catch (e: Exception) {
+                    e.logStack()
+                }
+            }
+
+            runningAdd = false
         }
     }
 
     private var isTryingToRemove = false
 
-    fun remove(wm: WindowManager) = mainScope.launch {
+    fun remove(wm: WindowManager, forRefresh: Boolean = false) = mainScope.launch {
         if (!isTryingToRemove && isAdded) {
             isTryingToRemove = true
 
@@ -130,6 +141,8 @@ class NavBlackout : LinearLayout {
             }
 
             isTryingToRemove = false
+
+            if (forRefresh) add(wm)
         }
     }
 
@@ -139,7 +152,7 @@ class NavBlackout : LinearLayout {
         get() = synchronized(background) {
             if (background is ColorDrawable)
                 (background as ColorDrawable).color
-            else Color.BLACK
+            else Color.TRANSPARENT
         }
         set(value) {
             if (background is ColorDrawable) {
@@ -149,19 +162,23 @@ class NavBlackout : LinearLayout {
             }
         }
 
-    private fun updateColor(newColor: Int) {
-        if (background !is ColorDrawable) background = ColorDrawable(Color.BLACK)
+    private fun updateColor(newColor: Int, instant: Boolean = false) = mainScope.launch {
+        if (background !is ColorDrawable) background = ColorDrawable(Color.TRANSPARENT)
 
         colorAnimation?.cancel()
 
-        colorAnimation = ValueAnimator.ofArgb(this.color, newColor)
-        colorAnimation?.duration = context.prefManager.animationDurationMs.toLong()
-        colorAnimation?.addUpdateListener {
-            val new = it.animatedValue.toString().toInt()
+        if (!instant) {
+            colorAnimation = ValueAnimator.ofArgb(this@NavBlackout.color, newColor)
+            colorAnimation?.duration = context.prefManager.animationDurationMs.toLong()
+            colorAnimation?.addUpdateListener {
+                val new = it.animatedValue.toString().toInt()
 
-            this.color = new
+                this@NavBlackout.color = new
+            }
+            colorAnimation?.start()
+        } else {
+            this@NavBlackout.color = newColor
         }
-        colorAnimation?.start()
     }
 
     private fun WindowManager.LayoutParams.same(other: WindowManager.LayoutParams?) = run {

@@ -577,7 +577,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
         prefManager.isActive = activated
     }
 
-    fun addBarInternal(isRefresh: Boolean = true) {
+    fun addBarInternal(isRefresh: Boolean = true) = mainScope.launch {
         try {
             bar.shouldReAddOnDetach = isRefresh
             if (isRefresh) postAction { it.remBar() }
@@ -622,7 +622,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
         actionsBinder.post(action)
     }
 
-    private fun addBarInternalUnconditionally() {
+    private fun addBarInternalUnconditionally() = mainScope.launch {
         postAction {
             it.addBarAndBlackout()
         }
@@ -1163,10 +1163,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                 if (prefManager.rightSideGesture) postAction { it.addRightSide() }
                 if (!helperAdded) addImmersiveHelper()
             } else {
-                removeBar(false)
+                if (bar.isAttachedToWindow) {
+                    removeBar(false)
+                }
                 postAction {
-                    it.remLeftSide()
-                    it.remRightSide()
+                    if (leftSide.isAttachedToWindow) {
+                        it.remLeftSide()
+                    }
+                    if (rightSide.isAttachedToWindow) {
+                        it.remRightSide()
+                    }
                 }
 
                 if (disabledBarReasonManager.run {
@@ -1194,8 +1200,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                 showNav()
             }
 
-            postAction {
-                it.setBlackoutGone(!disabledBlackoutReasonManager.isEmpty() || (!prefManager.overlayNav && !navHidden))
+            val shouldBeGone = !disabledBlackoutReasonManager.isEmpty() || (!prefManager.overlayNav && !navHidden)
+            if (shouldBeGone != blackout.isColorGone) {
+                postAction {
+                    it.setBlackoutGone(shouldBeGone)
+                }
             }
 
             updateBarBlacklists()

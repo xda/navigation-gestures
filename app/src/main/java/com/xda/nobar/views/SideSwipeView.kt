@@ -137,9 +137,7 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
         if (!isAttached) {
             try {
                 wm.addView(this, params)
-            } catch (e: Exception) {
-                e.logStack()
-            }
+            } catch (e: Exception) {}
         }
     }
 
@@ -147,9 +145,7 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
         if (isAttached) {
             try {
                 wm.removeView(this)
-            } catch (e: Exception) {
-                e.logStack()
-            }
+            } catch (e: Exception) {}
         }
     }
 
