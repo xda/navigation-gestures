@@ -59,7 +59,7 @@ class NavBlackout : LinearLayout {
         super.onAttachedToWindow()
         isAdded = true
 
-        if (context.prefManager.overlayNav)
+        if (context.prefManager.overlayNav && !context.prefManager.shouldUseOverscanMethod)
             context.app.postAction { it.addBar() }
     }
 

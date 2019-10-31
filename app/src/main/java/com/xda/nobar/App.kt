@@ -520,15 +520,13 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
             && disabledNavReasonManager.isEmpty()
             && hasWss
         ) {
-            addImmersiveHelper()
-
             uiHandler.handleRot()
 
-            val fullOverscan = prefManager.useFullOverscan
-            if (!fullOverscan) postAction {
-                it.addBlackout()
-            }
-            else postAction { it.remBlackout() }
+//            val fullOverscan = prefManager.useFullOverscan
+//            if (!fullOverscan) postAction {
+//                it.addBlackout()
+//            }
+//            else postAction { it.remBlackout() }
 
             if (isTouchWiz && !prefManager.useImmersiveWhenNavHidden) {
                 touchWizNavEnabled = true
@@ -899,16 +897,20 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
         private val managePermissionsActivity = "ManagerPermissionsActivity"
         private val grantPermissionsActivity = "GrantPermissionsActivity"
         private val packageInstallerActivity = "PackageInstallerActivity"
+        private val mediaProjectionActivity = "MediaProjectionPermissionActivity"
 
         private var volumeWindowId = 0
         private var managePermissionsWindowId = 0
         private var grantPermissionsWindowId = 0
+        private var mediaProjectionPermWindowId = 0
         private var dialogWindowId = 0
 
         @SuppressLint("WrongConstant")
         private fun handleNewEvent(info: AccessibilityEvent, service: Actions) = logicScope.launch {
             eventLock.withLock {
                 val hasUsage = this@App.hasUsage
+                val windows by lazy { service.windows }
+                val root by lazy { service.rootInActiveWindow }
 
                 var pName = info.packageName?.toString()
                 val className = info.className?.toString()
@@ -929,7 +931,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                                 val id = info.windowId
                                 volumeWindowId = id
                                 disabledNavReasonManager.add(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
-                            } else if (volumeWindowId == 0 || service.windows.find { it.id == volumeWindowId } == null) {
+                            } else if (volumeWindowId == 0 || windows.find { it.id == volumeWindowId } == null) {
                                 volumeWindowId = 0
                                 disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.VOLUME_LANDSCAPE)
                             }
@@ -940,45 +942,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
 
                         null
                     })
-
-                    deferred.add(async {
-                        if (hidePermissions) {
-                            val isManage = className?.contains(managePermissionsActivity) == true
-                            val isGrant = className?.contains(grantPermissionsActivity) == true
-                            if (isPackageInstaller(pName) && (isManage || isGrant)) {
-                                if (isManage) managePermissionsWindowId = info.windowId
-                                if (isGrant) grantPermissionsWindowId = info.windowId
-                                disabledBarReasonManager.add(DisabledReasonManager.PillReasons.PERMISSIONS)
-                            } else if ((grantPermissionsWindowId == 0 && managePermissionsWindowId == 0)
-                                || service.windows.find { it.id == grantPermissionsWindowId || it.id == managePermissionsWindowId } == null) {
-                                managePermissionsWindowId = 0
-                                grantPermissionsWindowId = 0
-                                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
-                            }
-                        } else {
-                            managePermissionsWindowId = 0
-                            grantPermissionsWindowId = 0
-                            disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS)
-                        }
-
-                        null
-                    })
-
-                    deferred.add(async {
-                        if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains(dialog) == true) {
-                            disabledBarReasonManager.add(DisabledReasonManager.PillReasons.HIDE_DIALOG)
-                            dialogWindowId = info.windowId
-                        } else if (dialogWindowId == 0 || service.windows.find { it.id == dialogWindowId } == null) {
-                            dialogWindowId = 0
-                            disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.HIDE_DIALOG)
-                        }
-                    })
                 }
 
                 if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                     || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
                 ) {
-
                     if (!isPinned) {
                         disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.APP_PINNED)
                     }
@@ -986,6 +954,73 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                     disabledNavReasonManager.setConditional(DisabledReasonManager.NavBarReasons.FULLSCREEN) { origInFullscreen && immersiveHelperManager.isFullImmersive() }
 
                     if (!nullPName) {
+                        deferred.add(async {
+                            if (hidePermissions) {
+                                val isGrant = className?.contains(grantPermissionsActivity) == true
+
+                                if (isPackageInstaller(pName) && isGrant) {
+                                    grantPermissionsWindowId = info.windowId
+                                    disabledBarReasonManager.add(DisabledReasonManager.PillReasons.PERMISSIONS_DIALOG)
+                                } else if (grantPermissionsWindowId == 0 || windows.find { it.id == grantPermissionsWindowId } == null) {
+                                    grantPermissionsWindowId = 0
+                                    disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS_DIALOG)
+                                }
+                            } else {
+                                grantPermissionsWindowId = 0
+                                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS_DIALOG)
+                            }
+
+                            null
+                        })
+
+                        deferred.add(async {
+                            if (hidePermissions) {
+                                val isManage = className?.contains(managePermissionsActivity) == true
+
+                                if (isPackageInstaller(pName) && isManage) {
+                                    managePermissionsWindowId = info.windowId
+                                    disabledBarReasonManager.add(DisabledReasonManager.PillReasons.PERMISSIONS_ACTIVITY)
+                                } else if (managePermissionsWindowId == 0 || windows.find { it.id == managePermissionsWindowId } == null) {
+                                    managePermissionsWindowId = 0
+                                    disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS_ACTIVITY)
+                                }
+                            } else {
+                                managePermissionsWindowId = 0
+                                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.PERMISSIONS_ACTIVITY)
+                            }
+
+                            null
+                        })
+
+                        deferred.add(async {
+                            if (hidePermissions) {
+                                val isMedia = className?.contains(mediaProjectionActivity) == true
+
+                                if (pName == systemUIPackage && isMedia) {
+                                    mediaProjectionPermWindowId = info.windowId
+                                    disabledBarReasonManager.add(DisabledReasonManager.PillReasons.MEDIA_PROJECTION)
+                                } else if (mediaProjectionPermWindowId == 0 || (windows.find { it.id == mediaProjectionPermWindowId } == null && root.windowId != mediaProjectionPermWindowId)) {
+                                    mediaProjectionPermWindowId = 0
+                                    disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.MEDIA_PROJECTION)
+                                }
+                            } else {
+                                mediaProjectionPermWindowId = 0
+                                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.MEDIA_PROJECTION)
+                            }
+
+                            null
+                        })
+
+                        deferred.add(async {
+                            if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains(dialog) == true) {
+                                disabledBarReasonManager.add(DisabledReasonManager.PillReasons.HIDE_DIALOG)
+                                dialogWindowId = info.windowId
+                            } else if (dialogWindowId == 0 || service.windows.find { it.id == dialogWindowId } == null) {
+                                dialogWindowId = 0
+                                disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.HIDE_DIALOG)
+                            }
+                        })
+
                         deferred.add(async {
                             if (useOverscan
                                 && immersiveWhenNavHidden
@@ -1184,7 +1219,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
 
                     if (disabledBarReasonManager.run {
                             contains(DisabledReasonManager.PillReasons.INSTALLER)
-                                    || contains(DisabledReasonManager.PillReasons.PERMISSIONS)
+                                    || contains(DisabledReasonManager.PillReasons.PERMISSIONS_DIALOG)
+                                    || contains(DisabledReasonManager.PillReasons.PERMISSIONS_ACTIVITY)
+                                    || contains(DisabledReasonManager.PillReasons.MEDIA_PROJECTION)
                                     || contains(DisabledReasonManager.PillReasons.HIDE_DIALOG)
                         }) {
                         if (helperAdded && !immersiveHelperManager.isRemovingOrAdding) {

@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
@@ -47,6 +46,7 @@ class ImmersiveHelperView(context: Context,
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
+        context.app.immersiveHelperManager.helperAdded = false
         viewTreeObserver.removeOnGlobalLayoutListener(this)
     }
 

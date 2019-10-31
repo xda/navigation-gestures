@@ -27,6 +27,7 @@ class ImmersiveHelperManager(private val context: Context,
             field = value
 
             updateHelperState()
+            isRemovingOrAdding = false
         }
     var isRemovingOrAdding = false
 
