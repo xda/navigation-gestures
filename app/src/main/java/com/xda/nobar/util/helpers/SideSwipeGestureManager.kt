@@ -89,6 +89,7 @@ class SideSwipeGestureManager(private val swipeView: SideSwipeView) : ContextWra
                     }
                 }
 
+                lastSwipe = null
                 performedLong = false
             }
         }
