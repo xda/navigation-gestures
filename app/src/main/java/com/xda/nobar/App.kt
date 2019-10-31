@@ -147,6 +147,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
     val disabledNavReasonManager = DisabledReasonManager()
     val disabledBarReasonManager = DisabledReasonManager()
     val disabledImmReasonManager = DisabledReasonManager()
+    val disabledBlackoutReasonManager = DisabledReasonManager()
 
     val settingsIndex by lazy { SettingsIndex.getInstance(this) }
 
@@ -557,10 +558,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
 
             IWindowManager.setOverscanAsync(0, 0, 0, 0)
 
-            if (!prefManager.overlayNav || !prefManager.overlayNavBlackout) {
-                postAction { it.remBlackout() }
-            }
-
             if (isTouchWiz) {
                 touchWizNavEnabled = false
             }
@@ -686,6 +683,9 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                                 if (prefManager.hideOnLockscreen) disabledBarReasonManager.add(
                                     DisabledReasonManager.PillReasons.LOCK_SCREEN
                                 )
+                                if (prefManager.overlayNav && prefManager.overlayNavBlackout) {
+                                    disabledBlackoutReasonManager.add(DisabledReasonManager.BlackoutReasons.KEYGUARD)
+                                }
                             } else {
                                 disabledNavReasonManager.remove(DisabledReasonManager.NavBarReasons.KEYGUARD)
                                 disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.LOCK_SCREEN)
@@ -1007,6 +1007,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                 })
 
                 deferred.add(async {
+                    disabledBlackoutReasonManager.setConditional(DisabledReasonManager.BlackoutReasons.KEYGUARD) { prefManager.overlayNav && prefManager.overlayNavBlackout && isOnKeyguard }
+                })
+
+                deferred.add(async {
                     disabledImmReasonManager.setConditional(DisabledReasonManager.ImmReasons.EDGE_SCREEN) { isTouchWiz && edgeType == EDGE_TYPE_ACTIVE }
                 })
 
@@ -1097,6 +1101,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                 prefManager.showNavWithKeyboard && keyboardShown
             }
 
+            disabledBlackoutReasonManager.setConditional(DisabledReasonManager.BlackoutReasons.KEYBOARD) {
+                prefManager.showNavWithKeyboard && keyboardShown
+            }
+
             if (!prefManager.dontMoveForKeyboard) {
                 var changed = false
 
@@ -1184,6 +1192,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                 }
             } else {
                 showNav()
+            }
+
+            postAction {
+                it.setBlackoutGone(!disabledBlackoutReasonManager.isEmpty() || (!prefManager.overlayNav && !navHidden))
             }
 
             updateBarBlacklists()

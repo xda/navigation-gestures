@@ -14,4 +14,5 @@ interface IActionsBinder {
     void addRightSide();
     void remLeftSide();
     void remRightSide();
+    void setBlackoutGone(boolean gone);
 }

@@ -2,6 +2,7 @@ package com.xda.nobar.views
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PixelFormat
 import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
@@ -67,7 +68,19 @@ class NavBlackout : LinearLayout {
 
     private var oldParams: WindowManager.LayoutParams? = null
 
-    fun add(wm: WindowManager) = mainScope.launch {
+    fun setGone(wm: WindowManager, gone: Boolean) = mainScope.launch {
+        var newFlags = BaseParams.baseFlags
+        var newColor = Color.BLACK
+        if (gone) {
+            newFlags = newFlags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            newColor = Color.TRANSPARENT
+        }
+
+        setBackgroundColor(newColor)
+        add(wm, newFlags).join()
+    }
+
+    fun add(wm: WindowManager, flags: Int = BaseParams.baseFlags) = mainScope.launch {
         val result = async {
             val params = if (context.prefManager.useTabletMode) bottomParams
             else when (cachedRotation) {
@@ -77,6 +90,8 @@ class NavBlackout : LinearLayout {
                 Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) rightParams else leftParams
                 else -> return@async null
             }
+
+            params.flags = flags
 
             if (!isAdded || !params.same(oldParams)) {
                 oldParams = params
@@ -128,13 +143,18 @@ class NavBlackout : LinearLayout {
     }
 
     private class BaseParams : WindowManager.LayoutParams() {
-        init {
-            type = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) TYPE_ACCESSIBILITY_OVERLAY else TYPE_PRIORITY_PHONE
-            flags = FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS or
+        companion object {
+            const val baseFlags = FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS or
                     FLAG_NOT_FOCUSABLE or
                     FLAG_LAYOUT_NO_LIMITS or
                     FLAG_TRANSLUCENT_NAVIGATION or
                     FLAG_SLIPPERY
+        }
+
+        init {
+            type = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) TYPE_ACCESSIBILITY_OVERLAY else TYPE_PRIORITY_PHONE
+            flags = baseFlags
+            format = PixelFormat.TRANSLUCENT
         }
     }
 }

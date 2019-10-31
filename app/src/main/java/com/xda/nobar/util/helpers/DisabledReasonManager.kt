@@ -29,6 +29,11 @@ open class DisabledReasonManager : HashSet<String>() {
         const val EDGE_SCREEN = "edge"
     }
 
+    object BlackoutReasons {
+        const val KEYGUARD = "keyguard"
+        const val KEYBOARD = "keyboard"
+    }
+
     fun setConditional(reason: String, condition: (reason: String) -> Boolean) {
         synchronized(this) {
             if (condition(reason)) add(reason)

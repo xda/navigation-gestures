@@ -225,5 +225,9 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
         override fun remRightSide() {
             app.rightSide.remove(accWm)
         }
+
+        override fun setBlackoutGone(gone: Boolean) {
+            app.blackout.setGone(accWm, gone)
+        }
     }
 }
