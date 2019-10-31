@@ -1,8 +1,10 @@
 package com.xda.nobar.views
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PixelFormat
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
@@ -18,7 +20,7 @@ class NavBlackout : LinearLayout {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     init {
-        setBackgroundColor(Color.BLACK)
+        updateColor(Color.BLACK)
     }
 
     var isAdded = false
@@ -76,7 +78,7 @@ class NavBlackout : LinearLayout {
             newColor = Color.TRANSPARENT
         }
 
-        setBackgroundColor(newColor)
+        updateColor(newColor)
         add(wm, newFlags).join()
     }
 
@@ -129,6 +131,37 @@ class NavBlackout : LinearLayout {
 
             isTryingToRemove = false
         }
+    }
+
+    private var colorAnimation: ValueAnimator? = null
+
+    private var color: Int
+        get() = synchronized(background) {
+            if (background is ColorDrawable)
+                (background as ColorDrawable).color
+            else Color.BLACK
+        }
+        set(value) {
+            if (background is ColorDrawable) {
+                (background as ColorDrawable).color = value
+            } else {
+                background = ColorDrawable(value)
+            }
+        }
+
+    private fun updateColor(newColor: Int) {
+        if (background !is ColorDrawable) background = ColorDrawable(Color.BLACK)
+
+        colorAnimation?.cancel()
+
+        colorAnimation = ValueAnimator.ofArgb(this.color, newColor)
+        colorAnimation?.duration = context.prefManager.animationDurationMs.toLong()
+        colorAnimation?.addUpdateListener {
+            val new = it.animatedValue.toString().toInt()
+
+            this.color = new
+        }
+        colorAnimation?.start()
     }
 
     private fun WindowManager.LayoutParams.same(other: WindowManager.LayoutParams?) = run {
