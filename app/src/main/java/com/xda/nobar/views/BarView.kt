@@ -734,7 +734,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         updatePositionAndDimens().join()
     }
 
-    fun setOverlayNav(overlay: Boolean) {
+    private fun setOverlayNav(overlay: Boolean) {
         val old = params.flags and WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS != 0
 
         if (overlay != old) {

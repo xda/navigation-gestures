@@ -141,20 +141,16 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
         }
     }
 
-    private var waitingToRemove = false
-
     private fun removeBar() = mainScope.launch {
-        if (app.bar.isAttachedToWindow && !waitingToRemove) {
-            waitingToRemove = true
+        if (app.bar.isAttachedToWindow) {
             try {
                 accWm.removeView(app.bar)
             } catch (e: Exception) {}
-            waitingToRemove = false
         }
     }
 
     private fun remBlackout(forRefresh: Boolean = false) = mainScope.launch {
-        if (app.bar.isAttachedToWindow) {
+        if (app.blackout.isAttachedToWindow) {
             app.blackout.setGone(accWm, gone = true, instant = forRefresh).join()
             app.blackout.remove(accWm, forRefresh).join()
         }
@@ -225,8 +221,10 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
 
         override fun remBarAndBlackout() {
             mainScope.launch {
-                this@Actions.remBlackout().join()
-                this@Actions.removeBar().join()
+                if (app.bar.isAttachedToWindow || app.blackout.isAttachedToWindow) {
+                    this@Actions.remBlackout().join()
+                    this@Actions.removeBar().join()
+                }
             }
         }
 

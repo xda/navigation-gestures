@@ -903,6 +903,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
         private var volumeWindowId = 0
         private var managePermissionsWindowId = 0
         private var grantPermissionsWindowId = 0
+        private var dialogWindowId = 0
 
         @SuppressLint("WrongConstant")
         private fun handleNewEvent(info: AccessibilityEvent, service: Actions) = logicScope.launch {
@@ -962,6 +963,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
 
                         null
                     })
+
+                    deferred.add(async {
+                        if (hideDialogApps.contains(pName) && className?.toLowerCase(Locale.getDefault())?.contains(dialog) == true) {
+                            disabledBarReasonManager.add(DisabledReasonManager.PillReasons.HIDE_DIALOG)
+                            dialogWindowId = info.windowId
+                        } else if (dialogWindowId == 0 || service.windows.find { it.id == dialogWindowId } == null) {
+                            dialogWindowId = 0
+                            disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.HIDE_DIALOG)
+                        }
+                    })
                 }
 
                 if (info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
@@ -990,13 +1001,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                         deferred.add(async {
                             disabledBarReasonManager.setConditional(DisabledReasonManager.PillReasons.INSTALLER) {
                                 hideInstaller && isPackageInstaller(pName) && className?.contains(packageInstallerActivity) == true
-                            }
-                        })
-
-                        deferred.add(async {
-                            disabledBarReasonManager.setConditional(DisabledReasonManager.PillReasons.HIDE_DIALOG) {
-                                hideDialogApps.contains(pName) &&
-                                        className?.toLowerCase(Locale.getDefault())?.contains(dialog) == true
                             }
                         })
                     }
@@ -1037,7 +1041,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                                 }
                             }
 
-                            runNewNodeInfo(pName)
+                            disabledNavReasonManager.setConditional(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST) { navArray.contains(pName) }
+                            disabledBarReasonManager.setConditional(DisabledReasonManager.PillReasons.BLACKLIST) { barArray.contains(pName) }
+                            disabledImmReasonManager.setConditional(DisabledReasonManager.ImmReasons.BLACKLIST) { immArray.contains(pName) }
+
+                            if (windowArray.contains(pName)) {
+                                if (!isInOtherWindowApp && active) {
+                                    addBar(false)
+                                    isInOtherWindowApp = true
+                                }
+                            } else if (isInOtherWindowApp) isInOtherWindowApp = false
                         }
 
                         if (hasUsage || info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
@@ -1055,7 +1068,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
 
                 deferred.awaitAll()
 
-                updateBlacklists()
+                val blacklistAwait = async { updateBlacklists() }
+                blacklistAwait.await()
             }
         }
 
@@ -1070,22 +1084,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                 }
             } else {
                 prefManager.autoPillBGColor = 0
-            }
-        }
-
-        @SuppressLint("ResourceType")
-        private fun runNewNodeInfo(pName: String?) {
-            if (pName != null) {
-                disabledNavReasonManager.setConditional(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST) { navArray.contains(pName) }
-                disabledBarReasonManager.setConditional(DisabledReasonManager.PillReasons.BLACKLIST) { barArray.contains(pName) }
-                disabledImmReasonManager.setConditional(DisabledReasonManager.ImmReasons.BLACKLIST) { immArray.contains(pName) }
-
-                if (windowArray.contains(pName)) {
-                    if (!isInOtherWindowApp && active) {
-                        addBar(false)
-                        isInOtherWindowApp = true
-                    }
-                } else if (isInOtherWindowApp) isInOtherWindowApp = false
             }
         }
 
@@ -1147,6 +1145,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
             }
         }
 
+        private var wasBarBlacklistEmpty = false
+
         fun updateBlacklists() {
             if (disabledImmReasonManager.isEmpty()) {
                 if (useOverscan
@@ -1157,35 +1157,43 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                 immersiveHelperManager.exitNavImmersive()
             }
 
-            if (disabledBarReasonManager.isEmpty()) {
-                if (active && !pillShown) addBar(false)
-                if (prefManager.leftSideGesture) postAction { it.addLeftSide() }
-                if (prefManager.rightSideGesture) postAction { it.addRightSide() }
-                if (!helperAdded) addImmersiveHelper()
-            } else {
-                if (bar.isAttachedToWindow) {
-                    removeBar(false)
-                }
-                postAction {
-                    if (leftSide.isAttachedToWindow) {
-                        it.remLeftSide()
-                    }
-                    if (rightSide.isAttachedToWindow) {
-                        it.remRightSide()
-                    }
-                }
+            val isNowEmpty = disabledBarReasonManager.isEmpty()
 
-                if (disabledBarReasonManager.run {
-                        contains(DisabledReasonManager.PillReasons.INSTALLER)
-                                || contains(DisabledReasonManager.PillReasons.PERMISSIONS)
-                                || contains(DisabledReasonManager.PillReasons.HIDE_DIALOG)
-                    }) {
-                    if (helperAdded && !immersiveHelperManager.isRemovingOrAdding) {
-                        removeImmersiveHelper()
-                    }
+            if (isNowEmpty != wasBarBlacklistEmpty) {
+                wasBarBlacklistEmpty = isNowEmpty
+
+                if (isNowEmpty) {
+                    wasBarBlacklistEmpty = true
+                    if (active && !pillShown) addBar(false)
+                    if (prefManager.leftSideGesture) postAction { it.addLeftSide() }
+                    if (prefManager.rightSideGesture) postAction { it.addRightSide() }
+                    if (!helperAdded) addImmersiveHelper()
                 } else {
-                    if (!helperAdded && !immersiveHelperManager.isRemovingOrAdding) {
-                        addImmersiveHelper()
+                    wasBarBlacklistEmpty = false
+                    if (bar.isAttachedToWindow) {
+                        removeBar(false)
+                    }
+                    postAction {
+                        if (leftSide.isAttachedToWindow) {
+                            it.remLeftSide()
+                        }
+                        if (rightSide.isAttachedToWindow) {
+                            it.remRightSide()
+                        }
+                    }
+
+                    if (disabledBarReasonManager.run {
+                            contains(DisabledReasonManager.PillReasons.INSTALLER)
+                                    || contains(DisabledReasonManager.PillReasons.PERMISSIONS)
+                                    || contains(DisabledReasonManager.PillReasons.HIDE_DIALOG)
+                        }) {
+                        if (helperAdded && !immersiveHelperManager.isRemovingOrAdding) {
+                            removeImmersiveHelper()
+                        }
+                    } else {
+                        if (!helperAdded && !immersiveHelperManager.isRemovingOrAdding) {
+                            addImmersiveHelper()
+                        }
                     }
                 }
             }
@@ -1331,7 +1339,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                     }
                 }
 
-                postAction { it.addBlackout() }
+                if (blackout.isAttachedToWindow) blackout.update(wm)
             }
         }
 

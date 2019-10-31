@@ -22,6 +22,7 @@ import android.util.TypedValue
 import android.view.Display
 import android.view.DisplayInfo
 import android.view.Surface
+import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -45,6 +46,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.system.exitProcess
 
 val mainHandler = Handler(Looper.getMainLooper())
@@ -638,4 +641,19 @@ val Context.isPinned: Boolean
     get() {
         val am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 && am.lockTaskModeState != ActivityManager.LOCK_TASK_MODE_NONE
+    }
+
+val AccessibilityNodeInfo.hasDialog: Boolean
+    get() {
+        for (i in 0 until childCount) {
+            val child = getChild(i)
+            Log.e("NoBar", "class: ${child.className}")
+            return when {
+                child.className?.toString()?.toLowerCase(Locale.getDefault())?.contains("dialog") == true -> true
+                child.childCount > 0 -> child.hasDialog
+                else -> false
+            }
+        }
+
+        return false
     }

@@ -32,6 +32,7 @@ class NavBlackout : LinearLayout {
         }
 
     private var waitingToAdd = false
+    private var currentFlags = BaseParams.baseFlags
 
     private val bottomParams = BaseParams().apply {
         gravity = Gravity.BOTTOM
@@ -80,15 +81,48 @@ class NavBlackout : LinearLayout {
             newColor = Color.TRANSPARENT
         }
 
+        currentFlags = newFlags
+
         updateColor(newColor, instant).join()
-        add(wm, newFlags).join()
+        update(wm, newFlags).join()
 
         isColorGone = gone
     }
 
     private var runningAdd = false
 
-    fun add(wm: WindowManager, flags: Int = BaseParams.baseFlags) = mainScope.launch {
+    fun update(wm: WindowManager, flags: Int = currentFlags) = mainScope.launch {
+        val result = async {
+            val params = if (context.prefManager.useTabletMode) bottomParams
+            else when (cachedRotation) {
+                Surface.ROTATION_0 -> bottomParams
+                Surface.ROTATION_180 -> bottomParams
+                Surface.ROTATION_90 -> rightParams
+                Surface.ROTATION_270 -> if (context.prefManager.useRot270Fix) rightParams else leftParams
+                else -> return@async null
+            }
+
+            params.flags = flags
+
+            if (!isAdded || !params.same(oldParams)) {
+                oldParams = params
+
+                return@async params
+            } else return@async null
+        }
+
+        val await = result.await()
+
+        if (await != null) {
+            try {
+                if (isAdded) wm.updateViewLayout(this@NavBlackout, await)
+            } catch (e: Exception) {
+                e.logStack()
+            }
+        }
+    }
+
+    fun add(wm: WindowManager, flags: Int = currentFlags) = mainScope.launch {
         if (!runningAdd) {
             runningAdd = true
             val result = async {
@@ -102,20 +136,14 @@ class NavBlackout : LinearLayout {
                 }
 
                 params.flags = flags
-
-                if (!isAdded || !params.same(oldParams)) {
-                    oldParams = params
-
-                    return@async params
-                } else return@async null
+                params
             }
 
             val await = result.await()
 
             if (await != null) {
                 try {
-                    if (isAdded) wm.updateViewLayout(this@NavBlackout, await)
-                    else if (context.prefManager.isActive && !waitingToAdd) {
+                    if (context.prefManager.isActive && !waitingToAdd) {
                         waitingToAdd = true
                         wm.addView(this@NavBlackout, await)
                     }
