@@ -21,7 +21,6 @@ import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.HandlerThread
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import android.view.animation.AccelerateInterpolator
@@ -97,10 +96,6 @@ class ScreenshotActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
     }
 
-    private val handlerThread = HandlerThread("NavGestScreenshot").apply {
-        start()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -112,8 +107,6 @@ class ScreenshotActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onDestroy()
 
         cancel()
-
-        handlerThread.quitSafely()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
