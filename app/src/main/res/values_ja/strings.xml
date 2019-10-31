@@ -165,7 +165,7 @@
     <string name="enable_analytics">Enable Firebase Analytics</string>
     <string name="brightness_adjustment_step_size">Brightness Adjustment Step Size</string>
     <string name="hide_on_lockscreen">Don\'t Show on Lock Screen</string>
-    <string name="hide_on_permissions">Don\'t Show on App Permissions Page</string>
+    <string name="hide_on_permissions">Don\'t Show when Granting Permissions</string>
     <string name="hide_on_installer">Don\'t Show on Package Installer</string>
     <string name="root">Root</string>
     <string name="overlay_nav">Overlay NavBar</string>
