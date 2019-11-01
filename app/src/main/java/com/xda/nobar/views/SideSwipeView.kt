@@ -1,5 +1,6 @@
 package com.xda.nobar.views
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.SharedPreferences
@@ -12,6 +13,7 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import androidx.core.animation.addListener
 import com.xda.nobar.util.*
 import com.xda.nobar.util.helpers.SideSwipeGestureManager
 import kotlinx.coroutines.async
@@ -68,10 +70,12 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
         }
     private val windowWidth: Int
         get() = context.prefManager.run {
-            dpAsPx(when (side) {
-                Side.LEFT -> leftSideGestureWidth
-                Side.RIGHT -> rightSideGestureWidth
-            } / 10f)
+            dpAsPx(
+                when (side) {
+                    Side.LEFT -> leftSideGestureWidth
+                    Side.RIGHT -> rightSideGestureWidth
+                } / 10f
+            )
         }
 
     private val params: WindowManager.LayoutParams
@@ -99,6 +103,10 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
             y = if (context.app.bar.isVertical) 0 else parseY()
         }
 
+    init {
+        color = Color.TRANSPARENT
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
@@ -114,14 +122,15 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
         isAttached = false
 
         context.app.unregisterOnSharedPreferenceChangeListener(this)
+        updateBackgroundColor(Color.TRANSPARENT)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (keysToListenFor.contains(key)) update(context.app.wm)
         when (key) {
             PrefManager.SIDE_GESTURE_USE_PILL_COLOR,
-                PrefManager.SIDE_GESTURE_COLOR,
-                PrefManager.AUTO_PILL_BG -> {
+            PrefManager.SIDE_GESTURE_COLOR,
+            PrefManager.AUTO_PILL_BG -> {
                 updateBackgroundColor()
             }
         }
@@ -143,9 +152,11 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
 
     fun remove(wm: WindowManager) {
         if (isAttached) {
-            try {
-                wm.removeView(this)
-            } catch (e: Exception) {}
+            updateBackgroundColor(Color.TRANSPARENT) {
+                try {
+                    wm.removeView(this)
+                } catch (e: Exception) {}
+            }
         }
     }
 
@@ -175,13 +186,14 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
             }
         }
 
-    private fun updateBackgroundColor() {
-        if (background !is ColorDrawable) background = ColorDrawable(Color.TRANSPARENT)
-
-        val color = if (context.prefManager.sideGestureUsePillColor) {
+    private fun updateBackgroundColor(
+        color: Int = if (context.prefManager.sideGestureUsePillColor) {
             val auto = context.prefManager.autoPillBGColor
             if (auto != 0) auto else context.prefManager.pillBGColor
-        } else context.prefManager.sideGestureColor
+        } else context.prefManager.sideGestureColor,
+        completionListener: ((Animator) -> Unit)? = null
+    ) {
+        if (background !is ColorDrawable) background = ColorDrawable(Color.TRANSPARENT)
 
         colorAnimation?.cancel()
 
@@ -191,6 +203,12 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
             val new = it.animatedValue.toString().toInt()
 
             this.color = new
+        }
+        completionListener?.apply {
+            colorAnimation?.addListener(
+                onEnd = this,
+                onCancel = this
+            )
         }
         colorAnimation?.start()
     }
@@ -211,7 +229,8 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
 
     internal class BaseParams : WindowManager.LayoutParams() {
         init {
-            type = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) TYPE_ACCESSIBILITY_OVERLAY else TYPE_PRIORITY_PHONE
+            type =
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) TYPE_ACCESSIBILITY_OVERLAY else TYPE_PRIORITY_PHONE
             flags = FLAG_NOT_FOCUSABLE or
                     FLAG_LAYOUT_IN_SCREEN
             format = PixelFormat.TRANSLUCENT
