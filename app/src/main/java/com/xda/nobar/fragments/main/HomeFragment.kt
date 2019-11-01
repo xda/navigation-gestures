@@ -78,6 +78,16 @@ class HomeFragment : Fragment(R.layout.layout_main_activity), OnGestureStateChan
             startActivity(Intent(requireContext(), TroubleshootingActivity::class.java))
         }
 
+        enable_left_side.isChecked = prefManager.leftSideGesture
+        enable_left_side.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
+            prefManager.leftSideGesture = isChecked
+        }
+
+        enable_right_side.isChecked = prefManager.rightSideGesture
+        enable_right_side.onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
+            prefManager.rightSideGesture = isChecked
+        }
+
         refresh()
     }
 

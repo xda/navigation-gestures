@@ -2,18 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreference
-        android:title="@string/enable_left_side_gesture"
-        android:key="left_side_gesture"
-        android:defaultValue="@bool/enable_left_side_gesture_default"
-        />
-
-    <SwitchPreference
-        android:title="@string/enable_right_side_gesture"
-        android:key="right_side_gesture"
-        android:defaultValue="@bool/enable_right_side_gesture_default"
-        />
-
     <tk.zwander.collapsiblepreferencecategory.CollapsiblePreferenceCategory
         android:title="@string/swipes"
         android:key="side_gestures_swipes">

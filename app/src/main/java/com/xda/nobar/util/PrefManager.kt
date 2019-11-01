@@ -270,10 +270,16 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         get() = getBoolean(ALLOW_REPEAT_LONG, resources.getBoolean(R.bool.allow_repeat_long_execute_default))
     val showNavWithVolume: Boolean
         get() = getBoolean(NAV_WITH_VOLUME, resources.getBoolean(R.bool.show_nav_with_volume_dialog_fullscreen_default))
-    val leftSideGesture: Boolean
+    var leftSideGesture: Boolean
         get() = getBoolean(LEFT_SIDE_GESTURE, resources.getBoolean(R.bool.enable_left_side_gesture_default))
-    val rightSideGesture: Boolean
+        set(value) {
+            putBoolean(LEFT_SIDE_GESTURE, value)
+        }
+    var rightSideGesture: Boolean
         get() = getBoolean(RIGHT_SIDE_GESTURE, resources.getBoolean(R.bool.enable_right_side_gesture_default))
+        set(value) {
+            putBoolean(RIGHT_SIDE_GESTURE, value)
+        }
     val sideGestureUsePillColor: Boolean
         get() = getBoolean(SIDE_GESTURE_USE_PILL_COLOR, resources.getBoolean(R.bool.side_gesture_use_pill_color_default))
 

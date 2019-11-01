@@ -10,7 +10,7 @@
     <color name="color_disabled">#aaa</color>
     <color name="icon_color">#ffffff</color>
     <color name="color_translucent">#33000000</color>
-    <color name="default_side_gesture_color">@android:color/transparent</color>
+    <color name="default_side_gesture_color">@color/pill_color</color>
 
     <color name="slide_1">#c62828</color>
     <color name="slide_2">#d84315</color>

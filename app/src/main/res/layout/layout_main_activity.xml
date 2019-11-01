@@ -50,6 +50,30 @@
                 />
 
             <com.xda.nobar.views.TextSwitch
+                android:minHeight="48dp"
+                android:id="@+id/enable_left_side"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                app:title_text="@string/enable_left_side_gesture"
+                app:title_text_size="18sp"
+                />
+
+            <com.xda.nobar.views.TextSwitch
+                android:minHeight="48dp"
+                android:id="@+id/enable_right_side"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                app:title_text="@string/enable_right_side_gesture"
+                app:title_text_size="18sp"
+                />
+
+            <com.xda.nobar.views.TextSwitch
                 android:id="@+id/hide_nav"
                 android:minHeight="48dp"
                 android:layout_width="match_parent"
