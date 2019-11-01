@@ -1,160 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
-        android:text="@string/deactivate_before_uninstall"
-        android:textAlignment="center"
-        android:textColor="#d50000"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:id="@+id/disable_hint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/switch_wrapper"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.13"
-        />
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/switch_wrapper"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/troubleshooting_beta_wrapper"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/disable_hint">
-
-        <com.xda.nobar.views.TextSwitch
-            android:minHeight="48dp"
-            android:id="@+id/activate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            app:title_text="@string/activated"
-            app:title_text_size="18sp"
-            />
-
-        <com.xda.nobar.views.TextSwitch
-            android:id="@+id/hide_nav"
-            android:minHeight="48dp"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
-            app:summary_text="@string/hide_nav_summary"
-            app:title_text="@string/hide_nav"
-            app:title_text_size="18sp"
+            android:text="@string/deactivate_before_uninstall"
+            android:textAlignment="center"
+            android:textColor="#d50000"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:id="@+id/disable_hint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/switch_wrapper"
+            app:layout_constraintTop_toTopOf="parent"
             />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/troubleshooting_beta_wrapper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@id/prem_wrapper"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/switch_wrapper">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/troubleshoot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/problems"
-            android:textColor="?android:textColorPrimary"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/beta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/try_beta"
-            app:backgroundTint="?colorAccent"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/prem_wrapper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/troubleshooting_beta_wrapper"
-        app:layout_constraintVertical_bias="0.83">
 
         <LinearLayout
-            android:id="@+id/prem_stat_holder"
+            android:id="@+id/switch_wrapper"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/troubleshooting_beta_wrapper"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/disable_hint">
 
-            <LinearLayout
-                android:id="@+id/prem_stat_clicker"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?android:selectableItemBackground"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                tools:ignore="UselessParent">
+            <com.xda.nobar.views.TextSwitch
+                android:minHeight="48dp"
+                android:id="@+id/activate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                app:title_text="@string/activated"
+                app:title_text_size="18sp"
+                />
 
-                <TextView
-                    android:text="@string/prem_stat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="2dp"
-                    />
-
-                <TextView
-                    android:id="@+id/prem_stat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:text="@string/checking"
-                    android:textColor="#ff0"
-                    />
-
-            </LinearLayout>
+            <com.xda.nobar.views.TextSwitch
+                android:id="@+id/hide_nav"
+                android:minHeight="48dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                app:summary_text="@string/hide_nav_summary"
+                app:title_text="@string/hide_nav"
+                app:title_text_size="18sp"
+                />
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/refresh_prem"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="center"
-            android:src="@drawable/refresh"
-            />
+        <LinearLayout
+            android:id="@+id/troubleshooting_beta_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@id/prem_wrapper"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/switch_wrapper">
 
-    </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/troubleshoot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/problems"
+                android:textColor="?android:textColorPrimary"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/beta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/try_beta"
+                app:backgroundTint="?colorAccent"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/prem_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/troubleshooting_beta_wrapper">
+
+            <LinearLayout
+                android:id="@+id/prem_stat_holder"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/prem_stat_clicker"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?android:selectableItemBackground"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    tools:ignore="UselessParent">
+
+                    <TextView
+                        android:text="@string/prem_stat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="2dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/prem_stat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:text="@string/checking"
+                        android:textColor="#ff0"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/refresh_prem"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                android:src="@drawable/refresh"
+                />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

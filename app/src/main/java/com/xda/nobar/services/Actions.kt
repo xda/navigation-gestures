@@ -151,8 +151,7 @@ class Actions : AccessibilityService(), SharedPreferences.OnSharedPreferenceChan
 
     private fun remBlackout(forRefresh: Boolean = false) = mainScope.launch {
         if (app.blackout.isAttachedToWindow) {
-            app.blackout.setGone(accWm, gone = true, instant = forRefresh).join()
-            app.blackout.remove(accWm, forRefresh).join()
+            app.blackout.setGone(accWm, gone = true, instant = forRefresh, forRemove = true).join()
         }
     }
 

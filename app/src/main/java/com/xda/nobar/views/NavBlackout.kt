@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.Surface
 import android.view.WindowManager
 import android.widget.LinearLayout
+import androidx.core.animation.addListener
 import com.xda.nobar.util.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -73,7 +74,7 @@ class NavBlackout : LinearLayout {
 
     private var oldParams: WindowManager.LayoutParams? = null
 
-    fun setGone(wm: WindowManager, gone: Boolean, instant: Boolean = false) = mainScope.launch {
+    fun setGone(wm: WindowManager, gone: Boolean, instant: Boolean = false, forRemove: Boolean = false) = mainScope.launch {
         var newFlags = BaseParams.baseFlags
         var newColor = Color.BLACK
         if (gone) {
@@ -83,8 +84,10 @@ class NavBlackout : LinearLayout {
 
         currentFlags = newFlags
 
-        updateColor(newColor, instant).join()
-        update(wm, newFlags).join()
+        updateColor(newColor, instant, forRemove).join()
+        if (!forRemove) {
+            update(wm, newFlags).join()
+        }
 
         isColorGone = gone
     }
@@ -190,7 +193,7 @@ class NavBlackout : LinearLayout {
             }
         }
 
-    private fun updateColor(newColor: Int, instant: Boolean = false) = mainScope.launch {
+    private fun updateColor(newColor: Int, instant: Boolean = false, forRemove: Boolean = false) = mainScope.launch {
         if (background !is ColorDrawable) background = ColorDrawable(Color.TRANSPARENT)
 
         colorAnimation?.cancel()
@@ -202,6 +205,16 @@ class NavBlackout : LinearLayout {
                 val new = it.animatedValue.toString().toInt()
 
                 this@NavBlackout.color = new
+            }
+            if (forRemove) {
+                colorAnimation?.addListener(
+                    onEnd = {
+                        remove(context.app.wm)
+                    },
+                    onCancel = {
+                        remove(context.app.wm)
+                    }
+                )
             }
             colorAnimation?.start()
         } else {
