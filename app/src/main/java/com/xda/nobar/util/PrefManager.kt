@@ -206,8 +206,11 @@ class PrefManager private constructor(context: Context) : ContextWrapper(context
         }
     val hidePillWhenKeyboardShown: Boolean
         get() = getBoolean(HIDE_PILL_ON_KEYBOARD, resources.getBoolean(R.bool.hide_on_keyboard_default))
-    val anchorPill: Boolean
+    var anchorPill: Boolean
         get() = getBoolean(ANCHOR_PILL, resources.getBoolean(R.bool.anchor_pill_default))
+        set(value) {
+            putBoolean(ANCHOR_PILL, value)
+        }
     var useImmersiveWhenNavHidden: Boolean
         get() = getBoolean(USE_IMMERSIVE_MODE_WHEN_NAV_HIDDEN, resources.getBoolean(R.bool.immersive_nav_default))
         set(value) {

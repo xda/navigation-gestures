@@ -8,6 +8,7 @@ import com.xda.nobar.R
 import com.xda.nobar.activities.selectors.BlacklistSelectorActivity
 import com.xda.nobar.util.PrefManager
 import com.xda.nobar.util.hasUsage
+import com.xda.nobar.util.prefManager
 
 /**
  * Experimental, but mostly working settings
@@ -47,6 +48,15 @@ class ExperimentalFragment : BasePrefFragment() {
             try {
                 startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
             } catch (e: Exception) {}
+            true
+        }
+
+        val anchorPill = findPreference<Preference>(PrefManager.ANCHOR_PILL)!!
+        anchorPill.isEnabled = !requireContext().prefManager.overlayNav
+
+        val overlayNav = findPreference<Preference>(PrefManager.OVERLAY_NAV)!!
+        overlayNav.setOnPreferenceChangeListener { _, newValue ->
+            anchorPill.isEnabled = !newValue.toString().toBoolean()
             true
         }
     }

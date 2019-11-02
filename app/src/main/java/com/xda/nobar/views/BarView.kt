@@ -359,6 +359,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     override fun onAttachedToWindow() {
         context.app.pillShown = true
 
+        if (context.prefManager.overlayNav) context.prefManager.anchorPill = true
+
         updatePillColorsAndRadii()
         updateDividers()
 
@@ -466,7 +468,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
 
             PrefManager.OVERLAY_NAV,
             PrefManager.HIDE_NAV -> {
-                setOverlayNav(context.prefManager.overlayNav)
+                val overlayNav = context.prefManager.overlayNav
+                setOverlayNav(overlayNav)
+                if (overlayNav) context.prefManager.anchorPill = true
             }
             PrefManager.OVERLAY_NAV_BLACKOUT -> {
                 context.app.postAction {
