@@ -52,11 +52,11 @@ class ExperimentalFragment : BasePrefFragment() {
         }
 
         val anchorPill = findPreference<Preference>(PrefManager.ANCHOR_PILL)!!
-        anchorPill.isEnabled = !requireContext().prefManager.overlayNav
+        anchorPill.isEnabled = !requireContext().prefManager.overlayNav || requireContext().prefManager.useTabletMode
 
         val overlayNav = findPreference<Preference>(PrefManager.OVERLAY_NAV)!!
         overlayNav.setOnPreferenceChangeListener { _, newValue ->
-            anchorPill.isEnabled = !newValue.toString().toBoolean()
+            anchorPill.isEnabled = !newValue.toString().toBoolean() || requireContext().prefManager.useTabletMode
             true
         }
     }
