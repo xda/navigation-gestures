@@ -377,6 +377,9 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
         handleRotationOrAnchorUpdate()
         updateFlashColor()
 
+        updateHideStatus()
+        updateFadeStatus()
+
         context.app.registerOnSharedPreferenceChangeListener(this)
     }
 
