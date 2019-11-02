@@ -501,6 +501,8 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
             shouldReAddOnDetach = false
         }
 
+        hideHandler.isFaded = false
+
         forceActionUp()
     }
 
@@ -865,7 +867,7 @@ class BarView : LinearLayout, SharedPreferences.OnSharedPreferenceChangeListener
     }
 
     inner class HideHandler(looper: Looper) : Handler(looper) {
-        private var isFaded = false
+        var isFaded = false
 
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
