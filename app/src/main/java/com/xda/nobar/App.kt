@@ -667,6 +667,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                             )
                             disabledBarReasonManager.add(DisabledReasonManager.PillReasons.SCREEN_OFF)
                             bar.forceActionUp()
+                            leftSide.forceActionUp()
+                            rightSide.forceActionUp()
 
                             uiHandler.updateBlacklists()
                         }
@@ -1362,8 +1364,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                         bar.handleRotationOrAnchorUpdate().join()
                     }
 
-                    if (leftSide.isAttached) leftSide.update(wm)
-                    if (rightSide.isAttached) rightSide.update(wm)
+                    if (leftSide.isAttached) {
+                        leftSide.forceActionUp()
+                        leftSide.update(wm)
+                    }
+                    if (rightSide.isAttached) {
+                        rightSide.forceActionUp()
+                        rightSide.update(wm)
+                    }
                 }
 
                 if (prefManager.shouldUseOverscanMethod) {
@@ -1585,6 +1593,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
             when (intent?.action) {
                 ACTION_MINIVIEW_SETTINGS_CHANGED -> {
                     bar.forceActionUp()
+                    leftSide.forceActionUp()
+                    rightSide.forceActionUp()
                 }
             }
         }

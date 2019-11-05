@@ -123,6 +123,7 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
 
         context.app.unregisterOnSharedPreferenceChangeListener(this)
         updateBackgroundColor(Color.TRANSPARENT)
+        forceActionUp()
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -141,6 +142,12 @@ abstract class SideSwipeView : View, SharedPreferences.OnSharedPreferenceChangeL
     }
 
     fun onCreate() {}
+
+    fun forceActionUp() = mainScope.launch {
+        if (isAttachedToWindow) {
+            gestureManager.handleActionUp(true)
+        }
+    }
 
     fun add(wm: WindowManager) {
         if (!isAttached) {

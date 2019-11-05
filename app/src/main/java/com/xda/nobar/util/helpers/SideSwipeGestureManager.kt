@@ -31,6 +31,8 @@ class SideSwipeGestureManager(private val swipeView: SideSwipeView) : ContextWra
     private var prevRawX = 0f
     private var prevRawY = 0f
 
+    private var forcedUp = false
+
     private var slop = viewConfig.scaledTouchSlop
 
     private var lastSwipe: Swipe? = null
@@ -43,6 +45,7 @@ class SideSwipeGestureManager(private val swipeView: SideSwipeView) : ContextWra
     private fun handleTouchEvent(e: MotionEvent?): Boolean {
         when (e?.action) {
             MotionEvent.ACTION_DOWN -> {
+                forcedUp = false
                 downRawX = e.rawX
                 downRawY = e.rawY
 
@@ -53,48 +56,56 @@ class SideSwipeGestureManager(private val swipeView: SideSwipeView) : ContextWra
             }
 
             MotionEvent.ACTION_MOVE -> {
-                val newX = e.rawX
-                val newY = e.rawY
+                if (!forcedUp) {
+                    val newX = e.rawX
+                    val newY = e.rawY
 
-                val xSlop = (downRawX - newX).absoluteValue > slop
-                val ySlop = (downRawY - newY).absoluteValue > slop
+                    val xSlop = (downRawX - newX).absoluteValue > slop
+                    val ySlop = (downRawY - newY).absoluteValue > slop
 
-                if (!xSlop && !ySlop) return false
+                    if (!xSlop && !ySlop) return false
 
-                parseSwipe(newX, newY)
+                    parseSwipe(newX, newY)
 
-                prevRawX = newX
-                prevRawY = newY
+                    prevRawX = newX
+                    prevRawY = newY
+                }
             }
 
             MotionEvent.ACTION_UP -> {
-                longHandler.removeCallbacksAndMessages(null)
-
-                if (!performedLong) {
-                    when (lastSwipe) {
-                        Swipe.UP -> {
-                        }
-                        Swipe.DOWN -> {
-                        }
-                        Swipe.LEFT -> {
-                            if (swipeView.side == SideSwipeView.Side.RIGHT) {
-                                send(actionHolder.sideRightIn)
-                            }
-                        }
-                        Swipe.RIGHT -> {
-                            if (swipeView.side == SideSwipeView.Side.LEFT) {
-                                send(actionHolder.sideLeftIn)
-                            }
-                        }
-                    }
-                }
-
-                lastSwipe = null
-                performedLong = false
+                handleActionUp()
             }
         }
 
         return true
+    }
+
+    fun handleActionUp(isForce: Boolean = false) {
+        if (isForce) forcedUp = true
+
+        longHandler.removeCallbacksAndMessages(null)
+
+        if (!performedLong) {
+            when (lastSwipe) {
+                Swipe.UP -> {
+                }
+                Swipe.DOWN -> {
+                }
+                Swipe.LEFT -> {
+                    if (swipeView.side == SideSwipeView.Side.RIGHT) {
+                        send(actionHolder.sideRightIn)
+                    }
+                }
+                Swipe.RIGHT -> {
+                    if (swipeView.side == SideSwipeView.Side.LEFT) {
+                        send(actionHolder.sideLeftIn)
+                    }
+                }
+            }
+        }
+
+        lastSwipe = null
+        performedLong = false
     }
 
     private fun send(gesture: String) {
