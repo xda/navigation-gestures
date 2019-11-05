@@ -94,7 +94,7 @@
     <string name="nav_imm_enabled">Navigare imersiva activata</string>
     <string name="nav_imm_disabled">Navigare imersiva dezactivata</string>
     <string name="nav_blacklist">Arata NavBar in aplicatiile selectate</string>
-    <string name="bar_blacklist">Ascunde pastila in aplicatiile selectate</string>
+    <string name="bar_blacklist">Remove Pill in Selected Apps</string>
     <string name="imm_blacklist">Lista neagra pentru modul imersiv</string>
     <string name="x_threshold">Distanta de trasare pe orizontala (X)</string>
     <string name="y_threshold">Vertical (Y) Up-Swipe Distance</string>
