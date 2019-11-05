@@ -326,6 +326,7 @@ class AppColorSettingsActivity : AppCompatActivity(), ColorPickerDialogListener,
 
                     colorDialog.setDialogTitle(R.string.select_color)
                     colorDialog.setAllowCustom(true)
+                    colorDialog.setShowAlphaSlider(true)
                     colorDialog.setColor(data.color)
                     colorDialog.setDialogId(adapterPosition)
 
