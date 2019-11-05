@@ -94,7 +94,7 @@
     <string name="nav_imm_enabled">Погружённая навигация включена</string>
     <string name="nav_imm_disabled">Погружённая навигация выключена</string>
     <string name="nav_blacklist">Показывать навигационную панель в выбранных приложениях</string>
-    <string name="bar_blacklist">Скрывать таблетку в выбранных приложениях</string>
+    <string name="bar_blacklist">Remove Pill in Selected Apps</string>
     <string name="imm_blacklist">Чёрный список режима погружения</string>
     <string name="x_threshold">Horizontal (X) Swipe Distance</string>
     <string name="y_threshold">Vertical (Y) Up-Swipe Distance</string>
