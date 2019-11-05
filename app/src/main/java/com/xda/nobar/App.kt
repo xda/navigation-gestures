@@ -999,7 +999,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                                 if (pName == systemUIPackage && isMedia) {
                                     mediaProjectionPermWindowId = info.windowId
                                     disabledBarReasonManager.add(DisabledReasonManager.PillReasons.MEDIA_PROJECTION)
-                                } else if (mediaProjectionPermWindowId == 0 || (windows.find { it.id == mediaProjectionPermWindowId } == null && root.windowId != mediaProjectionPermWindowId)) {
+                                } else if (mediaProjectionPermWindowId == 0 || (windows.find { it.id == mediaProjectionPermWindowId } == null && root?.windowId != mediaProjectionPermWindowId)) {
                                     mediaProjectionPermWindowId = 0
                                     disabledBarReasonManager.remove(DisabledReasonManager.PillReasons.MEDIA_PROJECTION)
                                 }
