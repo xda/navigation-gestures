@@ -94,7 +94,7 @@
     <string name="nav_imm_enabled">Modalità immersiva attivata</string>
     <string name="nav_imm_disabled">Modalità immersiva disattivata</string>
     <string name="nav_blacklist">Mostra Navigation Bar nelle app selezionate</string>
-    <string name="bar_blacklist">Nascondi la Barra nelle App Selezionate</string>
+    <string name="bar_blacklist">Remove Pill in Selected Apps</string>
     <string name="imm_blacklist">Esclusioni modalità immersiva</string>
     <string name="x_threshold">Distanza Swipe Orizzontale (X)</string>
     <string name="y_threshold">Vertical (Y) Up-Swipe Distance</string>
