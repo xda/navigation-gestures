@@ -94,7 +94,7 @@
     <string name="nav_imm_enabled">Immersive Navigation aktiviert</string>
     <string name="nav_imm_disabled">Immersive Navigation deaktiviert</string>
     <string name="nav_blacklist">NavBar in ausgewählten Apps anzeigen</string>
-    <string name="bar_blacklist">Pille in ausgewählten Apps ausblenden</string>
+    <string name="bar_blacklist">Remove Pill in Selected Apps</string>
     <string name="imm_blacklist">Immersive Blacklist</string>
     <string name="x_threshold">Horizontaler (X) Wisch-Abstand</string>
     <string name="y_threshold">Vertical (Y) Up-Swipe Distance</string>
