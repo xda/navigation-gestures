@@ -94,7 +94,7 @@
     <string name="nav_imm_enabled">Navigation immersive activée</string>
     <string name="nav_imm_disabled">Navigation immersive desactivée</string>
     <string name="nav_blacklist">Afficher la barre de navigation dans les applications selectionnées</string>
-    <string name="bar_blacklist">Masquer la pilule dans les applications sélectionnées</string>
+    <string name="bar_blacklist">Remove Pill in Selected Apps</string>
     <string name="imm_blacklist">Liste noire Navigation Immersive</string>
     <string name="x_threshold">Distance de balayage horizontale (X)</string>
     <string name="y_threshold">Vertical (Y) Up-Swipe Distance</string>
