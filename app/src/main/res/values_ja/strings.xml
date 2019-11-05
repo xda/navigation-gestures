@@ -94,7 +94,7 @@
     <string name="nav_imm_enabled">没入型ナビゲーションが有効です</string>
     <string name="nav_imm_disabled">没入型ナビゲーションが無効です</string>
     <string name="nav_blacklist">特定のアプリでナビバーを表示</string>
-    <string name="bar_blacklist">特定のアプリでピルを非表示</string>
+    <string name="bar_blacklist">Remove Pill in Selected Apps</string>
     <string name="imm_blacklist">没入型のブラックリスト</string>
     <string name="x_threshold">水平方向 (X) のスワイプ距離</string>
     <string name="y_threshold">Vertical (Y) Up-Swipe Distance</string>
