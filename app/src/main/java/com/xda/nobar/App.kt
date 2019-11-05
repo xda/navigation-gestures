@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
+import android.util.Log
 import android.view.Display
 import android.view.IRotationWatcher
 import android.view.Surface
@@ -914,14 +915,16 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                 val windows by lazy { service.windows }
                 val root by lazy { service.rootInActiveWindow }
 
-                var pName = info.packageName?.toString()
+                val time = System.currentTimeMillis()
+
+                val pName = info.packageName?.toString()
                 val className = info.className?.toString()
 
-                val nullPName = pName == null
+                val nullPName = { pName != null }
 
                 val deferred = arrayListOf<Deferred<Any?>>()
 
-                if (!nullPName) {
+                if (!nullPName()) {
                     deferred.add(async {
                         if (isLandscape
                             && immersiveHelperManager.isNavImmersive()
@@ -955,7 +958,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
 
                     disabledNavReasonManager.setConditional(DisabledReasonManager.NavBarReasons.FULLSCREEN) { origInFullscreen && immersiveHelperManager.isFullImmersive() }
 
-                    if (!nullPName) {
+                    if (!nullPName()) {
                         deferred.add(async {
                             if (hidePermissions) {
                                 val isGrant = className?.contains(grantPermissionsActivity) == true
@@ -1055,34 +1058,35 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
                     disabledImmReasonManager.setConditional(DisabledReasonManager.ImmReasons.EDGE_SCREEN) { isTouchWiz && edgeType == EDGE_TYPE_ACTIVE }
                 })
 
-                if (!nullPName) {
-                    deferred.add(async {
-                        if (pName != oldPName) {
-                            oldPName = pName
+                deferred.add(async {
+                    var thisPName = pName
 
-                            if (hasUsage) {
-                                val time = System.currentTimeMillis()
-                                val appStats = usm.queryUsageStats(
-                                    UsageStatsManager.INTERVAL_DAILY,
-                                    time - 1000 * 1000,
-                                    time
+                    if (hasUsage) {
+                        val appStats = usm.queryUsageStats(
+                            UsageStatsManager.INTERVAL_DAILY,
+                            time - 500 * 1000,
+                            time + 500
+                        )
+
+                        if (appStats != null && appStats.isNotEmpty()) {
+                            thisPName = Collections.max(appStats) { o1, o2 ->
+                                compareValues(
+                                    o1.lastTimeUsed,
+                                    o2.lastTimeUsed
                                 )
+                            }.packageName
+                        }
+                    }
 
-                                if (appStats != null && appStats.isNotEmpty()) {
-                                    pName = Collections.max(appStats) { o1, o2 ->
-                                        compareValues(
-                                            o1.lastTimeUsed,
-                                            o2.lastTimeUsed
-                                        )
-                                    }.packageName
-                                }
-                            }
+                    if (thisPName != null) {
+                        if (thisPName != oldPName) {
+                            oldPName = thisPName
 
-                            disabledNavReasonManager.setConditional(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST) { navArray.contains(pName) }
-                            disabledBarReasonManager.setConditional(DisabledReasonManager.PillReasons.BLACKLIST) { barArray.contains(pName) }
-                            disabledImmReasonManager.setConditional(DisabledReasonManager.ImmReasons.BLACKLIST) { immArray.contains(pName) }
+                            disabledNavReasonManager.setConditional(DisabledReasonManager.NavBarReasons.NAV_BLACKLIST) { navArray.contains(thisPName) }
+                            disabledBarReasonManager.setConditional(DisabledReasonManager.PillReasons.BLACKLIST) { barArray.contains(thisPName) }
+                            disabledImmReasonManager.setConditional(DisabledReasonManager.ImmReasons.BLACKLIST) { immArray.contains(thisPName) }
 
-                            if (windowArray.contains(pName)) {
+                            if (windowArray.contains(thisPName)) {
                                 if (!isInOtherWindowApp && active) {
                                     addBar(false)
                                     isInOtherWindowApp = true
@@ -1092,12 +1096,12 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
 
                         if (hasUsage || info.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                             || info.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                            || pName != systemUIPackage
+                            || thisPName != systemUIPackage
                         ) {
-                            processColor(pName)
+                            processColor(thisPName)
                         }
-                    })
-                }
+                    }
+                })
 
                 deferred.add(async {
                     updateKeyboardFlagState()
