@@ -28,6 +28,9 @@ object IWindowManager {
     var rightOverscan = 0
     var bottomOverscan = 0
 
+    val hasOverscan: Boolean
+        get() = leftOverscan != 0 || topOverscan != 0 || rightOverscan != 0 || bottomOverscan != 0
+
     private val queuedOverscanActions = Any()
 
     private val iWindowManagerClass: Class<*> = Class.forName("android.view.IWindowManager")

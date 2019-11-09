@@ -14,7 +14,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
-import android.util.Log
 import android.view.Display
 import android.view.IRotationWatcher
 import android.view.Surface
@@ -543,7 +542,7 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener,
      * Show the navbar
      */
     fun showNav(callListeners: Boolean = true, removeImmersive: Boolean = true) {
-        if (hasWss) {
+        if (hasWss && (prefManager.shouldUseOverscanMethod || IWindowManager.hasOverscan)) {
             if (removeImmersive && prefManager.useImmersiveWhenNavHidden)
                 immersiveHelperManager.exitNavImmersive()
 
